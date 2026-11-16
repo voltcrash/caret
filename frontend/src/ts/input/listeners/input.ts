@@ -1,3 +1,4 @@
+import { isDebugLogging } from "../../utils/logger";
 import { useInputListener } from "../../hooks/useInputListener";
 import { onDelete } from "../handlers/delete";
 import { onInsertText } from "../handlers/insert-text";
@@ -20,12 +21,14 @@ export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
       event.preventDefault();
       return;
     }
-    console.debug("wordsInput event beforeinput", {
-      event,
-      inputType: event.inputType,
-      data: event.data,
-      value: (event.target as HTMLInputElement).value,
-    });
+    if (isDebugLogging()) {
+      console.debug("wordsInput event beforeinput", {
+        event,
+        inputType: event.inputType,
+        data: event.data,
+        value: (event.target as HTMLInputElement).value,
+      });
+    }
 
     if (!isSupportedInputType(event.inputType)) {
       event.preventDefault();
@@ -73,12 +76,14 @@ export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
       event.preventDefault();
       return;
     }
-    console.debug("wordsInput event input", {
-      event,
-      inputType: event.inputType,
-      data: event.data,
-      value: (event.target as HTMLInputElement).value,
-    });
+    if (isDebugLogging()) {
+      console.debug("wordsInput event input", {
+        event,
+        inputType: event.inputType,
+        data: event.data,
+        value: (event.target as HTMLInputElement).value,
+      });
+    }
 
     // this shouldnt be neccesary because beforeinput already prevents default
     // but some browsers (LIKE SAFARI) seem to ignore that, so just double checking here

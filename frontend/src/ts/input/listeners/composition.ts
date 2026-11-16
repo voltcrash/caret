@@ -1,3 +1,4 @@
+import { isDebugLogging } from "../../utils/logger";
 import { useInputListener } from "../../hooks/useInputListener";
 import * as CompositionState from "../../states/composition";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";
@@ -14,10 +15,12 @@ import {
 
 export function bindCompositionListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "compositionstart", (event) => {
-    console.debug("wordsInput event compositionstart", {
-      event,
-      data: event.data,
-    });
+    if (isDebugLogging()) {
+      console.debug("wordsInput event compositionstart", {
+        event,
+        data: event.data,
+      });
+    }
 
     const now = performance.now();
 
@@ -36,10 +39,12 @@ export function bindCompositionListeners(inputEl: HTMLTextAreaElement): void {
   });
 
   useInputListener(inputEl, "compositionupdate", (event) => {
-    console.debug("wordsInput event compositionupdate", {
-      event,
-      data: event.data,
-    });
+    if (isDebugLogging()) {
+      console.debug("wordsInput event compositionupdate", {
+        event,
+        data: event.data,
+      });
+    }
 
     if (isTestRestarting() || isResultCalculating()) return;
     CompositionState.setData(event.data);
@@ -55,10 +60,12 @@ export function bindCompositionListeners(inputEl: HTMLTextAreaElement): void {
   });
 
   useInputListener(inputEl, "compositionend", async (event) => {
-    console.debug("wordsInput event compositionend", {
-      event,
-      data: event.data,
-    });
+    if (isDebugLogging()) {
+      console.debug("wordsInput event compositionend", {
+        event,
+        data: event.data,
+      });
+    }
 
     const blocked = isTestRestarting() || isResultCalculating();
     CompositionState.setComposing(false);
