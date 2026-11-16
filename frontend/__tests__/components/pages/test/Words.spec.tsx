@@ -397,6 +397,15 @@ describe("Words layout", () => {
     expect(getWordsWrapperHeight()).toBe("20px");
   });
 
+  it("measures three lines without collecting every word", async () => {
+    for (let i = 0; i < 200; i++) words.push(`w${i}`, 0);
+    await layout();
+    const query = vi.spyOn(element, "querySelectorAll");
+    ui.updateWordsWrapperHeight(true);
+    expect(query).not.toHaveBeenCalledWith(".word");
+    expect(getWordsWrapperHeight()).toBe("60px");
+  });
+
   it("keeps the last height while the words have no layout", async () => {
     await layout();
     ui.updateWordsWrapperHeight(true);
