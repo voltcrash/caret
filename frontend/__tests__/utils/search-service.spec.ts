@@ -44,3 +44,15 @@ it("does not allocate an edit-distance matrix for exact matches", () => {
   expect(service.query("fox", []).results).toEqual(["fox"]);
   expect(levenshtein).not.toHaveBeenCalled();
 });
+
+it("rejects impossible lengths before edit-distance allocation", () => {
+  const service = buildSearchService(["cat", "horse"], String);
+  expect(service.query("x".repeat(10_000), []).results).toEqual([]);
+  expect(levenshtein).not.toHaveBeenCalled();
+});
+
+it("retains matches on the fuzzy length boundary", () => {
+  const service = buildSearchService(["abcd"], String);
+  expect(service.query("abcdf", []).results).toEqual(["abcd"]);
+  expect(levenshtein).toHaveBeenCalledOnce();
+});

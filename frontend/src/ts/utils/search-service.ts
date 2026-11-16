@@ -128,6 +128,12 @@ export const buildSearchService = <T>(
 
     normalizedSearchQuery.forEach((searchToken) => {
       tokenSet.forEach((token) => {
+        // Edit distance is at least the difference in lengths. Reject
+        // impossible matches before allocating the quadratic distance matrix.
+        const maxLength = Math.max(searchToken.length, token.length);
+        const bestSimilarity =
+          1 - Math.abs(searchToken.length - token.length) / maxLength;
+        if (bestSimilarity < 1 - options.fuzzyMatchSensitivity) return;
         const matchesSearchToken = token === searchToken;
         const similarity = matchesSearchToken
           ? 1
