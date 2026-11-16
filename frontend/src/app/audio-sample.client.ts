@@ -17,10 +17,10 @@ export function createAudioSample(
   let buffer: AudioBuffer | undefined;
   let disposed = false;
   let failed = false;
-  const queued: (() => void)[] = [];
+  let queued: (() => void) | undefined;
   const run = (action: () => void): void => {
     if (disposed || failed || signal.aborted) return;
-    if (buffer === undefined) queued.push(action);
+    if (buffer === undefined) queued = action;
     else action();
   };
   const stopVoice = (voice: Voice): void => {
@@ -61,15 +61,18 @@ export function createAudioSample(
       const decoded = await context.decodeAudioData(bytes);
       if (disposed || signal.aborted) return;
       buffer = decoded;
-      for (const action of queued.splice(0)) action();
+      const action = queued;
+      queued = undefined;
+      action?.();
     })
     .catch(() => {
       // Like an unhandled Howl loaderror, unavailable samples stay silent.
       failed = true;
-      queued.length = 0;
+      queued = undefined;
     });
   return {
-    seek: () =>
+    seek: () => {
+      if (buffer === undefined) return;
       run(() => {
         const voice = voices[0];
         if (voice === undefined) return;
@@ -77,7 +80,8 @@ export function createAudioSample(
         stopVoice(voice);
         voice.ended = false;
         if (playing) startVoice(voice);
-      }),
+      });
+    },
     play: () =>
       run(() => {
         // Preserve seek(0); play(): rewind the first active voice, then overlap
@@ -103,13 +107,13 @@ export function createAudioSample(
         }
         startVoice(voice);
       }),
-    stop: () =>
-      run(() => {
-        voices.forEach(stopVoice);
-      }),
+    stop: () => {
+      queued = undefined;
+      voices.forEach(stopVoice);
+    },
     unload: () => {
       disposed = true;
-      queued.length = 0;
+      queued = undefined;
       voices.forEach(stopVoice);
       buffer = undefined;
     },

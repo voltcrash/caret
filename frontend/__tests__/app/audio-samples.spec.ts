@@ -99,3 +99,33 @@ it("decodes every configured click, error and warning sample", async () => {
     expect(decoded.duration).toBeGreaterThan(0);
   }
 });
+
+it.each([false, true])(
+  "coalesces slow-load playback and honors stop=%s",
+  async (stop) => {
+    const bytes = await (await fetch(src)).arrayBuffer();
+    const response = Promise.withResolvers<Response>();
+    vi.spyOn(globalThis, "fetch").mockReturnValue(response.promise);
+    const context = new OfflineAudioContext(1, 44100, 44100);
+    const create = vi.spyOn(context, "createBufferSource");
+    const decode = vi.spyOn(context, "decodeAudioData");
+    const sound = createAudioSample(
+      context,
+      context.destination,
+      src,
+      new AbortController().signal,
+    );
+    for (let i = 0; i < 1_000; i++) {
+      sound.seek(0);
+      sound.play();
+    }
+    if (stop) sound.stop();
+    response.resolve(new Response(bytes));
+    await vi.waitFor(() => expect(decode).toHaveBeenCalledOnce());
+    // Await the actual decode, then the sample's continuation.
+    await decode.mock.results[0]?.value;
+    await Promise.resolve();
+    expect(create).toHaveBeenCalledTimes(stop ? 0 : 1);
+    sound.unload();
+  },
+);
