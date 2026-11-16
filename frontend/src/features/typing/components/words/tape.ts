@@ -68,9 +68,10 @@ export async function scrollTape(noAnimation = false): Promise<void> {
     .children as HTMLCollectionOf<HTMLElement>;
   const activeWordEl = getActiveWordElement();
   if (!activeWordEl) return;
-  const afterNewLineEls = Array.from(
-    getWordsEl().querySelectorAll<HTMLElement>(".afterNewline"),
-  );
+  // Live: removing leading spacers below shifts this collection with them.
+  const afterNewLineEls = getWordsEl().getElementsByClassName(
+    "afterNewline",
+  ) as HTMLCollectionOf<HTMLElement>;
 
   let wordsWidthBeforeActive = 0;
   let fullLineWidths = 0;
@@ -80,7 +81,6 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   const widthRemovedFromLine: number[] = [];
   const afterNewlinesNewMargins: number[] = [];
   const toRemove: HTMLElement[] = [];
-  let removedAfterNewlines = 0;
 
   /* remove leading `.afterNewline` elements */
   for (const child of wordsChildrenArr) {
@@ -94,7 +94,6 @@ export async function scrollTape(noAnimation = false): Promise<void> {
       toRemove.push(child);
       leadingNewLine = true;
       lastAfterNewLineElement = child;
-      removedAfterNewlines++;
     }
   }
 
@@ -178,7 +177,6 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   /* remove overflown elements */
   if (toRemove.length > 0) {
     for (const el of toRemove) el.remove();
-    afterNewLineEls.splice(0, removedAfterNewlines);
     for (let i = 0; i < widthRemovedFromLine.length; i++) {
       const afterNewlineEl = afterNewLineEls[i] as HTMLElement;
       const currentLineIndent =
