@@ -127,6 +127,7 @@ vi.mock("animejs", async (original) => ({
 
 import { Words } from "../../../../src/features/typing/components/Words";
 import { getWordElement } from "../../../../src/features/typing/components/words/elements";
+import { createNewlineSpacers } from "../../../../src/features/typing/components/words/letters";
 import * as ui from "../../../../src/features/typing/runtime/test-ui";
 import { words } from "../../../../src/features/typing/runtime/test-words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
@@ -446,6 +447,28 @@ describe("Words layout", () => {
     }
     await ui.scrollTape(true);
     expect(element.style.marginLeft).toBe("80px");
+  });
+
+  it("indents tape lines that follow newline spacers", async () => {
+    words.push("third", 0);
+    await layout();
+    const spacers = createNewlineSpacers();
+    const [before, newline, after] = [...spacers.children] as HTMLElement[];
+    word(0).after(spacers);
+    for (const spacer of [before, newline, after]) {
+      size(spacer as HTMLElement, { offsetTop: 10, offsetWidth: 0 });
+    }
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
+    mocks.activeIndex = 2;
+    await ui.scrollTape(true);
+    expect(after?.style.marginLeft).toBe("100px");
+    expect(element.style.marginLeft).toBe("-100px");
+    expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
+      newValue: -200,
+      duration: 0,
+      ease: "inOut(1.25)",
+    });
   });
 
   it("removes completed lines after the first line jump", async () => {
