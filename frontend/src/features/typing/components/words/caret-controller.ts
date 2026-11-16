@@ -2,7 +2,10 @@ import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { hasClassName, updateClassNames } from "../../../../ts/utils/cn";
 import { CaretStyle } from "@caret/schemas/configs";
 import { getMutableConfig } from "../../../../ts/config/store";
-import { isWordRightToLeft } from "../../../../ts/utils/strings";
+import {
+  countCodePoints,
+  isWordRightToLeft,
+} from "../../../../ts/utils/strings";
 import { requestDebouncedAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";
 import { animate, EasingParam, JSAnimation } from "animejs";
 
@@ -307,7 +310,7 @@ export class CaretController {
     requestDebouncedAnimationFrame(`caret.${this.id}.goTo`, () => {
       const word = getWordElement(options.wordIndex);
       const wordText = TestWords.words.get(options.wordIndex)?.display ?? "";
-      const wordLength = Array.from(wordText).length;
+      const wordLength = countCodePoints(wordText);
 
       // caret can be either on the left side of the target letter or the right
       // we stick to the left side unless we are on the last letter or beyond
