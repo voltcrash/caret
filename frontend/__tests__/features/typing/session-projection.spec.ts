@@ -237,3 +237,43 @@ it("retains the captured tick/explicit finish clock when acknowledging a deferre
     date: 1234,
   });
 });
+
+it("sends custom limits only when their mode or value changes", async () => {
+  const CustomText =
+    await import("../../../src/features/typing/runtime/custom-text");
+  const { getMutableConfig } = await import("../../../src/ts/config/store");
+  const previousMode = getMutableConfig().mode;
+  getMutableConfig().mode = "custom";
+  CustomText.setLimitMode("word");
+  CustomText.setLimitValue(10);
+  try {
+    const session = getEngineSession();
+    session.attach();
+    const limitCommands = (): unknown[] =>
+      mocks.command.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { op: string } | undefined)?.op === "customLimit",
+      );
+    const view = {
+      op: "view",
+      now: 1,
+      earliestVisibleWord: 0,
+      deferAutomatic: null,
+    } as const;
+    session.command(view);
+    session.command(view);
+    expect(limitCommands()).toHaveLength(0);
+    CustomText.setLimitValue(20);
+    session.command(view);
+    session.command(view);
+    expect(limitCommands()).toHaveLength(1);
+    expect(limitCommands()[0]).toEqual([
+      expect.objectContaining({ op: "customLimit", mode: "word", value: 20 }),
+    ]);
+    CustomText.setLimitMode("time");
+    session.command(view);
+    expect(limitCommands()).toHaveLength(2);
+  } finally {
+    getMutableConfig().mode = previousMode;
+  }
+});
