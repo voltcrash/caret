@@ -480,6 +480,25 @@ describe("Words layout", () => {
     });
   });
 
+  it("removes words scrolled out of the tape and compensates margins", async () => {
+    words.push("third", 0);
+    await layout();
+    size(word(0), { offsetLeft: -250 });
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
+    mocks.activeIndex = 2;
+    await ui.scrollTape(true);
+    expect(word(0)).toBeNull();
+    expect(word(1)).not.toBeNull();
+    expect(mocks.caret.handleTapeWordsRemoved).toHaveBeenCalledWith(100);
+    expect(element.style.marginLeft).toBe("0px");
+    expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
+      newValue: -100,
+      duration: 0,
+      ease: "inOut(1.25)",
+    });
+  });
+
   it("removes completed lines after the first line jump", async () => {
     words.push("third", 0);
     await layout();
