@@ -31,20 +31,26 @@ vi.mock("../../../src/features/typing/runtime/test-words", () => ({
   },
 }));
 
-const native = vi.hoisted(() => ({
-  session: undefined as
-    | import("@caret/typing-engine/browser.client").BrowserSession
-    | undefined,
-}));
+const native = vi.hoisted(() => {
+  const state = {
+    session: undefined as
+      | import("@caret/typing-engine/browser.client").BrowserSession
+      | undefined,
+    preflight: vi.fn(
+      (
+        data: string,
+        layout: import("@caret/typing-engine/browser.client").InsertionLayout,
+      ) => state.session?.preflight(encodeText(data), layout),
+    ),
+  };
+  return state;
+});
 vi.mock("../../../src/features/typing/runtime/session.client", () => ({
   getEngineSession: () => ({
     isPrepared: () => native.session !== undefined,
     command: (command: import("@caret/typing-engine/browser.client").Command) =>
       native.session?.command(command),
-    preflight: (
-      data: string,
-      layout: import("@caret/typing-engine/browser.client").InsertionLayout,
-    ) => native.session?.preflight(encodeText(data), layout),
+    preflight: native.preflight,
   }),
 }));
 vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
@@ -114,11 +120,25 @@ describe("onBeforeInsertText - line overflow", () => {
   });
 
   it("blocks an extra letter that would push the word onto the next line", () => {
+    native.preflight.mockClear();
     expect(onBeforeInsertText("x")).toBe(true);
+    expect(native.preflight).toHaveBeenCalledTimes(2);
+    expect(native.preflight).toHaveBeenLastCalledWith(
+      "x",
+      expect.objectContaining({ wrapped: true }),
+    );
+  });
+
+  it("allows an extra letter that still fits on the line", () => {
+    mockState.wrapsToNextLine = false;
+    expect(onBeforeInsertText("x")).toBe(false);
   });
 
   it("lets a space through to commit the word", () => {
+    native.preflight.mockClear();
     expect(onBeforeInsertText(" ")).toBe(false);
+    // No overflow measurement means no second engine round trip.
+    expect(native.preflight).toHaveBeenCalledTimes(1);
   });
 
   // android keyboards insert " word" when swipe typing the next word

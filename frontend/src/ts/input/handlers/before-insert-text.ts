@@ -22,13 +22,17 @@ export function observeInputView(now: number): void {
     deferAutomatic: null,
   });
 }
-export function insertionLayout(data: string): InsertionLayout {
-  const layout: InsertionLayout = {
-    slowTimer: SlowTimer.get(),
-    wrapped: false,
-    finalInBatch: null,
-  };
-  const preflight = getEngineSession().preflight(data, layout);
+type Preflight = ReturnType<ReturnType<typeof getEngineSession>["preflight"]>;
+
+function baseLayout(): InsertionLayout {
+  return { slowTimer: SlowTimer.get(), wrapped: false, finalInBatch: null };
+}
+
+/** Measures DOM wrap only when Rust's preflight asks for it. */
+function measureWrap(
+  layout: InsertionLayout,
+  preflight: Preflight,
+): InsertionLayout {
   if (preflight.measureOverflow) {
     const pending = TestUI.pendingWordData.get(getActiveWordIndex());
     const measured = TestUI.getActiveWordTopAndHeightWithDifferentData(
@@ -41,6 +45,10 @@ export function insertionLayout(data: string): InsertionLayout {
   }
   return layout;
 }
+export function insertionLayout(data: string): InsertionLayout {
+  const layout = baseLayout();
+  return measureWrap(layout, getEngineSession().preflight(data, layout));
+}
 export function onBeforeInsertText(data: string): boolean {
   const session = getEngineSession();
   if (
@@ -52,5 +60,9 @@ export function onBeforeInsertText(data: string): boolean {
     return true;
   }
   observeInputView(performance.now());
-  return session.preflight(data, insertionLayout(data)).blocked;
+  const layout = baseLayout();
+  const preflight = session.preflight(data, layout);
+  // Preflight is pure; without a measurement the layout is unchanged.
+  if (!preflight.measureOverflow) return preflight.blocked;
+  return session.preflight(data, measureWrap(layout, preflight)).blocked;
 }
