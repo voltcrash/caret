@@ -11,6 +11,7 @@ vi.mock("../../../src/ts/input/handlers/keydown", () => ({
 vi.mock("../../../src/ts/input/handlers/keyup", () => ({ onKeyup: vi.fn() }));
 
 import { bindKeyListeners } from "../../../src/ts/input/listeners/key";
+import { bindMiscListeners } from "../../../src/ts/input/listeners/misc";
 
 afterEach(() => {
   logging.enabled = false;
@@ -42,5 +43,23 @@ describe("typing input debug logs", () => {
       expect.objectContaining({ key: "b" }),
     );
     dispose();
+  });
+
+  it("serializes the document selection only when debug logging is on", () => {
+    const selection = vi.spyOn(window, "getSelection");
+    const input = document.createElement("textarea");
+    document.body.append(input);
+    const dispose = createRoot((dispose) => {
+      bindMiscListeners(input);
+      return dispose;
+    });
+    input.dispatchEvent(new Event("selectionchange"));
+    expect(selection).not.toHaveBeenCalled();
+    logging.enabled = true;
+    vi.spyOn(console, "debug").mockImplementation(() => undefined);
+    input.dispatchEvent(new Event("selectionchange"));
+    expect(selection).toHaveBeenCalledOnce();
+    dispose();
+    input.remove();
   });
 });

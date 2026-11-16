@@ -1,3 +1,4 @@
+import { isDebugLogging } from "../../utils/logger";
 import { useInputListener } from "../../hooks/useInputListener";
 import { moveInputElementCaretToTheEnd } from "../input-element";
 
@@ -16,15 +17,16 @@ export function bindMiscListeners(inputEl: HTMLTextAreaElement): void {
   });
 
   useInputListener(inputEl, "selectionchange", (event) => {
-    const selection = window.getSelection();
-
-    console.debug("wordsInput event selectionchange", {
-      event,
-      selection: selection?.toString(),
-      isCollapsed: selection?.isCollapsed,
-      selectionStart: inputEl.selectionStart,
-      selectionEnd: inputEl.selectionEnd,
-    });
+    if (isDebugLogging()) {
+      const selection = window.getSelection();
+      console.debug("wordsInput event selectionchange", {
+        event,
+        selection: selection?.toString(),
+        isCollapsed: selection?.isCollapsed,
+        selectionStart: inputEl.selectionStart,
+        selectionEnd: inputEl.selectionEnd,
+      });
+    }
 
     const hasSelectedText = inputEl.selectionStart !== inputEl.selectionEnd;
     const isCursorAtEnd = inputEl.selectionStart === inputEl.value.length;
