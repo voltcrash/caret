@@ -1,5 +1,5 @@
 import { applyReducedMotion } from "../../../../ts/utils/misc";
-import { updateClassNames } from "../../../../ts/utils/cn";
+import { hasClassName, updateClassNames } from "../../../../ts/utils/cn";
 import { CaretStyle } from "@caret/schemas/configs";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { isWordRightToLeft } from "../../../../ts/utils/strings";
@@ -92,7 +92,7 @@ export class CaretController {
   }
 
   public isHidden(): boolean {
-    return this.element.className.split(/\s+/).includes("hidden");
+    return hasClassName(this.element.className, "hidden");
   }
 
   public getWidth(): number {
