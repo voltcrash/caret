@@ -23,6 +23,13 @@ describe("updateClassNames", () => {
   it("collapses duplicated current classes when adding", () => {
     expect(updateClassNames("a a b", "c", true)).toBe("a b c");
   });
+
+  it("returns the current value for no-op updates", () => {
+    expect(updateClassNames(" a  b", "a", true)).toBe(" a  b");
+    expect(updateClassNames(" a  b", "b a", true)).toBe(" a  b");
+    expect(updateClassNames(" a  b", "ab", false)).toBe(" a  b");
+    expect(updateClassNames("hidden-x", "hidden", false)).toBe("hidden-x");
+  });
 });
 
 describe("hasClassName", () => {

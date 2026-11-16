@@ -33,14 +33,19 @@ export function hasClassName(className: string, name: string): boolean {
 }
 
 // Preserve existing display utilities when imperative animations toggle hidden.
+// No-op updates return `current` unchanged so callers can skip DOM writes.
 export function updateClassNames(
   current: string,
   names: string,
   enabled: boolean,
 ): string {
-  const classes = splitClassNames(current);
   const changes = splitClassNames(names);
-  return enabled
-    ? [...new Set([...classes, ...changes])].join(" ")
-    : classes.filter((name) => !changes.includes(name)).join(" ");
+  if (enabled) {
+    if (changes.every((name) => hasClassName(current, name))) return current;
+    return [...new Set([...splitClassNames(current), ...changes])].join(" ");
+  }
+  if (!changes.some((name) => hasClassName(current, name))) return current;
+  return splitClassNames(current)
+    .filter((name) => !changes.includes(name))
+    .join(" ");
 }
