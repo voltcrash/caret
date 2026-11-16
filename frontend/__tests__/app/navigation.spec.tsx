@@ -127,8 +127,20 @@ describe("Router-owned navigation", () => {
       cancelable: true,
       ctrlKey: true,
     });
-    fireEvent(getByText("login"), modified);
-    expect(modified.defaultPrevented).toBe(false);
+    // Observe the Router's decision, then suppress native navigation so the
+    // real browser cannot navigate away from Vitest's iframe (Ctrl on macOS).
+    let preventedByRouter: boolean | undefined;
+    const suppressNavigation = (event: MouseEvent): void => {
+      preventedByRouter = event.defaultPrevented;
+      event.preventDefault();
+    };
+    window.addEventListener("click", suppressNavigation, { once: true });
+    try {
+      fireEvent(getByText("login"), modified);
+      expect(preventedByRouter).toBe(false);
+    } finally {
+      window.removeEventListener("click", suppressNavigation);
+    }
     expect(getByText("download")).toHaveAttribute("download", "file.txt");
     expect(router.state.location.pathname).toBe("/");
   });
