@@ -146,6 +146,8 @@ export function createTypingOwned<T>(create: () => T): () => T {
   return () => {
     const route = untrack(state().route);
     if (route === undefined) return unmounted();
+    const existing = route.values.peek(key);
+    if (existing !== undefined) return existing.value as T;
     return route.values.use(
       key,
       () => runWithOwner(route.owner, create) as T,
