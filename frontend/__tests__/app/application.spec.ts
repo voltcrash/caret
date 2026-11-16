@@ -98,4 +98,25 @@ describe("browser application owner", () => {
     expect(owned()()).toBe(4);
     expect(created).toBe(2);
   });
+
+  it("reads existing owned values without re-entering creation", () => {
+    let created = 0;
+    const owned = createAppOwned((): number | undefined => {
+      created++;
+      return undefined;
+    });
+    const application = mount();
+    expect(owned()).toBeUndefined();
+    expect(owned()).toBeUndefined();
+    expect(created).toBe(1);
+    const use = application.state.use;
+    let uses = 0;
+    application.state.use = (...args) => {
+      uses++;
+      return use(...args);
+    };
+    expect(owned()).toBeUndefined();
+    expect(uses).toBe(0);
+    application.state.use = use;
+  });
 });
