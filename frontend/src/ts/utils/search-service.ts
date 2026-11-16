@@ -123,6 +123,7 @@ export const buildSearchService = <T>(
       return searchResult;
     }
 
+    const allowedIds = ids.length === 0 ? undefined : new Set(ids);
     const results = new Map<number, number>();
     const matchedTokens = new Set<string>();
 
@@ -148,6 +149,8 @@ export const buildSearchService = <T>(
             documentMatches.size,
           );
           documentMatches.forEach((document) => {
+            const quote = documents[document.id] as InternalDocument;
+            if (allowedIds !== undefined && !allowedIds.has(quote?.id)) return;
             const currentScore = results.get(document.id) ?? 0;
 
             const termFrequency = normalizedTermFrequency(token, document);
@@ -162,10 +165,7 @@ export const buildSearchService = <T>(
 
             const scoreForToken = score * idf * termFrequency;
 
-            const quote = documents[document.id] as InternalDocument;
-            if (ids.length === 0 || ids.includes(quote?.id)) {
-              results.set(document.id, currentScore + scoreForToken);
-            }
+            results.set(document.id, currentScore + scoreForToken);
           });
 
           normalizedTokenToOriginal[token]?.forEach((originalToken) => {

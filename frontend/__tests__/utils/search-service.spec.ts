@@ -56,3 +56,13 @@ it("retains matches on the fuzzy length boundary", () => {
   expect(service.query("abcdf", []).results).toEqual(["abcd"]);
   expect(levenshtein).toHaveBeenCalledOnce();
 });
+
+it("does not scan the ID filter for every matching document", () => {
+  const ids = [42, 99];
+  const includes = vi.spyOn(ids, "includes");
+  expect(search().query("fox", ids).results).toEqual([
+    documents[0],
+    documents[2],
+  ]);
+  expect(includes).not.toHaveBeenCalled();
+});
