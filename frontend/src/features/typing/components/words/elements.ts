@@ -39,11 +39,13 @@ export function setClass(
   enabled: boolean,
 ): void {
   if (element) {
-    element.className = updateClassNames(
+    const next = updateClassNames(
       element.className,
       Array.isArray(names) ? names.join(" ") : names,
       enabled,
     );
+    // Even identical writes queue mutations and may invalidate style.
+    if (element.className !== next) element.className = next;
   }
 }
 import { createAppOwned } from "../../../../app/application";
