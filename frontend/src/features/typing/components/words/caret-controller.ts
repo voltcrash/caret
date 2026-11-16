@@ -412,9 +412,10 @@ export class CaretController {
     isLanguageRightToLeft: boolean;
     isDirectionReversed: boolean;
   }): { left: number; top: number; width: number } {
-    const letters = Array.from(
-      options.word.querySelectorAll<HTMLElement>("letter"),
-    );
+    // Live collection: indexed reads only, no per-move NodeList copy.
+    const letters = options.word.getElementsByTagName(
+      "letter",
+    ) as HTMLCollectionOf<HTMLElement>;
 
     if (letters.length === 0) {
       throw new Error(
