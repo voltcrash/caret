@@ -422,7 +422,9 @@ export class CaretController {
       );
     }
 
-    let letter = letters[options.letterIndex] ?? letters[letters.length - 1];
+    // Letters may lag the target index for a frame; clamp to rendered ones.
+    const letterIndex = Math.min(options.letterIndex, letters.length - 1);
+    let letter = letters[letterIndex];
 
     if (!letter) {
       throw new Error(
@@ -460,7 +462,7 @@ export class CaretController {
     //if the letter is not visible, use the closest visible letter
     const isLetterVisible = letter.offsetWidth > 0;
     if (!isLetterVisible) {
-      for (let i = options.letterIndex - 1; i >= 0; i--) {
+      for (let i = letterIndex - 1; i >= 0; i--) {
         const loopLetter = letters[i] as HTMLElement;
 
         // find the closest visible letter before the current letter

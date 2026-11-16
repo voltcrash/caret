@@ -131,6 +131,16 @@ describe("native caret", () => {
     expect(element.style.left).toBe("25px");
   });
 
+  it("falls back to the closest visible letter and clamps past the end", () => {
+    const caret = new CaretController(element, "default");
+    const second = wordsElement.querySelectorAll("letter")[1] as HTMLElement;
+    dimensions(second, { offsetWidth: 0 });
+    caret.goTo({ ...target, letterIndex: 1 });
+    expect(element.style.left).toBe("9px");
+    caret.goTo({ ...target, letterIndex: 9 });
+    expect(element.style.left).toBe("17px");
+  });
+
   it("positions full-width underlines and locked letter tape", () => {
     const caret = new CaretController(element, "underline");
     caret.goTo({ ...target, letterIndex: 1 });
