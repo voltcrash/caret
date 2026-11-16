@@ -96,9 +96,12 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   // (which contains .word/.newline/.beforeNewline/.afterNewline elements)
   const activeWordIndex = wordsChildrenArr.indexOf(activeWordEl);
   // this will between 0 and 2
-  const newLinesBeforeActiveWord = wordsChildrenArr
-    .slice(0, activeWordIndex)
-    .filter((child) => hasClassName(child.className, "afterNewline")).length;
+  let newLinesBeforeActiveWord = 0;
+  for (let i = 0; i < activeWordIndex; i++) {
+    if (hasClassName(wordsChildrenArr[i]?.className ?? "", "afterNewline")) {
+      newLinesBeforeActiveWord++;
+    }
+  }
   // the second `.afterNewline` after active word is visible during line jump
   let lastVisibleAfterNewline = afterNewLineEls[newLinesBeforeActiveWord + 1];
   if (lastVisibleAfterNewline) {
