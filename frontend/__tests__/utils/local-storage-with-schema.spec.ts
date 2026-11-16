@@ -110,6 +110,17 @@ describe("local-storage-with-schema.ts", () => {
         expect(setItemMock).not.toHaveBeenCalled();
       });
 
+      it("serializes only the incoming value after the first write", () => {
+        ls.set(defaultObject);
+        const stringify = vi.spyOn(JSON, "stringify");
+        try {
+          expect(ls.set({ ...defaultObject, fontSize: 20 })).toBe(true);
+          expect(stringify).toHaveBeenCalledOnce();
+        } finally {
+          stringify.mockRestore();
+        }
+      });
+
       it("handles storage failures that throw a non-Error value", () => {
         setItemMock.mockImplementationOnce(() => {
           // oxlint-disable-next-line eslint/no-throw-literal, typescript/only-throw-error -- Exercise storage failures that throw non-Error values.

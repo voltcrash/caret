@@ -16,6 +16,7 @@ export class LocalStorageWithSchema<T> {
   ) => T;
   private cache?: T;
   private storageDirty = false;
+  private serializedCache: string | undefined;
 
   constructor(options: {
     key: string;
@@ -115,9 +116,11 @@ export class LocalStorageWithSchema<T> {
       console.debug(`LS ${this.key} Parsing to set in localStorage`);
       const parsed = this.schema.parse(data);
       const newValue = JSON.stringify(parsed);
-      if (newValue !== JSON.stringify(this.cache) || this.storageDirty) {
+      this.serializedCache ??= JSON.stringify(this.cache);
+      if (newValue !== this.serializedCache || this.storageDirty) {
         console.debug(`LS ${this.key} Setting in localStorage`);
         this.cache = parsed;
+        this.serializedCache = newValue;
         this.storageDirty = true;
         window.localStorage.setItem(this.key, newValue);
         this.storageDirty = false;
