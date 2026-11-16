@@ -583,6 +583,24 @@ describe("Words layout", () => {
   });
 });
 
+describe("Words zen backtracking", () => {
+  it("removes everything after the active zen word when going back", async () => {
+    getMutableConfig().mode = "zen";
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    ui.appendEmptyWordElement(1);
+    word(1).after(createNewlineSpacers());
+    ui.appendEmptyWordElement(2);
+    mocks.activeIndex = 1;
+    await ui.afterTestWordChange("back");
+    expect(
+      [...element.children].map(
+        (child) => child.getAttribute("data-wordindex") ?? child.className,
+      ),
+    ).toEqual(["0", "1"]);
+  });
+});
+
 describe("Words hints and joining", () => {
   it.each(["below", "both"] as const)(
     "shows typo hints in %s mode",
