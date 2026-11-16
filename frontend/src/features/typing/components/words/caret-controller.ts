@@ -16,6 +16,18 @@ import {
 import * as TestWords from "../../runtime/test-words";
 import { getWordElement } from "./elements";
 
+const fullWidthStyles: ReadonlySet<CaretStyle> = new Set([
+  "block",
+  "outline",
+  "underline",
+]);
+const smoothCaretDurations: Readonly<Record<string, number>> = {
+  off: 0,
+  slow: 150,
+  medium: 100,
+  fast: 85,
+};
+
 let lockedMainCaretInTape = true;
 let caretDebug = false;
 
@@ -120,7 +132,7 @@ export class CaretController {
   }
 
   public isFullWidth(): boolean {
-    return ["block", "outline", "underline"].includes(this.style);
+    return fullWidthStyles.has(this.style);
   }
 
   public setPosition(options: {
@@ -265,15 +277,7 @@ export class CaretController {
     width?: number;
   }): void {
     const smoothCaretSpeed =
-      getMutableConfig().smoothCaret === "off"
-        ? 0
-        : getMutableConfig().smoothCaret === "slow"
-          ? 150
-          : getMutableConfig().smoothCaret === "medium"
-            ? 100
-            : getMutableConfig().smoothCaret === "fast"
-              ? 85
-              : 0;
+      smoothCaretDurations[getMutableConfig().smoothCaret] ?? 0;
 
     const finalDuration = applyReducedMotion(
       options.duration ?? smoothCaretSpeed,
