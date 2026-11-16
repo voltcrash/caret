@@ -11,6 +11,7 @@ import {
   getWordsWrapperElement as getWordsWrapperCache,
 } from "../../../../ts/states/test-dom";
 import * as TestWords from "../../runtime/test-words";
+import { getWordElement } from "./elements";
 
 let lockedMainCaretInTape = true;
 let caretDebug = false;
@@ -304,9 +305,7 @@ export class CaretController {
   }): void {
     if (this.style === "off") return;
     requestDebouncedAnimationFrame(`caret.${this.id}.goTo`, () => {
-      const word = getWordsCache().querySelector<HTMLElement>(
-        `.word[data-wordindex="${options.wordIndex}"]`,
-      );
+      const word = getWordElement(options.wordIndex);
       const wordText = TestWords.words.get(options.wordIndex)?.display ?? "";
       const wordLength = Array.from(wordText).length;
 
