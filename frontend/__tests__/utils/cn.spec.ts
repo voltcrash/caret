@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { updateClassNames } from "../../src/ts/utils/cn";
+import { hasClassName, updateClassNames } from "../../src/ts/utils/cn";
 
 describe("updateClassNames", () => {
   it("adds missing classes once and keeps existing order", () => {
@@ -22,5 +22,18 @@ describe("updateClassNames", () => {
 
   it("collapses duplicated current classes when adding", () => {
     expect(updateClassNames("a a b", "c", true)).toBe("a b c");
+  });
+});
+
+describe("hasClassName", () => {
+  it("matches whole whitespace-separated tokens only", () => {
+    expect(hasClassName("word active", "word")).toBe(true);
+    expect(hasClassName("word active", "active")).toBe(true);
+    expect(hasClassName("word\tactive\n", "active")).toBe(true);
+    expect(hasClassName("wordy active", "word")).toBe(false);
+    expect(hasClassName("afterNewline", "Newline")).toBe(false);
+    expect(hasClassName("a-word word", "word")).toBe(true);
+    expect(hasClassName("", "word")).toBe(false);
+    expect(hasClassName("word", "")).toBe(false);
   });
 });
