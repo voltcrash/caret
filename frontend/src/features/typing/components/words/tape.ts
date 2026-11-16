@@ -45,6 +45,13 @@ function getNlCharWidth(
   return nlChar.offsetWidth + letterMargin;
 }
 
+function indexOfChild(
+  children: HTMLCollectionOf<HTMLElement>,
+  child: HTMLElement,
+): number {
+  return Array.prototype.indexOf.call(children, child);
+}
+
 export async function scrollTape(noAnimation = false): Promise<void> {
   if (!isTypingRouteActive() || getResultVisible()) return;
 
@@ -55,9 +62,10 @@ export async function scrollTape(noAnimation = false): Promise<void> {
     : isLanguageRightToLeft();
 
   const wordsWrapperWidth = getWordsWrapperEl().offsetWidth;
-  const wordsChildrenArr = Array.from(
-    getWordsEl().children ?? [],
-  ) as HTMLElement[];
+  // Live collection: tape only reads children up to the active line, so
+  // never copy every upcoming word on each keystroke.
+  const wordsChildrenArr = getWordsEl()
+    .children as HTMLCollectionOf<HTMLElement>;
   const activeWordEl = getActiveWordElement();
   if (!activeWordEl) return;
   const afterNewLineEls = Array.from(
@@ -94,7 +102,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   let lastElementIndex: number;
   // index of the active word in all #words.children
   // (which contains .word/.newline/.beforeNewline/.afterNewline elements)
-  const activeWordIndex = wordsChildrenArr.indexOf(activeWordEl);
+  const activeWordIndex = indexOfChild(wordsChildrenArr, activeWordEl);
   // this will between 0 and 2
   let newLinesBeforeActiveWord = 0;
   for (let i = 0; i < activeWordIndex; i++) {
@@ -105,11 +113,14 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   // the second `.afterNewline` after active word is visible during line jump
   let lastVisibleAfterNewline = afterNewLineEls[newLinesBeforeActiveWord + 1];
   if (lastVisibleAfterNewline) {
-    lastElementIndex = wordsChildrenArr.indexOf(lastVisibleAfterNewline);
+    lastElementIndex = indexOfChild(wordsChildrenArr, lastVisibleAfterNewline);
   } else {
     lastVisibleAfterNewline = afterNewLineEls[newLinesBeforeActiveWord];
     if (lastVisibleAfterNewline) {
-      lastElementIndex = wordsChildrenArr.indexOf(lastVisibleAfterNewline);
+      lastElementIndex = indexOfChild(
+        wordsChildrenArr,
+        lastVisibleAfterNewline,
+      );
     } else {
       lastElementIndex = activeWordIndex - 1;
     }
