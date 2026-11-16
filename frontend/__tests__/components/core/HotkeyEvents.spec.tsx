@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render } from "@solidjs/testing-library";
+import { detectPlatform } from "@tanstack/solid-hotkeys";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 const { showModal } = vi.hoisted(() => ({ showModal: vi.fn() }));
 vi.mock("../../../src/ts/states/modals", () => ({ showModal }));
@@ -27,8 +28,18 @@ afterEach(cleanup);
 
 it("unregisters shortcuts on disposal and registers once after remount", () => {
   const press = (): void => {
-    fireEvent.keyDown(document, { key: "k", code: "KeyK", ctrlKey: true });
-    fireEvent.keyUp(document, { key: "k", code: "KeyK", ctrlKey: true });
+    fireEvent.keyDown(document, {
+      key: "k",
+      code: "KeyK",
+      ctrlKey: detectPlatform() !== "mac",
+      metaKey: detectPlatform() === "mac",
+    });
+    fireEvent.keyUp(document, {
+      key: "k",
+      code: "KeyK",
+      ctrlKey: detectPlatform() !== "mac",
+      metaKey: detectPlatform() === "mac",
+    });
   };
   const first = render(() => <HotkeyEvents />);
   press();

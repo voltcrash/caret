@@ -109,6 +109,8 @@ export function createActorQueryCache(options: {
   let timer: ReturnType<typeof setTimeout> | undefined;
   let disposed = false;
   let revision = 0;
+  let dataRevision = 0;
+  let savedRevision = -1;
   // Serialize writes/clears. A late save can never overtake sign-out's clear.
   let queue = Promise.resolve();
   const enqueue = async (action: () => Promise<void>): Promise<void> => {
@@ -118,6 +120,8 @@ export function createActorQueryCache(options: {
   };
   const stop = (): void => {
     revision++;
+    dataRevision = 0;
+    savedRevision = -1;
     unsubscribe?.();
     unsubscribe = undefined;
     clearTimeout(timer);
@@ -146,6 +150,8 @@ export function createActorQueryCache(options: {
     const started = revision;
     return enqueue(async () => {
       if (disposed || !lease.isCurrent() || started !== revision) return;
+      if (savedRevision === dataRevision) return;
+      const savingRevision = dataRevision;
       const client = dehydrate(queryClient, {
         shouldDehydrateMutation: () => false,
         shouldDehydrateQuery: (query) =>
@@ -172,9 +178,13 @@ export function createActorQueryCache(options: {
         };
       });
       await storage.write({ actor, buster, timestamp: Date.now(), client });
+      if (!disposed && lease.isCurrent() && started === revision) {
+        savedRevision = savingRevision;
+      }
     });
   };
   const scheduleSave = (): void => {
+    dataRevision++;
     timer ??= setTimeout(() => {
       void save();
     }, 100);
@@ -241,6 +251,10 @@ export function createActorQueryCache(options: {
       if (disposed || !lease.isCurrent() || started !== revision) return;
       unsubscribe = queryClient.getQueryCache().subscribe((event) => {
         if (
+          (event.type === "removed" ||
+            (event.type === "updated" &&
+              (event.action.type === "success" ||
+                event.action.type === "setState"))) &&
           isPersisted(event.query.queryKey as QueryKey, actor, lease.generation)
         ) {
           scheduleSave();

@@ -42,6 +42,8 @@ vi.mock("idb", () => {
   return {
     openDB: async () => ({
       get: async (_store: string, key: string) => files.get(key),
+      getKey: async (_store: string, key: string) =>
+        files.has(key) ? key : undefined,
       put: async (_store: string, value: string, key: string) =>
         files.set(key, value),
       delete: async (_store: string, key: string) => files.delete(key),

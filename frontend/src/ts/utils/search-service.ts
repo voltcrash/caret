@@ -94,7 +94,7 @@ export const buildSearchService = <T>(
       }
       reverseIndex[stemmedToken]?.add(internalDocument);
 
-      if (!(stemmedToken in internalDocument.termFrequencies)) {
+      if (!Object.hasOwn(internalDocument.termFrequencies, stemmedToken)) {
         internalDocument.termFrequencies[stemmedToken] = 0;
       }
 
@@ -123,14 +123,22 @@ export const buildSearchService = <T>(
       return searchResult;
     }
 
+    const allowedIds = ids.length === 0 ? undefined : new Set(ids);
     const results = new Map<number, number>();
     const matchedTokens = new Set<string>();
 
     normalizedSearchQuery.forEach((searchToken) => {
       tokenSet.forEach((token) => {
-        const { similarity } = levenshtein(searchToken, token);
-
+        // Edit distance is at least the difference in lengths. Reject
+        // impossible matches before allocating the quadratic distance matrix.
+        const maxLength = Math.max(searchToken.length, token.length);
+        const bestSimilarity =
+          1 - Math.abs(searchToken.length - token.length) / maxLength;
+        if (bestSimilarity < 1 - options.fuzzyMatchSensitivity) return;
         const matchesSearchToken = token === searchToken;
+        const similarity = matchesSearchToken
+          ? 1
+          : levenshtein(searchToken, token).similarity;
         const isSimilar = similarity >= 1 - options.fuzzyMatchSensitivity;
 
         if (matchesSearchToken || isSimilar) {
@@ -141,6 +149,8 @@ export const buildSearchService = <T>(
             documentMatches.size,
           );
           documentMatches.forEach((document) => {
+            const quote = documents[document.id] as InternalDocument;
+            if (allowedIds !== undefined && !allowedIds.has(quote?.id)) return;
             const currentScore = results.get(document.id) ?? 0;
 
             const termFrequency = normalizedTermFrequency(token, document);
@@ -155,10 +165,7 @@ export const buildSearchService = <T>(
 
             const scoreForToken = score * idf * termFrequency;
 
-            const quote = documents[document.id] as InternalDocument;
-            if (ids.length === 0 || ids.includes(quote?.id)) {
-              results.set(document.id, currentScore + scoreForToken);
-            }
+            results.set(document.id, currentScore + scoreForToken);
           });
 
           normalizedTokenToOriginal[token]?.forEach((originalToken) => {

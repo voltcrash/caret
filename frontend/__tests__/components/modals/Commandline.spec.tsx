@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
+import { detectPlatform } from "@tanstack/solid-hotkeys";
 import { AnimationParams } from "animejs";
 import {
   afterEach,
@@ -276,8 +277,8 @@ describe("theme picker lifecycle", () => {
     fireEvent.keyDown(view.getByRole("textbox"), {
       key: "k",
       code: "KeyK",
-      // The test browser uses Linux, so mod is ctrl.
-      ctrlKey: true,
+      ctrlKey: detectPlatform() !== "mac",
+      metaKey: detectPlatform() === "mac",
     });
     await waitFor(() => expect(commandlineState.open).toBe(false));
     expect(command.exec).not.toHaveBeenCalled();

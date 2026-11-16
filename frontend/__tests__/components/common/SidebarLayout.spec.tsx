@@ -1,4 +1,5 @@
 import { cleanup, render, screen } from "@solidjs/testing-library";
+import { detectPlatform, formatForDisplay } from "@tanstack/solid-hotkeys";
 import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
@@ -28,12 +29,12 @@ const items = {
   two: { text: "two", icon: "fa-keyboard" },
 } as const;
 
-// The test browser uses Linux, so mod is ctrl.
 function pressMod(key: string): KeyboardEvent {
   const event = new KeyboardEvent("keydown", {
     key,
     code: `Digit${key}`,
-    ctrlKey: true,
+    ctrlKey: detectPlatform() !== "mac",
+    metaKey: detectPlatform() === "mac",
     bubbles: true,
     cancelable: true,
   });
@@ -102,9 +103,10 @@ describe("SidebarLayout hotkeys", () => {
 function holdMod(down: boolean): void {
   document.body.dispatchEvent(
     new KeyboardEvent(down ? "keydown" : "keyup", {
-      key: "Control",
-      code: "ControlLeft",
-      ctrlKey: down,
+      key: detectPlatform() === "mac" ? "Meta" : "Control",
+      code: detectPlatform() === "mac" ? "MetaLeft" : "ControlLeft",
+      ctrlKey: down && detectPlatform() !== "mac",
+      metaKey: down && detectPlatform() === "mac",
       bubbles: true,
     }),
   );
@@ -120,7 +122,10 @@ describe("SidebarLayout hotkey hints", () => {
     renderSidebar();
     expect(hints()).toEqual([]);
     holdMod(true);
-    expect(hints()).toEqual(["Ctrl+1", "Ctrl+2"]);
+    expect(hints()).toEqual([
+      formatForDisplay("Mod+1"),
+      formatForDisplay("Mod+2"),
+    ]);
     holdMod(false);
     expect(hints()).toEqual([]);
   });
@@ -140,7 +145,10 @@ describe("SidebarLayout hotkey hints", () => {
     expect(screen.getByText("3")).toBeTruthy();
     holdMod(true);
     expect(screen.queryByText("3")).toBeNull();
-    expect(hints()).toEqual(["Ctrl+1", "Ctrl+2"]);
+    expect(hints()).toEqual([
+      formatForDisplay("Mod+1"),
+      formatForDisplay("Mod+2"),
+    ]);
   });
 
   it("hides hints while disabled or a popup is open", () => {
