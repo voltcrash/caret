@@ -1,3 +1,4 @@
+import levenshtein from "damerau-levenshtein";
 import { beforeEach, expect, it, vi } from "vite-plus/test";
 import { buildSearchService } from "../../src/ts/utils/search-service";
 
@@ -36,4 +37,10 @@ it("filters by external document IDs, not positions", () => {
     results: [],
     matchedQueryTerms: [],
   });
+});
+
+it("does not allocate an edit-distance matrix for exact matches", () => {
+  const service = buildSearchService(["fox"], String);
+  expect(service.query("fox", []).results).toEqual(["fox"]);
+  expect(levenshtein).not.toHaveBeenCalled();
 });

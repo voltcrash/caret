@@ -128,9 +128,10 @@ export const buildSearchService = <T>(
 
     normalizedSearchQuery.forEach((searchToken) => {
       tokenSet.forEach((token) => {
-        const { similarity } = levenshtein(searchToken, token);
-
         const matchesSearchToken = token === searchToken;
+        const similarity = matchesSearchToken
+          ? 1
+          : levenshtein(searchToken, token).similarity;
         const isSimilar = similarity >= 1 - options.fuzzyMatchSensitivity;
 
         if (matchesSearchToken || isSimilar) {
