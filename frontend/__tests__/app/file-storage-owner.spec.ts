@@ -55,3 +55,34 @@ it("checks file presence without loading large data URLs", async () => {
     release();
   }
 });
+
+it.each(["blocking", "terminated"] as const)(
+  "reopens after the connection is %s",
+  async (event) => {
+    const firstClose = vi.fn();
+    database.open
+      .mockResolvedValueOnce({ get: async () => "first", close: firstClose })
+      .mockResolvedValueOnce({
+        get: async () => "second",
+        close: database.close,
+      });
+    const { default: storage } =
+      await import("../../src/ts/utils/file-storage");
+    const app = createTestApplication();
+    const release = mountApplication(app.application);
+    try {
+      expect(await storage.getFile("LocalFontFamilyFile")).toBe("first");
+      const options = database.open.mock.calls[0]?.[2] as Record<
+        string,
+        () => void
+      >;
+      options[event]?.();
+      expect(await storage.getFile("LocalFontFamilyFile")).toBe("second");
+      expect(database.open).toHaveBeenCalledTimes(2);
+      expect(firstClose).toHaveBeenCalledTimes(event === "blocking" ? 1 : 0);
+    } finally {
+      app.dispose();
+      release();
+    }
+  },
+);

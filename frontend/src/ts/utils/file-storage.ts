@@ -20,11 +20,22 @@ class FileStorage {
   >();
 
   private async database(): Promise<IDBPDatabase<FileDB>> {
+    if (this.closed) {
+      throw new DOMException("Application disposed", "AbortError");
+    }
     this.dbPromise ??= openDB<FileDB>("file-storage-db", 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains("files")) {
           db.createObjectStore("files");
         }
+      },
+      blocking: () => {
+        const pending = this.dbPromise;
+        this.dbPromise = undefined;
+        void pending?.then((db) => db.close()).catch(() => undefined);
+      },
+      terminated: () => {
+        this.dbPromise = undefined;
       },
     }).catch((error: unknown) => {
       this.dbPromise = undefined;
