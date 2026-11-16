@@ -129,3 +129,22 @@ it.each([false, true])(
     sound.unload();
   },
 );
+
+it("aborts an unloaded sample without aborting the audio owner", () => {
+  const owner = new AbortController();
+  const fetchSample = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(new Response(null, { status: 404 }));
+  const context = new OfflineAudioContext(1, 44100, 44100);
+  const sound = createAudioSample(
+    context,
+    context.destination,
+    src,
+    owner.signal,
+  );
+  const signal = fetchSample.mock.calls[0]?.[1]?.signal;
+  expect(signal?.aborted).toBe(false);
+  sound.unload();
+  expect(signal?.aborted).toBe(true);
+  expect(owner.signal.aborted).toBe(false);
+});

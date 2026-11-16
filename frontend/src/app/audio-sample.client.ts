@@ -15,6 +15,7 @@ export function createAudioSample(
   type Voice = { source?: AudioBufferSourceNode; ended: boolean };
   const voices: Voice[] = [{ ended: true }];
   let buffer: AudioBuffer | undefined;
+  const loading = new AbortController();
   let disposed = false;
   let failed = false;
   let queued: (() => void) | undefined;
@@ -51,7 +52,7 @@ export function createAudioSample(
       void context.resume().catch(() => undefined);
     }
   };
-  void fetch(src, { signal })
+  void fetch(src, { signal: AbortSignal.any([signal, loading.signal]) })
     .then(async (response) => {
       if (!response.ok) {
         throw new Error(`Sound load failed: ${response.status}`);
@@ -113,6 +114,7 @@ export function createAudioSample(
     },
     unload: () => {
       disposed = true;
+      loading.abort();
       queued = undefined;
       voices.forEach(stopVoice);
       buffer = undefined;
