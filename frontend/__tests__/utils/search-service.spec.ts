@@ -66,3 +66,14 @@ it("does not scan the ID filter for every matching document", () => {
   ]);
   expect(includes).not.toHaveBeenCalled();
 });
+
+it("scores words that share Object prototype names", () => {
+  const service = buildSearchService(
+    ["constructor fox fox", "constructor constructor fox", "unrelated"],
+    String,
+  );
+  expect(service.query("constructor", []).results).toEqual([
+    "constructor constructor fox",
+    "constructor fox fox",
+  ]);
+});

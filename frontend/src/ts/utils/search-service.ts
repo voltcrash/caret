@@ -94,7 +94,7 @@ export const buildSearchService = <T>(
       }
       reverseIndex[stemmedToken]?.add(internalDocument);
 
-      if (!(stemmedToken in internalDocument.termFrequencies)) {
+      if (!Object.hasOwn(internalDocument.termFrequencies, stemmedToken)) {
         internalDocument.termFrequencies[stemmedToken] = 0;
       }
 
