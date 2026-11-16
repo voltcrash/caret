@@ -1,4 +1,4 @@
-import { expect, it, vi } from "vite-plus/test";
+import { beforeEach, expect, it, vi } from "vite-plus/test";
 
 const database = vi.hoisted(() => ({ open: vi.fn(), close: vi.fn() }));
 vi.mock("idb", () => ({ openDB: database.open }));
@@ -10,6 +10,7 @@ import {
 } from "../__harness__/test-application";
 
 releaseTestApplication();
+beforeEach(() => vi.clearAllMocks());
 
 it("opens the existing database lazily and closes each app's connection on disposal", async () => {
   database.open.mockResolvedValue({
@@ -31,5 +32,26 @@ it("opens the existing database lazily and closes each app's connection on dispo
     release();
     await Promise.resolve();
     expect(database.close).toHaveBeenCalledTimes(i + 1);
+  }
+});
+
+it("checks file presence without loading large data URLs", async () => {
+  const getKey = vi
+    .fn()
+    .mockResolvedValueOnce("LocalFontFamilyFile")
+    .mockResolvedValueOnce(undefined);
+  const get = vi.fn();
+  database.open.mockResolvedValue({ getKey, get, close: database.close });
+  const { default: storage } = await import("../../src/ts/utils/file-storage");
+  const app = createTestApplication();
+  const release = mountApplication(app.application);
+  try {
+    expect(await storage.hasFile("LocalFontFamilyFile")).toBe(true);
+    expect(await storage.hasFile("LocalBackgroundFile")).toBe(false);
+    expect(getKey).toHaveBeenCalledWith("files", "LocalBackgroundFile");
+    expect(get).not.toHaveBeenCalled();
+  } finally {
+    app.dispose();
+    release();
   }
 });
