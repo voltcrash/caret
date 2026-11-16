@@ -60,10 +60,12 @@ export async function lineJump(
 
     // index of the active word in all #words.children
     // (which contains .word/.newline/.beforeNewline/.afterNewline elements)
-    const wordsChildren = Array.from(
-      getWordsEl().children ?? [],
-    ) as HTMLElement[];
-    const activeWordElementIndex = wordsChildren.indexOf(activeWordEl);
+    const wordsChildren = getWordsEl()
+      .children as HTMLCollectionOf<HTMLElement>;
+    const activeWordElementIndex = Array.prototype.indexOf.call(
+      wordsChildren,
+      activeWordEl,
+    );
 
     let lastElementIndexToRemove: number | undefined = undefined;
     for (let i = activeWordElementIndex - 1; i >= 0; i--) {
