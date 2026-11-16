@@ -7,7 +7,10 @@ export function createAccountOwned<T>(create: () => T): () => T {
   const key = {};
   return () => {
     const app = requireApplication();
-    return app.accountData.scope().use(
+    const scope = app.accountData.scope();
+    const existing = scope.peek(key) as { value: { value: T } } | undefined;
+    if (existing !== undefined) return existing.value.value;
+    return scope.use(
       key,
       () => createRoot((dispose) => ({ value: create(), dispose }), app.owner),
       (entry) => entry.dispose(),
