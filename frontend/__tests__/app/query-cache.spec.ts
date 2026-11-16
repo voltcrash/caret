@@ -249,3 +249,45 @@ it("does not persist observer churn or fetch-status changes", async () => {
   expect((await store.read())?.client.queries).toEqual([]);
   expect(store.write).toHaveBeenCalledOnce();
 });
+
+it("coalesces queued saves without losing data changed during a write", async () => {
+  const store = storage();
+  const writing = Promise.withResolvers<undefined>();
+  const started = Promise.withResolvers<undefined>();
+  const write = vi.fn(async (value: StoredQueryCache) => {
+    started.resolve(undefined);
+    await writing.promise;
+    await store.write(value);
+  });
+  const next = app({ ...store, write });
+  next.account.setActor("a");
+  await next.cache.restore();
+  next.queryClient.setQueryData(next.key("results"), ["first"]);
+  const first = next.cache.save();
+  await started.promise;
+  next.queryClient.setQueryData(next.key("results"), ["latest"]);
+  const pending = Array.from({ length: 20 }, async () => next.cache.save());
+  writing.resolve(undefined);
+  await Promise.all([first, ...pending]);
+  expect(write).toHaveBeenCalledTimes(2);
+  expect((await store.read())?.client.queries[0]?.state.data).toEqual([
+    "latest",
+  ]);
+  await next.cache.save();
+  expect(write).toHaveBeenCalledTimes(2);
+});
+
+it("retries an unchanged snapshot after a failed write", async () => {
+  const store = storage();
+  vi.mocked(store.write).mockRejectedValueOnce(new Error("quota"));
+  const next = app(store);
+  next.account.setActor("a");
+  await next.cache.restore();
+  next.queryClient.setQueryData(next.key("results"), ["saved"]);
+  await next.cache.save();
+  await next.cache.save();
+  expect(store.write).toHaveBeenCalledTimes(2);
+  expect((await store.read())?.client.queries[0]?.state.data).toEqual([
+    "saved",
+  ]);
+});
