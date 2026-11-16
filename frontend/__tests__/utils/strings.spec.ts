@@ -9,6 +9,22 @@ import {
 import * as Strings from "../../src/ts/utils/strings";
 
 describe("string utils", () => {
+  describe("countCodePoints", () => {
+    it.each([
+      "",
+      "abc",
+      "héllo",
+      "😀a😀",
+      "👩‍💻",
+      "\uD83D",
+      "a\uDE00b",
+      "\uDE00\uD83D",
+      "𝒜𝒷",
+    ])("matches Array.from length for %j", (text) => {
+      expect(Strings.countCodePoints(text)).toBe(Array.from(text).length);
+    });
+  });
+
   describe("highlightMatches", () => {
     const shouldHighlight = [
       {

@@ -182,6 +182,21 @@ export function isWordRightToLeft(
     : [result[0], result[1] === word.length];
 }
 
+/** Same as `Array.from(text).length`, without allocating the array. */
+export function countCodePoints(text: string): number {
+  let count = 0;
+  for (let i = 0; i < text.length; i++) {
+    const unit = text.charCodeAt(i);
+    // A high surrogate followed by a low surrogate is one code point.
+    if (unit >= 0xd800 && unit <= 0xdbff && i + 1 < text.length) {
+      const next = text.charCodeAt(i + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) i++;
+    }
+    count++;
+  }
+  return count;
+}
+
 export function toHex(buffer: ArrayBuffer): string {
   const u8 = new Uint8Array(buffer);
 
