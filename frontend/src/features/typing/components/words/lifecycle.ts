@@ -174,21 +174,16 @@ export async function afterTestWordChange(
     if (getMutableConfig().mode === "zen") {
       // because we need to delete newline, beforenewline and afternewline elements which dont have wordindex attributes
       // we need to do this loop thingy and delete all elements after the active word
-      let deleteElements = false;
-      for (const child of Array.from(
-        getWordsEl().children ?? [],
-      ) as HTMLElement[]) {
-        if (deleteElements) {
-          child.remove();
-          continue;
-        }
+      const activeIndex = getActiveWordIndex();
+      let active: Element | undefined;
+      for (const child of getWordsEl().children) {
         const attr = child.getAttribute("data-wordindex");
-        if (attr === null) continue;
-        const wordIndex = parseInt(attr, 10);
-        if (wordIndex === getActiveWordIndex()) {
-          deleteElements = true;
+        if (attr !== null && parseInt(attr, 10) === activeIndex) {
+          active = child;
+          break;
         }
       }
+      while (active?.nextElementSibling) active.nextElementSibling.remove();
     }
   }
 }
