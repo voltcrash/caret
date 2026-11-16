@@ -419,6 +419,23 @@ describe("string utils", () => {
         mapClearSpy.mockReset();
       });
 
+      it("bounds retained directions across many distinct words", () => {
+        Strings.clearWordDirectionCache();
+        const max = Strings.__testing.maxWordDirectionCacheSize;
+        for (let i = 0; i < max + 50; i++) {
+          Strings.isWordRightToLeft(`word${i}`, false);
+        }
+        expect(Strings.__testing.getWordDirectionCacheSize()).toBe(max);
+        mapSetSpy.mockClear();
+        // Newest entries remain cached; the oldest were evicted.
+        Strings.isWordRightToLeft(`word${max + 49}`, false);
+        expect(mapSetSpy).not.toHaveBeenCalled();
+        Strings.isWordRightToLeft("word0", false);
+        expect(mapSetSpy).toHaveBeenCalledWith("word0", [false, 0]);
+        Strings.clearWordDirectionCache();
+        expect(Strings.__testing.getWordDirectionCacheSize()).toBe(0);
+      });
+
       it("should use cache for repeated calls", () => {
         // First call should cache the result (cache miss)
         const result1 = Strings.isWordRightToLeft("hello", false);

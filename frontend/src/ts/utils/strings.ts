@@ -145,7 +145,9 @@ function hasRTLCharacters(word: string): [boolean, number] {
  * Cache for word direction to avoid repeated calculations per word
  * Keyed by the stripped core of the word; can be manually cleared when needed
  */
-let wordDirectionCache: Map<string, [boolean, number]> = new Map();
+const wordDirectionCache: Map<string, [boolean, number]> = new Map();
+// Zen, custom text and infinite tests can produce unbounded distinct words.
+const maxWordDirectionCacheSize = 1024;
 
 export function clearWordDirectionCache(): void {
   wordDirectionCache.clear();
@@ -177,6 +179,10 @@ export function isWordRightToLeft(
   }
 
   const result = hasRTLCharacters(core);
+  if (wordDirectionCache.size >= maxWordDirectionCacheSize) {
+    // Maps iterate in insertion order; drop the oldest entry.
+    wordDirectionCache.delete(wordDirectionCache.keys().next().value as string);
+  }
   wordDirectionCache.set(core, result);
 
   return reverseDirection
@@ -228,4 +234,6 @@ export function replaceSpacesWithUnderscores(text: string): string {
 // Export testing utilities for unit tests
 export const __testing = {
   hasRTLCharacters,
+  getWordDirectionCacheSize: (): number => wordDirectionCache.size,
+  maxWordDirectionCacheSize,
 };
