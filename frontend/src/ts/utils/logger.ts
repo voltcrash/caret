@@ -38,6 +38,11 @@ export function installLogger(): () => void {
   return () => Object.assign(console, previous);
 }
 
+/** Lets hot paths skip building debug payloads that would be dropped. */
+export function isDebugLogging(): boolean {
+  return debugLogs;
+}
+
 export function toggleDebugLogs(): void {
   debugLogs = !debugLogs;
   info(`Debug logs ${debugLogs ? "enabled" : "disabled"}`);
