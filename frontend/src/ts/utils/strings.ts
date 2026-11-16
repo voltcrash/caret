@@ -126,14 +126,16 @@ export function replaceControlCharacters(textToClear: string): string {
  * @param word the word to check for RTL characters
  * @returns true if the word contains RTL characters, false otherwise
  */
+// This covers Arabic, Farsi, Urdu, and other RTL scripts
+const rtlPattern =
+  /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/;
+// Leading/trailing punctuation, symbols and whitespace around a word's core.
+const directionNeutralEdges = /^[\p{P}\p{S}\s]+|[\p{P}\p{S}\s]+$/gu;
+
 function hasRTLCharacters(word: string): [boolean, number] {
   if (!word || word.length === 0) {
     return [false, 0];
   }
-
-  // This covers Arabic, Farsi, Urdu, and other RTL scripts
-  const rtlPattern =
-    /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/;
 
   const result = rtlPattern.exec(word);
   return [result !== null, result?.[0].length ?? 0];
@@ -161,7 +163,7 @@ export function isWordRightToLeft(
   // Strip leading/trailing punctuation and whitespace so attached opposite-direction
   // punctuation like "word؟" or "،word" doesn't flip the direction detection
   // and if only punctuation/symbols/whitespace, use main language direction
-  const core = word.replace(/^[\p{P}\p{S}\s]+|[\p{P}\p{S}\s]+$/gu, "");
+  const core = word.replace(directionNeutralEdges, "");
   if (core.length === 0) {
     return reverseDirection ? [!languageRTL, false] : [languageRTL, false];
   }
