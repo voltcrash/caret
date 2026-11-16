@@ -40,16 +40,10 @@ export async function centerActiveLine(): Promise<void> {
 }
 
 function removeTestElements(lastElementIndexToRemove: number): void {
-  const wordsChildren = Array.from(
-    getWordsEl().children ?? [],
-  ) as HTMLElement[];
-
-  if (wordsChildren === undefined) return;
-
+  // Removing from the end keeps lower indices of the live collection stable.
+  const wordsChildren = getWordsEl().children;
   for (let i = lastElementIndexToRemove; i >= 0; i--) {
-    const child = wordsChildren[i];
-    if (!child || !child.isConnected) continue;
-    child.remove();
+    wordsChildren[i]?.remove();
   }
 }
 
