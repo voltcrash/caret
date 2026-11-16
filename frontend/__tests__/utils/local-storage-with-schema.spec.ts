@@ -337,6 +337,37 @@ describe("local-storage-with-schema.ts", () => {
         expect(getItemMock).toHaveBeenCalledOnce();
       });
 
+      it("selects fields from the cached value without cloning", () => {
+        getItemMock.mockReturnValue(JSON.stringify(defaultObject));
+        const clone = vi.spyOn(globalThis, "structuredClone");
+        try {
+          expect(ls.select((value) => value.fontSize)).toBe(16);
+          expect(ls.select((value) => value.mode)).toBe("words");
+          expect(clone).not.toHaveBeenCalled();
+          expect(getItemMock).toHaveBeenCalledOnce();
+          ls.set({ ...defaultObject, fontSize: 20 });
+          expect(ls.select((value) => value.fontSize)).toBe(20);
+          expect(ls.get().fontSize).toBe(20);
+        } finally {
+          clone.mockRestore();
+        }
+      });
+
+      it("selects the fallback when storage is empty or unreadable", () => {
+        getItemMock.mockReturnValue(null);
+        expect(ls.select((value) => value.mode)).toBe("words");
+        const denied = new LocalStorageWithSchema({
+          key: "config",
+          schema: objectSchema,
+          fallback: defaultObject,
+        });
+        getItemMock.mockImplementation(() => {
+          throw new Error("denied");
+        });
+        expect(denied.select((value) => value.fontSize)).toBe(16);
+        getItemMock.mockReset();
+      });
+
       it("should return a new object reference on each get() call", () => {
         getItemMock.mockReturnValue(JSON.stringify(defaultObject));
 

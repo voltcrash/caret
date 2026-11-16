@@ -33,10 +33,23 @@ export class LocalStorageWithSchema<T> {
     this.migrate = options.migrate;
   }
 
+  /** A private copy callers may mutate. */
   public get(): T {
+    return structuredClone(this.load());
+  }
+
+  /**
+   * Projects the validated value without cloning it. Hot paths reading one
+   * field must not deep-copy large values (e.g. custom text) per call.
+   * The projection must not mutate or retain mutable references.
+   */
+  public select<R>(project: (value: Readonly<T>) => R): R {
+    return project(this.load());
+  }
+
+  private load(): T {
     if (this.cache !== undefined) {
-      //console.debug(`LS ${this.key} Got cached value:`, this.cache);
-      return structuredClone(this.cache);
+      return this.cache;
     }
 
     console.debug(`LS ${this.key} Getting value from localStorage`);
@@ -47,13 +60,13 @@ export class LocalStorageWithSchema<T> {
       this.storageDirty = true;
       console.error(`LS ${this.key} Storage unavailable: ${readError.message}`);
       this.cache = this.fallback;
-      return structuredClone(this.cache);
+      return this.cache;
     }
 
     if (value === null) {
       console.debug(`LS ${this.key} No value found, returning fallback`);
       this.cache = this.fallback;
-      return structuredClone(this.cache);
+      return this.cache;
     }
 
     let migrated = false;
@@ -86,7 +99,7 @@ export class LocalStorageWithSchema<T> {
       );
       this.repair(this.fallback);
       this.cache = this.fallback;
-      return structuredClone(this.cache);
+      return this.cache;
     }
 
     if (migrated || parsed === this.fallback) {
@@ -96,7 +109,7 @@ export class LocalStorageWithSchema<T> {
 
     console.debug(`LS ${this.key} Got value:`, parsed);
     this.cache = parsed as T;
-    return structuredClone(this.cache);
+    return this.cache;
   }
 
   private repair(data: T): void {
