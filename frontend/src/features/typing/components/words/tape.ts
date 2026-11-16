@@ -3,6 +3,7 @@ import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { lineState } from "./line-state";
 import { outerWidth } from "./dimensions";
 import { getActiveWordElement } from "./elements";
+import { hasClassName } from "../../../../ts/utils/cn";
 import { animate } from "animejs";
 import { getMutableConfig } from "../../../../ts/config/store";
 import {
@@ -34,7 +35,7 @@ function getNlCharWidth(
     );
   }
   if (!nlChar) return 0;
-  if (checkIfIncorrect && nlChar.className.split(/\s+/).includes("incorrect")) {
+  if (checkIfIncorrect && hasClassName(nlChar.className, "incorrect")) {
     return 0;
   }
   const letterComputedStyle = window.getComputedStyle(nlChar);
@@ -75,13 +76,13 @@ export async function scrollTape(noAnimation = false): Promise<void> {
 
   /* remove leading `.afterNewline` elements */
   for (const child of wordsChildrenArr) {
-    if (child.className.split(/\s+/).includes("word")) {
+    if (hasClassName(child.className, "word")) {
       // only last leading `.afterNewline` element pushes `.word`s to right
       if (lastAfterNewLineElement) {
         widthRemoved += parseFloat(lastAfterNewLineElement.style.marginLeft);
       }
       break;
-    } else if (child.className.split(/\s+/).includes("afterNewline")) {
+    } else if (hasClassName(child.className, "afterNewline")) {
       toRemove.push(child);
       leadingNewLine = true;
       lastAfterNewLineElement = child;
@@ -97,9 +98,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   // this will between 0 and 2
   const newLinesBeforeActiveWord = wordsChildrenArr
     .slice(0, activeWordIndex)
-    .filter((child) =>
-      child.className.split(/\s+/).includes("afterNewline"),
-    ).length;
+    .filter((child) => hasClassName(child.className, "afterNewline")).length;
   // the second `.afterNewline` after active word is visible during line jump
   let lastVisibleAfterNewline = afterNewLineEls[newLinesBeforeActiveWord + 1];
   if (lastVisibleAfterNewline) {
@@ -120,7 +119,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   /*calculate .afterNewline & #words new margins + determine elements to remove*/
   for (let i = 0; i <= lastElementIndex; i++) {
     const child = wordsChildrenArr[i] as HTMLElement;
-    if (child.className.split(/\s+/).includes("word")) {
+    if (hasClassName(child.className, "word")) {
       leadingNewLine = false;
       const wordOuterWidth = outerWidth(child);
       const wordLeft = Math.floor(child.offsetLeft);
@@ -135,7 +134,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
         fullLineWidths += wordOuterWidth;
         if (i < activeWordIndex) wordsWidthBeforeActive = fullLineWidths;
       }
-    } else if (child.className.split(/\s+/).includes("afterNewline")) {
+    } else if (hasClassName(child.className, "afterNewline")) {
       if (leadingNewLine) continue;
       const nlCharWidth = getNlCharWidth(wordsChildrenArr[i - 3]);
       fullLineWidths -= nlCharWidth + wordRightMargin;
@@ -195,7 +194,8 @@ export async function scrollTape(noAnimation = false): Promise<void> {
       const letter = letters[i];
       if (
         (getMutableConfig().blindMode || getMutableConfig().hideExtraLetters) &&
-        letter?.className.split(/\s+/).includes("extra")
+        letter !== undefined &&
+        hasClassName(letter.className, "extra")
       ) {
         continue;
       }
