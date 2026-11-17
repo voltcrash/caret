@@ -74,9 +74,13 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   );
   await page.getByRole("link", { name: "Start typing" }).click();
   await expect(page.locator("#words .word").first()).toBeVisible();
+  // Offline session lookup is unknown, not proof that the user signed out.
+  const accountLink = page.getByRole("link", { name: "Account", exact: true });
+  await expect(accountLink).toBeVisible();
+  await expect(accountLink).toHaveAttribute("href", "/account");
   await expect(
     page.getByRole("link", { name: "Sign in", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   const word = page.locator("#words .word").first();
   const letter = (await word.textContent())?.[0] ?? "";
   expect(letter).not.toBe("");
