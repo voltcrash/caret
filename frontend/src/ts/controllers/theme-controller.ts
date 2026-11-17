@@ -11,7 +11,6 @@ import { setConfig } from "../config/setters";
 import { configEvent } from "../events/config";
 import * as CustomThemes from "../states/custom-themes";
 import { showNoticeNotification } from "../states/notifications";
-import { debounce } from "@caret/util/timing";
 import { onCleanup, untrack } from "solid-js";
 import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";
@@ -36,22 +35,19 @@ const themeState = createAppOwned(() => {
     isPreviewingTheme: false,
     randomThemeIndex: 0,
     previewState: null as PreviewState,
+    previewFrame: undefined as number | undefined,
     themesList: [] as string[],
     ignoreConfigEvent: false,
     backgroundRevision: 0,
     disposed: false,
   };
-  const preview = debounce(250, () => {
-    if (value.previewState) {
-      value.isPreviewingTheme = true;
-      void apply(value.previewState.theme, value.previewState.colors, true);
-    }
-  });
   onCleanup(() => {
     value.disposed = true;
-    preview.cancel();
+    if (value.previewFrame !== undefined) {
+      cancelAnimationFrame(value.previewFrame);
+    }
   });
-  return Object.assign(value, { preview });
+  return value;
 });
 const state = appObject(themeState);
 export const getRandomTheme = (): ThemeIdentifier | null => state.randomTheme;
@@ -124,7 +120,14 @@ export function preview(
   customColorsOverride?: CustomThemeColors,
 ): void {
   state.previewState = { theme: themeIdentifier, colors: customColorsOverride };
-  themeState().preview();
+  const current = themeState();
+  if (current.previewFrame !== undefined) return;
+  current.previewFrame = requestAnimationFrame(() => {
+    current.previewFrame = undefined;
+    if (current.disposed || !current.previewState) return;
+    current.isPreviewingTheme = true;
+    void apply(current.previewState.theme, current.previewState.colors, true);
+  });
 }
 
 async function set(
@@ -144,6 +147,10 @@ async function set(
 
 export async function clearPreview(applyTheme = true): Promise<void> {
   state.previewState = null;
+  if (state.previewFrame !== undefined) {
+    cancelAnimationFrame(state.previewFrame);
+    state.previewFrame = undefined;
+  }
 
   if (state.isPreviewingTheme) {
     state.isPreviewingTheme = false;

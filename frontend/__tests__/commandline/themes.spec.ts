@@ -70,6 +70,29 @@ describe("theme picker selection", () => {
     vi.restoreAllMocks();
   });
 
+  it("previews only the latest hover on the next frame", async () => {
+    ThemeController.preview("serika");
+    ThemeController.preview("aether");
+    expect(getTheme().name).toBe("matrix");
+
+    await vi.advanceTimersByTimeAsync(17);
+    expect(getTheme().name).toBe("aether");
+    expect(getMutableConfig().theme).toBe("aether");
+    expect(ThemeController.getRandomTheme()).toBe("matrix");
+  });
+
+  it("cancels a pending preview when leaving or selecting", async () => {
+    ThemeController.preview("serika");
+    await ThemeController.clearPreview();
+    await vi.advanceTimersByTimeAsync(17);
+    expect(getTheme().name).toBe("matrix");
+
+    ThemeController.preview("serika");
+    setConfig("theme", "aether");
+    await vi.advanceTimersByTimeAsync(17);
+    expect(getTheme().name).toBe("aether");
+  });
+
   it("keeps the random theme when opening the picker", async () => {
     expect(getTheme().name).toBe("matrix");
 
