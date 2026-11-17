@@ -66,8 +66,8 @@ export function isToday(timestamp: number, hourOffset = 0): boolean {
 export function getStartOfWeekTimestamp(timestamp: number): number {
   const date = new Date(getStartOfDayTimestamp(timestamp));
 
-  const monday = date.getDate() - (date.getDay() || 7) + 1;
-  date.setDate(monday);
+  const monday = date.getUTCDate() - (date.getUTCDay() || 7) + 1;
+  date.setUTCDate(monday);
 
   return getStartOfDayTimestamp(date.getTime());
 }

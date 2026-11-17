@@ -5,6 +5,21 @@ describe("date-and-time", () => {
   afterAll(() => {
     vi.useRealTimers();
   });
+  it.each(["America/Los_Angeles", "Asia/Kolkata", "UTC"])(
+    "starts leaderboard weeks on Monday UTC in %s",
+    (timezone) => {
+      vi.stubEnv("TZ", timezone);
+      try {
+        for (const input of ["2024-03-11T00:00:00Z", "2024-03-17T23:59:59Z"]) {
+          expect(DateAndTime.getStartOfWeekTimestamp(Date.parse(input))).toBe(
+            Date.parse("2024-03-11T00:00:00Z"),
+          );
+        }
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    },
+  );
   it("getCurrentDayTimestamp", () => {
     vi.useFakeTimers();
     vi.setSystemTime(1652743381);
