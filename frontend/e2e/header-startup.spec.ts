@@ -3,13 +3,23 @@ import { toCrossJSONAsync } from "seroval";
 import { rpcPath } from "../start-e2e/rpc-fixtures";
 import { expect, test } from "./fixtures";
 
-test.use({ config: { theme: "rust" }, reducedMotion: "reduce" });
+test.use({ config: { theme: "rust" } });
 
 test("paints the saved theme label before application modules load", async ({
   page,
 }, info) => {
-  await page.route("**/*.js", async (route) => await route.abort());
   await page.goto("/");
+  await expect(page.locator('[data-ui-element="themeIndicator"]')).toHaveText(
+    "rust",
+  );
+  await expect
+    .poll(
+      async () =>
+        await page.evaluate(() => localStorage.getItem("themeColors")),
+    )
+    .not.toBeNull();
+  await page.route("**/*.js", async (route) => await route.abort());
+  await page.reload();
   const label = page.locator('[data-ui-element="startupThemeIndicator"]');
   await expect(label).toBeVisible();
   expect(
