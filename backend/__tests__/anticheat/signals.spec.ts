@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it, vi } from "vite-plus/test";
 import { completedEvent } from "../__testData__/completed-event";
 import {
   generatedTimings,
@@ -10,6 +10,8 @@ import {
   type TimingReview,
 } from "../../src/anticheat/signals";
 import { serverAudit } from "@caret/typing-engine/audit.server";
+import * as Audit from "@caret/typing-engine/audit.server";
+import { EngineFailure } from "@caret/typing-engine/failure";
 
 const probit = (p: number): number => serverAudit().probit([p])[0] as number;
 
@@ -120,5 +122,67 @@ describe("timing review signals", () => {
     expect(features?.gaps.cv).toBeGreaterThan(0.1);
     expect(features?.lag0Sigmas).not.toBeNull();
     expect(JSON.stringify(features).length).toBeLessThan(600);
+  });
+});
+
+describe("advisory timing engine recovery", () => {
+  it.each([false, true])(
+    "retries a trap once; persistent: %s",
+    (persistent) => {
+      const timings = humanTimings(400, 1);
+      const audit = Audit.serverAudit();
+      const expected = review(timings);
+      const trapped = (): never => {
+        throw new EngineFailure({
+          code: "internal",
+          message: "trap",
+          recovery: [],
+        });
+      };
+      const check = vi.fn(audit.review).mockImplementationOnce(trapped);
+      if (persistent) check.mockImplementationOnce(trapped);
+      const getter = vi
+        .spyOn(Audit, "serverAudit")
+        .mockReturnValue({ ...audit, review: check });
+      const reset = vi.spyOn(Audit, "resetServerAudit");
+      const log = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+      try {
+        expect(review(timings)).toEqual(persistent ? undefined : expected);
+        expect(check).toHaveBeenCalledTimes(2);
+        expect(reset).toHaveBeenCalledTimes(persistent ? 2 : 1);
+        expect(log).toHaveBeenCalledTimes(persistent ? 2 : 1);
+        expect(review(timings)).toEqual(expected);
+      } finally {
+        getter.mockRestore();
+        reset.mockRestore();
+        log.mockRestore();
+      }
+    },
+  );
+  it("does not hide invalid input or programming errors", () => {
+    const timings = humanTimings(400, 1);
+    const audit = Audit.serverAudit();
+    for (const error of [
+      new Error("bug"),
+      new EngineFailure({
+        code: "invalidInput",
+        message: "invalid",
+        recovery: [],
+      }),
+    ]) {
+      const getter = vi.spyOn(Audit, "serverAudit").mockReturnValue({
+        ...audit,
+        review: () => {
+          throw error;
+        },
+      });
+      try {
+        expect(() => review(timings)).toThrow(error);
+      } finally {
+        getter.mockRestore();
+      }
+    }
   });
 });
