@@ -3,7 +3,7 @@ export function AccountPlaceholder() {
   return (
     <span
       role="status"
-      aria-label="Loading account"
+      aria-label="Loading account navigation"
       data-ui-element="accountPlaceholder"
       class="flex h-9 items-center gap-2 px-3"
     >
