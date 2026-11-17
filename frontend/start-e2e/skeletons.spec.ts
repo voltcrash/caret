@@ -64,7 +64,9 @@ for (const target of pages) {
   }) => {
     if (target.signedIn) await signIn(context);
     const chunk = await holdChunk(page, target.chunk);
-    const loading = page.getByRole("status", { name: target.status });
+    const loading = page
+      .getByRole("main")
+      .getByRole("status", { name: target.status, exact: true });
     try {
       await page.goto(target.url);
       await expect.poll(chunk.blocked).toBe(true);
