@@ -99,7 +99,7 @@ export function secondsToString(
   showSeconds = true,
   showDays = false,
 ): string {
-  sec = Math.abs(sec);
+  sec = roundTo2(Math.abs(sec));
   let days = 0;
   let hours;
   if (showDays) {

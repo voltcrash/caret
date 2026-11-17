@@ -237,6 +237,14 @@ describe("date-and-time", () => {
   });
 
   describe("secondsToString", () => {
+    it.each([
+      [59.999, "01:00"],
+      [3599.999, "01:00:00"],
+      [-59.999, "01:00"],
+    ])("carries rounded seconds for %s", (seconds, expected) => {
+      expect(DateAndTime.secondsToString(seconds)).toBe(expected);
+    });
+
     it("formats clock-style durations", () => {
       expect(DateAndTime.secondsToString(5)).toBe("5");
       expect(DateAndTime.secondsToString(65)).toBe("01:05");
