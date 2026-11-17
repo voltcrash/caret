@@ -78,11 +78,8 @@ export async function getSubgroup(): Promise<CommandsSubgroup> {
   }
 
   if (commandlineState.usingSingleList) {
-    if (current.singleSubgroup === null) {
-      current.singleSubgroup = await CommandlineLists.getSingleSubgroup();
-    } else {
-      return current.singleSubgroup;
-    }
+    current.singleSubgroup ??= await CommandlineLists.getSingleSubgroup();
+    return current.singleSubgroup;
   }
 
   return CommandlineLists.getTopOfStack();
