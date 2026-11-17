@@ -253,6 +253,15 @@ describe("date-and-time", () => {
       expect(DateAndTime.secondsToString(-30)).toBe("30");
     });
 
+    it("keeps whole days when seconds are hidden", () => {
+      expect(
+        DateAndTime.secondsToString(86400, false, false, "text", false, true),
+      ).toBe("1 day");
+      expect(
+        DateAndTime.secondsToString(172830, false, false, "text", false, true),
+      ).toBe("2 days");
+    });
+
     it("formats text durations", () => {
       expect(DateAndTime.secondsToString(61, false, false, "text")).toBe(
         "1 minute 1 second",

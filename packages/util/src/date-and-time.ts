@@ -180,7 +180,13 @@ export function secondsToString(
       }
     }
   }
-  if (hours === 0 && minutes === 0 && !showSeconds && delimiter === "text") {
+  if (
+    days === 0 &&
+    hours === 0 &&
+    minutes === 0 &&
+    !showSeconds &&
+    delimiter === "text"
+  ) {
     ret = "less than 1 minute";
   }
   return ret.trim();
