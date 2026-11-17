@@ -98,3 +98,17 @@ describe("fitLine", () => {
     ).toBeNull();
   });
 });
+
+describe("findLineByLeastSquares", () => {
+  it("omits the history trend without two results", () => {
+    expect(Numbers.findLineByLeastSquares([])).toBeNull();
+    expect(Numbers.findLineByLeastSquares([60])).toBeNull();
+  });
+
+  it("fits a history trend with at least two results", () => {
+    expect(Numbers.findLineByLeastSquares([60, 70, 80])).toEqual([
+      [1, 60],
+      [3, 80],
+    ]);
+  });
+});
