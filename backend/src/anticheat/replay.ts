@@ -34,5 +34,24 @@ export function timingFingerprint(
   ) {
     return undefined;
   }
-  return objectHash([gaps, keyDuration.map(Math.round)]);
+  const exact = objectHash([gaps, keyDuration.map(Math.round)]);
+  // Keep the legacy hash so retained pre-upgrade recordings still match.
+  // A second, more conservative signature prevents edits to holds (including
+  // missing-release placeholders) from disguising a long varied gap sequence.
+  // Both signatures occupy one history slot, preserving the retention window.
+  return gaps.length >= 100 && new Set(gaps).size >= 10
+    ? `${exact}:${objectHash(gaps)}`
+    : exact;
+}
+
+/** Match both current fingerprints and legacy, exact-timeline history. */
+export function matchesTimingFingerprint(
+  fingerprint: string,
+  history: string[],
+): boolean {
+  const [exact, gaps] = fingerprint.split(":");
+  return history.some((stored) => {
+    const [storedExact, storedGaps] = stored.split(":");
+    return exact === storedExact || (gaps !== undefined && gaps === storedGaps);
+  });
 }

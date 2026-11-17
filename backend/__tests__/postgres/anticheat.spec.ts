@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vite-plus/test";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 import type { CompletedEvent } from "@caret/schemas/results";
@@ -17,6 +17,8 @@ import {
   humanTimings,
   type KeyTimings,
 } from "../__testData__/key-timings";
+import * as Audit from "@caret/typing-engine/audit.server";
+import { EngineFailure } from "@caret/typing-engine/failure";
 import { consistency } from "../../src/anticheat/result";
 
 describe("production anticheat with PostgreSQL", () => {
@@ -293,6 +295,36 @@ describe("production anticheat with PostgreSQL", () => {
       expect((await Users.getUser(user.uid, "test")).banned).not.toBe(true),
     );
   });
+  it.each([
+    { mode: "words", mode2: "100" },
+    { mode: "quote", mode2: "1" },
+    { mode: "zen", mode2: "zen" },
+    {
+      mode: "custom",
+      mode2: "custom",
+      customText: {
+        mode: "random",
+        textLen: 100,
+        pipeDelimiter: false,
+        limit: { mode: "word", value: 100 },
+      },
+    },
+  ] satisfies Partial<CompletedEvent>[])(
+    "checks fixed bots in $mode while preserving IME input",
+    async (mode) => {
+      const user = await account();
+      const result = { ...fixedResult(), ...mode };
+      expect((await submit(user, result)).status).toBe(465);
+      await assertNoProgress(user.uid);
+      const response = await submit(user, {
+        ...result,
+        keySpacing: [],
+        keyDuration: [],
+        keyConsistency: 0,
+      });
+      expect(response.status, await response.clone().text()).toBe(200);
+    },
+  );
   it("applies the bot gate only above the configured speed", async () => {
     const user = await account();
     await withRuntime(
@@ -523,6 +555,108 @@ describe("production anticheat with PostgreSQL", () => {
       expect(profile.completedTests).toBe(2);
       expect(profile.lastTimingHashes).toHaveLength(2);
     });
+  });
+  it("rejects changed holds and leaves accepted history and progression unchanged", async () => {
+    const user = await account();
+    const timings = humanTimings(600, 6, 45);
+    expect((await submit(user, timedResult(timings))).status).toBe(200);
+    await ageResults(user.uid);
+    const before = await withRuntime(
+      test.env,
+      async () => await Users.getUser(user.uid, "test"),
+    );
+    const edited = timedResult({
+      ...timings,
+      keyDuration: timings.keyDuration.map((value) => value + 10),
+    });
+    expect((await submit(user, { ...edited, timestamp: 2 })).status).toBe(466);
+    const after = await withRuntime(
+      test.env,
+      async () => await Users.getUser(user.uid, "test"),
+    );
+    expect(after.lastTimingHashes).toEqual(before.lastTimingHashes);
+    expect(after.completedTests).toBe(before.completedTests);
+    expect(after.xp).toBe(before.xp);
+    expect(after.timeTyping).toBe(before.timeTyping);
+    expect(after.autoBanTimestamps).toBeUndefined();
+  });
+  it("honors exact hashes retained before the replay upgrade", async () => {
+    const user = await account();
+    const result = timedResult(humanTimings(600, 7, 45));
+    if (
+      !Array.isArray(result.keySpacing) ||
+      !Array.isArray(result.keyDuration)
+    ) {
+      throw new Error("Missing timings");
+    }
+    const legacy = objectHash([
+      result.keySpacing.map(Math.round),
+      result.keyDuration.map(Math.round),
+    ]);
+    await withRuntime(
+      test.env,
+      async () =>
+        await mutateUser(user.uid, (profile) => {
+          profile.lastTimingHashes = [legacy];
+        }),
+    );
+    expect((await submit(user, result)).status).toBe(466);
+    await assertNoProgress(user.uid);
+  });
+  it("serializes concurrent offline replays with edited holds", async () => {
+    const user = await account();
+    const timings = humanTimings(600, 8, 45);
+    const timestamp = Date.now() - 60_000;
+    const responses = await Promise.all([
+      submit(user, { ...timedResult(timings), offline: true, timestamp }),
+      submit(user, {
+        ...timedResult({
+          ...timings,
+          keyDuration: timings.keyDuration.map((v) => v + 10),
+        }),
+        offline: true,
+        timestamp: timestamp + 1,
+      }),
+    ]);
+    expect(responses.map((r) => r.status).sort()).toEqual([200, 466]);
+    const profile = await withRuntime(
+      test.env,
+      async () => await Users.getUser(user.uid, "test"),
+    );
+    expect(profile.completedTests).toBe(1);
+    expect(profile.lastTimingHashes).toHaveLength(1);
+  });
+  it("saves once without advisory flags when timing review repeatedly traps", async () => {
+    const user = await account();
+    const result = uniformBot();
+    const audit = Audit.serverAudit();
+    const getter = vi.spyOn(Audit, "serverAudit").mockReturnValue({
+      ...audit,
+      review: () => {
+        throw new EngineFailure({
+          code: "internal",
+          message: "trap",
+          recovery: [],
+        });
+      },
+    });
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    try {
+      const response = await submit(user, result);
+      expect(response.status, await response.clone().text()).toBe(200);
+      expect(log).toHaveBeenCalledTimes(2);
+      expect(await auditLogs(user.uid, "anticheat_flagged")).toHaveLength(0);
+      const profile = await withRuntime(
+        test.env,
+        async () => await Users.getUser(user.uid, "test"),
+      );
+      expect(profile.completedTests).toBe(1);
+      expect(profile.lastTimingHashes).toHaveLength(1);
+      expect(profile.autoBanTimestamps).toBeUndefined();
+    } finally {
+      getter.mockRestore();
+      log.mockRestore();
+    }
   });
   it("saves replayed timelines when the replay check is disabled", async () => {
     await withAnticheat(

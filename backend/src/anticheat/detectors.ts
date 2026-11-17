@@ -1,6 +1,6 @@
 import { hasFixedTimingSignature, MIN_BOT_TIMING_SAMPLES } from "./bot";
 import type { TimingSample } from "./calibration";
-import { timingFingerprint } from "./replay";
+import { timingFingerprint, matchesTimingFingerprint } from "./replay";
 import { type ReviewSignal, reviewKeyTimings } from "./signals";
 
 /** Every timing detector: the rejecting checks and the log-only signals. */
@@ -64,7 +64,7 @@ export function detect(
     const fingerprint = timingFingerprint(keySpacing, keyDuration, client);
     if (fingerprint !== undefined) {
       applicable.push("replayed-timing");
-      if (seen.includes(fingerprint)) {
+      if (matchesTimingFingerprint(fingerprint, seen)) {
         flagged.push("replayed-timing");
       } else if (maxFingerprints > 0) {
         seen.unshift(fingerprint);

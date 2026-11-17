@@ -11,6 +11,7 @@ import {
   getKeyDataFailure,
   getBotFailure,
   getTimingFingerprint,
+  matchesTimingFingerprint,
   verifyEventLog,
 } from "../../../anticheat/index";
 import MonkeyStatusCodes from "../../../constants/monkey-status-codes";
@@ -312,15 +313,19 @@ export async function validateSubmission(
     return new MonkeyError(status.code, "Invalid result spacing");
   }
 
-  //check keyspacing and duration here for bots
+  // The fixed-timing signature is independent of the selected test mode.
   if (
-    completedEvent.mode === "time" &&
     completedEvent.wpm > context.configuration.anticheat.botCheckMinWpm &&
     completedEvent.testDuration < 122 &&
     (user.verified === false || user.verified === undefined) &&
     user.lbOptOut !== true
   ) {
-    if (!keySpacingStats || !keyDurationStats) {
+    // Preserve the legacy time-mode telemetry requirement. Other modes can
+    // legitimately complete through IME input with no physical key samples.
+    if (
+      completedEvent.mode === "time" &&
+      (!keySpacingStats || !keyDurationStats)
+    ) {
       await addImportantLog(
         "anticheat_rejected",
         {
@@ -378,7 +383,7 @@ export async function validateSubmission(
     : undefined;
   if (timingHash !== undefined) {
     const lastTimingHashes = user.lastTimingHashes ?? [];
-    if (lastTimingHashes.includes(timingHash)) {
+    if (matchesTimingFingerprint(timingHash, lastTimingHashes)) {
       await addImportantLog(
         "anticheat_rejected",
         {
