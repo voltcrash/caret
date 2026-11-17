@@ -111,6 +111,10 @@ export function secondsToString(
   const minutes = Math.floor((sec % 3600) / 60);
   const seconds = roundTo2((sec % 3600) % 60);
 
+  const includeHours =
+    hours > 0 || alwaysShowHours || (days > 0 && delimiter === ":");
+  const includeMinutes = minutes > 0 || includeHours || alwaysShowMinutes;
+
   let daysString;
   let hoursString;
   let minutesString;
@@ -127,9 +131,7 @@ export function secondsToString(
   minutes < 10 && delimiter !== "text"
     ? (minutesString = `0${minutes}`)
     : (minutesString = minutes);
-  seconds < 10 &&
-  (minutes > 0 || hours > 0 || alwaysShowMinutes) &&
-  delimiter !== "text"
+  seconds < 10 && includeMinutes && delimiter !== "text"
     ? (secondsString = `0${seconds}`)
     : (secondsString = seconds);
 
@@ -146,7 +148,7 @@ export function secondsToString(
       ret += delimiter;
     }
   }
-  if (hours > 0 || alwaysShowHours) {
+  if (includeHours) {
     ret += hoursString;
     if (delimiter === "text") {
       if (hours === 1) {
@@ -158,7 +160,7 @@ export function secondsToString(
       ret += delimiter;
     }
   }
-  if (minutes > 0 || hours > 0 || alwaysShowMinutes) {
+  if (includeMinutes) {
     ret += minutesString;
     if (delimiter === "text") {
       if (minutes === 1) {

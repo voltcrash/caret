@@ -262,6 +262,16 @@ describe("date-and-time", () => {
       ).toBe("2 days");
     });
 
+    it("includes intervening clock units when hours or days are shown", () => {
+      expect(DateAndTime.secondsToString(5, false, true)).toBe("00:00:05");
+      expect(
+        DateAndTime.secondsToString(86405, false, false, ":", true, true),
+      ).toBe("01:00:00:05");
+      expect(
+        DateAndTime.secondsToString(86400, false, false, ":", false, true),
+      ).toBe("01:00:00");
+    });
+
     it("formats text durations", () => {
       expect(DateAndTime.secondsToString(61, false, false, "text")).toBe(
         "1 minute 1 second",
