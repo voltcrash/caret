@@ -91,6 +91,18 @@ describe("detector histories", () => {
     expect(report.falsePositiveRate["replayed-timing"]).toBe(0);
   });
 
+  it("uses the production replay matcher for altered holds", () => {
+    const original = humanTimings(200, 1);
+    const edited = {
+      ...original,
+      keyDuration: original.keyDuration.map((v) => v + 10),
+    };
+    expect(detect([original, edited])[1]?.flagged).toContain("replayed-timing");
+    expect(detect([original, edited], 0)[1]?.flagged).not.toContain(
+      "replayed-timing",
+    );
+  });
+
   it("requires hold telemetry for fixed timing", () => {
     const keySpacing = Array<number>(150).fill(80);
     const result = detect([{ keySpacing, keyDuration: [], client: "web" }])[0];
