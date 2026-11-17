@@ -46,3 +46,25 @@ it("drops private palette lists and ignores suggestions finishing after an actor
   app.dispose();
   release();
 });
+
+it("uses the flattened list on the first single-list search", async () => {
+  const lists = await import("../../src/ts/commandline/lists");
+  const { commandlineState } = await import("../../src/ts/states/commandline");
+  const { getSubgroup } = await import("../../src/ts/commandline/suggestions");
+  const app = createTestApplication();
+  const release = mountApplication(app.application);
+  try {
+    lists.setStackToDefault();
+    commandlineState.usingSingleList = true;
+    const first = await getSubgroup();
+    expect(first).not.toBe(lists.getTopOfStack());
+    expect(first.list.length).toBeGreaterThan(0);
+    expect(first.list.every((command) => command.subgroup === undefined)).toBe(
+      true,
+    );
+    expect(await getSubgroup()).toBe(first);
+  } finally {
+    app.dispose();
+    release();
+  }
+});

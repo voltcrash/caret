@@ -22,6 +22,18 @@ describe("router search codec", () => {
     });
   });
 
+  it("preserves prototype-named query keys without changing the result prototype", () => {
+    const parsed = parseSearch(
+      "?__proto__=first&__proto__=last&constructor=ctor&toString=text",
+    );
+    expect(Object.entries(parsed)).toEqual([
+      ["__proto__", "first"],
+      ["constructor", "ctor"],
+      ["toString", "text"],
+    ]);
+    expect(Object.getPrototypeOf(parsed)).toBe(Object.prototype);
+  });
+
   it("writes the same URL the old page classes produced", () => {
     const data = { type: "daily", mode2: "60", page: 2, yesterday: true };
     expect(stringifySearch(data)).toBe(

@@ -5,6 +5,21 @@ describe("date-and-time", () => {
   afterAll(() => {
     vi.useRealTimers();
   });
+  it.each(["America/Los_Angeles", "Asia/Kolkata", "UTC"])(
+    "starts leaderboard weeks on Monday UTC in %s",
+    (timezone) => {
+      vi.stubEnv("TZ", timezone);
+      try {
+        for (const input of ["2024-03-11T00:00:00Z", "2024-03-17T23:59:59Z"]) {
+          expect(DateAndTime.getStartOfWeekTimestamp(Date.parse(input))).toBe(
+            Date.parse("2024-03-11T00:00:00Z"),
+          );
+        }
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    },
+  );
   it("getCurrentDayTimestamp", () => {
     vi.useFakeTimers();
     vi.setSystemTime(1652743381);
@@ -222,12 +237,39 @@ describe("date-and-time", () => {
   });
 
   describe("secondsToString", () => {
+    it.each([
+      [59.999, "01:00"],
+      [3599.999, "01:00:00"],
+      [-59.999, "01:00"],
+    ])("carries rounded seconds for %s", (seconds, expected) => {
+      expect(DateAndTime.secondsToString(seconds)).toBe(expected);
+    });
+
     it("formats clock-style durations", () => {
       expect(DateAndTime.secondsToString(5)).toBe("5");
       expect(DateAndTime.secondsToString(65)).toBe("01:05");
       expect(DateAndTime.secondsToString(3725)).toBe("01:02:05");
       expect(DateAndTime.secondsToString(5, true)).toBe("00:05");
       expect(DateAndTime.secondsToString(-30)).toBe("30");
+    });
+
+    it("keeps whole days when seconds are hidden", () => {
+      expect(
+        DateAndTime.secondsToString(86400, false, false, "text", false, true),
+      ).toBe("1 day");
+      expect(
+        DateAndTime.secondsToString(172830, false, false, "text", false, true),
+      ).toBe("2 days");
+    });
+
+    it("includes intervening clock units when hours or days are shown", () => {
+      expect(DateAndTime.secondsToString(5, false, true)).toBe("00:00:05");
+      expect(
+        DateAndTime.secondsToString(86405, false, false, ":", true, true),
+      ).toBe("01:00:00:05");
+      expect(
+        DateAndTime.secondsToString(86400, false, false, ":", false, true),
+      ).toBe("01:00:00");
     });
 
     it("formats text durations", () => {

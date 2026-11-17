@@ -13,6 +13,15 @@ const commands: Command[] = [
 ];
 
 describe("commandline matching", () => {
+  it.each(["change\ttheme", "change\ntheme", "change\u00a0theme"])(
+    "treats pasted whitespace as word separators in %j",
+    (query) => {
+      expect(matchCommands(commands, [true, true, true], query, false)).toEqual(
+        [true, false, false],
+      );
+    },
+  );
+
   it("matches display words and aliases case insensitively", () => {
     expect(matchCommands(commands, [true, true, true], "THE", false)).toEqual([
       true,

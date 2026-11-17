@@ -10,11 +10,11 @@ type SearchRecord = Record<string, unknown>;
  * like `URLSearchParams.get`.
  */
 export function parseSearch(search: string): Record<string, string> {
-  const result: Record<string, string> = {};
+  const result = new Map<string, string>();
   for (const [key, value] of new URLSearchParams(search)) {
-    result[key] ??= value;
+    if (!result.has(key)) result.set(key, value);
   }
-  return result;
+  return Object.fromEntries(result);
 }
 
 function encode(value: unknown): string | undefined {

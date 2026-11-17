@@ -53,7 +53,7 @@ export function fitLine(
  * Finds the line of best fit (least squares regression line) for a set of y-values.
  * @param values_y An array of y-values.
  * @returns An array of two points representing the line (start and end points),
- * or null if the array is empty.
+ * or null if fewer than two values are provided.
  */
 export function findLineByLeastSquares(
   values_y: number[],
@@ -74,7 +74,7 @@ export function findLineByLeastSquares(
   /*
    * Nothing to do.
    */
-  if (values_length === 0) {
+  if (values_length < 2) {
     return null;
   }
 

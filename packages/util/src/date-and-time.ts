@@ -66,8 +66,8 @@ export function isToday(timestamp: number, hourOffset = 0): boolean {
 export function getStartOfWeekTimestamp(timestamp: number): number {
   const date = new Date(getStartOfDayTimestamp(timestamp));
 
-  const monday = date.getDate() - (date.getDay() || 7) + 1;
-  date.setDate(monday);
+  const monday = date.getUTCDate() - (date.getUTCDay() || 7) + 1;
+  date.setUTCDate(monday);
 
   return getStartOfDayTimestamp(date.getTime());
 }
@@ -99,7 +99,7 @@ export function secondsToString(
   showSeconds = true,
   showDays = false,
 ): string {
-  sec = Math.abs(sec);
+  sec = roundTo2(Math.abs(sec));
   let days = 0;
   let hours;
   if (showDays) {
@@ -110,6 +110,10 @@ export function secondsToString(
   }
   const minutes = Math.floor((sec % 3600) / 60);
   const seconds = roundTo2((sec % 3600) % 60);
+
+  const includeHours =
+    hours > 0 || alwaysShowHours || (days > 0 && delimiter === ":");
+  const includeMinutes = minutes > 0 || includeHours || alwaysShowMinutes;
 
   let daysString;
   let hoursString;
@@ -127,9 +131,7 @@ export function secondsToString(
   minutes < 10 && delimiter !== "text"
     ? (minutesString = `0${minutes}`)
     : (minutesString = minutes);
-  seconds < 10 &&
-  (minutes > 0 || hours > 0 || alwaysShowMinutes) &&
-  delimiter !== "text"
+  seconds < 10 && includeMinutes && delimiter !== "text"
     ? (secondsString = `0${seconds}`)
     : (secondsString = seconds);
 
@@ -146,7 +148,7 @@ export function secondsToString(
       ret += delimiter;
     }
   }
-  if (hours > 0 || alwaysShowHours) {
+  if (includeHours) {
     ret += hoursString;
     if (delimiter === "text") {
       if (hours === 1) {
@@ -158,7 +160,7 @@ export function secondsToString(
       ret += delimiter;
     }
   }
-  if (minutes > 0 || hours > 0 || alwaysShowMinutes) {
+  if (includeMinutes) {
     ret += minutesString;
     if (delimiter === "text") {
       if (minutes === 1) {
@@ -180,7 +182,13 @@ export function secondsToString(
       }
     }
   }
-  if (hours === 0 && minutes === 0 && !showSeconds && delimiter === "text") {
+  if (
+    days === 0 &&
+    hours === 0 &&
+    minutes === 0 &&
+    !showSeconds &&
+    delimiter === "text"
+  ) {
     ret = "less than 1 minute";
   }
   return ret.trim();
