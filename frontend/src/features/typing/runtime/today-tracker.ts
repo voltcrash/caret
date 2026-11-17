@@ -2,7 +2,7 @@ import {
   getLocalMidnight,
   TypingTimeTracker,
 } from "@caret/web-shared/typing-time";
-import { createAccountOwned } from "../../../app/account-scope";
+import { captureAccount, createAccountOwned } from "../../../app/account-scope";
 import * as DateTime from "../../../ts/utils/date-and-time";
 
 const getTracker = createAccountOwned(() => new TypingTimeTracker());
@@ -22,10 +22,13 @@ export function getString(): string {
 }
 
 export async function addAllFromToday(): Promise<void> {
+  const lease = captureAccount();
   const { getResultsSinceDayOnce } =
     await import("../../../ts/collections/results");
+  if (!lease.isCurrent()) return;
   const results = await getResultsSinceDayOnce(
     getLocalMidnight(new Date()).getTime(),
   );
+  if (!lease.isCurrent()) return;
   getTracker().loadToday(results);
 }
