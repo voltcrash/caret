@@ -242,6 +242,28 @@ describe("theme picker lifecycle", () => {
     },
   );
 
+  it("resumes pointer preview after keyboard navigation without leaving the row", async () => {
+    const view = render(() => <Commandline />);
+    show({ subgroupOverride: { title: "Theme...", list: [command] } });
+    await waitFor(() =>
+      expect(view.container.querySelector("dialog")?.open).toBe(true),
+    );
+    const row = view.getByText("aether").closest(".command") as HTMLElement;
+    fireEvent.mouseMove(row);
+    command.hover.mockClear();
+    fireEvent.mouseMove(row);
+    expect(command.hover).not.toHaveBeenCalled();
+
+    // Keyboard navigation takes control while the pointer remains on this row.
+    commandlineState.mouseMode = false;
+    commandlineState.activeIndex = -1;
+    fireEvent.mouseMove(row);
+    expect(commandlineState.activeIndex).toBe(0);
+    expect(command.hover).toHaveBeenCalledOnce();
+    fireEvent.mouseMove(row);
+    expect(command.hover).toHaveBeenCalledOnce();
+  });
+
   it("keeps normal command pickers usable after font preview and selection", async () => {
     command.id = "setFontFamilyRobotoMono";
     command.display = "Roboto Mono";
