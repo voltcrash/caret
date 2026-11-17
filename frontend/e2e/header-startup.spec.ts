@@ -1,3 +1,5 @@
+import { toCrossJSONAsync } from "seroval";
+
 import { rpcPath } from "../start-e2e/rpc-fixtures";
 import { expect, test } from "./fixtures";
 
@@ -37,6 +39,20 @@ for (const authenticated of [false, true]) {
           requested = true;
           await ready;
           await route.fallback();
+        });
+      }
+      if (!authenticated) {
+        await page.route(`**${rpcPath("getSessionState")}*`, async (route) => {
+          await route.fulfill({
+            contentType: "application/json",
+            headers: { "x-tss-serialized": "true" },
+            body: JSON.stringify(
+              await toCrossJSONAsync({
+                result: { user: null, signUpEnabled: true },
+                context: {},
+              }),
+            ),
+          });
         });
       }
       try {
@@ -79,3 +95,23 @@ for (const authenticated of [false, true]) {
     });
   });
 }
+
+test("keeps account navigation available if session lookup fails", async ({
+  page,
+}) => {
+  await page.route(
+    `**${rpcPath("getSessionState")}*`,
+    async (route) => await route.abort(),
+  );
+  await page.goto("/");
+  await expect(page.locator("#words .word").first()).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Account", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator('[data-ui-element="accountPlaceholder"]'),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "Sign in", exact: true }),
+  ).toHaveCount(0);
+});
