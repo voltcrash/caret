@@ -70,7 +70,7 @@ async function apply(
       )
     : themes[themeName];
 
-  setTheme({ ...themeColors, name: themeName });
+  setTheme({ ...themeColors, name: themeName, preview: isPreview });
 
   updateThemeIndicator(isPreview ? themeName : undefined);
 }
@@ -137,7 +137,8 @@ async function set(
   console.debug("Theme controller setting theme", themeIdentifier, {
     isAutoSwitch,
   });
-  await apply(themeIdentifier, undefined, isAutoSwitch);
+  await apply(themeIdentifier);
+  if (isAutoSwitch) updateThemeIndicator(themeIdentifier);
 
   if (!isAutoSwitch && getMutableConfig().autoSwitchTheme) {
     setConfig("autoSwitchTheme", false);

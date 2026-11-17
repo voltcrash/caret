@@ -4,7 +4,7 @@ import { ColorName, Theme } from "../constants/themes";
 import { ThemeName } from "@caret/schemas/configs";
 
 export type ThemeIdentifier = ThemeName | "custom";
-const defaultTheme: Theme & { name: ThemeIdentifier } = {
+const defaultTheme: Theme & { name: ThemeIdentifier; preview?: boolean } = {
   name: "azure",
   bg: "#0b0d1c",
   main: "#4ea8ff",

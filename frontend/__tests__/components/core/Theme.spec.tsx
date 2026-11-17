@@ -128,6 +128,28 @@ describe("Theme component", () => {
     );
   });
 
+  it("keeps preview colors out of storage and browser chrome", () => {
+    const { style, favIcon, metaThemeColor } = renderComponent();
+    setThemeSignal({ ...themeSignal(), name: "serika", bg: "#123" });
+    const saved = localStorage.getItem("themeColors");
+    const icon = favIcon.getAttribute("href");
+    setThemeSignal({
+      ...themeSignal(),
+      name: "phantom",
+      bg: "#456",
+      preview: true,
+    });
+
+    expect(style.textContent).toContain("--bg-color: #456;");
+    expect(localStorage.getItem("themeColors")).toBe(saved);
+    expect(favIcon.getAttribute("href")).toBe(icon);
+    expect(metaThemeColor.content).toBe("#123");
+
+    setThemeSignal({ ...themeSignal(), preview: false });
+    expect(metaThemeColor.content).toBe("#456");
+    expect(localStorage.getItem("themeColors")).not.toBe(saved);
+  });
+
   it("renders favicon", () => {
     const { favIcon } = renderComponent();
 

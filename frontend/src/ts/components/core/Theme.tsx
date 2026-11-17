@@ -1,5 +1,5 @@
 import { Meta, MetaProvider, Style } from "@solidjs/meta";
-import { createMemo, JSXElement } from "solid-js";
+import { createMemo, JSXElement, untrack } from "solid-js";
 
 import { toThemeVars } from "../../../app/theme-vars";
 import { Theme as ThemeColors, themes } from "../../constants/themes";
@@ -33,12 +33,21 @@ function toCss(colors: ThemeColors): string {
 export function Theme(): JSXElement {
   // Refs are assigned by SolidJS via the ref attribute
   const [styleRef, styleEl] = useRef<HTMLStyleElement>();
-  const applyColors = (colors: ThemeColors, persist: boolean) => {
+  // Browser chrome and the reload palette follow selection, not hover.
+  const committedTheme = createMemo<ReturnType<typeof getTheme>>(
+    (previous) => (getTheme().preview ? previous : getTheme()),
+    untrack(getTheme),
+  );
+  const applyColors = (
+    colors: ReturnType<typeof getTheme>,
+    applied: boolean,
+  ) => {
     const style = styleEl();
     if (style) style.textContent = toCss(colors);
-    if (!persist) return;
+    if (!applied) return;
     // The startup palette loses to the real theme once config has applied it.
     document.getElementById(BOOTSTRAP_STYLE_ID)?.remove();
+    if (colors.preview) return;
     try {
       localStorage.setItem(
         THEME_COLORS_KEY,
@@ -63,8 +72,12 @@ export function Theme(): JSXElement {
     <MetaProvider>
       <Style id="theme" ref={styleRef} />
       <Style id="currentTheme">{decoration()}</Style>
-      <Meta id="metaThemeColor" name="theme-color" content={getTheme().bg} />
-      <FavIcon theme={getTheme()} />
+      <Meta
+        id="metaThemeColor"
+        name="theme-color"
+        content={committedTheme().bg}
+      />
+      <FavIcon theme={committedTheme()} />
     </MetaProvider>
   );
 }
