@@ -1,5 +1,9 @@
 import type { CompletedEvent } from "@caret/schemas/results";
-import { serverAudit } from "@caret/typing-engine/audit.server";
+import {
+  serverAudit,
+  resetServerAudit,
+} from "@caret/typing-engine/audit.server";
+import { EngineFailure } from "@caret/typing-engine/failure";
 import type {
   ReviewSignal,
   TimingFeatures,
@@ -26,7 +30,24 @@ export function getTimingReview(
   const { keySpacing, keyDuration } = result;
   if (keySpacing === "toolong" || keyDuration === "toolong") return undefined;
   if (keyDuration.length < result.charTotal) return undefined;
-  return reviewKeyTimings(keySpacing, keyDuration);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      return reviewKeyTimings(keySpacing, keyDuration);
+    } catch (error) {
+      if (!(error instanceof EngineFailure) || error.code !== "internal") {
+        throw error;
+      }
+      resetServerAudit();
+      console.error("Typing timing review engine trapped", {
+        event: "timing_review_engine_trap",
+        attempt: attempt + 1,
+        cause: error.cause,
+      });
+    }
+  }
+  // Advisory signals must not turn a reproducible engine trap into a failed
+  // save. Required integrity checks have already run; do not invent a verdict.
+  return undefined;
 }
 
 /** The review on bare arrays, as stored in timing samples. */
