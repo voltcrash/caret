@@ -156,7 +156,7 @@ export function Nav(): JSXElement {
         <Show
           when={getSnapshot()}
           fallback={
-            <div class="min-w-0 max-w-full motion-safe:animate-content-in">
+            <div class="min-w-0 max-w-full">
               <Show
                 when={accountSettled() !== undefined || session.isError}
                 fallback={<AccountPlaceholder />}
@@ -187,7 +187,7 @@ export function Nav(): JSXElement {
           }
         >
           {(snap) => (
-            <div class="min-w-0 max-w-full motion-safe:animate-content-in">
+            <div class="min-w-0 max-w-full">
               <div
                 ref={accountMenuRef}
                 class={cn(
@@ -227,7 +227,7 @@ export function Nav(): JSXElement {
                 >
                   <Suspense fallback={<AccountPlaceholder />}>
                     <User
-                      class="min-w-0 max-w-full auto-cols-[minmax(0,max-content)] motion-safe:animate-content-in"
+                      class="min-w-0 max-w-full auto-cols-[minmax(0,max-content)]"
                       user={snap()}
                       showAvatar={false}
                       iconsOnly={true}
