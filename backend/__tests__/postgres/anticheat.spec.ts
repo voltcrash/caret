@@ -293,6 +293,36 @@ describe("production anticheat with PostgreSQL", () => {
       expect((await Users.getUser(user.uid, "test")).banned).not.toBe(true),
     );
   });
+  it.each([
+    { mode: "words", mode2: "100" },
+    { mode: "quote", mode2: "1" },
+    { mode: "zen", mode2: "zen" },
+    {
+      mode: "custom",
+      mode2: "custom",
+      customText: {
+        mode: "random",
+        textLen: 100,
+        pipeDelimiter: false,
+        limit: { mode: "word", value: 100 },
+      },
+    },
+  ] satisfies Partial<CompletedEvent>[])(
+    "checks fixed bots in $mode while preserving IME input",
+    async (mode) => {
+      const user = await account();
+      const result = { ...fixedResult(), ...mode };
+      expect((await submit(user, result)).status).toBe(465);
+      await assertNoProgress(user.uid);
+      const response = await submit(user, {
+        ...result,
+        keySpacing: [],
+        keyDuration: [],
+        keyConsistency: 0,
+      });
+      expect(response.status, await response.clone().text()).toBe(200);
+    },
+  );
   it("applies the bot gate only above the configured speed", async () => {
     const user = await account();
     await withRuntime(
