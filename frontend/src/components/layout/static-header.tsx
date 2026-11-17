@@ -6,6 +6,7 @@ import { Button } from "../../ts/components/common/Button";
 import { Link } from "../../ts/components/common/Link";
 import { CaretMark } from "../brand/caret-mark";
 import { CaretWordmark } from "../brand/caret-wordmark";
+import { AccountPlaceholder } from "./account-placeholder";
 import { AccountSlot } from "./account-slot";
 
 const navButton =
@@ -53,6 +54,11 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
             </div>
           </div>
         </Link>
+        <span
+          aria-hidden="true"
+          data-ui-element="startupThemeIndicator"
+          class='absolute top-full right-0 mt-0.5 hidden text-xs leading-none whitespace-nowrap text-text/80 before:content-[var(--startup-theme-name,"azure")] sm:inline-flex'
+        ></span>
       </div>
       <nav
         aria-label="Main navigation"
@@ -82,7 +88,9 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
           dataset={{ "aria-label": "Command palette" }}
           disabled
         />
-        <AccountSlot>{item("/login", "fa-user", "Account")}</AccountSlot>
+        <AccountSlot>
+          <AccountPlaceholder />
+        </AccountSlot>
       </nav>
     </header>
   );

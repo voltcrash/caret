@@ -75,3 +75,16 @@ it("ignores invalid or CSS-bearing appearance preferences", () => {
   run(appearanceBootstrap);
   expect(document.documentElement.style.cssText).toBe("");
 });
+
+it.each([
+  [{ theme: "rust" }, '"rust"'],
+  [{ theme: "serika_dark" }, '"serika dark"'],
+  [{ theme: "rust", customTheme: true }, '"custom"'],
+  [{ theme: 'bad";color:red;' }, ""],
+])("paints a safe saved theme label (%j)", (config, expected) => {
+  localStorage.setItem("config", JSON.stringify(config));
+  run(appearanceBootstrap);
+  expect(
+    document.documentElement.style.getPropertyValue("--startup-theme-name"),
+  ).toBe(expected);
+});
