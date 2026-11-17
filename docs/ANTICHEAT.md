@@ -35,9 +35,10 @@ is not treated as bot evidence.
 
 ## Narrow bot signature
 
-The gate applies to time tests above `anticheat.botCheckMinWpm` (default 130)
+The gate applies to every test mode above `anticheat.botCheckMinWpm` (default 130)
 and shorter than 122 seconds, for unverified users participating in
-leaderboards. Missing key arrays return 464. Otherwise, at least 100 interior
+leaderboards. Missing key arrays return 464 in time mode; other modes retain
+their existing support for IME input without physical key samples. At least 100 interior
 holds **and** 100 interior gaps must each be positive and fixed within 0.01 ms
 to return 465. Endpoints, sparse composition telemetry, zero placeholders and
 variation in either channel avoid this signature.
@@ -55,7 +56,8 @@ writes or the ban notification.
 `anticheat.replayCheck` (enabled, 50 fingerprints) rejects a result whose
 keyboard timeline repeats one of the user's recent ones. The fingerprint hashes
 gaps and holds rounded to whole milliseconds, so resubmitting a recording with
-a new timestamp, mode or flags, or with sub-millisecond noise, still matches.
+a new timestamp, mode or flags still matches. Sub-millisecond noise matches
+only when it does not cross a rounding boundary.
 The client hash cannot catch this because a replay can change any field it
 covers. Timelines under 50 keys, with fewer than three distinct gaps, or with
 long-test sentinels are not fingerprinted: they can repeat by chance on
@@ -63,6 +65,14 @@ coarsened clocks. Repeats return 466 with an `anticheat_rejected` audit
 (`replayed-key-timing`) and no strike. Fingerprints are per user and are omitted
 from user responses. Exact duplicate submissions are also rejected by the
 database's per-user submission-hash constraint.
+
+For at least 100 gaps with at least 10 distinct whole-millisecond values, each
+history entry also retains a gap-only hash. Changing hold durations or replacing
+releases with zero placeholders cannot disguise these recordings. Shorter or
+less varied sequences retain the exact gap-and-hold check to avoid broadening
+matches on coarse clocks. Both hashes occupy one history slot. Existing stored
+hashes still detect exact replays; the added protection begins with newly saved
+recordings. The calibration runner uses the same matcher as result submission.
 
 ## Event log replay
 
@@ -130,6 +140,12 @@ reject, strike or ban. A flagged result saves normally and writes an important
 `anticheat_flagged` audit with the result id, signal names and rounded features
 (no raw timings). Holds-based signals need at least 100 nonzero holds; IME,
 mobile, short and long-test telemetry is skipped.
+
+An internal timing-review engine trap resets the audit instance and retries
+once. A second trap emits `timing_review_engine_trap` diagnostics and skips only
+this advisory review, allowing the already validated result to save. No clean
+review, sample, flag or strike is fabricated. Invalid input and unrelated errors
+still propagate. The calibration runner continues to surface engine errors.
 
 After `review.suspiciousAfterFlags` flags (default 5) within
 `review.suspiciousWindowHours` (default 168), the user's existing `suspicious`
