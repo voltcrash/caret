@@ -23,7 +23,7 @@ export function matchCommands(
   const inputSplit =
     inputNoQuickSingle.length === 0
       ? []
-      : inputNoQuickSingle.split(" ").map(stripPunctuation).filter(Boolean);
+      : inputNoQuickSingle.split(/\s+/).map(stripPunctuation).filter(Boolean);
 
   const matches: { matchCount: number; matchStrength: number }[] = [];
   const matchCounts: number[] = [];
@@ -45,10 +45,10 @@ export function matchCommands(
         : command.display
     )
       .toLowerCase()
-      .split(" ")
+      .split(/\s+/)
       .map(stripPunctuation);
     const aliasSplit =
-      command.alias?.toLowerCase().split(" ").map(stripPunctuation) ?? [];
+      command.alias?.toLowerCase().split(/\s+/).map(stripPunctuation) ?? [];
 
     const displayAliasSplit = displaySplit.concat(aliasSplit);
     const displayAliasMatchArray: (number | null)[] = displayAliasSplit.map(
