@@ -252,18 +252,14 @@ export async function onCommandlineKeyDown(e: KeyboardEvent): Promise<void> {
   }
 }
 
-const hover = createAccountOwned(() => ({
-  element: undefined as HTMLElement | undefined,
-}));
-
 export async function onSuggestionMouseMove(e: MouseEvent): Promise<void> {
   const commandlineState = getCommandlineState();
+  const wasMouseMode = commandlineState.mouseMode;
   commandlineState.mouseMode = true;
   const target = e.target as HTMLElement | null;
-  if (target === hover().element) return;
   const dataIndex = parseIntOptional(target?.getAttribute("data-index"));
   if (dataIndex === undefined) return;
-  hover().element = target ?? undefined;
+  if (wasMouseMode && commandlineState.activeIndex === dataIndex) return;
   commandlineState.activeIndex = dataIndex;
   await updateActiveCommand();
 }

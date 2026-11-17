@@ -1,4 +1,4 @@
-import { cleanup, render, fireEvent } from "@solidjs/testing-library";
+import { cleanup, render } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import {
   afterEach,
@@ -11,19 +11,18 @@ import {
 
 import { Theme } from "../../../src/ts/components/core/Theme";
 import * as Loader from "../../../src/ts/states/loader-bar";
-import * as Notifications from "../../../src/ts/states/notifications";
 import * as ThemeSignal from "../../../src/ts/states/theme";
 
 vi.mock("../../../src/ts/constants/themes", () => ({
   themes: {
-    dark: { hasCss: true },
+    phantom: { hasCss: true },
     serika: {},
   },
 }));
 
 describe("Theme component", () => {
   const darkTheme: ReturnType<typeof ThemeSignal.getTheme> = {
-    name: "dark",
+    name: "phantom",
     bg: "#000",
     main: "#fff",
     caret: "#fff",
@@ -40,7 +39,6 @@ describe("Theme component", () => {
   const themeSignalMock = vi.spyOn(ThemeSignal, "getTheme");
   const loaderShowMock = vi.spyOn(Loader, "showLoaderBar");
   const loaderHideMock = vi.spyOn(Loader, "hideLoaderBar");
-  const notificationAddMock = vi.spyOn(Notifications, "showNoticeNotification");
 
   afterEach(() => {
     cleanup();
@@ -51,7 +49,6 @@ describe("Theme component", () => {
     vi.clearAllMocks();
     loaderShowMock.mockClear();
     loaderHideMock.mockClear();
-    notificationAddMock.mockClear();
     themeSignalMock.mockImplementation(() => themeSignal());
     setThemeSignal({ ...darkTheme });
   });
@@ -81,42 +78,22 @@ describe("Theme component", () => {
     expect(style.innerHTML).toContain("--bg-color: #f00;");
   });
 
-  it("loads CSS file and shows loader when theme has CSS", () => {
+  it("applies decorations synchronously without a stylesheet or loader", () => {
     const { css } = renderComponent();
-
-    if (css === null) throw new Error("Missing fixture theme stylesheet");
-    expect(css.getAttribute("href")).toBe("/themes/dark.css");
-    expect(loaderShowMock).toHaveBeenCalledOnce();
-    fireEvent.load(css);
-    expect(loaderHideMock).toHaveBeenCalledOnce();
+    expect(css.textContent).toContain("@keyframes phantom-glow");
+    expect(document.querySelector("link#currentTheme")).toBeNull();
+    expect(loaderShowMock).not.toHaveBeenCalled();
+    expect(loaderHideMock).not.toHaveBeenCalled();
   });
 
-  it("removes CSS when theme has no CSS", async () => {
-    themeSignalMock.mockImplementation(() => ({
-      ...themeSignal(),
-      name: "serika",
-    }));
-    const { css } = renderComponent();
-    expect(css).not.toBeInTheDocument();
-  });
-
-  it("removes CSS when theme is custom", async () => {
-    themeSignalMock.mockImplementation(() => ({
-      ...themeSignal(),
-      name: "custom",
-    }));
-    const { css } = renderComponent();
-    expect(css).not.toBeInTheDocument();
-  });
-
-  it("handles CSS load error", () => {
-    const { css } = renderComponent();
-    expect(loaderShowMock).toHaveBeenCalledOnce();
-    if (css === null) throw new Error("Missing fixture theme stylesheet");
-    fireEvent.error(css);
-    expect(loaderHideMock).toHaveBeenCalledOnce();
-    expect(notificationAddMock).toHaveBeenCalledWith("Failed to load theme");
-  });
+  it.each(["serika", "custom"] as const)(
+    "clears decorations for %s",
+    (name) => {
+      const { css } = renderComponent();
+      setThemeSignal({ ...themeSignal(), name });
+      expect(css.textContent).toBe("");
+    },
+  );
 
   it("applies theme switches without waiting for the debounce", () => {
     const { style } = renderComponent();
@@ -125,12 +102,10 @@ describe("Theme component", () => {
     expect(style.innerHTML).toContain("--bg-color: #123;");
   });
 
-  it("debounces colour edits within the same theme", () => {
+  it("applies colour edits without a second debounce", () => {
     const { style } = renderComponent();
     setThemeSignal({ ...themeSignal(), bg: "#456" });
 
-    expect(style.innerHTML).toContain("--bg-color: #000;");
-    vi.runAllTimers();
     expect(style.innerHTML).toContain("--bg-color: #456;");
   });
 
@@ -153,6 +128,28 @@ describe("Theme component", () => {
     );
   });
 
+  it("keeps preview colors out of storage and browser chrome", () => {
+    const { style, favIcon, metaThemeColor } = renderComponent();
+    setThemeSignal({ ...themeSignal(), name: "serika", bg: "#123" });
+    const saved = localStorage.getItem("themeColors");
+    const icon = favIcon.getAttribute("href");
+    setThemeSignal({
+      ...themeSignal(),
+      name: "phantom",
+      bg: "#456",
+      preview: true,
+    });
+
+    expect(style.textContent).toContain("--bg-color: #456;");
+    expect(localStorage.getItem("themeColors")).toBe(saved);
+    expect(favIcon.getAttribute("href")).toBe(icon);
+    expect(metaThemeColor.content).toBe("#123");
+
+    setThemeSignal({ ...themeSignal(), preview: false });
+    expect(metaThemeColor.content).toBe("#456");
+    expect(localStorage.getItem("themeColors")).not.toBe(saved);
+  });
+
   it("renders favicon", () => {
     const { favIcon } = renderComponent();
 
@@ -162,7 +159,7 @@ describe("Theme component", () => {
 
   function renderComponent(): {
     style: HTMLStyleElement;
-    css: HTMLLinkElement | null;
+    css: HTMLStyleElement;
     metaThemeColor: HTMLMetaElement;
     favIcon: HTMLElement;
   } {
@@ -175,12 +172,17 @@ describe("Theme component", () => {
     const head = document.head;
 
     const style = head.querySelector<HTMLStyleElement>("style#theme");
-    const css = head.querySelector<HTMLLinkElement>("link#currentTheme");
+    const css = head.querySelector<HTMLStyleElement>("style#currentTheme");
     const metaThemeColor = head.querySelector<HTMLMetaElement>(
       "meta#metaThemeColor",
     );
     const favIcon = head.querySelector<HTMLElement>("#favicon");
-    if (style === null || metaThemeColor === null || favIcon === null) {
+    if (
+      style === null ||
+      css === null ||
+      metaThemeColor === null ||
+      favIcon === null
+    ) {
       throw new Error("Missing fixture theme metadata");
     }
     return { style, css, metaThemeColor, favIcon };
@@ -189,5 +191,4 @@ describe("Theme component", () => {
 
 // Browser module exports are sealed; register spies before imports run.
 vi.mock("../../../src/ts/states/loader-bar", { spy: true });
-vi.mock("../../../src/ts/states/notifications", { spy: true });
 vi.mock("../../../src/ts/states/theme", { spy: true });

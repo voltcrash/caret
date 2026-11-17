@@ -138,6 +138,7 @@ function Suggestion(props: {
     <div
       class={cn(
         "command grid cursor-pointer grid-cols-[auto_minmax(0,1fr)] px-4 py-2 text-sm leading-4 text-sub select-none sm:text-xs sm:leading-3 [&_i]:text-sub",
+        "motion-safe:transition-colors motion-safe:duration-100",
         "last:rounded-b-[var(--roundness)] [&>div]:pointer-events-none",
         "min-h-11 items-center [overflow-wrap:anywhere] sm:min-h-0",
         commandlineState.activeIndex === props.index &&

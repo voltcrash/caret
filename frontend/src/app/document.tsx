@@ -22,7 +22,7 @@ export function Document(props: { children: JSX.Element }): JSX.Element {
         {/* oxlint-disable-next-line solid/no-innerhtml -- Trusted static head script; validates stored preference values and uses the response nonce. */}
         <script nonce={nonce()} innerHTML={bootstrap}></script>
       </head>
-      <body>
+      <body class="motion-safe:transition-colors motion-safe:duration-125">
         <HeadContent />
         {props.children}
         {/* oxlint-disable-next-line solid/no-innerhtml -- Repository-owned static HTML, never request/user content; preserves no-JS/no-CSS recovery. */}
