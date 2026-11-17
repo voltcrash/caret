@@ -53,6 +53,11 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
             </div>
           </div>
         </Link>
+        <span
+          aria-hidden="true"
+          data-ui-element="startupThemeIndicator"
+          class='absolute top-full right-0 mt-0.5 hidden text-xs leading-none whitespace-nowrap text-text/80 before:content-[var(--startup-theme-name,"azure")] sm:inline-flex'
+        ></span>
       </div>
       <nav
         aria-label="Main navigation"
