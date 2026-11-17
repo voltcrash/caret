@@ -9,10 +9,12 @@ import {
 } from "solid-js";
 
 import { isStartupFinished } from "../../../../app/startup";
+import { AccountPlaceholder } from "../../../../components/layout/account-placeholder";
 import { AccountSlot } from "../../../../components/layout/account-slot";
+import { useAccountSettled } from "../../../../features/account/settled.client";
+import { sessionOptions } from "../../../../features/auth/session";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
-import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";
 import {
   getAccountButtonSpinner,
   getAnimatedLevel,
@@ -25,7 +27,6 @@ import { cn } from "../../../utils/cn";
 import { getLevelFromTotalXp } from "../../../utils/levels";
 import { isCoarsePointer } from "../../../utils/pointer";
 import { Button } from "../../common/Button";
-import { Fa } from "../../common/Fa";
 const User = lazy(async () =>
   import("../../common/User").then((m) => ({ default: m.User })),
 );
@@ -37,6 +38,7 @@ const AccountXpBar = lazy(async () =>
 );
 
 export function Nav(): JSXElement {
+  const accountSettled = useAccountSettled(isStartupFinished);
   const [getAccountMenuOpen, setAccountMenuOpen] = createSignal(false);
   const [accountMenuRef, accountMenuEl] = useRef<HTMLDivElement>();
 
@@ -67,12 +69,13 @@ export function Nav(): JSXElement {
     setAnimatedLevel(getLevelFromTotalXp(snapshot.xp ?? 0));
   });
 
-  const serverConfig = useQuery(() => ({
-    ...getServerConfigurationQueryOptions(),
+  const session = useQuery(() => ({
+    ...sessionOptions(),
     enabled: isStartupFinished(),
   }));
-  const showLoginButton = (): boolean =>
-    serverConfig.data?.users.signUp ?? true;
+  const showLoginButton = (): boolean => session.data?.signUpEnabled ?? true;
+
+  const accountUnavailable = () => accountSettled() === true || session.isError;
 
   return (
     // phones under 426px: no gaps so the row fits 320px with touch targets
@@ -154,22 +157,31 @@ export function Nav(): JSXElement {
           when={getSnapshot()}
           fallback={
             <div class="min-w-0 max-w-full motion-safe:animate-content-in">
-              <Show when={showLoginButton()}>
-                <Button
-                  variant="text"
-                  href="/login"
-                  dataset={{
-                    "data-nav-item": "login",
-                    "aria-label": "Sign in",
-                  }}
-                  fa={{
-                    icon: "fa-user",
-                    variant: "regular",
-                    fixedWidth: true,
-                  }}
-                  router-link
-                  class={buttonClass()}
-                />
+              <Show
+                when={accountSettled() !== undefined || session.isError}
+                fallback={<AccountPlaceholder />}
+              >
+                <Show when={accountUnavailable() || showLoginButton()}>
+                  <Button
+                    variant="text"
+                    href={accountUnavailable() ? "/account" : "/login"}
+                    dataset={{
+                      "data-nav-item": accountUnavailable()
+                        ? "account"
+                        : "login",
+                      "aria-label": accountUnavailable()
+                        ? "Account"
+                        : "Sign in",
+                    }}
+                    fa={{
+                      icon: "fa-user",
+                      variant: "regular",
+                      fixedWidth: true,
+                    }}
+                    router-link
+                    class={buttonClass()}
+                  />
+                </Show>
               </Show>
             </div>
           }
@@ -213,11 +225,7 @@ export function Nav(): JSXElement {
                     "aria-label": "Account",
                   }}
                 >
-                  <Suspense
-                    fallback={
-                      <Fa icon="fa-user" variant="regular" fixedWidth />
-                    }
-                  >
+                  <Suspense fallback={<AccountPlaceholder />}>
                     <User
                       class="min-w-0 max-w-full auto-cols-[minmax(0,max-content)] motion-safe:animate-content-in"
                       user={snap()}
