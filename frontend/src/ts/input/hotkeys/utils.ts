@@ -56,6 +56,7 @@ function isInteractiveElementFocused(): boolean {
     document.activeElement?.tagName === "TEXTAREA" ||
     document.activeElement?.tagName === "SELECT" ||
     document.activeElement?.tagName === "BUTTON" ||
+    document.activeElement?.tagName === "SUMMARY" ||
     document.activeElement?.matches(
       ".button, .textButton, .modal, [data-balloon-pos]",
     ) === true
