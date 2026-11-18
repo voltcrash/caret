@@ -46,7 +46,9 @@ export function initFromHistory(): boolean {
     numbers: before.numbers ?? config.numbers,
     customText:
       before.customText ??
-      (config.mode === "custom" ? CustomText.getData() : null),
+      (before.mode === null && config.mode === "custom"
+        ? CustomText.getData()
+        : null),
   };
   setConfig("mode", "custom", { nosave: true });
   CustomText.setPipeDelimiter(true);
