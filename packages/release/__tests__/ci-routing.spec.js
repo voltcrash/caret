@@ -64,6 +64,7 @@ const allJobs = [
   "frontend-test",
   "start-ssr",
   "start-browser",
+  "typing-smoke",
   "start-updates",
   "start-delivery",
   "packages",
@@ -141,6 +142,16 @@ it.each([
   expect(selected([file])).toEqual([]);
 });
 
+it.each([
+  "frontend/src/ts/input/listeners/input.ts",
+  "frontend/src/features/typing/runtime/test-logic.ts",
+  "packages/web-shared/src/layout-emulator.ts",
+  "frontend/cross-browser-e2e/typing.spec.ts",
+  "frontend/playwright.cross-browser.config.ts",
+])("runs cross-browser typing smoke for %s", (file) => {
+  expect(selected([file])).toContain("typing-smoke");
+});
+
 describe("application sources", () => {
   it("rebuilds the frontend, Start and inventory spec for frontend source", () => {
     expect(selected(["frontend/src/ts/test/result.ts"])).toEqual(appJobs);
@@ -165,8 +176,10 @@ describe("application sources", () => {
     ]);
   });
 
-  it("runs every job for bundled package sources", () => {
-    expect(selected(["packages/schemas/src/results.ts"])).toEqual(allJobs);
+  it("runs application and engine checks for bundled schemas", () => {
+    expect(selected(["packages/schemas/src/results.ts"])).toEqual(
+      allJobs.filter((job) => job !== "typing-smoke"),
+    );
   });
 });
 
@@ -195,6 +208,7 @@ describe("test-only changes", () => {
         "frontend-test",
         "start-ssr",
         "start-browser",
+        "typing-smoke",
         "start-updates",
       ],
     ],
@@ -253,6 +267,7 @@ describe("static files", () => {
   it("runs layout consumers for layout files", () => {
     expect(selected(["frontend/static/layouts/qwerty.json"])).toEqual([
       "frontend-test",
+      "typing-smoke",
       "packages",
       "assets",
     ]);
@@ -297,7 +312,7 @@ it.each([
 
 it("builds the production Worker once and shares it with SSR and browser shards", () => {
   const build = workflow.jobs["start-build"];
-  for (const flag of ["start-ssr", "start-browser"]) {
+  for (const flag of ["start-ssr", "start-browser", "typing-smoke"]) {
     expect(build.if).toContain(`needs.changes.outputs.${flag} == 'true'`);
   }
   const upload = build.steps.find((step) =>
@@ -323,6 +338,8 @@ it("builds the production Worker once and shares it with SSR and browser shards"
       job.steps.some((step) => /build:start(?:$|\s)/.test(step.run ?? "")),
     ).toBe(false);
   }
+  expect(workflow.jobs["typing-smoke"].needs).toContain("start-build");
+  expect(workflow.jobs["ci-ok"].needs).toContain("typing-smoke");
   expect(workflow.jobs["ci-ok"].needs).toContain("start-build");
 });
 

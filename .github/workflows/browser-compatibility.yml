@@ -3,15 +3,12 @@ on:
   schedule:
     - cron: "31 3 * * *"
   workflow_dispatch:
-  pull_request:
-    paths:
-      - "frontend/cross-browser-e2e/**"
-      - "frontend/playwright.cross-browser.config.ts"
-      - ".github/workflows/browser-compatibility.yml"
+  workflow_call:
 permissions:
   contents: read
 jobs:
   performance:
+    if: github.event_name != 'pull_request'
     runs-on: ${{ vars.CARET_PERFORMANCE_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 25
     steps:
@@ -43,7 +40,13 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
       - run: vp -C frontend exec playwright install --with-deps chromium firefox webkit
-      - run: vp -C frontend exec vpx ./scripts/ci-build.ts
+      - if: github.event_name == 'pull_request'
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: start-worker
+          path: frontend/dist/start
+      - if: github.event_name != 'pull_request'
+        run: vp -C frontend exec vpx ./scripts/ci-build.ts
       - run: vp -C frontend exec playwright test --config playwright.cross-browser.config.ts
       - uses: actions/upload-artifact@v7.0.2
         if: failure()
