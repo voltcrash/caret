@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   resultVisible: false,
   activePage: "test",
   caret: {
+    cancelPendingMove: vi.fn(),
     handleTapeScroll: vi.fn(),
     handleTapeWordsRemoved: vi.fn(),
     handleLineJump: vi.fn(),
