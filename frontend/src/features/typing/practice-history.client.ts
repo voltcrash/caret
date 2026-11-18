@@ -33,16 +33,19 @@ export function updatePracticeHistory(
       { ...entry },
     ]),
   );
+  const creditedMisses = new Set<string>();
   for (const [index, word] of words.entries()) {
     if (word.length === 0 || word.length > 80) continue;
     const key = `${context}\0${word}`;
     const previous = model.get(key);
     const burst = bursts[index];
+    const testMisses = misses[word] ?? 0;
     model.set(key, {
       word,
       context,
       seen: (previous?.seen ?? 0) + 1,
-      misses: (previous?.misses ?? 0) + (misses[word] ?? 0),
+      misses:
+        (previous?.misses ?? 0) + (creditedMisses.has(word) ? 0 : testMisses),
       burst:
         burst !== undefined && Number.isFinite(burst)
           ? previous === undefined
@@ -50,8 +53,7 @@ export function updatePracticeHistory(
             : previous.burst * 0.75 + burst * 0.25
           : (previous?.burst ?? 0),
     });
-    // A word's error count belongs to this test, not each repeated occurrence.
-    misses = { ...misses, [word]: 0 };
+    if (testMisses > 0) creditedMisses.add(word);
   }
   return {
     ...history,
