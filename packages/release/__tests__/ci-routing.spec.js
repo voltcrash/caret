@@ -142,6 +142,16 @@ it.each([
   expect(selected([file])).toEqual([]);
 });
 
+it.each([
+  "frontend/src/ts/input/listeners/input.ts",
+  "frontend/src/features/typing/runtime/test-logic.ts",
+  "packages/web-shared/src/layout-emulator.ts",
+  "frontend/cross-browser-e2e/typing.spec.ts",
+  "frontend/playwright.cross-browser.config.ts",
+])("runs cross-browser typing smoke for %s", (file) => {
+  expect(selected([file])).toContain("typing-smoke");
+});
+
 describe("application sources", () => {
   it("rebuilds the frontend, Start and inventory spec for frontend source", () => {
     expect(selected(["frontend/src/ts/test/result.ts"])).toEqual(appJobs);
