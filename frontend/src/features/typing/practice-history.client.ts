@@ -10,6 +10,7 @@ const wordSchema = z.object({
   context: z.string().max(200),
   seen: z.number().int().positive(),
   misses: z.number().int().nonnegative(),
+  cleanStreak: z.number().int().nonnegative().optional(),
   burst: z.number().nonnegative(),
 });
 const historySchema = z.object({
