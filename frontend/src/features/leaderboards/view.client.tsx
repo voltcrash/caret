@@ -31,7 +31,12 @@ import {
   setSelection as storeSelection,
 } from "../../ts/states/leaderboard-selection";
 import { showErrorNotification } from "../../ts/states/notifications";
-import { pageSize, type LeaderboardView, type Selection } from "./selection";
+import {
+  maxPageIndex,
+  pageSize,
+  type LeaderboardView,
+  type Selection,
+} from "./selection";
 import { LeaderboardSidebarSkeleton } from "./sidebar-skeleton";
 import { LeaderboardTableSkeleton } from "./table-skeleton";
 
@@ -116,6 +121,7 @@ export function LeaderboardContent(props: {
 
   // Prefetch the next page.
   createEffect(() => {
+    if (page() >= maxPageIndex) return;
     void queryClient
       .query(leaderboardOptions(selection(), page() + 1))
       .catch(() => undefined);

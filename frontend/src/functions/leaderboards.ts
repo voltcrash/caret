@@ -1,6 +1,9 @@
 import { createServerFn } from "@tanstack/solid-start";
 import { z } from "zod";
-import { SelectionSchema } from "../features/leaderboards/selection";
+import {
+  maxPageIndex,
+  SelectionSchema,
+} from "../features/leaderboards/selection";
 import {
   readLeaderboard,
   readLeaderboardRank,
@@ -11,7 +14,7 @@ export const getLeaderboard = createServerFn({ method: "GET" })
     z
       .object({
         selection: SelectionSchema,
-        page: z.number().int().nonnegative().max(100_000),
+        page: z.number().int().nonnegative().max(maxPageIndex),
       })
       .parse(input),
   )

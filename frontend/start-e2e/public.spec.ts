@@ -63,6 +63,14 @@ test("a bare leaderboard URL restores the stored selection", async ({
   await expect(page).toHaveURL(/lastWeek=t/);
 });
 
+test("a fractional page link opens the first page of the requested board", async ({
+  page,
+}) => {
+  await page.goto("/leaderboards?type=allTime&mode2=15&page=1.5");
+  await expect(page.getByText("racer-1", { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/type=allTime.*page=1$/);
+});
+
 test("profile lookup allows recovery after an unavailable request", async ({
   page,
 }) => {

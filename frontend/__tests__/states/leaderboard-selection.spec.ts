@@ -61,6 +61,19 @@ describe("leaderboard selection", () => {
     expect(view.page).toBe(0);
   });
 
+  it.each([0, 1.5, 100_002])(
+    "opens the first page for an invalid page number (%s)",
+    (page) => {
+      const view = applyUrlParams(defaultSelection, {
+        type: "daily",
+        yesterday: true,
+        page,
+      });
+      expect(view.page).toBe(0);
+      expect(view.selection.previous).toBe(true);
+    },
+  );
+
   it("rejects unknown clients in stored selections and links", async () => {
     localStorage.setItem(
       "leaderboardSelector",

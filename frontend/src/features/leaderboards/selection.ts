@@ -7,6 +7,7 @@ import { ClientSchema, ModeSchema } from "@caret/schemas/shared";
 import { z } from "zod";
 
 export const pageSize = 50;
+export const maxPageIndex = 100_000;
 
 export type LeaderboardPage = {
   count: number;
@@ -108,8 +109,15 @@ export function applyUrlParams(
   return {
     selection,
     goToUserPage: params.goToUserPage === true,
-    page: params.page === undefined ? 0 : Math.max(0, params.page - 1),
+    page: pageIndexFromUrl(params.page),
   };
+}
+
+function pageIndexFromUrl(page = 1): number {
+  if (!Number.isInteger(page) || page < 1 || page > maxPageIndex + 1) {
+    return 0;
+  }
+  return page - 1;
 }
 
 /** The URL the page writes after loading a selection. */
