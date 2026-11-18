@@ -104,4 +104,9 @@ it("ranks legacy misses by evidence and retires weaknesses after clean attempts"
 
   history.record(context, ["persistent"], {}, [], 1);
   expect(ranked()).toEqual(["rare", "persistent"]);
+  history.record(context, ["persistent", "persistent"], {}, [], 1);
+  expect(ranked()).toEqual(["rare"]);
+  expect(
+    history.history().words.find((entry) => entry.word === "persistent"),
+  ).toMatchObject({ seen: 12, misses: 4 });
 });
