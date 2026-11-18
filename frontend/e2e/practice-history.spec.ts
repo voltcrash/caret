@@ -44,3 +44,37 @@ test("practice recommendations and daily goals survive a reload", async ({
     ),
   ).toBe(history[0]?.value);
 });
+
+test("starts a five-word drill beside Next test and reports improved words", async ({
+  page,
+}) => {
+  await page.clock.install();
+  const targets = ["amber", "birch", "cedar", "dune", "elm", "fern"];
+  await page.addInitScript((words) => {
+    localStorage.setItem(
+      "caret-practice-v1:guest",
+      JSON.stringify({
+        words: words.map((word, i) => ({
+          word,
+          context: "english:default",
+          seen: 10,
+          misses: 10 - i,
+          burst: 25,
+        })),
+        seconds: 0,
+        day: "",
+        goalMinutes: 5,
+      }),
+    );
+  }, targets);
+  await openTest(page);
+  await completeWords(page);
+  const drill = page.locator("#result .buttons button").nth(1);
+  await expect(drill).toHaveAccessibleName("Practice weak words");
+  await expect(page.locator("#result")).toBeFocused();
+  await drill.click();
+  await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
+  const words = page.locator("#words .word");
+  const selected = targets.slice(0, 5);
+  expect(new Set(await words.allTextContents())).toEqual(new Set(selected));
+});
