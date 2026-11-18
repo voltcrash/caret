@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/solid-query";
 import { createMemo, For, Show } from "solid-js";
 
+import { isStartupFinished } from "../../../app/startup";
 import { getConfig } from "../../../ts/config/store";
 import { getFormatting, isAuthenticated } from "../../../ts/states/core";
 import { isTestActive } from "../../../ts/states/test";
@@ -8,7 +9,10 @@ import { sessionOptions } from "../../auth/session";
 import { getGuestScores } from "../guest-scores.client";
 
 export function GuestScores() {
-  const session = useQuery(() => sessionOptions());
+  const session = useQuery(() => ({
+    ...sessionOptions(),
+    enabled: isStartupFinished(),
+  }));
   const length = () => {
     if (getConfig.mode === "time") return getConfig.time;
     if (getConfig.mode === "words") return getConfig.words;
