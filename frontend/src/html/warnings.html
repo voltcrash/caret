@@ -9,13 +9,14 @@
       position: fixed;
       display: grid;
       justify-content: center;
-      align-content: center;
+      align-content: safe center;
       color: #646669;
       font-size: 1rem;
       font-family: Arial Rounded MT Bold;
       z-index: 99999;
-      padding: 6rem;
+      padding: clamp(1rem, 8vw, 6rem);
       box-sizing: border-box;
+      overflow-y: auto;
     "
   >
     <div
@@ -46,14 +47,14 @@
     position: fixed;
     display: grid;
     justify-content: center;
-    align-content: center;
+    align-content: safe center;
     color: #646669;
     font-size: 1rem;
     font-family: Arial Rounded MT Bold;
     z-index: 99999;
-    padding: 6rem;
+    padding: clamp(1rem, 8vw, 6rem);
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow-y: auto;
   "
   data-nosnippet
 >

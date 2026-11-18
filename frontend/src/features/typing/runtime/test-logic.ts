@@ -197,7 +197,6 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
       !options.withSameWordset &&
       !options.practiseMissed
     ) {
-      showNoticeNotification("Reverting to previous settings.");
       if (PractiseWords.before.punctuation !== null) {
         setConfig("punctuation", PractiseWords.before.punctuation);
       }

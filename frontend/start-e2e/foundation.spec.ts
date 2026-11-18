@@ -101,13 +101,17 @@ test("SSR hydrates Query once and keeps native navigation and refresh working", 
 test("the initial response remains useful without JavaScript", async ({
   browser,
 }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    viewport: { width: 360, height: 320 },
+  });
   try {
     const page = await context.newPage();
     await page.goto("http://127.0.0.1:4185/profile/fixture-profile");
     // Playwright's text engine skips <noscript>; assert the rendered DOM instead.
     const warning = page.locator("noscript > div");
     await expect(warning).toBeVisible();
+    await expect(warning.locator("span").first()).toBeInViewport();
     expect(await warning.textContent()).toContain(
       "Looks like JavaScript is disabled.",
     );
@@ -120,6 +124,7 @@ test("the initial response remains useful without JavaScript", async ({
 test("CSS failure retains cache recovery under the production CSP", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
   let recoveries = 0;
   await page.exposeFunction("recoveryCalled", () => {
     recoveries++;
@@ -132,7 +137,9 @@ test("CSS failure retains cache recovery under the production CSP", async ({
   });
   await page.route("**/profile", blockDocumentStyles);
   await page.goto("/profile");
-  await expect(page.locator("#nocss")).toBeVisible();
+  const warning = page.locator("#nocss");
+  await expect(warning).toBeVisible();
+  await expect(warning.locator("span").first()).toBeInViewport();
   const reloaded = page.waitForEvent("framenavigated", {
     predicate: (frame) => frame === page.mainFrame(),
   });

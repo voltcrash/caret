@@ -122,11 +122,12 @@ export function Banners(): JSXElement {
 
   return (
     // Announcements arrive after startup; keep them out of the app's geometry.
+    // On phones, reserve space under toasts for the scroll-to-top button.
     <div
       role="region"
       aria-label="Announcements"
       aria-live="polite"
-      class="pointer-events-none fixed inset-x-0 bottom-0 z-1000 mx-auto grid max-h-[30dvh] w-full max-w-2xl gap-2 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))]"
+      class="pointer-events-none mx-auto grid max-h-[30dvh] min-h-[calc(6rem+env(safe-area-inset-bottom,0px))] w-full max-w-2xl shrink-0 gap-2 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))] [align-content:safe_end] sm:fixed sm:inset-x-0 sm:bottom-0 sm:z-1000 sm:min-h-0"
     >
       <For each={getBanners()}>{(banner) => <Banner {...banner} />}</For>
     </div>
