@@ -39,7 +39,7 @@ export function updatePracticeHistory(
     const key = `${context}\0${word}`;
     const previous = model.get(key);
     const burst = bursts[index];
-    const testMisses = misses[word] ?? 0;
+    const testMisses = Object.hasOwn(misses, word) ? (misses[word] ?? 0) : 0;
     model.set(key, {
       word,
       context,
