@@ -13,7 +13,9 @@ export function normalizeResult(
   resultDate.setHours(0);
   resultDate.setMilliseconds(0);
   // Estimate historical durations before stripped fields receive defaults.
-  const timeTyping = calcTimeTyping(result);
+  const duration = getCompletedDuration(result);
+  const timeTyping = calcTimeTyping(result, duration);
+  const words = Math.round((result.wpm / 60) * duration);
 
   //results strip default values, add them back
   result.client ??= "web";
@@ -38,27 +40,24 @@ export function normalizeResult(
   return {
     ...result,
     timeTyping,
-    words: Math.round((result.wpm / 60) * result.testDuration),
+    words: Number.isFinite(words) ? Math.max(0, words) : 0,
     dayTimestamp: resultDate.getTime(),
   } as SnapshotResult<Mode>;
 }
 
-function calcTimeTyping(result: ResultMinified): number {
-  let tt = 0;
-  if (
-    result.testDuration === undefined &&
-    result.mode2 !== "custom" &&
-    result.mode2 !== "zen"
-  ) {
-    //test finished before testDuration field was introduced - estimate
-    if (result.mode === "time") {
-      tt = parseInt(result.mode2);
-    } else if (result.mode === "words") {
-      tt = (parseInt(result.mode2) / result.wpm) * 60;
-    }
-  } else {
-    tt = parseFloat(result.testDuration as unknown as string); //legacy results could have a string here
+function getCompletedDuration(result: ResultMinified): number {
+  if (result.testDuration !== undefined) {
+    return parseFloat(String(result.testDuration)); // Legacy durations may be strings.
   }
+  if (result.mode === "time") return parseInt(result.mode2);
+  if (result.mode === "words") {
+    return (parseInt(result.mode2) / result.wpm) * 60;
+  }
+  return 0;
+}
+
+function calcTimeTyping(result: ResultMinified, duration: number): number {
+  let tt = duration;
   if (result.incompleteTestSeconds !== undefined) {
     tt += result.incompleteTestSeconds;
   } else if (
