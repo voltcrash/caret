@@ -17,10 +17,11 @@ Every job installs through
 [`.github/actions/setup`](../.github/actions/setup/action.yml), which restores
 the dependency cache (`quality` saves it) and the generated engine bindings;
 only a binding cache miss (or the `engine` job) restores Rust and runs cargo.
-Browser jobs use [`setup-chromium`](../.github/actions/setup-chromium/action.yml),
+Chromium-only jobs use [`setup-chromium`](../.github/actions/setup-chromium/action.yml),
 which caches the headless shell and installs missing system libraries through
 [`apt-install`](../.github/actions/apt-install/action.yml): cached downloads,
-and bounded retries on a stalled mirror.
+and bounded retries on a stalled mirror. The cross-browser smoke suite uses the
+official Playwright image matching the installed client version.
 
 | Job | Runs | Checks |
 | --- | --- | --- |
@@ -30,7 +31,7 @@ and bounded retries on a stalled mirror.
 | `ci-fe-test` (2 shards) | Frontend, unit or Start tests, backend, runtime packages | Vitest |
 | `start-build` | SSR or browser suite selected | Build and dry-run production Worker; share artifact |
 | `start-ssr` | Frontend, Start tests, backend, runtime packages | Route checks, runtime-test build, SSR/workerd suites |
-| `start-browser` (4 shards) | Same, plus `e2e`/`start-e2e` | Playwright suites using shared Worker |
+| `start-browser` (6 shards) | Same, plus `e2e`/`start-e2e` | Playwright suites using shared Worker |
 | `start-updates` | Same, plus `update-e2e` | Service-worker update and rollback suites |
 | `start-delivery` | Frontend, backend, runtime packages | Staging and production builds + dry-runs |
 | `ci-pkg` | `packages/**` | Lint config audits, package lint and tests |
