@@ -131,6 +131,7 @@ jobs:
               - 'frontend/scripts/{browser-shards.ts,test-browser-shard.ts,browser-durations.json}'
             typing-smoke:
               - 'frontend/src/features/typing/**'
+              - 'frontend/src/ts/input/**'
               - 'frontend/cross-browser-e2e/**'
               - 'frontend/playwright.{cross-browser,start}.config.ts'
               - '.github/workflows/browser-compatibility.yml'
