@@ -230,6 +230,9 @@ test("an in-flight save neither blocks navigation nor submits twice", async ({
   await expect(page.locator("#words .word.active")).toHaveCount(1);
   await expect(page.locator("#result")).toBeHidden();
   expect(submissions).toHaveLength(1);
+  expect(
+    await page.evaluate(() => localStorage.getItem("caret-guest-scores-v1")),
+  ).toBeNull();
   expect(errors).toEqual([]);
 });
 
