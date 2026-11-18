@@ -80,7 +80,7 @@ export function PractiseWordsModal(): JSXElement {
           {weakest()
             .slice(0, 5)
             .map((word) => word.word)
-            .join(", ") || "Complete a test to build your practice history."}
+            .join(", ") || "No weak words to practice."}
         </p>
         <Button
           text="Practice weak words · 60 seconds"
