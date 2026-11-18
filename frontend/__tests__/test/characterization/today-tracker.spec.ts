@@ -88,6 +88,26 @@ describe("today tracker", () => {
     expect(TodayTracker.getString()).toBe("00:01:01 session");
   });
 
+  it("ignores history loaded for a day that has already ended", async () => {
+    let finish!: () => void;
+    results.since.mockImplementation(
+      async () =>
+        new Promise((resolve) => {
+          finish = () =>
+            resolve([
+              { testDuration: 60, incompleteTestSeconds: 0, afkDuration: 0 },
+            ]);
+        }),
+    );
+    const pending = TodayTracker.addAllFromToday();
+    await vi.waitFor(() => expect(results.since).toHaveBeenCalledOnce());
+    vi.setSystemTime(new Date(2026, 9, 15, 0, 1));
+    TodayTracker.addSeconds(10);
+    finish();
+    await pending;
+    expect(TodayTracker.getString()).toBe("00:00:10 session");
+  });
+
   it("loads today's active seconds since local midnight", async () => {
     results.since.mockResolvedValue([
       { testDuration: 60, incompleteTestSeconds: 15, afkDuration: 5 },
