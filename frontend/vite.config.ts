@@ -75,6 +75,20 @@ export default defineConfig(async ({ mode, command }) => {
       noExternal: ["solid-js", "@tanstack/solid-router", "@solidjs/meta"],
     },
     environments: {
+      client: {
+        build: {
+          rolldownOptions: {
+            output: {
+              codeSplitting: {
+                groups: [
+                  // Keep the static entry graph together across lazy route boundaries.
+                  { name: "startup", tags: ["$initial"] },
+                ],
+              },
+            },
+          },
+        },
+      },
       ssr: {
         build: { minify: true, sourcemap: true },
         optimizeDeps: {
