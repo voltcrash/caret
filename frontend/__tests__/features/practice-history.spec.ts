@@ -1,5 +1,9 @@
 import { expect, it } from "vite-plus/test";
-import { updatePracticeHistory } from "../../src/features/typing/practice-history.client";
+import {
+  type PracticeWord,
+  practiceHistory,
+  updatePracticeHistory,
+} from "../../src/features/typing/practice-history.client";
 
 it("retains frequently seen correct words when the model reaches capacity", () => {
   const initial = {
@@ -67,4 +71,34 @@ it("retains weaknesses by language/layout and credits practice without repeating
   );
   expect(other.words.filter((word) => word.word === "one")).toHaveLength(2);
   expect(other.seconds).toBe(120);
+});
+
+it("ranks legacy misses by evidence and retires weaknesses after clean attempts", () => {
+  const context = "english:qwerty";
+  const key = "caret-practice-v1:guest";
+  const word = (word: string, seen: number, misses: number): PracticeWord => ({
+    word,
+    context,
+    seen,
+    misses,
+    burst: 80,
+  });
+  localStorage.setItem(
+    key,
+    JSON.stringify({
+      words: [
+        word("rare", 1, 2),
+        word("persistent", 9, 4),
+        word("clean", 10, 0),
+      ],
+      day: "yesterday",
+      seconds: 90,
+      goalMinutes: 12,
+    }),
+  );
+  const history = practiceHistory();
+  const ranked = (): string[] =>
+    history.weakest(context).map((entry) => entry.word);
+  expect(ranked()).toEqual(["persistent", "rare"]);
+  expect(history.history().goalMinutes).toBe(12);
 });
