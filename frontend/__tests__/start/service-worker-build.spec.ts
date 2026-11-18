@@ -123,6 +123,15 @@ describe("built Start service worker", () => {
       expect(link).toContain('crossorigin="anonymous"');
     });
 
+    it("serves the offline stylesheet as an immutable asset", async () => {
+      const css = builtConfig().precache.find((path) => path.endsWith(".css"));
+      expect(css).toBeDefined();
+      const asset = await mf.dispatchFetch(`http://localhost:3000${css}`);
+      expect(asset.status).toBe(200);
+      expect(asset.headers.get("Cache-Control")).toContain("immutable");
+      await asset.arrayBuffer();
+    });
+
     it.each([
       ["/sw.js", "no-cache"],
       ["/version.json", "no-cache"],
