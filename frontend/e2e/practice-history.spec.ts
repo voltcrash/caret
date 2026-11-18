@@ -1,6 +1,10 @@
+import type { Page } from "playwright/test";
+
 import { expect, openTest, completeWords, test } from "./fixtures";
 
-test.use({ config: { mode: "words", words: 15, smoothCaret: "off" } });
+test.use({
+  config: { mode: "words", words: 15, quickRestart: "tab", smoothCaret: "off" },
+});
 
 test("a clean test leaves the drill disabled and preserves progress on reload", async ({
   page,
@@ -45,11 +49,10 @@ test("a clean test leaves the drill disabled and preserves progress on reload", 
   ).toBe(history[0]?.value);
 });
 
-test("starts a five-word drill beside Next test and reports improved words", async ({
-  page,
-}) => {
-  await page.clock.install();
-  const targets = ["amber", "birch", "cedar", "dune", "elm", "fern"];
+const targets = ["amber", "birch", "cedar", "dune", "elm", "fern"];
+const selected = targets.slice(0, 5);
+
+async function startWeakWordDrill(page: Page): Promise<void> {
   await page.addInitScript((words) => {
     localStorage.setItem(
       "caret-practice-v1:guest",
@@ -75,8 +78,33 @@ test("starts a five-word drill beside Next test and reports improved words", asy
   await drill.click();
   await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
   const words = page.locator("#words .word");
-  const selected = targets.slice(0, 5);
   expect(new Set(await words.allTextContents())).toEqual(new Set(selected));
+}
+
+test("Tab returns from a weak-word drill to the regular test without a notice", async ({
+  page,
+}) => {
+  await startWeakWordDrill(page);
+  const changeText = page.getByRole("button", { name: "change", exact: true });
+  await expect(changeText).toBeVisible();
+  await expect(page.locator("#wordsInput")).toBeFocused();
+  const notifications = page.locator('[data-ui-element="notifications"]');
+  await expect(notifications).toBeAttached();
+  await page.keyboard.press("Tab");
+  await expect(changeText).toBeHidden();
+  await expect(page.locator("#words .word")).toHaveCount(15);
+  await expect(page.locator("#wordsInput")).toBeFocused();
+  expect(await notifications.textContent()).not.toContain(
+    "Reverting to previous settings.",
+  );
+});
+
+test("starts a five-word drill beside Next test and reports improved words", async ({
+  page,
+}) => {
+  await page.clock.install();
+  await startWeakWordDrill(page);
+  const words = page.locator("#words .word");
   const attempted = new Set<string>();
   await words.first().click();
   for (const elapsed of [56_000, 5000]) {
