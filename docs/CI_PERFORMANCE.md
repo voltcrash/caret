@@ -1,17 +1,17 @@
 # CI performance
 
-Caret CI keeps all existing suites. Backend inventory checks run separately so a frontend edit no longer runs the backend suite. SSR uses three isolated runners; browser tests keep whole spec files together and balance their recorded duration across four runners. Native and browser engine checks run concurrently.
+Caret CI keeps all existing suites. Backend inventory checks run separately so a frontend edit no longer runs the backend suite. SSR uses three isolated runners; browser tests keep whole spec files together and balance their recorded duration across six runners. Native and browser engine checks run concurrently.
 
 ## Browser measurements
 
-Initial weights in `frontend/scripts/browser-durations.json` come from successful tests in [run 41000924522](https://github.com/voltcrash/caret/actions/runs/41000924522). They are seconds per project/spec, including repeated successful executions. New files get the mean recorded weight and are always included.
+Weights in `frontend/scripts/browser-durations.json` come from successful tests in [run 44279227876](https://github.com/voltcrash/caret/actions/runs/44279227876). They are seconds per project/spec, including repeated successful executions. New files get the mean recorded weight and are always included.
 
 Each browser shard uploads a `start-browser-timings-N` artifact containing Playwright's JSON report. Sum `results[].duration / 1000` by project and spec file to refresh the weights. Keep whole files together: some tests mutate the shared fixture Worker.
 
 Inspect a shard without starting a browser:
 
 ```sh
-vp -C frontend exec vpx ./scripts/test-browser-shard.ts 1/4 --list
+vp -C frontend exec vpx ./scripts/test-browser-shard.ts 1/6 --list
 ```
 
 ## Task results
