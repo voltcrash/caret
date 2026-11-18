@@ -88,7 +88,10 @@ describe("pilot shared services in workerd", () => {
       )
       .run();
     // Ensure a configuration row exists before mutating it.
-    await worker.fetch("http://localhost:3000/leaderboards");
+    const leaderboard = await worker.fetch(
+      "http://localhost:3000/leaderboards",
+    );
+    await leaderboard.arrayBuffer();
     await db
       .prepare(
         "UPDATE configuration SET data=jsonb_merge_patch(data,'{\"admin\":{\"endpointsEnabled\":true}}'::jsonb) WHERE id='main'",

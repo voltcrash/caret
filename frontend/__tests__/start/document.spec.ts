@@ -96,15 +96,8 @@ describe("Start document and response policy in workerd", () => {
     await next.text();
   });
 
-  it("serves generated CSS/fonts/icons/manifest and immutable versioned assets", async () => {
-    const response = await mf.dispatchFetch(
-      "http://localhost:3000/leaderboards",
-    );
-    const html = await response.text();
-    const css = /href="([^"]+\.css)"/.exec(html)?.[1];
-    expect(css).toBeDefined();
+  it("serves the document fonts, icon and manifest", async () => {
     for (const path of [
-      css,
       "/webfonts/RobotoMono-Regular.woff2",
       "/webfonts/LexendDeca-Regular.woff2",
       "/images/favicon/caret.svg",
@@ -112,9 +105,6 @@ describe("Start document and response policy in workerd", () => {
     ]) {
       const asset = await mf.dispatchFetch(`http://localhost:3000${path}`);
       expect(asset.status).toBe(200);
-      if (path === css) {
-        expect(asset.headers.get("Cache-Control")).toContain("immutable");
-      }
       await asset.arrayBuffer();
     }
   });
@@ -126,12 +116,9 @@ describe("Start document and response policy in workerd", () => {
     const html = await response.text();
     expect(html).toContain(icons.solid["fa-crown"].path);
     expect(html).toContain("<svg");
-    const css = /href="([^"]+\.css)"/.exec(html)?.[1];
-    const styles = await (
-      await mf.dispatchFetch(`http://localhost:3000${css}`)
-    ).text();
-    expect(styles).not.toContain("fa-solid-900");
-    expect(styles).not.toMatch(/font-family:[^;{}]*Font Awesome/);
+    expect(html).toContain("data-tsr-inline-css");
+    expect(html).not.toContain("fa-solid-900");
+    expect(html).not.toMatch(/font-family:[^;{}]*Font Awesome/);
   });
 
   it("preserves popup and standalone 404 URLs", async () => {

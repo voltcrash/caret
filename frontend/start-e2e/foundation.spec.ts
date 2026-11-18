@@ -1,5 +1,5 @@
 import { rpcPath } from "../__tests__/start/rpc";
-import { expect, test } from "./fixtures";
+import { blockDocumentStyles, expect, test } from "./fixtures";
 
 test("startup shows the saved-theme document while browser setup is pending", async ({
   page,
@@ -130,7 +130,7 @@ test("CSS failure retains cache recovery under the production CSP", async ({
       return [];
     };
   });
-  await page.route("**/*.css", async (route) => await route.abort());
+  await page.route("**/profile", blockDocumentStyles);
   await page.goto("/profile");
   await expect(page.locator("#nocss")).toBeVisible();
   const reloaded = page.waitForEvent("framenavigated", {
