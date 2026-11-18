@@ -61,6 +61,7 @@ import { getTestSession, resetTestEvents } from "./events/data";
 import { resetModifierState } from "../../../ts/states/modifiers";
 import { nthElementFromArray } from "../../../ts/utils/arrays";
 
+import { beginGuestScore } from "../guest-scores.client";
 import { testLogicState } from "./logic-state";
 import { init } from "./initialization";
 import { finish } from "./completion";
@@ -83,6 +84,7 @@ export function startTest(now: number): boolean {
   }
 
   if (!getTypingLifecycle().send({ type: "START" })) return false;
+  beginGuestScore();
   TestTimer.clear();
   getTestSession().start(now);
 

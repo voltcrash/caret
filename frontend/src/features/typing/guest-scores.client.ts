@@ -2,7 +2,10 @@ import { Mode2Schema, ModeSchema } from "@caret/schemas/shared";
 import type { CompletedEvent } from "@caret/schemas/results";
 import { z } from "zod";
 
-import { appSignal } from "../../app/state";
+import type { SessionState } from "@caret/schemas/auth-session";
+import { sessionKey } from "../auth/session";
+import { getQueryClient } from "../../ts/queries";
+import { appSignal, createAccountSignal } from "../../app/state";
 import { useLocalStorage } from "../../ts/hooks/useLocalStorage";
 
 const limit = 10;
@@ -23,6 +26,15 @@ const [getGuestScores, setGuestScores] = appSignal(() =>
 );
 export { getGuestScores };
 
+// A session change during the test disposes this flag with the old account.
+const [startedAsGuest, setStartedAsGuest] = createAccountSignal(false);
+
+export function beginGuestScore(): void {
+  setStartedAsGuest(
+    getQueryClient().getQueryData<SessionState>(sessionKey)?.user === null,
+  );
+}
+
 export function recordGuestScore({
   mode,
   mode2,
@@ -30,6 +42,7 @@ export function recordGuestScore({
   wpm,
   acc,
 }: CompletedEvent): void {
+  if (!startedAsGuest()) return;
   setGuestScores((scores) =>
     [{ mode, mode2, timestamp, wpm, acc }, ...scores].slice(0, limit),
   );
