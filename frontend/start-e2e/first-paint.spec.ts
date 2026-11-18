@@ -7,6 +7,31 @@ import { expect, test } from "../e2e/fixtures";
 
 test.use({ config: {}, serviceWorkers: "block" });
 
+for (const saved of [false, true]) {
+  test(`paints styled words before external CSS or modules load (saved theme: ${saved})`, async ({
+    page,
+  }) => {
+    if (saved) {
+      await page.addInitScript(() => {
+        localStorage.setItem(
+          "themeColors",
+          JSON.stringify({ "bg-color": "#123456" }),
+        );
+      });
+    }
+    await page.route(/\.(?:css|js)$/, async (route) => await route.abort());
+    await page.goto("/");
+    await expect(page.locator("body")).toHaveCSS(
+      "background-color",
+      saved ? "rgb(18, 52, 86)" : "rgb(11, 13, 28)",
+    );
+    await expect(page.locator("#nocss")).toBeHidden();
+    await expect(
+      page.locator("[data-initial-words] .word").first(),
+    ).toBeVisible();
+  });
+}
+
 test("first visit keeps its first painted words when the engine becomes ready", async ({
   page,
 }, info) => {
