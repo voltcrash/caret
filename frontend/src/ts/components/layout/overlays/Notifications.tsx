@@ -77,7 +77,7 @@ function NotificationItem(props: { notification: Notification }): JSXElement {
         animate={enterAnimate}
         exit={exitAnimation}
         class={cn(
-          "mb-4 cursor-pointer overflow-hidden rounded-double border-2 border-solid backdrop-blur-[15px] select-none",
+          "pointer-events-auto mb-4 cursor-pointer overflow-hidden rounded-double border-2 border-solid backdrop-blur-[15px] select-none",
           "relative grid text-[white]",
           "transition-[background] duration-125",
           "border-(--notif-border) bg-(--notif-bg) hover:bg-(--notif-bg-hover)",
@@ -117,17 +117,16 @@ export function Notifications(): JSXElement {
   return (
     <div
       data-ui-element="notifications"
+      inert={getIsScreenshotting()}
       class={cn(
-        // phones: bottom edge, above the scroll to top button and the home
-        // indicator, so toasts don't cover the nav
-        "fixed right-4 bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] left-4 z-99999999 grid w-auto pt-4 transition-opacity duration-125 sm:top-0 sm:bottom-auto sm:left-auto sm:w-87.5",
-        getIsScreenshotting() && "pointer-events-none opacity-0",
+        "pointer-events-none mx-4 grid min-h-0 content-start overflow-y-auto overscroll-contain pt-4 transition-opacity duration-125 sm:fixed sm:top-0 sm:right-4 sm:z-99999999 sm:mx-0 sm:max-h-dvh sm:w-87.5",
+        getIsScreenshotting() && "opacity-0",
       )}
     >
       <AnimeShow when={stickyCount() > 1}>
         <button
           type="button"
-          class="text-white mb-4 w-full overflow-hidden text-xs"
+          class="text-white pointer-events-auto mb-4 w-full overflow-hidden text-xs"
           onClick={() => clearAllNotifications()}
         >
           <Fa icon="fa-times" class="mr-1" />
