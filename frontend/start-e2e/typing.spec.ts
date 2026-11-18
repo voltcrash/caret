@@ -270,6 +270,7 @@ test("losing the session mid-test keeps the active attempt", async ({
 
 test("returning guests can compare recent scores for the selected test", async ({
   page,
+  context,
 }) => {
   await useConfig(page, { mode: "words", words: 10 });
   await page.addInitScript(() => {
@@ -303,6 +304,12 @@ test("returning guests can compare recent scores for the selected test", async (
   await expect(rows.last()).toContainText("94%");
   await page.getByRole("button", { name: "25", exact: true }).click();
   await expect(rows).toHaveCount(8);
+  await useAccountConfig(page, { mode: "words", words: 10 });
+  await signIn(context);
+  await page.reload();
+  await expect(nav(page, "Sign in")).toHaveCount(0);
+  await expect(page.locator("#words .word")).toHaveCount(10);
+  await expect(page.getByText(/Recent guest scores/)).toHaveCount(0);
 });
 
 test("result screenshots download from the native route", async ({ page }) => {
