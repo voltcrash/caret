@@ -48,4 +48,10 @@ describe("shared layout mapping", () => {
     ).toBe("'");
     expect(getCharFromLayout(qwerty, { ...event, code: "Escape" })).toBeNull();
   });
+
+  it("does not shift number-row symbols with caps lock", () => {
+    const digit = { ...event, code: "Digit4", capsLock: true };
+    expect(getCharFromLayout(qwerty, digit)).toBe("4");
+    expect(getCharFromLayout(qwerty, { ...digit, shift: true })).toBe("$");
+  });
 });
