@@ -3,6 +3,7 @@ on:
   schedule:
     - cron: "31 3 * * *"
   workflow_dispatch:
+  workflow_call:
   pull_request:
     paths:
       - "frontend/cross-browser-e2e/**"
