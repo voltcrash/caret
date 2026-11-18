@@ -315,6 +315,18 @@ test("returning guests can compare recent scores for the selected test", async (
   await expect(page.getByText(/Recent guest scores/)).toHaveCount(0);
 });
 
+test("guests can disable on-device result saving", async ({ page }) => {
+  await useConfig(page, { mode: "words", words: 10, resultSaving: false });
+  await openTest(page);
+  const words = await page.locator("#words .word").allTextContents();
+  await page.locator("#words .word").first().click();
+  await page.keyboard.type(words.join(" "), { delay: 80 });
+  await expect(page.locator("#result .loginTip")).toBeVisible();
+  expect(
+    await page.evaluate(() => localStorage.getItem("caret-guest-scores-v1")),
+  ).toBeNull();
+});
+
 test("result screenshots download from the native route", async ({ page }) => {
   await useConfig(page, { mode: "words", words: 10 });
   const errors = trackErrors(page);
