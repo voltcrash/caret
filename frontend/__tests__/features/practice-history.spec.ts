@@ -101,4 +101,7 @@ it("ranks legacy misses by evidence and retires weaknesses after clean attempts"
     history.weakest(context).map((entry) => entry.word);
   expect(ranked()).toEqual(["persistent", "rare"]);
   expect(history.history().goalMinutes).toBe(12);
+
+  history.record(context, ["persistent"], {}, [], 1);
+  expect(ranked()).toEqual(["rare", "persistent"]);
 });
