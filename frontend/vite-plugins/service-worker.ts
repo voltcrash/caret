@@ -132,7 +132,8 @@ export function startServiceWorker(options: {
     name: "caret-service-worker",
     apply: "build",
     applyToEnvironment: (environment) => environment.name === "client",
-    generateBundle(_options, bundle) {
+    // The single document stylesheet is emitted during generateBundle.
+    writeBundle(_options, bundle) {
       outDir = this.environment.config.build.outDir;
       precache = [
         ...precacheFromBundle(bundle),

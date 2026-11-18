@@ -75,6 +75,25 @@ export default defineConfig(async ({ mode, command }) => {
       noExternal: ["solid-js", "@tanstack/solid-router", "@solidjs/meta"],
     },
     environments: {
+      client: {
+        build: {
+          rolldownOptions: {
+            output: {
+              codeSplitting: {
+                groups: [
+                  // Keep the static entry graph together across lazy route boundaries.
+                  { name: "startup", tags: ["$initial"] },
+                  // Preferences mount on every route, after the entry has loaded.
+                  {
+                    name: "platform",
+                    test: /[/\\]app[/\\]platform-runtime\.client\.tsx$/,
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
       ssr: {
         build: { minify: true, sourcemap: true },
         optimizeDeps: {
@@ -181,6 +200,8 @@ export default defineConfig(async ({ mode, command }) => {
       "import.meta.env.CARET_SENTRY_ORIGIN": JSON.stringify(sentryOrigin),
     },
     build: {
+      // Start inlines the global stylesheet. Route imports must not fetch it again.
+      cssCodeSplit: false,
       outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start",
     },
     server: { port: 3000, strictPort: true },
