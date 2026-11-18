@@ -312,7 +312,7 @@ it.each([
 
 it("builds the production Worker once and shares it with SSR and browser shards", () => {
   const build = workflow.jobs["start-build"];
-  for (const flag of ["start-ssr", "start-browser"]) {
+  for (const flag of ["start-ssr", "start-browser", "typing-smoke"]) {
     expect(build.if).toContain(`needs.changes.outputs.${flag} == 'true'`);
   }
   const upload = build.steps.find((step) =>
@@ -338,6 +338,8 @@ it("builds the production Worker once and shares it with SSR and browser shards"
       job.steps.some((step) => /build:start(?:$|\s)/.test(step.run ?? "")),
     ).toBe(false);
   }
+  expect(workflow.jobs["typing-smoke"].needs).toContain("start-build");
+  expect(workflow.jobs["ci-ok"].needs).toContain("typing-smoke");
   expect(workflow.jobs["ci-ok"].needs).toContain("start-build");
 });
 
