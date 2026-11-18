@@ -94,4 +94,6 @@ test("starts a five-word drill beside Next test and reports improved words", asy
     ),
   ).toBeVisible();
   await page.screenshot({ path: "test-results/weak-word-result.png" });
+  await page.getByRole("button", { name: "Next test", exact: true }).click();
+  await expect(page.locator("#words .word")).toHaveCount(15);
 });
