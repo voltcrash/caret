@@ -2,7 +2,7 @@ import { expect, openTest, completeWords, test } from "./fixtures";
 
 test.use({ config: { mode: "words", words: 15, smoothCaret: "off" } });
 
-test("practice recommendations and daily goals survive a reload", async ({
+test("a clean test leaves the drill disabled and preserves progress on reload", async ({
   page,
 }) => {
   await openTest(page);
@@ -18,7 +18,7 @@ test("practice recommendations and daily goals survive a reload", async ({
     name: "Practice weak words · 60 seconds",
     exact: true,
   });
-  await expect(drill).toBeEnabled();
+  await expect(drill).toBeDisabled();
   await modal
     .getByRole("spinbutton", { name: "Daily goal (minutes)" })
     .fill("3");
