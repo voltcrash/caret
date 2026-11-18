@@ -35,6 +35,15 @@ for (const saved of [false, true]) {
 test("first visit keeps its first painted words when the engine becomes ready", async ({
   page,
 }, info) => {
+  const stylesheets: string[] = [];
+  page.on("request", (request) => {
+    if (
+      request.resourceType() === "stylesheet" &&
+      new URL(request.url()).pathname.startsWith("/assets/")
+    ) {
+      stylesheets.push(request.url());
+    }
+  });
   const pending = Promise.withResolvers<undefined>();
   let blocked = false;
   await page.route("**/assets/*.wasm", async (route) => {
@@ -78,6 +87,7 @@ test("first visit keeps its first painted words when the engine becomes ready", 
     await page.locator("#words .word").first().click();
     await page.keyboard.type(first);
     await expect(page.locator("#words letter.correct")).toHaveCount(1);
+    expect(stylesheets).toEqual([]);
     await page.screenshot({ path: info.outputPath("first-paint-ready.png") });
   } finally {
     pending.resolve(undefined);
