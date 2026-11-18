@@ -37,6 +37,7 @@ import {
   getMissedWords,
   getWordBurstHistory,
 } from "../analysis.client";
+import * as PractiseWords from "./practise-words";
 import { practiceHistory } from "../practice-history.client";
 type InvalidResultReason =
   | "inconsistent duration"
@@ -212,21 +213,32 @@ export function createCompletion(
     const customTextName = snapshot.customIndicator?.name ?? "";
     // Ordinary generated text and our own drills only: never persist arbitrary
     // custom/zen text into the learning model.
-    if (
-      !dontSave &&
-      (["time", "words", "quote"].includes(config.mode) ||
-        customTextName === "practice")
-    ) {
-      once("practice", () =>
-        practiceHistory().record(
-          `${config.language}:${config.layout}`,
-          words.slice(0, getAnalysis(eventLog).inputHistory.length),
-          getMissedWords(eventLog),
-          getWordBurstHistory(eventLog),
-          completedEvent.testDuration - completedEvent.afkDuration,
-        ),
+    once("practice", () => {
+      PractiseWords.setPracticeResult(null);
+      const drill =
+        config.mode === "custom" &&
+        PractiseWords.before.mode !== null &&
+        customTextName === "practice";
+      if (
+        dontSave ||
+        !snapshot.account.isCurrent() ||
+        !(["time", "words", "quote"].includes(config.mode) || drill)
+      ) {
+        return;
+      }
+      const context = `${config.language}:${config.layout}`;
+      practiceHistory().record(
+        context,
+        words.slice(0, getAnalysis(eventLog).inputHistory.length),
+        getMissedWords(eventLog),
+        getWordBurstHistory(eventLog),
+        completedEvent.testDuration - completedEvent.afkDuration,
       );
-    }
+      PractiseWords.setPracticeResult({
+        context,
+        improved: drill ? PractiseWords.improvedDrillWords(context) : undefined,
+      });
+    });
     const isLong = snapshot.customIndicator?.isLong === true;
     if (config.mode === "custom" && customTextName !== "" && isLong) {
       once("longText", () => {

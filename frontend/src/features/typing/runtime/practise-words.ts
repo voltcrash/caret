@@ -31,6 +31,11 @@ const previous = createAppOwned((): Before => ({
 export const before = appObject(previous);
 
 const [baseline, setBaseline] = createAccountSignal<PracticeWord[]>([]);
+export const [practiceResult, setPracticeResult] = createAccountSignal<{
+  context: string;
+  improved?: string[];
+} | null>(null);
+
 export function improvedDrillWords(context: string): string[] | undefined {
   const targets = baseline();
   if (!targets.length || targets[0]?.context !== context) return undefined;
