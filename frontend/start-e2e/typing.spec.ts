@@ -301,6 +301,8 @@ test("returning guests can compare recent scores for the selected test", async (
   await expect(rows.first()).toContainText("100%");
   await expect(rows.last()).toContainText("52");
   await expect(rows.last()).toContainText("94%");
+  await page.getByRole("button", { name: "25", exact: true }).click();
+  await expect(rows).toHaveCount(8);
 });
 
 test("result screenshots download from the native route", async ({ page }) => {
