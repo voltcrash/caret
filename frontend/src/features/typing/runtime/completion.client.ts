@@ -38,6 +38,7 @@ import {
   getWordBurstHistory,
 } from "../analysis.client";
 import * as PractiseWords from "./practise-words";
+import { recordGuestScore } from "../guest-scores.client";
 import { practiceHistory } from "../practice-history.client";
 type InvalidResultReason =
   | "inconsistent duration"
@@ -307,6 +308,9 @@ export function createCompletion(
       if (!dontSave) {
         // if its valid save it for later
         once("signedOut", () => setLastSignedOutResult(completedEvent));
+        if (config.resultSaving && snapshot.account.isCurrent()) {
+          once("guestScore", () => recordGuestScore(completedEvent));
+        }
       }
       dontSave = true;
     }
