@@ -12,6 +12,7 @@ permissions:
   contents: read
 jobs:
   performance:
+    if: github.event_name != 'pull_request'
     runs-on: ${{ vars.CARET_PERFORMANCE_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 25
     steps:
