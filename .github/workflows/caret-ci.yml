@@ -133,6 +133,7 @@ jobs:
               - 'frontend/src/features/typing/**'
               - 'frontend/src/ts/input/**'
               - 'frontend/src/ts/constants/keys.ts'
+              - 'frontend/src/ts/utils/{key-converter,quick-restart}.ts'
               - 'frontend/cross-browser-e2e/**'
               - 'frontend/playwright.{cross-browser,start}.config.ts'
               - '.github/workflows/browser-compatibility.yml'
