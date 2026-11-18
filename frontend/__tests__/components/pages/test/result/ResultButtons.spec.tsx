@@ -58,7 +58,8 @@ vi.mock("../../../../../src/ts/states/core", async () => {
 });
 
 import { ResultButtons } from "../../../../../src/features/typing/components/result/ResultButtons";
-import { setConfigStore } from "../../../../../src/ts/config/store";
+import { setPracticeResult } from "../../../../../src/features/typing/runtime/practise-words";
+import { getConfig, setConfigStore } from "../../../../../src/ts/config/store";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
 import { setResultState } from "../../../../../src/ts/states/result";
 import { getKeyboardProxyElement } from "../../../../../src/ts/states/test-dom";
@@ -77,6 +78,7 @@ describe("ResultButtons", () => {
 
   afterEach(() => {
     cleanup();
+    setPracticeResult(null);
     vi.clearAllMocks();
     vi.restoreAllMocks();
     setResultState({ retrySaving: false, noStress: false });
@@ -103,6 +105,18 @@ describe("ResultButtons", () => {
     expect(byId(c, "saveScreenshotButton")).toHaveAttribute(
       "data-balloon-break",
     );
+  });
+
+  it("reports a completed drill with no improvement even when no targets remain", () => {
+    setPracticeResult({
+      context: `${getConfig.language}:${getConfig.layout}`,
+      improved: [],
+    });
+    const c = renderButtons();
+    expect(c).toHaveTextContent("No words improved this drill.");
+    expect(byId(c, "practiceWeakWordsButton")).toBeNull();
+    setPracticeResult(null);
+    expect(c).not.toHaveTextContent("No words improved this drill.");
   });
 
   it("wires the button actions", () => {

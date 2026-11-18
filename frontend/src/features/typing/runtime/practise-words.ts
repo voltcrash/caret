@@ -1,11 +1,11 @@
 import { createAppOwned } from "../../../app/application";
-import { appObject } from "../../../app/state";
+import { appObject, createAccountSignal } from "../../../app/state";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "./session.client";
 import * as TestWords from "./test-words";
 import { showNoticeNotification } from "../../../ts/states/notifications";
 
-import { getMutableConfig } from "../../../ts/config/store";
+import { getConfig, getMutableConfig } from "../../../ts/config/store";
 import { setConfig } from "../../../ts/config/setters";
 import * as CustomText from "./custom-text";
 import { configEvent } from "../../../ts/events/config";
@@ -13,7 +13,7 @@ import { Mode } from "@caret/schemas/shared";
 import { CustomTextSettings } from "@caret/schemas/results";
 import { setCustomTextIndicator } from "../../../ts/states/core";
 import { getLastEventLog } from "../../../ts/states/test";
-import { practiceHistory } from "../practice-history.client";
+import { practiceHistory, type PracticeWord } from "../practice-history.client";
 
 type Before = {
   mode: Mode | null;
@@ -30,11 +30,41 @@ const previous = createAppOwned((): Before => ({
 }));
 export const before = appObject(previous);
 
+const [baseline, setBaseline] = createAccountSignal<PracticeWord[]>([]);
+export const [practiceResult, setPracticeResult] = createAccountSignal<{
+  context: string;
+  improved?: string[];
+} | null>(null);
+
+export function improvedDrillWords(context: string): string[] | undefined {
+  const targets = baseline();
+  if (!targets.length || targets[0]?.context !== context) return undefined;
+  const history = practiceHistory().history().words;
+  return targets
+    .filter((before) => {
+      const after = history.find(
+        (entry) => entry.word === before.word && entry.context === context,
+      );
+      if (!after || after.seen <= before.seen) return false;
+      const oldRate = before.misses / before.seen;
+      const newRate = after.misses / after.seen;
+      return (
+        newRate < oldRate ||
+        (newRate === oldRate && before.burst > 0 && after.burst > before.burst)
+      );
+    })
+    .map((entry) => entry.word);
+}
+
+export function weakestWords(): PracticeWord[] {
+  return practiceHistory()
+    .weakest(`${getConfig.language}:${getConfig.layout}`)
+    .slice(0, 5);
+}
+
 export function initFromHistory(): boolean {
   const config = getMutableConfig();
-  const selected = practiceHistory().weakest(
-    `${config.language}:${config.layout}`,
-  );
+  const selected = weakestWords();
   if (selected.length === 0) return false;
   const previous = {
     mode: before.mode ?? config.mode,
@@ -42,7 +72,9 @@ export function initFromHistory(): boolean {
     numbers: before.numbers ?? config.numbers,
     customText:
       before.customText ??
-      (config.mode === "custom" ? CustomText.getData() : null),
+      (before.mode === null && config.mode === "custom"
+        ? CustomText.getData()
+        : null),
   };
   setConfig("mode", "custom", { nosave: true });
   CustomText.setPipeDelimiter(true);
@@ -52,6 +84,7 @@ export function initFromHistory(): boolean {
   CustomText.setLimitValue(60);
   setCustomTextIndicator({ name: "practice", isLong: false });
   Object.assign(before, previous);
+  setBaseline(selected);
   return true;
 }
 
@@ -98,6 +131,7 @@ export function init(
 
   setCustomTextIndicator({ name: "practice", isLong: false });
 
+  setBaseline([]);
   before.mode = mode;
   before.punctuation = punctuation;
   before.numbers = numbers;
@@ -107,6 +141,7 @@ export function init(
 }
 
 export function resetBefore(): void {
+  setBaseline([]);
   before.mode = null;
   before.punctuation = null;
   before.numbers = null;

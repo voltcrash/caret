@@ -1,4 +1,5 @@
 import {
+  createMemo,
   createSignal,
   For,
   JSXElement,
@@ -15,10 +16,15 @@ import { getIsScreenshotting } from "../../../../ts/states/core";
 import { showModal } from "../../../../ts/states/modals";
 import { showNoticeNotification } from "../../../../ts/states/notifications";
 import { resultState } from "../../../../ts/states/result";
-import { getResultVisible } from "../../../../ts/states/test";
+import {
+  getResultVisible,
+  isResultCalculating,
+  isTestRestarting,
+} from "../../../../ts/states/test";
 import { FaObject } from "../../../../ts/types/font-awesome";
 import { cn } from "../../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../../ts/utils/pointer";
+import * as PractiseWords from "../../runtime/practise-words";
 import { toggleReplayDisplay } from "../../runtime/replay";
 import { toggleResultWords } from "../../runtime/result";
 import * as TestLogic from "../../runtime/test-logic";
@@ -45,6 +51,12 @@ export function ResultButtons(): JSXElement {
     document.removeEventListener("keyup", onShift);
   });
 
+  const canDrill = createMemo(
+    () =>
+      PractiseWords.practiceResult()?.context ===
+        `${getConfig.language}:${getConfig.layout}` &&
+      PractiseWords.weakestWords().length > 0,
+  );
   const buttons: {
     id: string;
     label: string;
@@ -52,6 +64,7 @@ export function ResultButtons(): JSXElement {
     shortLabel: string;
     icon: () => FaObject;
     class?: string;
+    visible?: () => boolean;
     // hidden in glarses mode
     noStressHidden?: boolean;
     balloonBreak?: boolean;
@@ -62,12 +75,35 @@ export function ResultButtons(): JSXElement {
       label: "Next test",
       shortLabel: "next test",
       // phones: primary action, main-colored and tall
-      class:
-        "max-md:col-span-full max-md:flex-row max-md:gap-2 max-md:px-[1em]! max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
+      get class() {
+        return cn(
+          canDrill() ? "max-md:col-span-3" : "max-md:col-span-full",
+          "max-md:flex-row max-md:gap-2 max-md:px-[1em]! max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
+        );
+      },
       icon: () => ({ icon: "fa-chevron-right" }),
       onClick: () => {
         holdKeyboardForRestart();
         void TestLogic.restart();
+      },
+    },
+    {
+      id: "practiceWeakWordsButton",
+      label: "Practice weak words",
+      shortLabel: "practice weak words",
+      class: "max-md:col-span-3",
+      visible: canDrill,
+      icon: () => ({ icon: "fa-bullseye" }),
+      onClick: () => {
+        if (
+          isResultCalculating() ||
+          isTestRestarting() ||
+          !PractiseWords.initFromHistory()
+        ) {
+          return;
+        }
+        holdKeyboardForRestart();
+        void TestLogic.restart({ practiseMissed: true });
       },
     },
     {
@@ -143,6 +179,15 @@ export function ResultButtons(): JSXElement {
   return (
     <>
       <EngineMemoryNotice />
+      <Show when={PractiseWords.practiceResult()?.improved}>
+        {(improved) => (
+          <p class="col-[1/3] text-center text-sub">
+            {improved().length
+              ? `Improved: ${improved().join(", ")}`
+              : "No words improved this drill."}
+          </p>
+        )}
+      </Show>
       <Show when={resultState.retrySaving}>
         <button
           type="button"
@@ -156,12 +201,12 @@ export function ResultButtons(): JSXElement {
       </Show>
       <div
         class={cn(
-          // phones: 6 columns; next test spans the row, the five others get 2 or 3 cols each
+          // Phones share the first row between Next test and the available drill.
           "buttons col-[1/3] grid grid-flow-col justify-center gap-4 max-md:grid-flow-row max-md:grid-cols-6 max-md:gap-2",
           getIsScreenshotting() && "hidden",
         )}
       >
-        <For each={buttons}>
+        <For each={buttons.filter((button) => button.visible?.() ?? true)}>
           {(button) => (
             <Button
               variant="text"
@@ -169,7 +214,7 @@ export function ResultButtons(): JSXElement {
               aria-label={button.label}
               fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
-                "max-md:col-span-2 max-md:nth-[n+5]:col-span-3 max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
+                "max-md:col-span-2 max-md:nth-last-of-type-[-n+2]:col-span-3 max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
                 button.class,
                 button.noStressHidden && resultState.noStress && "hidden",
               )}
@@ -180,7 +225,14 @@ export function ResultButtons(): JSXElement {
               }}
               onClick={(event) => button.onClick(event)}
             >
-              <span class="hidden max-md:block">{button.shortLabel}</span>
+              <span
+                class={cn(
+                  button.id !== "practiceWeakWordsButton" &&
+                    "hidden max-md:block",
+                )}
+              >
+                {button.shortLabel}
+              </span>
             </Button>
           )}
         </For>

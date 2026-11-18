@@ -3,7 +3,6 @@ import { For, JSXElement, ParentProps, createSignal } from "solid-js";
 import { practiceHistory } from "../../../features/typing/practice-history.client";
 import * as PractiseWords from "../../../features/typing/runtime/practise-words";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";
-import { getConfig } from "../../config/store";
 import { hideModalAndClearChain } from "../../states/modals";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
@@ -35,8 +34,7 @@ export function PractiseWordsModal(): JSXElement {
   const [missed, setMissed] = createSignal<Missed>("words");
   const [slow, setSlow] = createSignal(false);
   const learning = practiceHistory();
-  const weakest = () =>
-    learning.weakest(`${getConfig.language}:${getConfig.layout}`);
+  const weakest = PractiseWords.weakestWords;
   const secondsToday = () =>
     learning.history().day === new Date().toLocaleDateString("en-CA")
       ? learning.history().seconds
@@ -78,7 +76,6 @@ export function PractiseWordsModal(): JSXElement {
         <p class="text-sub">
           Recommended:{" "}
           {weakest()
-            .slice(0, 5)
             .map((word) => word.word)
             .join(", ") || "No weak words to practice."}
         </p>
