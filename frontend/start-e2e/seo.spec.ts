@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { blockDocumentStyles, expect, test } from "./fixtures";
 
 test("homepage starts with typing and keeps explanatory content on the about page", async ({
   page,
@@ -280,7 +280,7 @@ test("new guides load through client navigation with matching Article metadata",
 });
 
 test("static CSS recovery still works after the content", async ({ page }) => {
-  await page.route("**/*.css", async (route) => await route.abort());
+  await page.route("**/about", blockDocumentStyles);
   await page.goto("/about");
   await expect(page.locator("#nocss")).toBeVisible();
   await expect(page.locator("#nocss")).toContainText(
