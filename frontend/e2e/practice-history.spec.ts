@@ -77,4 +77,21 @@ test("starts a five-word drill beside Next test and reports improved words", asy
   const words = page.locator("#words .word");
   const selected = targets.slice(0, 5);
   expect(new Set(await words.allTextContents())).toEqual(new Set(selected));
+  const attempted = new Set<string>();
+  await words.first().click();
+  for (const elapsed of [56_000, 5000]) {
+    const word = await page.locator("#words .word.active").textContent();
+    if (word === null) throw new Error("Missing active drill word");
+    attempted.add(word);
+    await page.keyboard.type(`${word} `, { delay: 12 });
+    await page.clock.runFor(elapsed);
+  }
+  await expect(page.locator("#result")).toBeFocused();
+  await expect(
+    page.getByText(
+      `Improved: ${selected.filter((word) => attempted.has(word)).join(", ")}`,
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await page.screenshot({ path: "test-results/weak-word-result.png" });
 });
