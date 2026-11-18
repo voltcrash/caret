@@ -23,7 +23,7 @@ Both revisions used the local production Start Worker fixture. HTTP/1.1 connecte
 
 ## Reproduce on the local HTTP/1.1 fixture
 
-Use the same benchmark file on both revisions. The JSON reporter retains the acceptance timestamp and request waterfall for each sample.
+This command measures one revision over HTTP/1.1. For the paired comparison, separate local ports served the two builds. A single Playwright worker alternated baseline-first and candidate-first pairs. Each HTTP/2 port forwarded to its corresponding Worker through a Node TLS HTTP/2 reverse proxy. The JSON reporter retains each acceptance timestamp and request waterfall.
 
 ```sh
 vp run build
