@@ -64,6 +64,7 @@ const allJobs = [
   "frontend-test",
   "start-ssr",
   "start-browser",
+  "typing-smoke",
   "start-updates",
   "start-delivery",
   "packages",
@@ -165,8 +166,10 @@ describe("application sources", () => {
     ]);
   });
 
-  it("runs every job for bundled package sources", () => {
-    expect(selected(["packages/schemas/src/results.ts"])).toEqual(allJobs);
+  it("runs application and engine checks for bundled schemas", () => {
+    expect(selected(["packages/schemas/src/results.ts"])).toEqual(
+      allJobs.filter((job) => job !== "typing-smoke"),
+    );
   });
 });
 
@@ -195,6 +198,7 @@ describe("test-only changes", () => {
         "frontend-test",
         "start-ssr",
         "start-browser",
+        "typing-smoke",
         "start-updates",
       ],
     ],
@@ -253,6 +257,7 @@ describe("static files", () => {
   it("runs layout consumers for layout files", () => {
     expect(selected(["frontend/static/layouts/qwerty.json"])).toEqual([
       "frontend-test",
+      "typing-smoke",
       "packages",
       "assets",
     ]);
