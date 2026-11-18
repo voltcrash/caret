@@ -1,5 +1,5 @@
 import { createAppOwned } from "../../../app/application";
-import { appObject } from "../../../app/state";
+import { appObject, createAccountSignal } from "../../../app/state";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "./session.client";
 import * as TestWords from "./test-words";
@@ -30,6 +30,27 @@ const previous = createAppOwned((): Before => ({
 }));
 export const before = appObject(previous);
 
+const [baseline, setBaseline] = createAccountSignal<PracticeWord[]>([]);
+export function improvedDrillWords(context: string): string[] | undefined {
+  const targets = baseline();
+  if (!targets.length || targets[0]?.context !== context) return undefined;
+  const history = practiceHistory().history().words;
+  return targets
+    .filter((before) => {
+      const after = history.find(
+        (entry) => entry.word === before.word && entry.context === context,
+      );
+      if (!after || after.seen <= before.seen) return false;
+      const oldRate = before.misses / before.seen;
+      const newRate = after.misses / after.seen;
+      return (
+        newRate < oldRate ||
+        (newRate === oldRate && before.burst > 0 && after.burst > before.burst)
+      );
+    })
+    .map((entry) => entry.word);
+}
+
 export function weakestWords(): PracticeWord[] {
   return practiceHistory()
     .weakest(`${getConfig.language}:${getConfig.layout}`)
@@ -58,6 +79,7 @@ export function initFromHistory(): boolean {
   CustomText.setLimitValue(60);
   setCustomTextIndicator({ name: "practice", isLong: false });
   Object.assign(before, previous);
+  setBaseline(selected);
   return true;
 }
 
@@ -104,6 +126,7 @@ export function init(
 
   setCustomTextIndicator({ name: "practice", isLong: false });
 
+  setBaseline([]);
   before.mode = mode;
   before.punctuation = punctuation;
   before.numbers = numbers;
@@ -113,6 +136,7 @@ export function init(
 }
 
 export function resetBefore(): void {
+  setBaseline([]);
   before.mode = null;
   before.punctuation = null;
   before.numbers = null;
