@@ -3,6 +3,7 @@ import { createSignal } from "solid-js";
 import { createAccountOwned, captureAccount } from "../../app/account-scope";
 import { LocalStorageWithSchema } from "../../ts/utils/local-storage-with-schema";
 
+const cleanAttemptsToRetire = 3;
 const priorCleanAttempts = 4;
 
 const wordSchema = z.object({
@@ -56,6 +57,11 @@ export function updatePracticeHistory(
       seen: (previous?.seen ?? 0) + 1,
       misses:
         (previous?.misses ?? 0) + (creditedMisses.has(word) ? 0 : testMisses),
+      // Misses are aggregated per word, so a mixed test cannot establish a clean streak.
+      cleanStreak:
+        testMisses > 0
+          ? 0
+          : Math.min(cleanAttemptsToRetire, (previous?.cleanStreak ?? 0) + 1),
       burst:
         burst !== undefined && Number.isFinite(burst)
           ? previous === undefined
