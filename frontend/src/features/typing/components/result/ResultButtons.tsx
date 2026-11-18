@@ -75,8 +75,12 @@ export function ResultButtons(): JSXElement {
       label: "Next test",
       shortLabel: "next test",
       // phones: primary action, main-colored and tall
-      class:
-        "max-md:col-span-full max-md:flex-row max-md:gap-2 max-md:px-[1em]! max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
+      get class() {
+        return cn(
+          canDrill() ? "max-md:col-span-3" : "max-md:col-span-full",
+          "max-md:flex-row max-md:gap-2 max-md:px-[1em]! max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
+        );
+      },
       icon: () => ({ icon: "fa-chevron-right" }),
       onClick: () => {
         holdKeyboardForRestart();
@@ -87,6 +91,7 @@ export function ResultButtons(): JSXElement {
       id: "practiceWeakWordsButton",
       label: "Practice weak words",
       shortLabel: "practice weak words",
+      class: "max-md:col-span-3",
       visible: canDrill,
       icon: () => ({ icon: "fa-bullseye" }),
       onClick: () => {
@@ -187,7 +192,7 @@ export function ResultButtons(): JSXElement {
       </Show>
       <div
         class={cn(
-          // Phones use a six-column action grid.
+          // Phones share the first row between Next test and the available drill.
           "buttons col-[1/3] grid grid-flow-col justify-center gap-4 max-md:grid-flow-row max-md:grid-cols-6 max-md:gap-2",
           getIsScreenshotting() && "hidden",
         )}
@@ -200,7 +205,7 @@ export function ResultButtons(): JSXElement {
               aria-label={button.label}
               fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
-                "max-md:col-span-2 max-md:nth-[n+5]:col-span-3 max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
+                "max-md:col-span-2 max-md:nth-last-of-type-[-n+2]:col-span-3 max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
                 button.class,
                 button.noStressHidden && resultState.noStress && "hidden",
               )}
