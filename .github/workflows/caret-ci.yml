@@ -142,6 +142,7 @@ jobs:
               - 'packages/web-shared/src/{input/**,keys.ts,layout-emulator.ts}'
               - 'frontend/cross-browser-e2e/**'
               - 'frontend/playwright.{cross-browser,start}.config.ts'
+              - 'frontend/e2e/fixtures.ts'
               - '.github/workflows/browser-compatibility.yml'
             update-tests:
               - 'frontend/update-e2e/**'
