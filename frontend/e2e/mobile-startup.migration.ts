@@ -5,7 +5,7 @@ test.use({ ...devices["Pixel 5"], serviceWorkers: "block" });
 test("cold guest accepts the first painted letter after one tap", async ({
   page,
   context,
-}) => {
+}, info) => {
   const cdp = await context.newCDPSession(page);
   await cdp.send("Network.enable");
   await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
@@ -59,4 +59,33 @@ test("cold guest accepts the first painted letter after one tap", async ({
   console.log(
     `Navigation to first correct letter: ${Math.round(acceptedMs)} ms`,
   );
+  await info.attach("mobile-startup", {
+    contentType: "application/json",
+    body: JSON.stringify({
+      acceptedMs,
+      resources: await page.evaluate(() =>
+        performance
+          .getEntriesByType("resource")
+          .filter(
+            (entry): entry is PerformanceResourceTiming =>
+              entry instanceof PerformanceResourceTiming,
+          )
+          .map(
+            ({
+              name,
+              startTime,
+              responseEnd,
+              encodedBodySize,
+              nextHopProtocol,
+            }) => ({
+              name,
+              startTime,
+              responseEnd,
+              encodedBodySize,
+              nextHopProtocol,
+            }),
+          ),
+      ),
+    }),
+  });
 });
