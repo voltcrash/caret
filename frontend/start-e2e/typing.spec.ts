@@ -275,7 +275,7 @@ test("returning guests can compare recent scores for the selected test", async (
   page,
   context,
 }) => {
-  await useConfig(page, { mode: "words", words: 10 });
+  await useConfig(page, { mode: "words", words: 10, quickRestart: "enter" });
   await page.addInitScript(() => {
     if (localStorage.getItem("caret-guest-scores-v1") === null) {
       const scores = Array.from({ length: 10 }, (_, i) => ({
@@ -296,7 +296,8 @@ test("returning guests can compare recent scores for the selected test", async (
   const speed = await page.locator("#result .wpm .bottom").innerText();
   await page.reload();
   const summary = page.getByText("Recent guest scores · 10 words");
-  await summary.click();
+  await summary.focus();
+  await summary.press("Enter");
   const rows = page
     .getByRole("table", { name: "On this device · newest first" })
     .locator("tbody tr");
