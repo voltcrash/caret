@@ -41,6 +41,7 @@ jobs:
       frontend-test: ${{ steps.select.outputs.frontend-test }}
       start-ssr: ${{ steps.select.outputs.start-ssr }}
       start-browser: ${{ steps.select.outputs.start-browser }}
+      typing-smoke: ${{ steps.select.outputs.typing-smoke }}
       start-updates: ${{ steps.select.outputs.start-updates }}
       start-delivery: ${{ steps.select.outputs.start-delivery }}
       packages: ${{ steps.select.outputs.packages }}
@@ -128,6 +129,10 @@ jobs:
               - 'frontend/{e2e,start-e2e}/**'
               - 'frontend/playwright.start.config.ts'
               - 'frontend/scripts/{browser-shards.ts,test-browser-shard.ts,browser-durations.json}'
+            typing-smoke:
+              - 'frontend/cross-browser-e2e/**'
+              - 'frontend/playwright.{cross-browser,start}.config.ts'
+              - '.github/workflows/browser-compatibility.yml'
             update-tests:
               - 'frontend/update-e2e/**'
               - 'frontend/playwright.update.config.ts'
@@ -190,6 +195,7 @@ jobs:
           enable frontend-test "${runtime[@]}" frontend frontend-tests start-tests backend-test-support static-layouts
           enable start-ssr "${runtime[@]}" frontend start-tests backend-test-support static-delivery
           enable start-browser "${runtime[@]}" frontend start-tests browser-tests static-delivery
+          enable typing-smoke typing-smoke engine
           enable start-updates "${runtime[@]}" frontend start-tests update-tests static-delivery
           enable start-delivery "${runtime[@]}" frontend static-delivery
           enable packages packages lint-config static-layouts static-challenges engine
@@ -346,7 +352,7 @@ jobs:
   start-build:
     name: start-build
     needs: [changes]
-    if: needs.changes.outputs.start-ssr == 'true' || needs.changes.outputs.start-browser == 'true'
+    if: needs.changes.outputs.start-ssr == 'true' || needs.changes.outputs.start-browser == 'true' || needs.changes.outputs.typing-smoke == 'true'
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
@@ -481,6 +487,11 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  typing-smoke:
+    needs: [changes, start-build]
+    if: github.event_name == 'pull_request' && needs.changes.outputs.typing-smoke == 'true'
+    uses: ./.github/workflows/browser-compatibility.yml
+
   start-updates:
     name: start-updates
     needs: [changes]
@@ -570,6 +581,7 @@ jobs:
         start-runtime-build,
         start-ssr,
         start-browser,
+        typing-smoke,
         start-updates,
         start-delivery,
         ci-pkg,
