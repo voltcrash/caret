@@ -148,13 +148,13 @@ export async function update(
   if (!lease.isCurrent()) return;
   await updateChartData();
   if (!lease.isCurrent()) return;
-  updateResultChartDataVisibility();
-  updateMinMaxChartValues();
   await updateChartPBLine();
   if (!lease.isCurrent()) return;
-  applyMinMaxChartValues();
   await updateTags(dontSave);
   if (!lease.isCurrent()) return;
+  updateResultChartDataVisibility();
+  updateMinMaxChartValues();
+  applyMinMaxChartValues();
 
   ((getResultChart().options as PluginChartOptions<"line" | "scatter">).plugins
     .annotation.annotations as AnnotationOptions<"line">[]) = resultAnnotation;
