@@ -179,6 +179,15 @@ export function ResultButtons(): JSXElement {
   return (
     <>
       <EngineMemoryNotice />
+      <Show when={PractiseWords.practiceResult()?.improved}>
+        {(improved) => (
+          <p class="col-[1/3] text-center text-sub">
+            {improved().length
+              ? `Improved: ${improved().join(", ")}`
+              : "No words improved this drill."}
+          </p>
+        )}
+      </Show>
       <Show when={resultState.retrySaving}>
         <button
           type="button"
