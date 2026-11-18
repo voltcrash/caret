@@ -1,4 +1,5 @@
 import {
+  createMemo,
   createSignal,
   For,
   JSXElement,
@@ -15,10 +16,15 @@ import { getIsScreenshotting } from "../../../../ts/states/core";
 import { showModal } from "../../../../ts/states/modals";
 import { showNoticeNotification } from "../../../../ts/states/notifications";
 import { resultState } from "../../../../ts/states/result";
-import { getResultVisible } from "../../../../ts/states/test";
+import {
+  getResultVisible,
+  isResultCalculating,
+  isTestRestarting,
+} from "../../../../ts/states/test";
 import { FaObject } from "../../../../ts/types/font-awesome";
 import { cn } from "../../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../../ts/utils/pointer";
+import * as PractiseWords from "../../runtime/practise-words";
 import { toggleReplayDisplay } from "../../runtime/replay";
 import { toggleResultWords } from "../../runtime/result";
 import * as TestLogic from "../../runtime/test-logic";
@@ -45,6 +51,12 @@ export function ResultButtons(): JSXElement {
     document.removeEventListener("keyup", onShift);
   });
 
+  const canDrill = createMemo(
+    () =>
+      PractiseWords.practiceResult()?.context ===
+        `${getConfig.language}:${getConfig.layout}` &&
+      PractiseWords.weakestWords().length > 0,
+  );
   const buttons: {
     id: string;
     label: string;
@@ -52,6 +64,7 @@ export function ResultButtons(): JSXElement {
     shortLabel: string;
     icon: () => FaObject;
     class?: string;
+    visible?: () => boolean;
     // hidden in glarses mode
     noStressHidden?: boolean;
     balloonBreak?: boolean;
@@ -68,6 +81,24 @@ export function ResultButtons(): JSXElement {
       onClick: () => {
         holdKeyboardForRestart();
         void TestLogic.restart();
+      },
+    },
+    {
+      id: "practiceWeakWordsButton",
+      label: "Practice weak words",
+      shortLabel: "practice weak words",
+      visible: canDrill,
+      icon: () => ({ icon: "fa-bullseye" }),
+      onClick: () => {
+        if (
+          isResultCalculating() ||
+          isTestRestarting() ||
+          !PractiseWords.initFromHistory()
+        ) {
+          return;
+        }
+        holdKeyboardForRestart();
+        void TestLogic.restart({ practiseMissed: true });
       },
     },
     {
@@ -156,12 +187,12 @@ export function ResultButtons(): JSXElement {
       </Show>
       <div
         class={cn(
-          // phones: 6 columns; next test spans the row, the five others get 2 or 3 cols each
+          // Phones use a six-column action grid.
           "buttons col-[1/3] grid grid-flow-col justify-center gap-4 max-md:grid-flow-row max-md:grid-cols-6 max-md:gap-2",
           getIsScreenshotting() && "hidden",
         )}
       >
-        <For each={buttons}>
+        <For each={buttons.filter((button) => button.visible?.() ?? true)}>
           {(button) => (
             <Button
               variant="text"
@@ -180,7 +211,14 @@ export function ResultButtons(): JSXElement {
               }}
               onClick={(event) => button.onClick(event)}
             >
-              <span class="hidden max-md:block">{button.shortLabel}</span>
+              <span
+                class={cn(
+                  button.id !== "practiceWeakWordsButton" &&
+                    "hidden max-md:block",
+                )}
+              >
+                {button.shortLabel}
+              </span>
             </Button>
           )}
         </For>
