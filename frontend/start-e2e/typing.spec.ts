@@ -250,7 +250,7 @@ test("losing the session mid-test keeps the active attempt", async ({
       JSON.stringify({
         text: ["to", "be", "or", "not", "to", "be"],
         mode: "repeat",
-        limit: { mode: "word", value: 6 },
+        limit: { mode: "word", value: 10 },
         pipeDelimiter: false,
       }),
     );
@@ -269,6 +269,12 @@ test("losing the session mid-test keeps the active attempt", async ({
     page.locator("#words letter.correct, #words letter.incorrect"),
   ).toHaveCount(typed);
   await expect(page.locator("#wordsInput")).toBeFocused();
+  const words = await page.locator("#words .word").allTextContents();
+  await page.keyboard.type(words.join(" ").slice(typed), { delay: 80 });
+  await expect(page.locator("#result .loginTip")).toBeVisible();
+  expect(
+    await page.evaluate(() => localStorage.getItem("caret-guest-scores-v1")),
+  ).toBeNull();
 });
 
 test("returning guests can compare recent scores for the selected test", async ({
