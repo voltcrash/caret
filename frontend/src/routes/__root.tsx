@@ -7,7 +7,7 @@ import {
 } from "@tanstack/solid-router";
 
 import { canonicalHref } from "../app/aliases";
-import appCss from "../app/app.css?url";
+import "../app/app.css";
 import { BrowserRuntime } from "../app/browser-runtime";
 import { Document } from "../app/document";
 import { AppLayout } from "../app/layout";
@@ -83,7 +83,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "darkreader-lock", content: "" },
       ],
       links: [
-        { rel: "stylesheet", href: appCss },
         {
           rel: "icon",
           type: "image/svg+xml",

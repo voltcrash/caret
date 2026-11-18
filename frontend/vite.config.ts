@@ -130,6 +130,7 @@ export default defineConfig(async ({ mode, command }) => {
       }),
       tanstackStart({
         server: {
+          build: { inlineCss: true },
           entry:
             mode === "runtime-test"
               ? "../__tests__/start/worker-entry.ts"
