@@ -1,7 +1,7 @@
 import { ClientOnly } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
 import { createMemo, lazy, Show, Suspense, type JSXElement } from "solid-js";
-import { isServer } from "solid-js/web";
+import { isServer, NoHydration } from "solid-js/web";
 
 import type { InitialTypingSnapshot } from "./initial-snapshot";
 
@@ -35,7 +35,10 @@ export function TypingLeaf(props: {
     <div class="full-width grid h-full min-w-0 grid-cols-1 grid-rows-1">
       <Show when={!ready()}>
         <div class="col-start-1 row-start-1">
-          <InitialTypingView snapshot={props.initial} />
+          {/* This read-only preview is replaced in full when the engine is ready. */}
+          <NoHydration>
+            <InitialTypingView snapshot={props.initial} />
+          </NoHydration>
         </div>
       </Show>
       <div
