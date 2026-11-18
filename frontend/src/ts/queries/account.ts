@@ -25,8 +25,6 @@ type UserData = GetUserResponse["data"];
 export type AccountData = Snapshot &
   Pick<UserData, "tags" | "resultFilterPresets">;
 
-const firstDayOfTheWeek = getFirstDayOfTheWeek();
-
 function toAccountData(userData: UserData): AccountData {
   const personalBests: PersonalBests = userData.personalBests ?? {
     time: {},
@@ -69,7 +67,7 @@ function toAccountData(userData: UserData): AccountData {
         : new ModifiableTestActivityCalendar(
             userData.testActivity.testsByDays,
             new Date(userData.testActivity.lastDay),
-            firstDayOfTheWeek,
+            getFirstDayOfTheWeek(),
           ),
     streakHourOffset: userData.streak?.hourOffset ?? undefined,
     ...(userData.lbMemory === undefined ? {} : { lbMemory: userData.lbMemory }),
