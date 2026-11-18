@@ -3,6 +3,8 @@ import { createSignal } from "solid-js";
 import { createAccountOwned, captureAccount } from "../../app/account-scope";
 import { LocalStorageWithSchema } from "../../ts/utils/local-storage-with-schema";
 
+const priorCleanAttempts = 4;
+
 const wordSchema = z.object({
   word: z.string().max(80),
   context: z.string().max(200),
@@ -18,6 +20,11 @@ const historySchema = z.object({
 });
 type History = z.infer<typeof historySchema>;
 export type PracticeWord = z.infer<typeof wordSchema>;
+
+function weakness(word: PracticeWord): number {
+  return word.misses / (word.seen + priorCleanAttempts);
+}
+
 export function updatePracticeHistory(
   history: History,
   context: string,
@@ -101,9 +108,7 @@ export const practiceHistory = createAccountOwned(() => {
     weakest: (context: string): PracticeWord[] =>
       history()
         .words.filter((word) => word.context === context)
-        .sort(
-          (a, b) => b.misses / b.seen - a.misses / a.seen || a.burst - b.burst,
-        )
+        .sort((a, b) => weakness(b) - weakness(a) || a.burst - b.burst)
         .slice(0, 20),
     setGoal: (minutes: number): void => {
       save({
