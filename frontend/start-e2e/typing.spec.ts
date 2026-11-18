@@ -230,6 +230,9 @@ test("an in-flight save neither blocks navigation nor submits twice", async ({
   await expect(page.locator("#words .word.active")).toHaveCount(1);
   await expect(page.locator("#result")).toBeHidden();
   expect(submissions).toHaveLength(1);
+  expect(
+    await page.evaluate(() => localStorage.getItem("caret-guest-scores-v1")),
+  ).toBeNull();
   expect(errors).toEqual([]);
 });
 
@@ -247,7 +250,7 @@ test("losing the session mid-test keeps the active attempt", async ({
       JSON.stringify({
         text: ["to", "be", "or", "not", "to", "be"],
         mode: "repeat",
-        limit: { mode: "word", value: 6 },
+        limit: { mode: "word", value: 10 },
         pipeDelimiter: false,
       }),
     );
@@ -266,6 +269,69 @@ test("losing the session mid-test keeps the active attempt", async ({
     page.locator("#words letter.correct, #words letter.incorrect"),
   ).toHaveCount(typed);
   await expect(page.locator("#wordsInput")).toBeFocused();
+  const words = await page.locator("#words .word").allTextContents();
+  await page.keyboard.type(words.join(" ").slice(typed), { delay: 80 });
+  await expect(page.locator("#result .loginTip")).toBeVisible();
+  expect(
+    await page.evaluate(() => localStorage.getItem("caret-guest-scores-v1")),
+  ).toBeNull();
+});
+
+test("returning guests can compare recent scores for the selected test", async ({
+  page,
+  context,
+}) => {
+  await useConfig(page, { mode: "words", words: 10, quickRestart: "enter" });
+  await page.addInitScript(() => {
+    if (localStorage.getItem("caret-guest-scores-v1") === null) {
+      const scores = Array.from({ length: 10 }, (_, i) => ({
+        mode: "words",
+        mode2: i === 0 ? "10" : "25",
+        timestamp: 100 - i,
+        wpm: 52 + i,
+        acc: 94,
+      }));
+      localStorage.setItem("caret-guest-scores-v1", JSON.stringify(scores));
+    }
+  });
+  await openTest(page);
+  const words = await page.locator("#words .word").allTextContents();
+  await page.locator("#words .word").first().click();
+  await page.keyboard.type(words.join(" "), { delay: 80 });
+  await expect(page.locator("#result .loginTip")).toBeVisible();
+  const speed = await page.locator("#result .wpm .bottom").innerText();
+  await page.reload();
+  const summary = page.getByText("Recent guest scores · 10 words");
+  await summary.focus();
+  await summary.press("Enter");
+  const rows = page
+    .getByRole("table", { name: "On this device · newest first" })
+    .locator("tbody tr");
+  await expect(rows).toHaveCount(2);
+  await expect(rows.first().locator("td").nth(1)).toHaveText(speed);
+  await expect(rows.first()).toContainText("100%");
+  await expect(rows.last()).toContainText("52");
+  await expect(rows.last()).toContainText("94%");
+  await page.getByRole("button", { name: "25", exact: true }).click();
+  await expect(rows).toHaveCount(8);
+  await useAccountConfig(page, { mode: "words", words: 10 });
+  await signIn(context);
+  await page.reload();
+  await expect(nav(page, "Sign in")).toHaveCount(0);
+  await expect(page.locator("#words .word")).toHaveCount(10);
+  await expect(page.getByText(/Recent guest scores/)).toHaveCount(0);
+});
+
+test("guests can disable on-device result saving", async ({ page }) => {
+  await useConfig(page, { mode: "words", words: 10, resultSaving: false });
+  await openTest(page);
+  const words = await page.locator("#words .word").allTextContents();
+  await page.locator("#words .word").first().click();
+  await page.keyboard.type(words.join(" "), { delay: 80 });
+  await expect(page.locator("#result .loginTip")).toBeVisible();
+  expect(
+    await page.evaluate(() => localStorage.getItem("caret-guest-scores-v1")),
+  ).toBeNull();
 });
 
 test("result screenshots download from the native route", async ({ page }) => {

@@ -26,6 +26,7 @@ import { CompositionDisplay } from "./CompositionDisplay";
 import { EndTestButton } from "./EndTestButton";
 import { FinishZenButton } from "./FinishZenButton";
 import { FunboxTimers } from "./FunboxTimer";
+import { GuestScores } from "./GuestScores";
 import { Keymap } from "./Keymap";
 import { LiveStatsMini } from "./live-stats/LiveStatsMini";
 import { LiveStatsTextBottom } from "./live-stats/LiveStatsTextBottom";
@@ -197,6 +198,7 @@ export function TestPage(
       <TestLoading />
       <ResultAnnouncement />
       <LazyResult />
+      <GuestScores />
     </div>
   );
 }

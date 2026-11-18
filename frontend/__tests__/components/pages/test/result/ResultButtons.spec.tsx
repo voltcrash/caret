@@ -9,6 +9,7 @@ import {
 } from "vite-plus/test";
 
 const mocks = vi.hoisted(() => ({
+  calculating: vi.fn(() => false),
   restart: vi.fn(),
   retrySavingResult: vi.fn(),
   download: vi.fn(),
@@ -47,6 +48,8 @@ vi.mock("../../../../../src/ts/states/notifications", () => ({
 }));
 vi.mock("../../../../../src/ts/states/test", () => ({
   getResultVisible: () => true,
+  isResultCalculating: mocks.calculating,
+  isTestRestarting: () => false,
 }));
 vi.mock("../../../../../src/ts/states/core", async () => {
   const { createSignal } = await import("solid-js");
@@ -78,6 +81,7 @@ describe("ResultButtons", () => {
 
   afterEach(() => {
     cleanup();
+    mocks.calculating.mockReset();
     setPracticeResult(null);
     vi.clearAllMocks();
     vi.restoreAllMocks();
@@ -117,6 +121,11 @@ describe("ResultButtons", () => {
     expect(byId(c, "practiceWeakWordsButton")).toBeNull();
     setPracticeResult(null);
     expect(c).not.toHaveTextContent("No words improved this drill.");
+  });
+
+  it("disables Next test while completion owns the test", () => {
+    mocks.calculating.mockReturnValue(true);
+    expect(byId(renderButtons(), "nextTestButton")).toBeDisabled();
   });
 
   it("wires the button actions", () => {

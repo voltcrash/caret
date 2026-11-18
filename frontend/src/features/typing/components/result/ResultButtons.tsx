@@ -211,6 +211,10 @@ export function ResultButtons(): JSXElement {
             <Button
               variant="text"
               id={button.id}
+              disabled={
+                button.id === "nextTestButton" &&
+                (isResultCalculating() || isTestRestarting())
+              }
               aria-label={button.label}
               fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
