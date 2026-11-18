@@ -15,7 +15,7 @@ export function Overlays(): JSXElement {
   return (
     <>
       <ScrollToTop />
-      <div class="pointer-events-none fixed inset-x-0 bottom-0 z-1000 flex max-h-[calc(100dvh-1rem)] flex-col sm:contents">
+      <div class="pointer-events-none fixed inset-x-0 bottom-0 z-99999999 flex max-h-[calc(100dvh-1rem)] flex-col sm:contents">
         <Notifications />
         <Banners />
       </div>

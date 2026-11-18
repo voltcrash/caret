@@ -122,6 +122,7 @@ export function Banners(): JSXElement {
 
   return (
     // Announcements arrive after startup; keep them out of the app's geometry.
+    // On phones, reserve space under toasts for the scroll-to-top button.
     <div
       role="region"
       aria-label="Announcements"
