@@ -31,5 +31,7 @@ export async function addAllFromToday(): Promise<void> {
   if (!lease.isCurrent() || day !== getLocalMidnight(new Date()).getTime()) {
     return;
   }
-  getTracker().loadToday(results);
+  getTracker().loadToday(
+    results.reduce((sum, result) => sum + result.timeTyping, 0),
+  );
 }

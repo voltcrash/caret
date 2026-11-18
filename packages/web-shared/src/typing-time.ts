@@ -1,20 +1,3 @@
-type ResultDuration = {
-  testDuration: number;
-  incompleteTestSeconds: number;
-  afkDuration: number;
-};
-
-export function getActiveTypingSeconds(results: ResultDuration[]): number {
-  return results.reduce(
-    (sum, result) =>
-      sum +
-      result.testDuration +
-      result.incompleteTestSeconds -
-      result.afkDuration,
-    0,
-  );
-}
-
 export function getLocalMidnight(date: Date): Date {
   const midnight = new Date(date);
   midnight.setHours(0, 0, 0, 0);
@@ -40,9 +23,9 @@ export class TypingTimeTracker {
     }
     this.seconds += seconds;
   }
-  loadToday(results: ResultDuration[]): void {
+  loadToday(seconds: number): void {
     this.day = this.today();
-    this.seconds = getActiveTypingSeconds(results);
+    this.seconds = seconds;
   }
   getSeconds(): number {
     return this.seconds;
