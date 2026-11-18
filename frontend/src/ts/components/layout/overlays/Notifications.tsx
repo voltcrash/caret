@@ -90,12 +90,12 @@ function NotificationItem(props: { notification: Notification }): JSXElement {
         }}
       >
         <div
-          class="p-4 text-sm"
+          class="p-4 text-sm wrap-anywhere"
           onClick={() => removeNotification(props.notification.id)}
         >
-          <div class="pb-2 opacity-50">
-            <Fa {...iconProps()} class="mr-2 inline" />
-            {title()}
+          <div class="flex items-center gap-2 pb-2 opacity-80">
+            <Fa {...iconProps()} class="shrink-0" />
+            <span>{title()}</span>
           </div>
           <div>
             <TextContent content={props.notification.message} />
