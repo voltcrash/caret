@@ -87,6 +87,21 @@ test("repeated opens and chained modals return to their parent", async ({
   await assertRestarted(page);
 });
 
+test("custom text can keep an escaped newline literal", async ({ page }) => {
+  await openTest(page);
+  await openCommandline(page);
+  await runCommand(page, "changeCustomModeText", "change custom text");
+  const custom = page.locator("#CustomTextModal");
+  const text = custom.getByPlaceholder("type or paste your custom text");
+  await text.fill(String.raw`keep\\nbreak\nnext`);
+  await custom
+    .getByText("Replace control characters", { exact: true })
+    .locator("..")
+    .getByRole("button", { name: "apply", exact: true })
+    .click();
+  await expect(text).toHaveValue("keep\\nbreak \nnext");
+});
+
 test.describe("saved custom theme preview", () => {
   test.use({
     authenticated: true,

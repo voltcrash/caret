@@ -110,13 +110,10 @@ export { cleanTypographySymbols } from "@caret/web-shared/strings";
  * @returns A new string with control characters properly converted.
  */
 export function replaceControlCharacters(textToClear: string): string {
-  textToClear = textToClear.replace(/(?<!\\)\\t/g, "\t");
-  textToClear = textToClear.replace(/\\n/g, " \n");
-  textToClear = textToClear.replace(/([^\\]|^)\\n/gm, "$1\n");
-  textToClear = textToClear.replace(/\\\\t/gm, "\\t");
-  textToClear = textToClear.replace(/\\\\n/gm, "\\n");
-
-  return textToClear;
+  return textToClear.replace(/\\+[tn]/g, (match) => {
+    if (match.length > 2) return match.slice(1);
+    return match === "\\t" ? "\t" : " \n";
+  });
 }
 
 /**

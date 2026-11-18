@@ -72,6 +72,11 @@ get.mockResolvedValue({
         afkDuration: 5,
         incompleteTestSeconds: 8,
       }),
+      result("legacy", midnight.getTime() + hour, {
+        testDuration: undefined,
+        mode2: "30",
+        restartCount: 2,
+      }),
     ],
   },
 });
@@ -79,14 +84,18 @@ get.mockResolvedValue({
 it("returns only results from the given day onwards", async () => {
   await waitForResultsReady();
   const results = await getResultsSinceDayOnce(midnight.getTime());
-  expect(results.map((it) => it._id).sort()).toEqual(["midnight", "today"]);
+  expect(results.map((it) => it._id).sort()).toEqual([
+    "legacy",
+    "midnight",
+    "today",
+  ]);
 });
 
 it("sums today's typing time from collection results", async () => {
   await waitForResultsReady();
   await TodayTracker.addAllFromToday();
-  // midnight: 15, today: 15 + 8 - 5
-  expect(TodayTracker.getString()).toBe("00:00:33 today");
+  // midnight: 15, today: 15 + 8 - 5, legacy: 30 + 15
+  expect(TodayTracker.getString()).toBe("00:01:18 today");
 });
 
 mockHttpFixture("results.get", async (input) => await get(input));

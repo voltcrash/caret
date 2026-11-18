@@ -592,8 +592,7 @@ describe("result update", () => {
       state.activeTagIds = ["a"];
       state.tagPbWpm = 120;
       await runUpdate(completedEvent());
-      // tag pb lines are added after the legend is updated
-      expect(resultState.chartLegend.tagPbLineVisible).toBe(false);
+      expect(resultState.chartLegend.tagPbLineVisible).toBe(true);
 
       toggleResultChartLegend("raw");
       expect(resultState.chartLegend.visibility.raw).toBe(false);
@@ -601,6 +600,23 @@ describe("result update", () => {
 
       toggleResultChartLegend("raw");
       expect(resultState.chartLegend.visibility.raw).toBe(true);
+    });
+
+    it("keeps hidden PB lines hidden on the next result", async () => {
+      state.localPbWpm = 130;
+      state.tags = [{ _id: "a", name: "alpha" }];
+      state.activeTagIds = ["a"];
+      state.tagPbWpm = 120;
+      await runUpdate(completedEvent());
+      toggleResultChartLegend("pbLine");
+      toggleResultChartLegend("tagPbLine");
+      await runUpdate(completedEvent());
+      expect(getResultChart().options.plugins?.annotation?.annotations).toEqual(
+        [
+          expect.objectContaining({ id: "lpb", display: false }),
+          expect.objectContaining({ id: "tpb", display: false }),
+        ],
+      );
     });
 
     it("toggles start graphs at zero with scale", () => {

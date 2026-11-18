@@ -6,7 +6,7 @@ export type LayoutModifiers = {
   capsLock: boolean;
   key?: string;
 };
-const isPunctuationPattern = /\p{P}/u;
+const punctuationOrSymbol = /[\p{P}\p{S}]/u;
 
 export function getCharFromLayout(
   layout: Omit<LayoutObject, "type"> & { type: "ansi" | "iso" | "matrix" },
@@ -18,10 +18,9 @@ export function getCharFromLayout(
   ): string | undefined {
     let isCapitalized = modifiers.shift;
     const altGrIndex = modifiers.altGr && keyVariants.length > 2 ? 2 : 0;
-    const isNotPunctuation = !isPunctuationPattern.test(
-      keyVariants.slice(altGrIndex, altGrIndex + 2).join(""),
-    );
-    if (modifiers.capsLock && isNotPunctuation) {
+    const variants =
+      (keyVariants[altGrIndex] ?? "") + (keyVariants[altGrIndex + 1] ?? "");
+    if (modifiers.capsLock && !punctuationOrSymbol.test(variants)) {
       isCapitalized = !modifiers.shift;
     }
 

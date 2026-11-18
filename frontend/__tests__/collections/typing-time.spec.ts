@@ -115,4 +115,17 @@ it.each(cases)(
   },
 );
 
+it("keeps word totals finite for results without a valid duration", async () => {
+  const rows = await getResultsQueryOnce({
+    queryState: () => createResultsQueryState(defaultFilters),
+    sorting: () => ({ field: "timestamp", direction: "desc" }),
+  });
+  const words = (name: string): number | undefined =>
+    rows?.find((row) => row._id === name)?.words;
+  expect(words("retains legacy timed restart estimates")).toBe(30);
+  expect(words("retains legacy word estimates")).toBe(10);
+  expect(words("ignores malformed legacy durations")).toBe(0);
+  expect(words("avoids infinite legacy estimates")).toBe(0);
+});
+
 mockHttpFixture("results.get", async (input) => await get(input));

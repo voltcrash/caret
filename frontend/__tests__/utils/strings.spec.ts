@@ -245,12 +245,9 @@ describe("string utils", () => {
 
       // Double-escaped sequences (should become single-escaped)
       ["\\\\t", "\\t", "double-escaped tab becomes single-escaped"],
-      [
-        "\\\\n",
-        "\\ \n",
-        "double-escaped newline becomes backslash + space + newline",
-      ],
-      ["\\\\t\\\\n", "\\t\\ \n", "multiple double-escaped sequences"],
+      ["\\\\n", "\\n", "double-escaped newline becomes single-escaped"],
+      ["\\\\t\\\\n", "\\t\\n", "multiple double-escaped sequences"],
+      ["\\\\n\\n", "\\n \n", "escaped newline followed by newline"],
 
       // Mixed scenarios
       [

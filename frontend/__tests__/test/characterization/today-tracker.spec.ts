@@ -59,13 +59,7 @@ describe("today tracker", () => {
   it("ignores a history load that finishes after switching accounts", async () => {
     const account = requireApplication().accountData;
     account.setActor("first-user");
-    let finish!: (
-      results: {
-        testDuration: number;
-        incompleteTestSeconds: number;
-        afkDuration: number;
-      }[],
-    ) => void;
+    let finish!: (results: { timeTyping: number }[]) => void;
     results.since.mockImplementation(
       async () =>
         new Promise((resolve) => {
@@ -76,7 +70,7 @@ describe("today tracker", () => {
     await vi.waitFor(() => expect(results.since).toHaveBeenCalledOnce());
     account.setActor("second-user");
     TodayTracker.addSeconds(10);
-    finish([{ testDuration: 60, incompleteTestSeconds: 0, afkDuration: 0 }]);
+    finish([{ timeTyping: 60 }]);
     await pending;
     expect(TodayTracker.getString()).toBe("00:00:10 session");
   });
@@ -88,11 +82,25 @@ describe("today tracker", () => {
     expect(TodayTracker.getString()).toBe("00:01:01 session");
   });
 
+  it("ignores history loaded for a day that has already ended", async () => {
+    let finish!: () => void;
+    results.since.mockImplementation(
+      async () =>
+        new Promise((resolve) => {
+          finish = () => resolve([{ timeTyping: 60 }]);
+        }),
+    );
+    const pending = TodayTracker.addAllFromToday();
+    await vi.waitFor(() => expect(results.since).toHaveBeenCalledOnce());
+    vi.setSystemTime(new Date(2026, 9, 15, 0, 1));
+    TodayTracker.addSeconds(10);
+    finish();
+    await pending;
+    expect(TodayTracker.getString()).toBe("00:00:10 session");
+  });
+
   it("loads today's active seconds since local midnight", async () => {
-    results.since.mockResolvedValue([
-      { testDuration: 60, incompleteTestSeconds: 15, afkDuration: 5 },
-      { testDuration: 30, incompleteTestSeconds: 0, afkDuration: 0 },
-    ]);
+    results.since.mockResolvedValue([{ timeTyping: 70 }, { timeTyping: 30 }]);
     TodayTracker.addSeconds(500);
     await TodayTracker.addAllFromToday();
     expect(results.since).toHaveBeenCalledWith(new Date(2026, 9, 14).getTime());
@@ -102,9 +110,7 @@ describe("today tracker", () => {
   });
 
   it("starts over on a later day of the month", async () => {
-    results.since.mockResolvedValue([
-      { testDuration: 60, incompleteTestSeconds: 0, afkDuration: 0 },
-    ]);
+    results.since.mockResolvedValue([{ timeTyping: 60 }]);
     await TodayTracker.addAllFromToday();
     vi.setSystemTime(new Date(2026, 9, 15, 0, 1));
     TodayTracker.addSeconds(10);

@@ -26,9 +26,12 @@ export async function addAllFromToday(): Promise<void> {
   const { getResultsSinceDayOnce } =
     await import("../../../ts/collections/results");
   if (!lease.isCurrent()) return;
-  const results = await getResultsSinceDayOnce(
-    getLocalMidnight(new Date()).getTime(),
+  const day = getLocalMidnight(new Date()).getTime();
+  const results = await getResultsSinceDayOnce(day);
+  if (!lease.isCurrent() || day !== getLocalMidnight(new Date()).getTime()) {
+    return;
+  }
+  getTracker().loadToday(
+    results.reduce((sum, result) => sum + result.timeTyping, 0),
   );
-  if (!lease.isCurrent()) return;
-  getTracker().loadToday(results);
 }
