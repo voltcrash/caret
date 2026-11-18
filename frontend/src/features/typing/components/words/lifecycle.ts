@@ -151,6 +151,8 @@ export async function afterTestWordChange(
   direction: "forward" | "back",
   lastBurst?: number | null,
 ): Promise<void> {
+  // A pending input move would measure the new word before its line scrolls.
+  Caret.getCaret().cancelPendingMove();
   updateActiveElement({
     direction,
   });
