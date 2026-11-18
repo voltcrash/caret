@@ -5,7 +5,7 @@ import { getEngineSession } from "./session.client";
 import * as TestWords from "./test-words";
 import { showNoticeNotification } from "../../../ts/states/notifications";
 
-import { getMutableConfig } from "../../../ts/config/store";
+import { getConfig, getMutableConfig } from "../../../ts/config/store";
 import { setConfig } from "../../../ts/config/setters";
 import * as CustomText from "./custom-text";
 import { configEvent } from "../../../ts/events/config";
@@ -13,7 +13,7 @@ import { Mode } from "@caret/schemas/shared";
 import { CustomTextSettings } from "@caret/schemas/results";
 import { setCustomTextIndicator } from "../../../ts/states/core";
 import { getLastEventLog } from "../../../ts/states/test";
-import { practiceHistory } from "../practice-history.client";
+import { practiceHistory, type PracticeWord } from "../practice-history.client";
 
 type Before = {
   mode: Mode | null;
@@ -30,11 +30,15 @@ const previous = createAppOwned((): Before => ({
 }));
 export const before = appObject(previous);
 
+export function weakestWords(): PracticeWord[] {
+  return practiceHistory()
+    .weakest(`${getConfig.language}:${getConfig.layout}`)
+    .slice(0, 5);
+}
+
 export function initFromHistory(): boolean {
   const config = getMutableConfig();
-  const selected = practiceHistory().weakest(
-    `${config.language}:${config.layout}`,
-  );
+  const selected = weakestWords();
   if (selected.length === 0) return false;
   const previous = {
     mode: before.mode ?? config.mode,
