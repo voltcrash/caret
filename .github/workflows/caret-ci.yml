@@ -143,6 +143,7 @@ jobs:
               - 'frontend/cross-browser-e2e/**'
               - 'frontend/playwright.{cross-browser,start}.config.ts'
               - 'frontend/e2e/fixtures.ts'
+              - 'frontend/__tests__/start/workerd.ts'
               - '.github/workflows/browser-compatibility.yml'
             update-tests:
               - 'frontend/update-e2e/**'
