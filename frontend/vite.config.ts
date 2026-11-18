@@ -200,6 +200,8 @@ export default defineConfig(async ({ mode, command }) => {
       "import.meta.env.CARET_SENTRY_ORIGIN": JSON.stringify(sentryOrigin),
     },
     build: {
+      // Start inlines the global stylesheet. Route imports must not fetch it again.
+      cssCodeSplit: false,
       outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start",
     },
     server: { port: 3000, strictPort: true },
