@@ -117,7 +117,7 @@ export const practiceHistory = createAccountOwned(() => {
     },
     weakest: (context: string): PracticeWord[] =>
       history()
-        .words.filter((word) => word.context === context)
+        .words.filter((word) => word.context === context && weakness(word) > 0)
         .sort((a, b) => weakness(b) - weakness(a) || a.burst - b.burst)
         .slice(0, 20),
     setGoal: (minutes: number): void => {
