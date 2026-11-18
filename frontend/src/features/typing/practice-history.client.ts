@@ -22,7 +22,9 @@ type History = z.infer<typeof historySchema>;
 export type PracticeWord = z.infer<typeof wordSchema>;
 
 function weakness(word: PracticeWord): number {
-  return word.misses / (word.seen + priorCleanAttempts);
+  // A single attempt can contribute several incorrect keystrokes.
+  const cappedMisses = Math.min(word.misses, word.seen);
+  return cappedMisses / (word.seen + priorCleanAttempts);
 }
 
 export function updatePracticeHistory(
