@@ -138,6 +138,7 @@ jobs:
               - 'frontend/src/ts/states/{composition,modifiers,test,test-dom,words-layout}.ts'
               - 'frontend/src/styles/{caret,test}.css'
               - 'frontend/static/layouts/**'
+              - 'frontend/vite-plugins/typing-engine.ts'
               - 'frontend/cross-browser-e2e/**'
               - 'frontend/playwright.{cross-browser,start}.config.ts'
               - '.github/workflows/browser-compatibility.yml'
