@@ -83,6 +83,11 @@ export default defineConfig(async ({ mode, command }) => {
                 groups: [
                   // Keep the static entry graph together across lazy route boundaries.
                   { name: "startup", tags: ["$initial"] },
+                  // Preferences mount on every route, after the entry has loaded.
+                  {
+                    name: "platform",
+                    test: /[/\\]app[/\\]platform-runtime\.client\.tsx$/,
+                  },
                 ],
               },
             },
