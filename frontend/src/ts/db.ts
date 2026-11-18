@@ -28,8 +28,6 @@ import { SnapshotInitError } from "./utils/snapshot-init-error";
 import { updateTagsInFilterStorage } from "./states/result-filters";
 import { emptyPersonalBests, personalBestList } from "./utils/personal-bests";
 
-const firstDayOfTheWeek = getFirstDayOfTheWeek();
-
 function accountKey(): readonly unknown[] {
   return getAccountQueryOptions().queryKey;
 }
@@ -339,6 +337,7 @@ function archiveCalendars(
   let calendars = archives.get(data);
   if (calendars === undefined) {
     calendars = {};
+    const firstDayOfTheWeek = getFirstDayOfTheWeek();
     const currentYear = new Date().getFullYear().toString();
     for (const year in data) {
       if (year === currentYear) continue;
