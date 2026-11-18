@@ -4,7 +4,6 @@ import { getMutableConfig } from "../../../../ts/config/store";
 import { configEvent } from "../../../../ts/events/config";
 import { areTestElementsMounted } from "../../../../ts/states/test-dom";
 import { cn } from "../../../../ts/utils/cn";
-import { cancelPendingAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";
 import {
   setCaret as setMainCaret,
   updatePosition as updateMainCaretPosition,
@@ -47,7 +46,7 @@ export function Caret(props: {
       window.removeEventListener("resize", clearGeometry);
       document.fonts.removeEventListener("loadingdone", clearGeometry);
       controller.stopAllAnimations();
-      cancelPendingAnimationFrame(`caret.${element.id}.goTo`);
+      controller.cancelPendingMove();
       unregister();
     });
   });

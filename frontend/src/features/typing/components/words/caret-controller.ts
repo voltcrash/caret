@@ -6,7 +6,10 @@ import {
   countCodePoints,
   isWordRightToLeft,
 } from "../../../../ts/utils/strings";
-import { requestDebouncedAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";
+import {
+  cancelPendingAnimationFrame,
+  requestDebouncedAnimationFrame,
+} from "../../../../ts/utils/debounced-animation-frame";
 import { animate, EasingParam, JSAnimation } from "animejs";
 
 import {
@@ -297,6 +300,10 @@ export class CaretController {
       duration: finalDuration,
       ease: options.easing ?? "inOut(1.25)",
     });
+  }
+
+  public cancelPendingMove(): void {
+    cancelPendingAnimationFrame(`caret.${this.id}.goTo`);
   }
 
   public goTo(options: {
