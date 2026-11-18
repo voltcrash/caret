@@ -80,3 +80,36 @@ for (const [setting, key] of [
     });
   });
 }
+
+test.describe("long tests", () => {
+  test.use({
+    config: { mode: "words", words: 0, quickRestart: "tab" },
+  });
+
+  test("shows the quick restart notice with its icon beside the title", async ({
+    page,
+  }) => {
+    await openTest(page);
+    const notifications = page.locator('[data-ui-element="notifications"]');
+    await expect(notifications).toBeAttached();
+    await page.locator("#words .word").first().click();
+    await page.keyboard.type("x");
+    await expect(page.locator("#wordsInput")).toHaveValue(" x");
+    await page.keyboard.press("Tab");
+
+    await expect(notifications).toContainText(
+      "Quick restart disabled in long tests.",
+    );
+    const title = await notifications
+      .getByText("Notice", { exact: true })
+      .boundingBox();
+    const icon = await notifications.locator("i").boundingBox();
+    if (title === null || icon === null) {
+      throw new Error("Missing notice header");
+    }
+    expect(icon.x + icon.width).toBeLessThan(title.x);
+    expect(
+      Math.abs(icon.y + icon.height / 2 - (title.y + title.height / 2)),
+    ).toBeLessThan(2);
+  });
+});
