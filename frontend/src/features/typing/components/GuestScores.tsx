@@ -20,7 +20,7 @@ export function GuestScores() {
     return getConfig.mode;
   };
   const scores = createMemo(() =>
-    session.data?.user === null && !isAuthenticated()
+    session.isSuccess && session.data.user === null && !isAuthenticated()
       ? getGuestScores().filter(
           (score) =>
             score.mode === getConfig.mode &&
