@@ -135,6 +135,7 @@ jobs:
               - 'frontend/src/ts/constants/keys.ts'
               - 'frontend/src/ts/utils/{key-converter,quick-restart}.ts'
               - 'frontend/src/ts/hooks/{useInputListener,useWordsInputScroll}.ts'
+              - 'frontend/src/ts/states/{composition,modifiers,test,test-dom,words-layout}.ts'
               - 'frontend/cross-browser-e2e/**'
               - 'frontend/playwright.{cross-browser,start}.config.ts'
               - '.github/workflows/browser-compatibility.yml'
