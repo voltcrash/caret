@@ -109,4 +109,14 @@ it("ranks legacy misses by evidence and retires weaknesses after clean attempts"
   expect(
     history.history().words.find((entry) => entry.word === "persistent"),
   ).toMatchObject({ seen: 12, misses: 4 });
+
+  // The test-level miss could belong to any of the repeated occurrences.
+  history.record(
+    context,
+    Array<string>(4).fill("persistent"),
+    { persistent: 1 },
+    [],
+    1,
+  );
+  expect(ranked()).toContain("persistent");
 });
