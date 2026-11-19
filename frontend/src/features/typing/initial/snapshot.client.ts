@@ -1,13 +1,13 @@
-import { createAppOwned } from "../../app/application";
+import { createAppOwned } from "../../../app/application";
 import { projectEngineConfig } from "@caret/typing-engine/config";
 import type { Config } from "@caret/schemas/configs";
-import { initialContentConfig } from "./initial-content";
+import { initialContentConfig } from "./content";
 import {
   initialTypingCookie,
   previewSettings,
   readTypingPreview,
   type InitialTypingSnapshot,
-} from "./initial-snapshot";
+} from "./snapshot";
 
 export const initialTypingState = createAppOwned(() => {
   let initial: InitialTypingSnapshot | undefined;

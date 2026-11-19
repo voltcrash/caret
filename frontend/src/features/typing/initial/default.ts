@@ -1,9 +1,6 @@
 import { getDefaultConfig } from "@caret/web-shared/config/default-config";
 import { initialTyping } from "virtual:initial-typing";
-import {
-  previewSettings,
-  type InitialTypingSnapshot,
-} from "./initial-snapshot";
+import { previewSettings, type InitialTypingSnapshot } from "./snapshot";
 
 export function defaultInitialTyping(): InitialTypingSnapshot {
   return {

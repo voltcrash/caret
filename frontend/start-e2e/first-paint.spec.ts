@@ -2,7 +2,7 @@ import { getDefaultConfig } from "@caret/web-shared/config/default-config";
 import {
   initialTypingCookie,
   previewSettings,
-} from "../src/features/typing/initial-snapshot";
+} from "../src/features/typing/initial/snapshot";
 import { expect, test } from "../e2e/fixtures";
 
 test.use({ config: {}, serviceWorkers: "block" });

@@ -2,8 +2,8 @@ import { languageHashes } from "virtual:language-hashes";
 import {
   initialTypingState,
   initialContentKey,
-} from "../initial-snapshot.client";
-import { saveNextTypingPreview } from "../next-snapshot.client";
+} from "../initial/snapshot.client";
+import { saveNextTypingPreview } from "../initial/next-snapshot.client";
 import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
 import { getEngineSession } from "./session.client";

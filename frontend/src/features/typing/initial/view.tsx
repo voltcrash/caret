@@ -1,14 +1,14 @@
 import { For, Show, type JSXElement } from "solid-js";
 
-import type { FaSolidIcon } from "../../ts/types/font-awesome";
-import type { InitialTypingSnapshot } from "./initial-snapshot";
+import type { FaSolidIcon } from "../../../ts/types/font-awesome";
+import type { InitialTypingSnapshot } from "./snapshot";
 
-import { Button } from "../../ts/components/common/Button";
-import { Fa } from "../../ts/components/common/Fa";
-import { cn } from "../../ts/utils/cn";
-import { variables, buttonClass, cardClass } from "./config-layout";
-import { InitialKeymap } from "./initial-keymap";
-import { PersonalNotices } from "./personal-notices";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa } from "../../../ts/components/common/Fa";
+import { cn } from "../../../ts/utils/cn";
+import { variables, buttonClass, cardClass } from "../config-layout";
+import { PersonalNotices } from "../personal-notices";
+import { InitialKeymap } from "./keymap";
 
 const modes: { value: string; icon: FaSolidIcon }[] = [
   { value: "time", icon: "fa-clock" },

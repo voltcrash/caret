@@ -17,7 +17,7 @@ const mocks = vi.hoisted(() => ({
   createSession: vi.fn(),
   prepareNext: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/next-snapshot.client", () => ({
+vi.mock("../../../src/features/typing/initial/next-snapshot.client", () => ({
   saveNextTypingPreview: mocks.prepareNext,
 }));
 vi.mock("../../../src/features/typing/engine.client", () => ({
@@ -61,8 +61,8 @@ import { getContentHost } from "../../../src/features/typing/runtime/content.cli
 import {
   initialContentKey,
   initialTypingState,
-} from "../../../src/features/typing/initial-snapshot.client";
-import { previewSettings } from "../../../src/features/typing/initial-snapshot";
+} from "../../../src/features/typing/initial/snapshot.client";
+import { previewSettings } from "../../../src/features/typing/initial/snapshot";
 import {
   createTestApplication,
   releaseTestApplication,

@@ -6,13 +6,13 @@ import {
   readTypingPreview,
   selectTypingPreview,
   type InitialTypingSnapshot,
-} from "../../../src/features/typing/initial-snapshot";
+} from "../../../src/features/typing/initial/snapshot";
 import {
   initialTypingState,
   saveTypingPreview,
   refreshTypingPreviewSettings,
   initialContentKey,
-} from "../../../src/features/typing/initial-snapshot.client";
+} from "../../../src/features/typing/initial/snapshot.client";
 import { mountApplication } from "../../../src/app/application";
 import {
   createTestApplication,
