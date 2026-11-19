@@ -2,9 +2,9 @@ import { cleanup, fireEvent } from "@solidjs/testing-library";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
-import { SearchableAutoSetting } from "../../../../src/ts/components/pages/settings/SearchableAutoSetting";
-import { SearchableSetting } from "../../../../src/ts/components/pages/settings/SearchableSetting";
-import { SettingsSectionContext } from "../../../../src/ts/components/pages/settings/settings-section-context";
+import { SearchableAutoSetting } from "../../../../src/features/settings/components/SearchableAutoSetting";
+import { SearchableSetting } from "../../../../src/features/settings/components/SearchableSetting";
+import { SettingsSectionContext } from "../../../../src/features/settings/components/settings-section-context";
 import {
   highlightSetting,
   setHighlightedSetting,

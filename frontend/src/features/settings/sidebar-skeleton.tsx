@@ -8,8 +8,8 @@ import { SkeletonText } from "../../components/skeleton-text";
 import { Fa } from "../../ts/components/common/Fa";
 import { Kbd } from "../../ts/components/common/Kbd";
 import { Separator } from "../../ts/components/common/Separator";
-import { SettingsKeyTips } from "../../ts/components/pages/settings/SettingsKeyTips";
 import { cn } from "../../ts/utils/cn";
+import { SettingsKeyTips } from "./components/SettingsKeyTips";
 import { availableSettingsSections } from "./tabs";
 
 /** Hidden copy reserves the loaded sidebar's exact wrapping and icon widths. */

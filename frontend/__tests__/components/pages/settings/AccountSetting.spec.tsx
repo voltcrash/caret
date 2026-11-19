@@ -3,9 +3,9 @@ import { createSignal } from "solid-js";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
-import { AuthenticationTab } from "../../../../src/ts/components/pages/account-settings/AuthenticationTab";
-import { Section } from "../../../../src/ts/components/pages/account-settings/utils";
-import { SettingsSectionContext } from "../../../../src/ts/components/pages/settings/settings-section-context";
+import { AuthenticationTab } from "../../../../src/features/settings/components/account/AuthenticationTab";
+import { Section } from "../../../../src/features/settings/components/account/utils";
+import { SettingsSectionContext } from "../../../../src/features/settings/components/settings-section-context";
 import { setUserId } from "../../../../src/ts/states/core";
 import { highlightSetting } from "../../../../src/ts/states/settings-highlight";
 import {

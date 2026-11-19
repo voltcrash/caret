@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
-import { SearchableSetting } from "../../../../src/ts/components/pages/settings/SearchableSetting";
+import { SearchableSetting } from "../../../../src/features/settings/components/SearchableSetting";
 import * as Persistence from "../../../../src/ts/config/persistence";
 import * as Setters from "../../../../src/ts/config/setters";
 import { getConfig, setFullConfigStore } from "../../../../src/ts/config/store";

@@ -15,7 +15,7 @@ vi.mock("../../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => state.popup,
 }));
 
-import { SettingsSearch } from "../../../../src/ts/components/pages/settings/SettingsSearch";
+import { SettingsSearch } from "../../../../src/features/settings/components/SettingsSearch";
 import { setSettingsSearch } from "../../../../src/ts/states/settings-search";
 
 beforeEach(() => {

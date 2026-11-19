@@ -1,0 +1,56 @@
+import {
+  showDeleteAccountModal,
+  showResetAccountModal,
+} from "../../../../ts/components/modals/account-settings/ReauthConfirmModals";
+import { Section } from "./utils";
+
+export function DangerZoneTab() {
+  return (
+    <>
+      <ResetAccount />
+      <DeleteAccount />
+    </>
+  );
+}
+
+function ResetAccount() {
+  return (
+    <Section
+      key="resetAccount"
+      title="reset account"
+      fa={{ icon: "fa-redo-alt" }}
+      description=<>
+        Completely resets your account to a blank state.
+        <br />
+        <span class="text-error">You can&apos;t undo this action!</span>
+      </>
+      button={{
+        text: "reset account",
+        class:
+          "[--themable-button-bg:var(--error-color)] [--themable-button-text:var(--bg-color)]",
+        onClick: () => showResetAccountModal(),
+      }}
+    />
+  );
+}
+
+function DeleteAccount() {
+  return (
+    <Section
+      key="deleteAccount"
+      title="delete account"
+      fa={{ icon: "fa-trash" }}
+      description=<>
+        Deletes your account and all data connected to it.
+        <br />
+        <span class="text-error">You can&apos;t undo this action!</span>
+      </>
+      button={{
+        text: "delete account",
+        class:
+          "[--themable-button-bg:var(--error-color)] [--themable-button-text:var(--bg-color)]",
+        onClick: () => showDeleteAccountModal(),
+      }}
+    />
+  );
+}

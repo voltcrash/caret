@@ -3,10 +3,10 @@ import { createRoot } from "solid-js";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
-import { AutoSwitchTheme } from "../../../../src/ts/components/pages/settings/custom-setting/AutoSwitchTheme";
-import { CustomBackground } from "../../../../src/ts/components/pages/settings/custom-setting/CustomBackground";
-import { FontFamily } from "../../../../src/ts/components/pages/settings/custom-setting/FontFamily";
-import { Theme } from "../../../../src/ts/components/pages/settings/custom-setting/Theme";
+import { AutoSwitchTheme } from "../../../../src/features/settings/components/custom-setting/AutoSwitchTheme";
+import { CustomBackground } from "../../../../src/features/settings/components/custom-setting/CustomBackground";
+import { FontFamily } from "../../../../src/features/settings/components/custom-setting/FontFamily";
+import { Theme } from "../../../../src/features/settings/components/custom-setting/Theme";
 import * as Persistence from "../../../../src/ts/config/persistence";
 import { setConfig } from "../../../../src/ts/config/setters";
 import { getConfig, setFullConfigStore } from "../../../../src/ts/config/store";

@@ -3,10 +3,10 @@ import { createSignal } from "solid-js";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
+import { CustomBackgroundFilters } from "../../../../src/features/settings/components/custom-setting/CustomBackgroundFilters";
+import { KeymapSize } from "../../../../src/features/settings/components/custom-setting/KeymapSize";
+import { SoundVolume } from "../../../../src/features/settings/components/custom-setting/SoundVolume";
 import { Slider } from "../../../../src/ts/components/common/Slider";
-import { CustomBackgroundFilters } from "../../../../src/ts/components/pages/settings/custom-setting/CustomBackgroundFilters";
-import { KeymapSize } from "../../../../src/ts/components/pages/settings/custom-setting/KeymapSize";
-import { SoundVolume } from "../../../../src/ts/components/pages/settings/custom-setting/SoundVolume";
 import { setFullConfigStore } from "../../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../../src/ts/constants/default-config";
 

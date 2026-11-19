@@ -1,0 +1,103 @@
+import { MinimumAccuracyCustomSchema } from "@caret/schemas/configs";
+import { createForm } from "@tanstack/solid-form";
+import { JSXElement } from "solid-js";
+
+// import { showSuccessNotification } from "../../../../ts/states/notifications";
+import { Button } from "../../../../ts/components/common/Button";
+import { InputField } from "../../../../ts/components/ui/form/InputField";
+import { fromSchema } from "../../../../ts/components/ui/form/utils";
+import { configMetadata } from "../../../../ts/config/metadata";
+import { setConfig } from "../../../../ts/config/setters";
+import { getConfig } from "../../../../ts/config/store";
+import { useSavedIndicator } from "../../../../ts/hooks/useSavedIndicator";
+import { SearchableSetting } from "../SearchableSetting";
+
+export function MinAcc(): JSXElement {
+  const savedIndicator = useSavedIndicator();
+
+  const form = createForm(() => ({
+    defaultValues: {
+      minAccCustom: getConfig.minAccCustom,
+    },
+    onSubmit: ({ value }) => {
+      const val = value.minAccCustom;
+      if (val === getConfig.minAccCustom) return;
+      if (getConfig.minAcc === "custom") {
+        //
+      } else {
+        setConfig("minAcc", "custom");
+      }
+      savedIndicator.flash();
+      setConfig("minAccCustom", val);
+    },
+  }));
+
+  return (
+    <SearchableSetting
+      key="minAcc"
+      resetKeys={["minAccCustom", "minAcc"]}
+      onReset={() => form.reset({ minAccCustom: getConfig.minAccCustom })}
+      title={configMetadata.minAcc.displayString ?? "min accuracy"}
+      fa={configMetadata.minAcc.fa}
+      description={configMetadata.minAcc.description}
+      inputs={
+        <div class="grid w-full gap-2">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              void form.handleSubmit();
+            }}
+          >
+            <form.Field
+              name="minAccCustom"
+              validators={{
+                onChange: fromSchema(MinimumAccuracyCustomSchema),
+              }}
+              listeners={{
+                onBlur: () => {
+                  void form.handleSubmit();
+                },
+              }}
+              children={(field) => (
+                <div class="relative">
+                  <InputField
+                    field={field}
+                    schema={MinimumAccuracyCustomSchema}
+                    placeholder={
+                      configMetadata.minAcc.displayString ?? "min accuracy"
+                    }
+                    type="number"
+                    resetToDefaultIfEmptyOnBlur
+                  />
+                  <savedIndicator.component />
+                </div>
+              )}
+            />
+          </form>
+          {/* <input class="w-full" value={inputValue()} /> */}
+          <div class="grid grid-cols-2 gap-2">
+            <Button
+              active={getConfig.minAcc === "off"}
+              onClick={() => {
+                if (getConfig.minAcc === "off") return;
+                setConfig("minAcc", "off");
+              }}
+            >
+              off
+            </Button>
+            <Button
+              active={getConfig.minAcc === "custom"}
+              onClick={() => {
+                if (getConfig.minAcc === "custom") return;
+                setConfig("minAcc", "custom");
+              }}
+            >
+              custom
+            </Button>
+          </div>
+        </div>
+      }
+    />
+  );
+}

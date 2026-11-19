@@ -2,8 +2,8 @@ import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
+import { ImportExport } from "../../../../src/features/settings/components/custom-setting/ImportExport";
 import { Download } from "../../../../src/ts/components/common/Download";
-import { ImportExport } from "../../../../src/ts/components/pages/settings/custom-setting/ImportExport";
 import { getMutableConfig } from "../../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../../src/ts/constants/default-config";
 import {
