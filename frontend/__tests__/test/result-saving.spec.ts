@@ -13,7 +13,7 @@ import {
   retrySavingResult,
   discardPendingResults,
 } from "../../src/features/typing/runtime/result-saving";
-import { resultOutbox } from "../../src/features/typing/result-outbox.client";
+import { resultOutbox } from "../../src/features/typing/history/outbox.client";
 import { requireApplication } from "../../src/app/application";
 import { showConfetti } from "../../src/features/typing/runtime/result";
 import { __testing } from "../../src/ts/config/testing";

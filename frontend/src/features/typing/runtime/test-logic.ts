@@ -61,7 +61,7 @@ import { getTestSession, resetTestEvents } from "./events/data";
 import { resetModifierState } from "../../../ts/states/modifiers";
 import { nthElementFromArray } from "../../../ts/utils/arrays";
 
-import { beginGuestScore } from "../guest-scores.client";
+import { beginGuestScore } from "../history/guest-scores.client";
 import { testLogicState } from "./logic-state";
 import { init } from "./initialization";
 import { finish } from "./completion";

@@ -3,7 +3,7 @@ import {
   type PracticeWord,
   practiceHistory,
   updatePracticeHistory,
-} from "../../src/features/typing/practice-history.client";
+} from "../../src/features/typing/history/practice.client";
 
 it("retains frequently seen correct words when the model reaches capacity", () => {
   const initial = {

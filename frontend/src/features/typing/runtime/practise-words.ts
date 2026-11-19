@@ -13,7 +13,7 @@ import { Mode } from "@caret/schemas/shared";
 import { CustomTextSettings } from "@caret/schemas/results";
 import { setCustomTextIndicator } from "../../../ts/states/core";
 import { getLastEventLog } from "../../../ts/states/test";
-import { practiceHistory, type PracticeWord } from "../practice-history.client";
+import { practiceHistory, type PracticeWord } from "../history/practice.client";
 
 type Before = {
   mode: Mode | null;

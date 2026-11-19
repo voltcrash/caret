@@ -6,7 +6,7 @@ import {
   pendingResultSaves,
   trackResultSave,
 } from "../../../app/update-safety";
-import { resultOutbox } from "../result-outbox.client";
+import { resultOutbox } from "../history/outbox.client";
 import type { OperationResponse } from "../../../data/operation-types";
 import type { OperationResult } from "../../../data/operation-result";
 

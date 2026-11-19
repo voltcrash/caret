@@ -38,8 +38,8 @@ import {
   getWordBurstHistory,
 } from "../engine/analysis.client";
 import * as PractiseWords from "./practise-words";
-import { recordGuestScore } from "../guest-scores.client";
-import { practiceHistory } from "../practice-history.client";
+import { recordGuestScore } from "../history/guest-scores.client";
+import { practiceHistory } from "../history/practice.client";
 type InvalidResultReason =
   | "inconsistent duration"
   | "failed"

@@ -3,7 +3,7 @@ import {
   createResultOutbox,
   createOutboxStorage,
   type PendingResult,
-} from "../../src/features/typing/result-outbox.client";
+} from "../../src/features/typing/history/outbox.client";
 import type { CompletedEvent } from "@caret/schemas/results";
 
 it("does not resurrect another tab's acknowledged result", async () => {

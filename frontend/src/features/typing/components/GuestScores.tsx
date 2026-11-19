@@ -6,7 +6,7 @@ import { getConfig } from "../../../ts/config/store";
 import { getFormatting, isAuthenticated } from "../../../ts/states/core";
 import { isTestActive } from "../../../ts/states/test";
 import { sessionOptions } from "../../auth/session";
-import { getGuestScores } from "../guest-scores.client";
+import { getGuestScores } from "../history/guest-scores.client";
 
 export function GuestScores() {
   const session = useQuery(() => ({

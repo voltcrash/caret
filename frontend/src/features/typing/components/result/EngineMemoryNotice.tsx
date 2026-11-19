@@ -7,7 +7,7 @@ import {
   isResultCalculating,
 } from "../../../../ts/states/test";
 import { getBrowserEngine } from "../../engine/owner.client";
-import { resultOutbox } from "../../result-outbox.client";
+import { resultOutbox } from "../../history/outbox.client";
 
 /** A new document safely releases Wasm's high-water memory and every handle. */
 export function EngineMemoryNotice(): JSXElement {
