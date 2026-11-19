@@ -5,6 +5,7 @@ import { isAppRoute, type AppRouter } from "@caret/contracts/contract";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve, relative, dirname } from "node:path";
 import { isDeepStrictEqual } from "node:util";
+import { webOperationIds } from "../../frontend/src/functions/operations/web-operations";
 
 const root = resolve(import.meta.dirname, "../..");
 
@@ -92,10 +93,7 @@ export function inventory(): object[] {
   for (const [id, files] of Object.entries(nativeFactories)) {
     callers.set(id, [...(callers.get(id) ?? []), ...files]);
   }
-  const functionIndex = readFileSync(
-    resolve(root, "frontend/src/functions/operations/index.ts"),
-    "utf8",
-  );
+  const webOperations = new Set<string>(webOperationIds);
   const operations: object[] = [];
   function visit(router: AppRouter, prefix = ""): void {
     for (const [key, route] of Object.entries(router)) {
@@ -111,7 +109,7 @@ export function inventory(): object[] {
       const group = id.split(".")[0];
       const retain = isRetainedHttpOperation(id as OperationId);
       const httpAdapter = `frontend/src/routes/${`api${route.path}`.replace(/:(\w+)/g, "$$$1").replaceAll("/", ".")}.ts`;
-      const functionAdapter = functionIndex.includes(`"${id}":`)
+      const functionAdapter = webOperations.has(id)
         ? `frontend/src/functions/operations/${group}.ts`
         : null;
       operations.push({
