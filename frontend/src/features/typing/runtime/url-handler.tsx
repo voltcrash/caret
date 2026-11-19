@@ -21,18 +21,18 @@ import { tryCatchSync } from "@caret/util/trycatch";
 import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
-import * as CustomText from "../../features/typing/runtime/content/custom-text";
-import { restart as restartTest } from "../../features/typing/runtime/test/logic";
-import { setConfig } from "../config/setters";
-import { getMutableConfig } from "../config/store";
+import { setConfig } from "../../../ts/config/setters";
+import { getMutableConfig } from "../../../ts/config/store";
+import * as ChallengeController from "../../../ts/controllers/challenge-controller";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../states/notifications";
-import { setSelectedQuoteId } from "../states/test";
-import * as Misc from "../utils/misc";
-import * as ChallengeController from "./challenge-controller";
+} from "../../../ts/states/notifications";
+import { setSelectedQuoteId } from "../../../ts/states/test";
+import * as Misc from "../../../ts/utils/misc";
+import * as CustomText from "./content/custom-text";
+import { restart as restartTest } from "./test/logic";
 
 const customThemeUrlDataSchema = z.object({
   c: CustomThemeColorsSchema,

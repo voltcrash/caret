@@ -19,7 +19,7 @@ import { showConfetti } from "../../src/features/typing/runtime/result/screen";
 import { __testing } from "../../src/ts/config/testing";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
 import * as DB from "../../src/ts/db";
-import { hashResult } from "../../src/ts/utils/result-hash";
+import { hashResult } from "../../src/features/typing/runtime/result/hash";
 import {
   mockOperation,
   ok,
@@ -36,7 +36,7 @@ vi.mock("../../src/features/typing/runtime/result/screen", () => ({
   updateDailyLeaderboardRank: vi.fn(),
   updateRetrySaving: vi.fn(),
 }));
-vi.mock("../../src/ts/utils/result-hash", () => ({
+vi.mock("../../src/features/typing/runtime/result/hash", () => ({
   hashResult: vi.fn(
     async (result: CompletedEvent) => `hash-${result.timestamp}`,
   ),

@@ -3,7 +3,7 @@ import { createEffect, untrack } from "solid-js";
 
 import { createAppOwned } from "../../app/application";
 import { preferencesReadiness } from "../../app/readiness";
-import { applyUrlSettings } from "../../ts/controllers/url-handler";
+import { applyUrlSettings } from "./runtime/url-handler";
 import { useAccountSettled } from "../account/settled.client";
 
 const applied = createAppOwned(() => ({

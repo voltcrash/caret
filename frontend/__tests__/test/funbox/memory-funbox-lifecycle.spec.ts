@@ -46,7 +46,7 @@ import {
 import {
   getMemoryTimerText,
   getMemoryTimerVisibility,
-} from "../../../src/ts/states/funbox-timers";
+} from "../../../src/features/typing/runtime/funbox/timers-state";
 import { setResultElements } from "../../../src/ts/states/result";
 import * as Funbox from "../../../src/features/typing/runtime/funbox/funbox";
 import { getActiveFunboxesWithFunction } from "../../../src/features/typing/runtime/funbox/list";

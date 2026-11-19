@@ -8,7 +8,7 @@ import {
 import { getMutableConfig } from "../../../../ts/config/store";
 import { setConfig, toggleFunbox } from "../../../../ts/config/setters";
 import { save } from "./funbox-memory";
-import { ttsEvent } from "../../../../ts/events/tts";
+import { ttsEvent } from "../events/tts";
 import {
   showNoticeNotification,
   showErrorNotification,

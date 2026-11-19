@@ -2,7 +2,7 @@ import { capitalizeFirstLetter } from "../../../../ts/utils/strings";
 import {
   setLayoutfluidTimerText,
   setLayoutfluidTimerVisibility,
-} from "../../../../ts/states/funbox-timers";
+} from "./timers-state";
 
 export function show(): void {
   setLayoutfluidTimerVisibility("shown");

@@ -63,8 +63,6 @@
   "src/ts/controllers/challenge-controller.ts -> src/features/typing/scope",
   "src/ts/controllers/preset-controller.ts -> src/features/typing/runtime/test/logic",
   "src/ts/controllers/quotes-controller.ts -> src/features/typing/runtime/content/host.client",
-  "src/ts/controllers/url-handler.tsx -> src/features/typing/runtime/content/custom-text",
-  "src/ts/controllers/url-handler.tsx -> src/features/typing/runtime/test/logic",
   "src/ts/input/handlers/before-delete.ts -> src/features/typing/runtime/session.client",
   "src/ts/input/handlers/before-insert-text.ts -> src/features/typing/runtime/session.client",
   "src/ts/input/handlers/before-insert-text.ts -> src/features/typing/runtime/test/ui",

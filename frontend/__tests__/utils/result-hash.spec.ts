@@ -3,7 +3,7 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   hashResult,
   preloadResultHasher,
-} from "../../src/ts/utils/result-hash";
+} from "../../src/features/typing/runtime/result/hash";
 
 describe("result-hash", () => {
   it("matches the frozen legacy wire hash", async () => {
