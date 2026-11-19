@@ -54,6 +54,7 @@ export async function updateLbMemory(
 function pbEligible(result: Result): boolean {
   return (
     result.offline !== true &&
+    !result.bailedOut &&
     canFunboxGetPb(result) &&
     !(
       "stopOnLetter" in result &&
