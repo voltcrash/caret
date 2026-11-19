@@ -7,10 +7,10 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 
-import { FunboxEffects } from "../../ts/components/core/FunboxEffects";
 import { getConfig } from "../../ts/config/store";
 import { isTestRestarting, getTestInitError } from "../../ts/states/test";
 import { isCoarsePointer } from "../../ts/utils/pointer";
+import { FunboxEffects } from "./components/FunboxEffects";
 import { BarTimerProgress } from "./components/live-stats/BarTimerProgress";
 import { MonkeyPower } from "./components/MonkeyPower";
 import { TestPage } from "./components/TestPage";

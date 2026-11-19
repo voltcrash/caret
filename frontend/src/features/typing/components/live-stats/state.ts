@@ -1,10 +1,10 @@
-import { createAppMemo } from "../../app/application";
+import { createAppMemo } from "../../../../app/application";
 
 import * as LiveStats from "@caret/web-shared/live-stats";
-import { getConfig } from "../config/store";
-import Format from "../singletons/format";
-import * as CustomText from "../../features/typing/runtime/content/custom-text";
-import * as TestWords from "../../features/typing/runtime/test/words";
+import { getConfig } from "../../../../ts/config/store";
+import Format from "../../../../ts/singletons/format";
+import * as CustomText from "../../runtime/content/custom-text";
+import * as TestWords from "../../runtime/test/words";
 import {
   currentLiveStats,
   getActiveWordIndex,
@@ -13,7 +13,7 @@ import {
   getFocus,
   isResultCalculating,
   isTestActive,
-} from "./test";
+} from "../../../../ts/states/test";
 
 function getCustomLimit(): LiveStats.CustomLimit {
   return {

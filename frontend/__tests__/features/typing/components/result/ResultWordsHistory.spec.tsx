@@ -23,12 +23,15 @@ vi.mock("../../../../../src/ts/config/setters", async (original) => ({
   ...(await original<typeof import("../../../../../src/ts/config/setters")>()),
   setConfig: mocks.setConfig,
 }));
-vi.mock("../../../../../src/ts/hooks/useResultWordHighlight", () => ({
-  useResultWordHighlight: () => ({
-    component: () => null,
-    destroy: mocks.destroy,
+vi.mock(
+  "../../../../../src/features/typing/components/hooks/useResultWordHighlight",
+  () => ({
+    useResultWordHighlight: () => ({
+      component: () => null,
+      destroy: mocks.destroy,
+    }),
   }),
-}));
+);
 vi.mock("../../../../../src/ts/states/test", async (original) => ({
   ...(await original<typeof import("../../../../../src/ts/states/test")>()),
   getResultVisible: () => true,

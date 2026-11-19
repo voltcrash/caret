@@ -23,7 +23,7 @@ import {
   getTypingTestElement,
 } from "../../../../ts/states/test-dom";
 import * as Caret from "../../runtime/caret";
-import { getWordsFontSize } from "../../../../ts/utils/words-font";
+import { getWordsFontSize } from "./font";
 
 export function updateWordWrapperClasses(): void {
   // outoffocus applies transition, need to remove it

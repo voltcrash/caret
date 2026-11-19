@@ -3,7 +3,6 @@ import { spread } from "solid-js/web";
 
 import { isTypingReady } from "../../../app/startup";
 import { getConfig } from "../../../ts/config/store";
-import { useWordsInputScroll } from "../../../ts/hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
 import {
@@ -27,6 +26,7 @@ import { EndTestButton } from "./EndTestButton";
 import { FinishZenButton } from "./FinishZenButton";
 import { FunboxTimers } from "./FunboxTimer";
 import { GuestScores } from "./GuestScores";
+import { useWordsInputScroll } from "./hooks/useWordsInputScroll";
 import { Keymap } from "./Keymap";
 import { LiveStatsMini } from "./live-stats/LiveStatsMini";
 import { LiveStatsTextBottom } from "./live-stats/LiveStatsTextBottom";

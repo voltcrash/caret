@@ -2,9 +2,9 @@ import { createEffect, onCleanup } from "solid-js";
 
 import { Anime } from "../../../../ts/components/common/anime";
 import { getConfig } from "../../../../ts/config/store";
-import { getBarTarget, showLiveStats } from "../../../../ts/states/live-stats";
 import { cn } from "../../../../ts/utils/cn";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
+import { getBarTarget, showLiveStats } from "./state";
 import { liveStatsBgColor } from "./styles";
 
 // anime.js's default `out(2)`, which the bar used before.

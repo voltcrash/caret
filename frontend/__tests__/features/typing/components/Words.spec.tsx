@@ -78,9 +78,12 @@ vi.mock("../../../../src/ts/controllers/theme-controller", () => ({
 vi.mock("../../../../src/ts/events/keymap", () => ({
   highlight: mocks.highlight,
 }));
-vi.mock("../../../../src/ts/hooks/useWordsFocus", () => ({
-  useWordsFocus: vi.fn(),
-}));
+vi.mock(
+  "../../../../src/features/typing/components/hooks/useWordsFocus",
+  () => ({
+    useWordsFocus: vi.fn(),
+  }),
+);
 vi.mock("../../../../src/features/typing/runtime/focus", () => ({
   set: mocks.focus,
 }));

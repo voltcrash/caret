@@ -87,8 +87,6 @@
   "src/ts/input/listeners/input.ts -> src/features/typing/runtime/session.client",
   "src/ts/input/listeners/input.ts -> src/features/typing/runtime/test/ui",
   "src/ts/states/hotkeys.ts -> src/features/typing/scope",
-  "src/ts/states/live-stats.ts -> src/features/typing/runtime/content/custom-text",
-  "src/ts/states/live-stats.ts -> src/features/typing/runtime/test/words",
   "src/ts/states/result-filters.ts -> src/features/account/components/utils",
   "src/ts/states/result.ts -> src/features/typing/replay-view",
   "src/ts/states/result.ts -> src/features/typing/runtime/word-markup",

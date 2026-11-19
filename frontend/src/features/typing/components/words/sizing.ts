@@ -22,7 +22,7 @@ import {
 } from "../../../../ts/states/words-layout";
 import * as CustomText from "../../runtime/content/custom-text";
 import { convertRemToPixels } from "../../../../ts/utils/numbers";
-import { getWordsFontScale } from "../../../../ts/utils/words-font";
+import { getWordsFontScale } from "./font";
 
 export function updateWordsInputPosition(): void {
   if (!isTypingRouteActive()) return;

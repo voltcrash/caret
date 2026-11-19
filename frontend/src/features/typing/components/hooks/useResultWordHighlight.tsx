@@ -7,16 +7,19 @@ import {
   onMount,
 } from "solid-js";
 
-import { resultState, resultWordHighlightEvent } from "../states/result";
-import { isLanguageRightToLeft } from "../states/test";
-import { createEffectOn } from "./effects";
-import { getHighlightElementPositions } from "./result-word-highlight/geometry";
-import { measureWordLines } from "./result-word-highlight/measurement";
+import { createEffectOn } from "../../../../ts/hooks/effects";
+import { getHighlightElementPositions } from "../../../../ts/hooks/result-word-highlight/geometry";
+import { measureWordLines } from "../../../../ts/hooks/result-word-highlight/measurement";
 import {
   type Line,
   type HighlightPosition,
-} from "./result-word-highlight/types";
-import { ResultWordHighlight } from "./result-word-highlight/View";
+} from "../../../../ts/hooks/result-word-highlight/types";
+import { ResultWordHighlight } from "../../../../ts/hooks/result-word-highlight/View";
+import {
+  resultState,
+  resultWordHighlightEvent,
+} from "../../../../ts/states/result";
+import { isLanguageRightToLeft } from "../../../../ts/states/test";
 const TOGGLE_RESULT_WORDS_BUFFER = 250;
 export function useResultWordHighlight(
   wordsHistoryElement: Accessor<HTMLElement | undefined>,

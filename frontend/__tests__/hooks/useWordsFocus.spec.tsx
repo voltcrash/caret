@@ -10,7 +10,7 @@ vi.mock("../../src/ts/states/test", async () => {
   state.setWarning = setWarning;
   return { showOutOfFocusWarning };
 });
-import { useWordsFocus } from "../../src/ts/hooks/useWordsFocus";
+import { useWordsFocus } from "../../src/features/typing/components/hooks/useWordsFocus";
 import {
   setReadAheadDisabled,
   setWordsVisible,

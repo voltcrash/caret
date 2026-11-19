@@ -1,8 +1,11 @@
-import { areWordsVisible, isReadAheadDisabled } from "../states/funbox";
+import {
+  areWordsVisible,
+  isReadAheadDisabled,
+} from "../../../../ts/states/funbox";
 import { spread } from "solid-js/web";
 
-import { showOutOfFocusWarning } from "../states/test";
-import { cn } from "../utils/cn";
+import { showOutOfFocusWarning } from "../../../../ts/states/test";
+import { cn } from "../../../../ts/utils/cn";
 
 // Called by TestPage's lifecycle; legacy word/funbox classes still coexist.
 export function useWordsFocus(element: HTMLDivElement): void {
