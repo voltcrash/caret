@@ -81,7 +81,7 @@ vi.mock("../../../src/features/typing/runtime/caret", () => ({
   hide: ui.hideCaret,
   show: ui.showCaret,
 }));
-vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   focusWords: ui.focusWords,
   scrollTape: ui.scrollTape,
   centerActiveLine: ui.centerLine,

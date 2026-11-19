@@ -1,7 +1,7 @@
 import { getChallenges } from "@caret/challenges";
 import * as ChallengeController from "../../controllers/challenge-controller";
 import { navigate } from "../../../app/navigate";
-import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";
 import { Command, CommandsSubgroup } from "../types";
 

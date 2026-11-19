@@ -22,7 +22,7 @@ import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
 import * as CustomText from "../../features/typing/runtime/custom-text";
-import { restart as restartTest } from "../../features/typing/runtime/test-logic";
+import { restart as restartTest } from "../../features/typing/runtime/test/logic";
 import { setConfig } from "../config/setters";
 import { getMutableConfig } from "../config/store";
 import {

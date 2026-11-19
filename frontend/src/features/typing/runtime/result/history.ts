@@ -10,7 +10,7 @@ import {
   getInputHistory,
   getWordBurstHistory,
 } from "../../engine/analysis.client";
-import * as TestWords from "../test-words";
+import * as TestWords from "../test/words";
 import { buildWordsHistory } from "../word-markup";
 import { resultState, setResultState } from "../../../../ts/states/result";
 

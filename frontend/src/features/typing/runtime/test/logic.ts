@@ -1,29 +1,29 @@
-import { getTypingLifecycle } from "../lifecycle/controller";
-import { isUpdateReserved } from "../../../app/update-safety";
-import { captureTypingRoute, isTypingRouteActive } from "../scope";
-import { hideLoaderBar } from "../../../ts/states/loader-bar";
-import { createAppOwned } from "../../../app/application";
+import { getTypingLifecycle } from "../../lifecycle/controller";
+import { isUpdateReserved } from "../../../../app/update-safety";
+import { captureTypingRoute, isTypingRouteActive } from "../../scope";
+import { hideLoaderBar } from "../../../../ts/states/loader-bar";
+import { createAppOwned } from "../../../../app/application";
 import { onCleanup } from "solid-js";
-import * as TestUI from "./test-ui";
-import * as Strings from "../../../ts/utils/strings";
+import * as TestUI from "./ui";
+import * as Strings from "../../../../ts/utils/strings";
 
-import * as JSONData from "../../../ts/utils/json-data";
+import * as JSONData from "../../../../ts/utils/json-data";
 import * as Numbers from "@caret/util/numbers";
-import { showNoticeNotification } from "../../../ts/states/notifications";
-import * as CustomText from "./custom-text";
-import * as PractiseWords from "./practise-words";
-import * as Funbox from "./funbox/funbox";
-import * as PaceCaret from "./pace-caret";
-import * as TestTimer from "./test-timer";
+import { showNoticeNotification } from "../../../../ts/states/notifications";
+import * as CustomText from "../custom-text";
+import * as PractiseWords from "../practise-words";
+import * as Funbox from "../funbox/funbox";
+import * as PaceCaret from "../pace-caret";
+import * as TestTimer from "./timer";
 
-import * as Replay from "./replay";
+import * as Replay from "../replay";
 
-import { clearQuoteStats } from "../../../ts/states/quote-rate";
+import { clearQuoteStats } from "../../../../ts/states/quote-rate";
 
 import {
   getCustomTextIndicator,
   isAuthenticated,
-} from "../../../ts/states/core";
+} from "../../../../ts/states/core";
 import {
   setKoreanStatus,
   isTestRestarting,
@@ -35,39 +35,39 @@ import {
   setIsTestInvalid,
   isResultCalculating,
   setBailedOut,
-} from "../../../ts/states/test";
-import { restartTestEvent } from "../../../ts/events/test";
-import * as TestWords from "./test-words";
-import { configEvent } from "../../../ts/events/config";
-import * as AnalyticsController from "../../../ts/controllers/analytics-controller";
-import { preloadResultHasher } from "../../../ts/utils/result-hash";
+} from "../../../../ts/states/test";
+import { restartTestEvent } from "../../../../ts/events/test";
+import * as TestWords from "./words";
+import { configEvent } from "../../../../ts/events/config";
+import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
+import { preloadResultHasher } from "../../../../ts/utils/result-hash";
 
-import { highlight } from "../../../ts/events/keymap";
-import * as LazyModeState from "../../../ts/states/remember-lazy-mode";
+import { highlight } from "../../../../ts/events/keymap";
+import * as LazyModeState from "../../../../ts/states/remember-lazy-mode";
 
-import { getActiveFunboxesWithFunction } from "./funbox/list";
+import { getActiveFunboxesWithFunction } from "../funbox/list";
 
-import * as CompositionState from "../../../ts/states/composition";
+import * as CompositionState from "../../../../ts/states/composition";
 
-import { setInputElementValue } from "../../../ts/input/input-element";
+import { setInputElementValue } from "../../../../ts/input/input-element";
 import { debounce } from "@caret/util/timing";
 import { typedKeys } from "@caret/util/objects";
 import { sharedConfigMetadata } from "@caret/web-shared/config/metadata";
 
-import { getMutableConfig } from "../../../ts/config/store";
-import { setConfig } from "../../../ts/config/setters";
-import { getTestSession, resetTestEvents } from "./events/data";
+import { getMutableConfig } from "../../../../ts/config/store";
+import { setConfig } from "../../../../ts/config/setters";
+import { getTestSession, resetTestEvents } from "../events/data";
 
-import { resetModifierState } from "../../../ts/states/modifiers";
-import { nthElementFromArray } from "../../../ts/utils/arrays";
+import { resetModifierState } from "../../../../ts/states/modifiers";
+import { nthElementFromArray } from "../../../../ts/utils/arrays";
 
-import { beginGuestScore } from "../history/guest-scores.client";
+import { beginGuestScore } from "../../history/guest-scores.client";
 import { testLogicState } from "./logic-state";
-import { init } from "./initialization";
-import { finish } from "./completion";
-export { finish } from "./completion";
+import { init } from "../initialization";
+import { finish } from "../completion";
+export { finish } from "../completion";
 export async function retrySavingResult(): Promise<void> {
-  const saving = await import("./result-saving");
+  const saving = await import("../result-saving");
   await saving.retrySavingResult();
 }
 export function startTest(now: number): boolean {

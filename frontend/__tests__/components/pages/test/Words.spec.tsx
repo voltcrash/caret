@@ -129,8 +129,8 @@ vi.mock("animejs", async (original) => ({
 import { Words } from "../../../../src/features/typing/components/Words";
 import { getWordElement } from "../../../../src/features/typing/components/words/elements";
 import { createNewlineSpacers } from "../../../../src/features/typing/components/words/letters";
-import * as ui from "../../../../src/features/typing/runtime/test-ui";
-import { words } from "../../../../src/features/typing/runtime/test-words";
+import * as ui from "../../../../src/features/typing/runtime/test/ui";
+import { words } from "../../../../src/features/typing/runtime/test/words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
 import { getMutableConfig } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";

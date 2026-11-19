@@ -35,7 +35,7 @@ vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   }),
 }));
 import * as Replay from "../../../src/features/typing/runtime/replay";
-import * as TestWords from "../../../src/features/typing/runtime/test-words";
+import * as TestWords from "../../../src/features/typing/runtime/test/words";
 
 const fixture = recording as unknown as { eventLog: EventLog };
 

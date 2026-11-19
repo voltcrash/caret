@@ -2,7 +2,7 @@ import { resetTypingLifecycle } from "../__harness__/typing-lifecycle";
 import { isTestRestarting, getTestInitError } from "../../src/ts/states/test";
 import { mockHttpFixture } from "../__harness__/operations";
 import { animateAsync } from "../../src/ts/anim";
-import * as TestUI from "../../src/features/typing/runtime/test-ui";
+import * as TestUI from "../../src/features/typing/runtime/test/ui";
 import * as TodayTracker from "../../src/features/typing/runtime/today-tracker";
 import { retryCompletion } from "../../src/features/typing/runtime/completion";
 import { requireApplication } from "../../src/app/application";
@@ -106,7 +106,7 @@ vi.mock("../../src/ts/utils/json-data", () => ({
   getLanguage: async () => mocks.language,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../src/features/typing/runtime/test/ui", () => ({
   onTestStart: mocks.uiStart,
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -170,7 +170,7 @@ vi.mock("../../src/features/typing/runtime/pace-caret", () => ({
   init: vi.fn().mockResolvedValue(undefined),
   setLastTestWpm: vi.fn(),
 }));
-vi.mock("../../src/features/typing/runtime/test-timer", () => ({
+vi.mock("../../src/features/typing/runtime/test/timer", () => ({
   clear: vi.fn(),
   start: vi.fn().mockResolvedValue(undefined),
 }));
@@ -277,7 +277,7 @@ import {
   retrySavingResult,
   startTest,
   useTestLogicEvents,
-} from "../../src/features/typing/runtime/test-logic";
+} from "../../src/features/typing/runtime/test/logic";
 
 let disposeRuntime: () => void;
 afterEach(() => disposeRuntime());

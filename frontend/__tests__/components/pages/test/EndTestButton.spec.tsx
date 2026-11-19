@@ -12,7 +12,7 @@ import {
 
 const { finish } = vi.hoisted(() => ({ finish: vi.fn() }));
 
-vi.mock("../../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../../src/features/typing/runtime/test/logic", () => ({
   finish,
 }));
 vi.mock("../../../../src/ts/config/store", () => ({

@@ -25,11 +25,11 @@ vi.mock(
   () => ({ EngineMemoryNotice: () => null }),
 );
 
-vi.mock("../../../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/logic", () => ({
   restart: mocks.restart,
   retrySavingResult: mocks.retrySavingResult,
 }));
-vi.mock("../../../../../src/features/typing/runtime/test-screenshot", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/screenshot", () => ({
   download: mocks.download,
   share: mocks.share,
   copyToClipboard: mocks.copyToClipboard,

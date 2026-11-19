@@ -1,5 +1,5 @@
 import * as Funbox from "../../../features/typing/runtime/funbox/funbox";
-import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { getAllFunboxes } from "@caret/funbox";
 import {
   checkCompatibility,

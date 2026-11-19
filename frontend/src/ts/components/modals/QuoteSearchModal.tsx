@@ -10,7 +10,7 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
-import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { setConfig } from "../../config/setters";
 import { getMutableConfig } from "../../config/store";
 import QuotesController, { Quote } from "../../controllers/quotes-controller";

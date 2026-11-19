@@ -6,7 +6,7 @@ import {
   getResultVisible,
 } from "../../../../ts/states/test";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
-import * as TestWords from "../../runtime/test-words";
+import * as TestWords from "../../runtime/test/words";
 import * as Misc from "../../../../ts/utils/misc";
 import * as Strings from "../../../../ts/utils/strings";
 

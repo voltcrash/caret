@@ -31,7 +31,7 @@ import {
   setCurrentResult,
   resetResultAnnotations,
 } from "./result/context";
-import { clearWords, clearWordsBlur } from "./test-ui";
+import { clearWords, clearWordsBlur } from "./test/ui";
 import { showResultScreen } from "../components/result/useResultScreen";
 import type { PluginChartOptions } from "chart.js";
 

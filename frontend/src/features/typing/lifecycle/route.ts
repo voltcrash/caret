@@ -24,8 +24,8 @@ import { getActiveFunboxesWithFunction } from "../runtime/funbox/list";
 import * as Layoutfluid from "../runtime/funbox/layoutfluid-funbox-timer";
 import * as PaceCaret from "../runtime/pace-caret";
 import * as Replay from "../runtime/replay";
-import * as Timer from "../runtime/test-timer";
-import { restart } from "../runtime/test-logic";
+import * as Timer from "../runtime/test/timer";
+import { restart } from "../runtime/test/logic";
 import { resetAltGrState } from "../runtime/layout-emulator";
 import { getTypingLifecycle } from "./controller";
 

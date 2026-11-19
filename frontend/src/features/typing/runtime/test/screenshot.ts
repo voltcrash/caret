@@ -2,31 +2,31 @@ import {
   captureTypingRoute,
   captureTypingPresentation,
   createTypingOwned,
-} from "../scope";
-import { createCroppedScreenshot } from "../components/result/useScreenshotCanvas";
+} from "../../scope";
+import { createCroppedScreenshot } from "../../components/result/useScreenshotCanvas";
 import {
   beginLoaderBar,
   showLoaderBar,
   hideLoaderBar,
-} from "../../../ts/states/loader-bar";
-import * as Replay from "./replay";
-import { setIsScreenshotting } from "../../../ts/states/core";
-import { getActiveFunboxesWithFunction } from "./funbox/list";
-import * as DB from "../../../ts/db";
+} from "../../../../ts/states/loader-bar";
+import * as Replay from "../replay";
+import { setIsScreenshotting } from "../../../../ts/states/core";
+import { getActiveFunboxesWithFunction } from "../funbox/list";
+import * as DB from "../../../../ts/db";
 import { format } from "date-fns/format";
 import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { convertRemToPixels } from "../../../ts/utils/numbers";
+} from "../../../../ts/states/notifications";
+import { convertRemToPixels } from "../../../../ts/utils/numbers";
 import {
   getResultWrapperElement,
   resultState,
   setScreenshotWatermark,
-} from "../../../ts/states/result";
-import { getTheme } from "../../../ts/states/theme";
-import { download as downloadFile } from "../../../ts/components/common/Download";
+} from "../../../../ts/states/result";
+import { getTheme } from "../../../../ts/states/theme";
+import { download as downloadFile } from "../../../../ts/components/common/Download";
 
 function revert(): void {
   setIsScreenshotting(false);

@@ -1,5 +1,5 @@
-import { createAppOwned } from "../../../app/application";
-import { appObject } from "../../../app/state";
+import { createAppOwned } from "../../../../app/application";
+import { appObject } from "../../../../app/state";
 type TestLogicState = {
   lastInitError: Error | null;
   showedLazyModeNotification: boolean;

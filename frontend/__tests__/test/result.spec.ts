@@ -47,7 +47,7 @@ vi.mock("../../src/ts/db", () => ({
     state.localPbWpm === 0 ? undefined : { wpm: state.localPbWpm },
   getSnapshot: () => undefined,
 }));
-vi.mock("../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../src/features/typing/runtime/test/ui", () => ({
   clearWords: vi.fn(),
   clearWordsBlur: vi.fn(),
 }));

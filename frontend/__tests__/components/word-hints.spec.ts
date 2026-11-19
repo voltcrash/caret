@@ -5,7 +5,7 @@ import {
   joinOverlappingHints,
   updateHintsPositionDebounced,
 } from "../../src/features/typing/components/words/hints";
-import * as TestWords from "../../src/features/typing/runtime/test-words";
+import * as TestWords from "../../src/features/typing/runtime/test/words";
 import { getMutableConfig } from "../../src/ts/config/store";
 import { setTestElements } from "../../src/ts/states/test-dom";
 import {

@@ -30,7 +30,7 @@ vi.mock("../../../src/features/typing/runtime/completion-snapshot", () => ({
 vi.mock("../../../src/ts/states/result", () => ({
   prepareResultScreen: mocks.prepare,
 }));
-vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   onTestFinish: vi.fn(),
 }));
 vi.mock("../../../src/features/typing/runtime/events/data", () => ({
@@ -38,7 +38,7 @@ vi.mock("../../../src/features/typing/runtime/events/data", () => ({
   forceReleaseAllKeys: vi.fn(),
   cleanupData: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/test-timer", () => ({
+vi.mock("../../../src/features/typing/runtime/test/timer", () => ({
   clear: mocks.clear,
 }));
 vi.mock("../../../src/features/typing/runtime/completion.client", () => ({

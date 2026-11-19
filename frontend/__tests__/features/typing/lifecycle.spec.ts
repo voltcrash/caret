@@ -27,10 +27,10 @@ vi.mock("../../../src/features/typing/engine/owner.client", () => ({
 vi.mock("../../../src/app/readiness", () => ({
   preferencesReadiness: () => ({ wait: mocks.preferences }),
 }));
-vi.mock("../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../src/features/typing/runtime/test/logic", () => ({
   restart: mocks.restart,
 }));
-vi.mock("../../../src/features/typing/runtime/test-timer", () => ({
+vi.mock("../../../src/features/typing/runtime/test/timer", () => ({
   clear: mocks.timerClear,
 }));
 vi.mock("../../../src/features/typing/runtime/pace-caret", () => ({

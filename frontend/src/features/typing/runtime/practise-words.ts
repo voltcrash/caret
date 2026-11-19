@@ -2,7 +2,7 @@ import { createAppOwned } from "../../../app/application";
 import { appObject, createAccountSignal } from "../../../app/state";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "./session.client";
-import * as TestWords from "./test-words";
+import * as TestWords from "./test/words";
 import { showNoticeNotification } from "../../../ts/states/notifications";
 
 import { getConfig, getMutableConfig } from "../../../ts/config/store";

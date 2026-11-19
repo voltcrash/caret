@@ -15,8 +15,8 @@ import {
   type CompletionSnapshot,
 } from "./completion-snapshot";
 import { prepareResultScreen } from "../../../ts/states/result";
-import * as TestUI from "./test-ui";
-import * as TestTimer from "./test-timer";
+import * as TestUI from "./test/ui";
+import * as TestTimer from "./test/timer";
 
 /** Claim completion before native acknowledgement can synchronously notify again. */
 export async function finish(difficultyFailed = false): Promise<void> {

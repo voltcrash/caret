@@ -1,24 +1,24 @@
 import { onCleanup } from "solid-js";
-import { createTypingOwned } from "../scope";
-import type { SessionEvents } from "./session.client";
-import { getMutableConfig } from "../../../ts/config/store";
-import { setConfig } from "../../../ts/config/setters";
-import * as TestWords from "./test-words";
+import { createTypingOwned } from "../../scope";
+import type { SessionEvents } from "../session.client";
+import { getMutableConfig } from "../../../../ts/config/store";
+import { setConfig } from "../../../../ts/config/setters";
+import * as TestWords from "./words";
 import {
   showNoticeNotification,
   showErrorNotification,
   removeNotification,
-} from "../../../ts/states/notifications";
-import * as Caret from "./caret";
-import * as SlowTimer from "../../../ts/states/slow-timer";
-import { highlight } from "../../../ts/events/keymap";
-import * as LayoutfluidFunboxTimer from "./funbox/layoutfluid-funbox-timer";
+} from "../../../../ts/states/notifications";
+import * as Caret from "../caret";
+import * as SlowTimer from "../../../../ts/states/slow-timer";
+import { highlight } from "../../../../ts/events/keymap";
+import * as LayoutfluidFunboxTimer from "../funbox/layoutfluid-funbox-timer";
 import { KeymapLayout, Layout } from "@caret/schemas/configs";
-import * as SoundController from "../../../ts/controllers/sound-controller";
-import { clearLowFpsMode } from "../../../ts/anim";
+import * as SoundController from "../../../../ts/controllers/sound-controller";
+import { clearLowFpsMode } from "../../../../ts/anim";
 import { createTimerScheduler } from "./timer-scheduler";
-import { getCurrentInput, getTestSession } from "./events/data";
-import { setCurrentLiveStats } from "../../../ts/states/test";
+import { getCurrentInput, getTestSession } from "../events/data";
+import { setCurrentLiveStats } from "../../../../ts/states/test";
 function createTiming(): {
   disableSlowTimerFail: typeof disableSlowTimerFail;
   enableTimerDebug: typeof enableTimerDebug;

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
-import { createTimerScheduler } from "../../src/features/typing/runtime/timer-scheduler";
+import { createTimerScheduler } from "../../src/features/typing/runtime/test/timer-scheduler";
 beforeEach(() =>
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "performance"] }),
 );

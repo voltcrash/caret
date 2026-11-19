@@ -1,7 +1,7 @@
 import { isDebugLogging } from "../../utils/logger";
 import { useInputListener } from "../../hooks/useInputListener";
 import * as CompositionState from "../../states/composition";
-import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { setLastInsertCompositionTextData } from "../state";
 import { onInsertText } from "../handlers/insert-text";
 import { logTestEvent } from "../../../features/typing/runtime/events/data";

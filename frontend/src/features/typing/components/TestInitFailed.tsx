@@ -7,7 +7,7 @@ import { cn } from "../../../ts/utils/cn";
 import { getBrowserEngine } from "../engine/owner.client";
 import { getTypingLifecycle } from "../lifecycle/controller";
 import { retryCompletion } from "../runtime/completion";
-import * as TestLogic from "../runtime/test-logic";
+import * as TestLogic from "../runtime/test/logic";
 
 export function TestInitFailed(): JSXElement {
   const completionFailed = (): boolean =>

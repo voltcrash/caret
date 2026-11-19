@@ -4,7 +4,7 @@ import * as LiveStats from "@caret/web-shared/live-stats";
 import { getConfig } from "../config/store";
 import Format from "../singletons/format";
 import * as CustomText from "../../features/typing/runtime/custom-text";
-import * as TestWords from "../../features/typing/runtime/test-words";
+import * as TestWords from "../../features/typing/runtime/test/words";
 import {
   currentLiveStats,
   getActiveWordIndex,

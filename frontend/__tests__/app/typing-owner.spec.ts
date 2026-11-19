@@ -16,8 +16,8 @@ it("imports typing adapters without a mounted app, then recreates and stops each
   const { getTestSession } =
     await import("../../src/features/typing/runtime/events/data");
   const { words } =
-    await import("../../src/features/typing/runtime/test-words");
-  await import("../../src/features/typing/runtime/test-timer");
+    await import("../../src/features/typing/runtime/test/words");
+  await import("../../src/features/typing/runtime/test/timer");
   const first = createTestApplication();
   const release = mountApplication(first.application);
   const engine = getBrowserEngine();

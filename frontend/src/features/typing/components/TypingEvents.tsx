@@ -23,7 +23,7 @@ import * as Caret from "../runtime/caret";
 import * as CustomText from "../runtime/custom-text";
 import * as Focus from "../runtime/focus";
 import { updateAltGrState } from "../runtime/layout-emulator";
-import * as TestUI from "../runtime/test-ui";
+import * as TestUI from "../runtime/test/ui";
 import { isTypingRouteActive } from "../scope";
 
 /**

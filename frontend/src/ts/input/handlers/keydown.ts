@@ -1,5 +1,5 @@
 import { getMutableConfig } from "../../config/store";
-import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { getCharFromEvent } from "../../../features/typing/runtime/layout-emulator";
 import { emulateInsertText } from "./insert-text";
 import {

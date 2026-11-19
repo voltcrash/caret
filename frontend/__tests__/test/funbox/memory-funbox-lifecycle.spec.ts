@@ -51,8 +51,8 @@ import { setResultElements } from "../../../src/ts/states/result";
 import * as Funbox from "../../../src/features/typing/runtime/funbox/funbox";
 import { getActiveFunboxesWithFunction } from "../../../src/features/typing/runtime/funbox/list";
 import * as MemoryTimer from "../../../src/features/typing/runtime/funbox/memory-funbox-timer";
-import * as TestUI from "../../../src/features/typing/runtime/test-ui";
-import { words } from "../../../src/features/typing/runtime/test-words";
+import * as TestUI from "../../../src/features/typing/runtime/test/ui";
+import { words } from "../../../src/features/typing/runtime/test/words";
 import * as JSONData from "../../../src/ts/utils/json-data";
 
 beforeEach(() => {

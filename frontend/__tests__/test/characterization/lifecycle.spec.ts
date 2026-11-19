@@ -101,7 +101,7 @@ vi.mock("../../../src/ts/utils/json-data", () => ({
     ({ name: "english", words: ["hello", "world"] }) as LanguageObject,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   onTestStart: vi.fn(),
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -254,7 +254,7 @@ import {
   restart,
   startTest,
   useTestLogicEvents,
-} from "../../../src/features/typing/runtime/test-logic";
+} from "../../../src/features/typing/runtime/test/logic";
 
 function type(
   now: number,

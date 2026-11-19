@@ -9,7 +9,7 @@ import {
 } from "./recovery.client";
 import { updateClassNames } from "../../../ts/utils/cn";
 
-import * as TestUI from "./test-ui";
+import * as TestUI from "./test/ui";
 
 import * as Misc from "../../../ts/utils/misc";
 import * as JSONData from "../../../ts/utils/json-data";
@@ -34,7 +34,7 @@ import {
   setWordsHaveTab,
 } from "../../../ts/states/test";
 
-import * as TestWords from "./test-words";
+import * as TestWords from "./test/words";
 
 import { highlight } from "../../../ts/events/keymap";
 import * as LazyModeState from "../../../ts/states/remember-lazy-mode";
@@ -56,7 +56,7 @@ import { setQuoteLengthAll, setConfig } from "../../../ts/config/setters";
 import { nthElementFromArray } from "../../../ts/utils/arrays";
 import { hasKoreanCharacters } from "@caret/web-shared/strings";
 
-import { testLogicState } from "./logic-state";
+import { testLogicState } from "./test/logic-state";
 export async function init(
   lease: {
     isCurrent: () => boolean;
