@@ -3,7 +3,7 @@ import { createTypingOwned, captureTypingRoute } from "../scope";
 import { getMutableConfig } from "../../../ts/config/store";
 import * as JSONData from "../../../ts/utils/json-data";
 import { configEvent } from "../../../ts/events/config";
-import { ttsEvent } from "../../../ts/events/tts";
+import { ttsEvent } from "./events/tts";
 function createSpeech(): {
   useTtsEvents: typeof useTtsEvents;
 } {

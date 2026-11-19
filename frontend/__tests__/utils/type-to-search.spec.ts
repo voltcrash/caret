@@ -3,7 +3,7 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   isEditableElement,
   isTypeToSearchKey,
-} from "../../src/ts/utils/type-to-search";
+} from "../../src/features/settings/type-to-search";
 
 describe("isEditableElement", () => {
   it("accepts form fields", () => {

@@ -29,7 +29,8 @@ afterEach(() => {
 
 describe("leaderboard selection", () => {
   it("round-trips client links for all-time, daily and weekly leaderboards", async () => {
-    const state = await import("../../src/ts/states/leaderboard-selection");
+    const state =
+      await import("../../src/features/leaderboards/selection-state");
     for (const type of ["allTime", "daily", "weekly"] as const) {
       for (const client of ["web"] as const) {
         const view = applyUrlParams(defaultSelection, {
@@ -79,7 +80,8 @@ describe("leaderboard selection", () => {
       "leaderboardSelector",
       JSON.stringify({ type: "weekly", previous: false, client: "mobile" }),
     );
-    const state = await import("../../src/ts/states/leaderboard-selection");
+    const state =
+      await import("../../src/features/leaderboards/selection-state");
     expect(state.getSelection().client ?? "web").toBe("web");
     expect(
       state.LeaderboardUrlParamsSchema.safeParse({ client: "mobile" }).success,
@@ -109,7 +111,8 @@ describe("leaderboard selection", () => {
         "leaderboardSelector",
         JSON.stringify({ ...selection, friendsOnly: true }),
       );
-      const state = await import("../../src/ts/states/leaderboard-selection");
+      const state =
+        await import("../../src/features/leaderboards/selection-state");
       expect(state.getSelection()).toEqual(selection);
       expect(urlParams(state.getSelection(), 1)).not.toHaveProperty(
         "friendsOnly",
@@ -118,7 +121,8 @@ describe("leaderboard selection", () => {
   );
 
   it("ignores a legacy friend filter in a leaderboard link", async () => {
-    const state = await import("../../src/ts/states/leaderboard-selection");
+    const state =
+      await import("../../src/features/leaderboards/selection-state");
     const params = state.LeaderboardUrlParamsSchema.parse({
       type: "allTime",
       friendsOnly: true,

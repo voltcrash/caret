@@ -6,7 +6,7 @@ import {
   mountTypingScope,
 } from "../../../src/features/typing/scope";
 import { useTtsEvents } from "../../../src/features/typing/runtime/tts";
-import { ttsEvent } from "../../../src/ts/events/tts";
+import { ttsEvent } from "../../../src/features/typing/runtime/events/tts";
 import {
   createTestApplication,
   releaseTestApplication,

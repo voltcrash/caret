@@ -6,7 +6,7 @@ import {
   registerSearchable,
   settingMatchesSearch,
   setSettingsSearch,
-} from "../../src/ts/states/settings-search";
+} from "../../src/features/settings/search-state";
 import { createSettingSearchIndex } from "../../src/ts/utils/settings-search";
 import { SettingsSection } from "../../src/ts/states/settings-sections";
 

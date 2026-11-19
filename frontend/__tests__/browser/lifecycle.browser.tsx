@@ -4,9 +4,9 @@ import { afterEach, expect, it, vi } from "vite-plus/test";
 import { page, userEvent } from "vite-plus/test/browser";
 
 import "../../src/app/app.css";
+import { useWordsInputScroll } from "../../src/features/typing/components/hooks/useWordsInputScroll";
 import { AnimatedModal } from "../../src/ts/components/common/AnimatedModal";
 import { useInputListener } from "../../src/ts/hooks/useInputListener";
-import { useWordsInputScroll } from "../../src/ts/hooks/useWordsInputScroll";
 import {
   hideModal,
   hideModalAndClearChain,

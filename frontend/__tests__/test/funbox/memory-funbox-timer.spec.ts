@@ -14,7 +14,7 @@ import {
 import {
   getMemoryTimerText,
   getMemoryTimerVisibility,
-} from "../../../src/ts/states/funbox-timers";
+} from "../../../src/features/typing/runtime/funbox/timers-state";
 import * as MemoryTimer from "../../../src/features/typing/runtime/funbox/memory-funbox-timer";
 
 beforeEach(() => {

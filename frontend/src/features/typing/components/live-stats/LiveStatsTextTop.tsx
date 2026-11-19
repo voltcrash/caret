@@ -1,11 +1,7 @@
 import { AnimeShow } from "../../../../ts/components/common/anime";
 import { getConfig } from "../../../../ts/config/store";
-import {
-  getTimerText,
-  isTimerFlashHidden,
-  showLiveStats,
-} from "../../../../ts/states/live-stats";
 import { cn } from "../../../../ts/utils/cn";
+import { getTimerText, isTimerFlashHidden, showLiveStats } from "./state";
 import {
   TEXT_DISPLAY_CLASS,
   TEXT_WRAPPER_CLASS,

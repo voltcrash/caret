@@ -200,7 +200,7 @@ vi.mock("../../src/ts/states/notifications", () => ({
   showErrorNotification: mocks.error,
   showSuccessNotification: mocks.success,
 }));
-vi.mock("../../src/ts/states/remember-lazy-mode", () => ({
+vi.mock("../../src/features/typing/runtime/remember-lazy-mode", () => ({
   getRemember: () => mocks.rememberLazy,
   setRemember: (value: boolean) => {
     mocks.rememberLazy = value;
@@ -252,7 +252,7 @@ vi.mock("../../src/ts/sentry", () => ({ captureException: mocks.capture }));
 vi.mock("../../src/ts/anim", () => ({
   animateAsync: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("../../src/ts/utils/result-hash", () => ({
+vi.mock("../../src/features/typing/runtime/result/hash", () => ({
   hashResult: vi.fn().mockResolvedValue("hash"),
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));

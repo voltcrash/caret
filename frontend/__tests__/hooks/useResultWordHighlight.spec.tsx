@@ -13,8 +13,8 @@ vi.mock("../../src/ts/states/test", () => ({
   isLanguageRightToLeft: () => false,
 }));
 
+import { useResultWordHighlight } from "../../src/features/typing/components/hooks/useResultWordHighlight";
 import { useRef } from "../../src/ts/hooks/useRef";
-import { useResultWordHighlight } from "../../src/ts/hooks/useResultWordHighlight";
 import {
   resultWordHighlightEvent,
   setResultState,

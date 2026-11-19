@@ -8,7 +8,7 @@ import {
   vi,
 } from "vite-plus/test";
 
-import { useWordsInputScroll } from "../../src/ts/hooks/useWordsInputScroll";
+import { useWordsInputScroll } from "../../src/features/typing/components/hooks/useWordsInputScroll";
 import { centerWordsInputEvent } from "../../src/ts/states/words-layout";
 import { isCoarsePointer } from "../../src/ts/utils/pointer";
 

@@ -1,7 +1,7 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 
-import { FunboxEffects } from "../../../src/ts/components/core/FunboxEffects";
+import { FunboxEffects } from "../../../src/features/typing/components/FunboxEffects";
 import { setCrt, setFunboxStylesheets } from "../../../src/ts/states/funbox";
 
 afterEach(() => {

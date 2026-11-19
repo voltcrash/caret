@@ -37,7 +37,7 @@ import {
 import * as TestWords from "./test/words";
 
 import { highlight } from "../../../ts/events/keymap";
-import * as LazyModeState from "../../../ts/states/remember-lazy-mode";
+import * as LazyModeState from "./remember-lazy-mode";
 
 import {
   getActiveFunboxNames,

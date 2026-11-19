@@ -1,5 +1,7 @@
 import { AnimeShow } from "../../../../ts/components/common/anime";
 import { getConfig } from "../../../../ts/config/store";
+import { cn } from "../../../../ts/utils/cn";
+import { getWordsFontSize } from "../words/font";
 import {
   getLiveAccText,
   getLiveBurstText,
@@ -7,9 +9,7 @@ import {
   getTimerText,
   isTimerFlashHidden,
   showLiveStats,
-} from "../../../../ts/states/live-stats";
-import { cn } from "../../../../ts/utils/cn";
-import { getWordsFontSize } from "../../../../ts/utils/words-font";
+} from "./state";
 import { liveStatsTextColor } from "./styles";
 
 export function LiveStatsMini() {

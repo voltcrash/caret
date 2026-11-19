@@ -8,7 +8,7 @@ import * as TestState from "../../src/ts/states/test";
 import * as Misc from "../../src/ts/utils/misc";
 import { FunboxName } from "@caret/schemas/configs";
 import { CustomTextSettings } from "@caret/schemas/results";
-import { loadTestSettingsFromUrl } from "../../src/ts/controllers/url-handler";
+import { loadTestSettingsFromUrl } from "../../src/features/typing/runtime/url-handler";
 
 //mock modules to avoid dependencies
 vi.mock("../../src/features/typing/runtime/test/logic", () => ({

@@ -1,14 +1,14 @@
 import { animate } from "animejs";
 import { JSXElement, createEffect } from "solid-js";
 
+import { applyReducedMotion } from "../../../ts/utils/misc";
 import {
   FunboxTimerVisibility,
   getLayoutfluidTimerText,
   getLayoutfluidTimerVisibility,
   getMemoryTimerText,
   getMemoryTimerVisibility,
-} from "../../../ts/states/funbox-timers";
-import { applyReducedMotion } from "../../../ts/utils/misc";
+} from "../runtime/funbox/timers-state";
 
 function FunboxTimer(props: {
   id: string;

@@ -49,7 +49,8 @@ describe("migrated state", () => {
     localStorage.setItem("rememberLazyMode", "true");
     localStorage.setItem("prefersArabicLazyMode", "false");
     const storageRead = vi.spyOn(Storage.prototype, "getItem");
-    const preferences = await import("../../src/ts/states/remember-lazy-mode");
+    const preferences =
+      await import("../../src/features/typing/runtime/remember-lazy-mode");
     expect(storageRead).not.toHaveBeenCalled();
     expect(preferences.getRemember()).toBe(true);
     expect(preferences.getArabicPref()).toBe(false);

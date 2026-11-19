@@ -48,7 +48,7 @@ arbitrary input sizes.
 From the repository root:
 
 ```sh
-vp test run frontend/__tests__/components/pages/test/Words.spec.tsx frontend/__tests__/components/pages/test/words frontend/__tests__/utils/cn.spec.ts frontend/__tests__/input frontend/__tests__/app/application.spec.ts
+vp test run frontend/__tests__/features/typing/components/Words.spec.tsx frontend/__tests__/features/typing/components/words frontend/__tests__/utils/cn.spec.ts frontend/__tests__/input frontend/__tests__/app/application.spec.ts
 vp test run frontend/__tests__/app/animation-frames.spec.ts frontend/__tests__/app/audio-samples.spec.ts frontend/__tests__/app/query-cache.spec.ts frontend/__tests__/app/file-storage-owner.spec.ts frontend/__tests__/utils/local-storage-with-schema.spec.ts frontend/__tests__/utils/search-service.spec.ts
 vp -C frontend test run
 vp -C frontend lint . --type-aware --type-check --format agent

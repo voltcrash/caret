@@ -3,7 +3,7 @@ import { Show } from "solid-js";
 import { getConfig } from "../../../ts/config/store";
 import { getCompositionText, testFocusState } from "../../../ts/states/test";
 import { cn } from "../../../ts/utils/cn";
-import { getWordsFontSize } from "../../../ts/utils/words-font";
+import { getWordsFontSize } from "./words/font";
 
 export function CompositionDisplay() {
   const isOutOfFocus = () => testFocusState() !== "focused";

@@ -1,0 +1,338 @@
+import { Difficulty } from "@caret/schemas/configs";
+import { Mode } from "@caret/schemas/shared";
+import { format as dateFormat } from "date-fns/format";
+import { Accessor, createMemo, createSignal, JSXElement, Show } from "solid-js";
+
+import { type TagItem, useTagsLiveQuery } from "../../../ts/collections/tags";
+import { Balloon } from "../../../ts/components/common/Balloon";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa, FaProps } from "../../../ts/components/common/Fa";
+import {
+  DataTable,
+  DataTableColumnDef,
+} from "../../../ts/components/ui/table/DataTable";
+import { createDataTableColumnHelper as createColumnHelper } from "../../../ts/components/ui/table/features";
+import { SnapshotResult } from "../../../ts/constants/default-snapshot";
+import { getFormatting } from "../../../ts/states/core";
+import { showEditResultTagsModal } from "../../../ts/states/edit-result-tags";
+import { showModal } from "../../../ts/states/modals";
+import { showNoticeNotification } from "../../../ts/states/notifications";
+import { cn } from "../../../ts/utils/cn";
+import { Formatting } from "../../../ts/utils/format";
+import { replaceUnderscoresWithSpaces } from "../../../ts/utils/strings";
+import { MiniResultChart } from "./MiniResultChart";
+
+type Sorting = {
+  field: keyof SnapshotResult<Mode>;
+  direction: "asc" | "desc";
+};
+
+export function Table<M extends Mode>(props: {
+  ref?: (element: HTMLTableElement) => void;
+  data: SnapshotResult<M>[];
+  onSortingChange: (sorting: Sorting) => void;
+  selectedRowId: Accessor<string | null>;
+}): JSXElement {
+  const [selectedResult, setSelectedResult] = createSignal<string | undefined>(
+    undefined,
+  );
+
+  const tags = useTagsLiveQuery();
+
+  const columns = createMemo(() =>
+    getColumns<M>({
+      format: getFormatting(),
+      tags: tags(),
+      onMiniResultChartSelected: (id) => {
+        setSelectedResult(id);
+        if (id !== undefined) showModal("MiniResultChartModal");
+      },
+    }),
+  );
+
+  return (
+    <>
+      <Show when={selectedResult() !== undefined}>
+        <MiniResultChart resultId={selectedResult() as string} />
+      </Show>
+      <div class="w-full overflow-x-auto">
+        <DataTable
+          id="resultList"
+          ref={props.ref}
+          onSortingChange={(val) => {
+            if (val.length === 0) {
+              props.onSortingChange({ field: "timestamp", direction: "desc" });
+            } else {
+              props.onSortingChange({
+                field: val[0]?.id as keyof SnapshotResult<Mode>,
+                direction: val[0]?.desc ? "desc" : "asc",
+              });
+            }
+          }}
+          class={cn("table-auto", "text-xs md:text-sm lg:text-base")}
+          // headerCellClass="p-1"
+          // bodyCellClass="p-1"
+          data={props.data}
+          columns={columns()}
+          fallback=<span>No data found. Check your filters.</span>
+          rowSelection={{
+            getRowId: (row) => row._id,
+            activeRow: props.selectedRowId,
+            class: cn(
+              "text-main [&>td>div]:text-main [&>td>div>a]:text-main",
+              "**:data-[ui-element='button']:[--themable-button-text:var(--text-main)]",
+            ),
+          }}
+        />
+      </div>
+    </>
+  );
+}
+
+function getColumns<M extends Mode>({
+  format,
+  tags,
+  onMiniResultChartSelected,
+}: {
+  format: Formatting;
+  tags: TagItem[];
+  onMiniResultChartSelected(val: string): void;
+}): DataTableColumnDef<SnapshotResult<M>>[] {
+  const defineColumn = createColumnHelper<SnapshotResult<M>>().accessor;
+  const columns = [
+    defineColumn("verification", {
+      header: "replay",
+      cell: (info) => (
+        <span
+          title={info.getValue() ?? "Saved before replay status was recorded"}
+        >
+          {info.getValue() === "verified"
+            ? "matched"
+            : info.getValue() === undefined
+              ? "legacy"
+              : "unverified"}
+        </span>
+      ),
+      enableSorting: false,
+      meta: { breakpoint: "md" },
+    }),
+    defineColumn("isPb", {
+      header: "",
+      cell: (info) =>
+        info.getValue() ? (
+          <Fa icon="fa-crown" />
+        ) : (
+          <Fa icon="fa-crown" class="opacity-0" />
+        ),
+      enableSorting: false,
+      meta: {
+        cellMeta: {
+          class: cn("w-0", "xl:pr-6 xl:pl-8", "pl-4"),
+        },
+      },
+    }),
+    defineColumn("wpm", {
+      header: format.typingSpeedUnit,
+      cell: (info) =>
+        format.typingSpeed(info.getValue(), { showDecimalPlaces: true }),
+    }),
+    defineColumn("rawWpm", {
+      header: "raw",
+      cell: (info) =>
+        format.typingSpeed(info.getValue(), { showDecimalPlaces: true }),
+      meta: {
+        breakpoint: "sm",
+      },
+    }),
+    defineColumn("acc", {
+      header: "accuracy",
+      cell: (info) =>
+        format.percentage(info.getValue(), { showDecimalPlaces: true }),
+    }),
+    defineColumn("consistency", {
+      header: "consistency",
+      cell: (info) =>
+        format.percentage(info.getValue(), { showDecimalPlaces: true }),
+      meta: {
+        breakpoint: "md",
+      },
+    }),
+    defineColumn("charStats", {
+      header: "chars",
+      cell: (info) =>
+        `${info.row.original.charStats[0]}/${info.row.original.charStats[1]}/${info.row.original.charStats[2]}/${info.row.original.charStats[3]}`,
+      meta: {
+        breakpoint: "lg",
+      },
+    }),
+    defineColumn("mode", {
+      header: "mode",
+      enableSorting: false,
+      cell: (info) =>
+        `${info.getValue()} ${info.row.original.mode2 === "custom" ? "" : info.row.original.mode2}`,
+    }),
+    defineColumn("_id", {
+      header: "info",
+      enableSorting: false,
+      cell: (info) => {
+        const hasChart =
+          info.row.original.chartData !== "toolong" &&
+          info.row.original.testDuration <= 122;
+
+        return (
+          <div class="flex gap-0.5">
+            <Balloon
+              as="span"
+              text={info.row.original.language}
+              data-balloon-pos="up"
+            >
+              <Fa icon="fa-globe-americas" fixedWidth={true} />
+            </Balloon>
+            <Balloon
+              as="span"
+              text={info.row.original.difficulty}
+              data-balloon-pos="up"
+            >
+              <Fa {...difficultyIcon(info.row.original.difficulty)} />
+            </Balloon>
+            <Show when={info.row.original.punctuation}>
+              <Balloon as="span" text="punctuation" data-balloon-pos="up">
+                <Fa icon="fa-at" fixedWidth={true} />
+              </Balloon>
+            </Show>
+            <Show when={info.row.original.numbers}>
+              <Balloon as="span" text="numbers" data-balloon-pos="up">
+                <Fa icon="fa-hashtag" fixedWidth={true} />
+              </Balloon>
+            </Show>
+            <Show when={info.row.original.blindMode}>
+              <Balloon as="span" text="blind mode" data-balloon-pos="up">
+                <Fa icon="fa-eye-slash" fixedWidth={true} />
+              </Balloon>
+            </Show>
+            <Show when={info.row.original.offline}>
+              <Balloon
+                as="span"
+                text="offline result: history and stats only"
+                data-balloon-pos="up"
+              >
+                <Fa icon="fa-plug" fixedWidth />
+              </Balloon>
+            </Show>
+            <Show when={info.row.original.lazyMode}>
+              <Balloon as="span" text="lazy mode" data-balloon-pos="up">
+                <Fa icon="fa-couch" fixedWidth={true} />
+              </Balloon>
+            </Show>
+            <Show when={(info.row.original.funbox ?? []).length > 0}>
+              <Balloon
+                as="span"
+                text={info.row.original.funbox
+                  .map(replaceUnderscoresWithSpaces)
+                  .join(", ")}
+                data-balloon-pos="up"
+              >
+                <Fa icon="fa-gamepad" fixedWidth={true} />
+              </Balloon>
+            </Show>
+            <Balloon
+              as="span"
+              data-balloon-pos="up"
+              text={
+                hasChart
+                  ? "View graph"
+                  : "Graph history is not available for long tests"
+              }
+            >
+              <Button
+                aria-label="Show result chart"
+                disabled={!hasChart}
+                class="p-0 text-inherit"
+                variant="text"
+                fa={{ icon: "fa-chart-line", fixedWidth: true }}
+                onClick={() => {
+                  onMiniResultChartSelected(info.getValue());
+                }}
+              />
+            </Balloon>
+          </div>
+        );
+      },
+      meta: {
+        breakpoint: "sm",
+      },
+    }),
+    defineColumn("tags", {
+      header: "tags",
+      enableSorting: false,
+      cell: (info) => {
+        const hasTags = () => info.getValue().length > 0;
+        return (
+          <Button
+            variant="text"
+            class={
+              hasTags() ? "[--themable-button-text:var(--text-color)]" : ""
+            }
+            fa={{
+              icon: info.getValue().length > 1 ? "fa-tags" : "fa-tag",
+              fixedWidth: true,
+            }}
+            balloon={{
+              text: hasTags()
+                ? info
+                    .getValue()
+                    .map(
+                      (it) =>
+                        tags.find((tag) => tag._id === it)?.name ??
+                        "unknown tag",
+                    )
+                    .join(", ")
+                : "no tags",
+            }}
+            onClick={() => {
+              if (tags.length === 0) {
+                showNoticeNotification(
+                  "You have no tags. You can create one in the tags section of the settings page.",
+                );
+                return;
+              }
+
+              showEditResultTagsModal({
+                client: info.row.original.client,
+                _id: info.row.original._id,
+                tags: info.getValue(),
+              });
+            }}
+          />
+        );
+      },
+      meta: {
+        breakpoint: "sm",
+      },
+    }),
+    defineColumn("timestamp", {
+      header: "date",
+      cell: (info) => (
+        <>
+          <div class="text-em-sm">
+            {dateFormat(info.getValue(), "dd MMM yyyy")}
+          </div>
+          <div class="text-em-sm text-sub">
+            {dateFormat(info.getValue(), "HH:mm")}
+          </div>
+        </>
+      ),
+    }),
+  ];
+  return columns;
+}
+
+function difficultyIcon(difficulty: Difficulty): FaProps {
+  if (difficulty === "expert") {
+    return { variant: "solid", icon: "fa-star-half-alt", fixedWidth: true };
+  } else if (difficulty === "master") {
+    return { variant: "solid", icon: "fa-star", fixedWidth: true };
+  } else {
+    return { variant: "regular", icon: "fa-star", fixedWidth: true };
+  }
+}

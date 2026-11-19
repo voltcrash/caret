@@ -20,7 +20,7 @@ vi.mock("../../../src/features/account/settled.client", () => ({
 vi.mock("../../../src/app/readiness", () => ({
   preferencesReadiness: () => ({ state: () => ({ status: status() }) }),
 }));
-vi.mock("../../../src/ts/controllers/url-handler", () => ({
+vi.mock("../../../src/features/typing/runtime/url-handler", () => ({
   applyUrlSettings: mocks.apply,
 }));
 

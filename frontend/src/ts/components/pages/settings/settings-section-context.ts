@@ -1,6 +1,0 @@
-import { createContext } from "solid-js";
-
-import { SettingsSection } from "../../../states/settings-sections";
-
-// the settings page section a setting is rendered in
-export const SettingsSectionContext = createContext<SettingsSection>();

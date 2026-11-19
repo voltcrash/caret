@@ -16,7 +16,6 @@ import { Fa } from "../../../../ts/components/common/Fa";
 import { setConfig } from "../../../../ts/config/setters";
 import { getConfig } from "../../../../ts/config/store";
 import { useRef } from "../../../../ts/hooks/useRef";
-import { useResultWordHighlight } from "../../../../ts/hooks/useResultWordHighlight";
 import { useSlideAnimation } from "../../../../ts/hooks/useSlideAnimation";
 import Format from "../../../../ts/singletons/format";
 import { getBackground } from "../../../../ts/states/background";
@@ -42,6 +41,7 @@ import {
   getBurstHeatmapWordColor,
 } from "../../runtime/result/view-model";
 import * as TestWords from "../../runtime/test/words";
+import { useResultWordHighlight } from "../hooks/useResultWordHighlight";
 
 async function copyToClipboard(
   content: string,

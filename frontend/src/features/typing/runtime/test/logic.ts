@@ -40,10 +40,10 @@ import { restartTestEvent } from "../../../../ts/events/test";
 import * as TestWords from "./words";
 import { configEvent } from "../../../../ts/events/config";
 import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
-import { preloadResultHasher } from "../../../../ts/utils/result-hash";
+import { preloadResultHasher } from "../result/hash";
 
 import { highlight } from "../../../../ts/events/keymap";
-import * as LazyModeState from "../../../../ts/states/remember-lazy-mode";
+import * as LazyModeState from "../remember-lazy-mode";
 
 import { getActiveFunboxesWithFunction } from "../funbox/list";
 

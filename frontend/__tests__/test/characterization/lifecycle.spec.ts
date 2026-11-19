@@ -182,7 +182,7 @@ vi.mock("../../../src/ts/states/notifications", () => ({
   showSuccessNotification: vi.fn(),
   removeNotification: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/remember-lazy-mode", () => ({
+vi.mock("../../../src/features/typing/runtime/remember-lazy-mode", () => ({
   getRemember: () => false,
   setRemember: vi.fn(),
   getArabicPref: () => false,
@@ -233,7 +233,7 @@ vi.mock("../../../src/ts/anim", () => ({
   setLowFpsMode: mocks.lowFps,
   clearLowFpsMode: vi.fn(),
 }));
-vi.mock("../../../src/ts/utils/result-hash", () => ({
+vi.mock("../../../src/features/typing/runtime/result/hash", () => ({
   hashResult: vi.fn().mockResolvedValue("hash"),
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));

@@ -23,7 +23,7 @@ import * as DB from "../../../../ts/db";
 
 import { getResultVisible } from "../../../../ts/states/test";
 
-import { hashResult } from "../../../../ts/utils/result-hash";
+import { hashResult } from "./hash";
 
 import { CompletedEvent } from "@caret/schemas/results";
 import type { WebLog } from "@caret/typing-engine/text";
