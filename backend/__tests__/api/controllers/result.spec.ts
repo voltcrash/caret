@@ -933,7 +933,12 @@ describe("result controller test", () => {
       expect(body.message).toEqual("Incorrect result hash");
       expect(addLogMock).toHaveBeenCalledWith(
         "incorrect_result_hash",
-        expect.objectContaining({ resulthash: "wrong" }),
+        expect.objectContaining({
+          resulthash: "wrong",
+          result: expect.not.objectContaining({
+            keySpacing: expect.anything(),
+          }),
+        }),
         uid,
       );
       expect(resultAddMock).not.toHaveBeenCalled();

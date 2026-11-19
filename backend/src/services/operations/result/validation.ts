@@ -2,6 +2,7 @@ import * as ResultDAL from "../../../dal/result";
 
 import { omit } from "../../../utils/misc";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
+import { resultAuditSummary } from "../../../utils/result";
 import Logger from "../../../utils/logger";
 
 import MonkeyError from "../../../utils/error";
@@ -91,7 +92,7 @@ export async function validateSubmission(
         {
           serverhash,
           resulthash,
-          result: completedEvent,
+          result: resultAuditSummary(completedEvent),
         },
         uid,
       );
@@ -153,7 +154,11 @@ export async function validateSubmission(
   }
 
   if (user.suspicious && completedEvent.testDuration <= 120) {
-    await addImportantLog("suspicious_user_result", completedEvent, uid);
+    await addImportantLog(
+      "suspicious_user_result",
+      resultAuditSummary(completedEvent),
+      uid,
+    );
   }
 
   if (
@@ -162,7 +167,11 @@ export async function validateSubmission(
     completedEvent.wpm > 250 &&
     user.lbOptOut !== true
   ) {
-    await addImportantLog("highwpm_user_result", completedEvent, uid);
+    await addImportantLog(
+      "highwpm_user_result",
+      resultAuditSummary(completedEvent),
+      uid,
+    );
   }
 
   const resultFailure =

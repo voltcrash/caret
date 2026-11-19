@@ -16,6 +16,31 @@ export type DBResult = Result<Mode> & {
   chartData: ChartData | OldChartData | "toolong";
 };
 
+export function resultAuditSummary(result: CompletedEvent) {
+  const {
+    client,
+    mode,
+    mode2,
+    language,
+    wpm,
+    rawWpm,
+    acc,
+    testDuration,
+    hash,
+  } = result;
+  return {
+    client,
+    mode,
+    mode2,
+    language,
+    wpm,
+    rawWpm,
+    acc,
+    testDuration,
+    submissionHash: hash,
+  };
+}
+
 export function buildDbResult(
   completedEvent: CompletedEvent,
   userName: string,
