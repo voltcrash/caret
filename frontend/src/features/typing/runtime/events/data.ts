@@ -7,7 +7,7 @@ import { getEngineSession } from "../session.client";
 import { getActiveWordIndex } from "../../../../ts/states/test";
 import { getMutableConfig } from "../../../../ts/config/store";
 
-/** String views over the owned native session. */
+/** Legacy string transport is a mechanical view of the owned native session. */
 export const getTestSession = getEngineSession;
 export function logTestEvent(
   type: TestEventType,

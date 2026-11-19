@@ -147,7 +147,7 @@ export function checkZodSchema(
   };
 }
 
-/** Legacy HTTP query values may be JSON or unquoted strings. */
+/** Public API query values may be JSON or unquoted strings. */
 export function parseJsonQueryObject(
   query: Record<string, unknown>,
 ): Record<string, unknown> {
