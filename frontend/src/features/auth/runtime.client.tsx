@@ -9,7 +9,7 @@ import { OAuthRuntime } from "./oauth-runtime.client";
 import { sessionOptions, sessionKey } from "./session";
 import { getAuthenticatedUser, setUserState } from "./state.client";
 
-/** Start observes server authority and invalidates route data; no legacy page pipeline. */
+/** Start observes server authority and invalidates route data. */
 export function AuthRuntime() {
   const router = useRouter();
   const session = useQuery(() => sessionOptions());

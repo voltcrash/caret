@@ -115,7 +115,7 @@ export function assertAvailable(
 }
 
 /**
- * Operation policies in their legacy order: authentication, operation limit,
+ * Operation policies in their fixed order: authentication, operation limit,
  * configuration gate, permissions, development gate, then contract input.
  * Mutates `scope.actor` so failures record against the resolved identity.
  */
@@ -215,7 +215,7 @@ export type OperationFailure = {
 };
 
 /**
- * Legacy error mapping, bad-authentication accounting and server-error
+ * HTTP error mapping, bad-authentication accounting and server-error
  * logging; shared so every transport reports failures identically.
  */
 export async function describeFailure(

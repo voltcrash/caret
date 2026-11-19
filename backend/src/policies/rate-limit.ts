@@ -50,7 +50,7 @@ export async function enforceLimit(
   throw new ApiError(429, "Request limit reached, please try again later.");
 }
 
-/** Named limits retain the legacy shared buckets (e.g. userGet), across transports. */
+/** Named limits share one bucket (e.g. userGet) across operations and transports. */
 export async function enforceOperationLimit(
   metadata: EndpointMetadata,
   context: RateContext,

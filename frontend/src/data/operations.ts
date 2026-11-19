@@ -38,7 +38,7 @@ type Input<K extends WebOperationId> =
  * Call one first-party web operation. Its account/application lease is taken
  * before the function chunk loads; a response arriving after that owner ends
  * rejects with AbortError rather than restoring another actor's data.
- * Expected failures resolve with their legacy status and message.
+ * Expected failures resolve with their HTTP status and message.
  */
 export async function operation<K extends WebOperationId>(
   id: K,

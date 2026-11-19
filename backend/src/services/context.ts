@@ -12,7 +12,7 @@ export const GUEST: Actor = Object.freeze({ type: "None", uid: "", email: "" });
 
 /**
  * Everything a service may know about its invocation. Transport adapters
- * (legacy Hono, Start functions/routes) build it after running policies;
+ * (Start server functions and `/api` routes) build it after running policies;
  * services never see request objects, headers or framework types.
  */
 export type ServiceContext = {
