@@ -1,7 +1,7 @@
 import type { Client } from "@caret/schemas/shared";
-import { MonkeyResponse } from "../../utils/monkey-response";
+import { ApiResponse } from "../../utils/api-response";
 import * as LeaderboardsDAL from "../../dal/leaderboards";
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import * as DailyLeaderboards from "../../utils/daily-leaderboards";
 import * as WeeklyXpLeaderboard from "../../services/weekly-xp-leaderboard";
 import {
@@ -39,7 +39,7 @@ export async function getLeaderboard(
     (mode2 !== "15" && mode2 !== "60") ||
     language !== "english"
   ) {
-    throw new MonkeyError(404, "There is no leaderboard for this mode");
+    throw new ApiError(404, "There is no leaderboard for this mode");
   }
 
   const leaderboard = await LeaderboardsDAL.get(
@@ -60,7 +60,7 @@ export async function getLeaderboard(
   );
   const normalizedLeaderboard = leaderboard.map((it) => omit(it, ["_id"]));
 
-  return new MonkeyResponse("Leaderboard retrieved", {
+  return new ApiResponse("Leaderboard retrieved", {
     count,
     entries: normalizedLeaderboard,
     pageSize,
@@ -83,10 +83,10 @@ export async function getRankFromLeaderboard(
   );
 
   if (data === null) {
-    return new MonkeyResponse("Rank retrieved", null);
+    return new ApiResponse("Rank retrieved", null);
   }
 
-  return new MonkeyResponse("Rank retrieved", omit(data, ["_id"]));
+  return new ApiResponse("Rank retrieved", omit(data, ["_id"]));
 }
 
 function getDailyLeaderboardWithError(
@@ -107,7 +107,7 @@ function getDailyLeaderboardWithError(
     client,
   );
   if (!dailyLeaderboard) {
-    throw new MonkeyError(404, "There is no daily leaderboard for this mode");
+    throw new ApiError(404, "There is no daily leaderboard for this mode");
   }
 
   return dailyLeaderboard;
@@ -131,7 +131,7 @@ export async function getDailyLeaderboard(
     context.configuration.users.premium.enabled,
   );
 
-  return new MonkeyResponse("Daily leaderboard retrieved", {
+  return new ApiResponse("Daily leaderboard retrieved", {
     entries: results?.entries ?? [],
     count: results?.count ?? 0,
     minWpm: results?.minWpm ?? 0,
@@ -155,7 +155,7 @@ export async function getDailyLeaderboardRank(
     context.configuration.dailyLeaderboards,
   );
 
-  return new MonkeyResponse("Daily leaderboard rank retrieved", rank);
+  return new ApiResponse("Daily leaderboard rank retrieved", rank);
 }
 
 function getWeeklyXpLeaderboardWithError(
@@ -174,7 +174,7 @@ function getWeeklyXpLeaderboardWithError(
     client,
   );
   if (!weeklyXpLeaderboard) {
-    throw new MonkeyError(404, "XP leaderboard for this week not found.");
+    throw new ApiError(404, "XP leaderboard for this week not found.");
   }
 
   return weeklyXpLeaderboard;
@@ -198,7 +198,7 @@ export async function getWeeklyXpLeaderboard(
     context.configuration.users.premium.enabled,
   );
 
-  return new MonkeyResponse("Weekly xp leaderboard retrieved", {
+  return new ApiResponse("Weekly xp leaderboard retrieved", {
     entries: results?.entries ?? [],
     count: results?.count ?? 0,
     pageSize,
@@ -221,5 +221,5 @@ export async function getWeeklyXpLeaderboardRank(
     context.configuration.leaderboards.weeklyXp,
   );
 
-  return new MonkeyResponse("Weekly xp leaderboard rank retrieved", rankEntry);
+  return new ApiResponse("Weekly xp leaderboard rank retrieved", rankEntry);
 }

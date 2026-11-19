@@ -1,6 +1,6 @@
 import type { ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import {
   AddTagRequest,
   AddTagResponse,
@@ -18,37 +18,37 @@ export async function addTag(
   const { tagName } = input.body;
 
   const tag = await UserDAL.addTag(uid, tagName);
-  return new MonkeyResponse("Tag updated", tag);
+  return new ApiResponse("Tag updated", tag);
 }
 export async function clearTagPb(
   context: ServiceContext,
   input: OperationInput<ClientQuery, undefined, TagIdPathParams>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { tagId } = input.params;
 
   await UserDAL.removeTagPb(uid, tagId, input.query?.client);
-  return new MonkeyResponse("Tag PB cleared", null);
+  return new ApiResponse("Tag PB cleared", null);
 }
 export async function editTag(
   context: ServiceContext,
   input: OperationInput<undefined, EditTagRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { tagId, newName } = input.body;
 
   await UserDAL.editTag(uid, tagId, newName);
-  return new MonkeyResponse("Tag updated", null);
+  return new ApiResponse("Tag updated", null);
 }
 export async function removeTag(
   context: ServiceContext,
   input: OperationInput<undefined, undefined, TagIdPathParams>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { tagId } = input.params;
 
   await UserDAL.removeTag(uid, tagId);
-  return new MonkeyResponse("Tag deleted", null);
+  return new ApiResponse("Tag deleted", null);
 }
 export async function getTags(
   context: ServiceContext,
@@ -57,5 +57,5 @@ export async function getTags(
   const { uid } = context.actor;
 
   const tags = await UserDAL.getTags(uid, input.query?.client);
-  return new MonkeyResponse("Tags retrieved", tags);
+  return new ApiResponse("Tags retrieved", tags);
 }

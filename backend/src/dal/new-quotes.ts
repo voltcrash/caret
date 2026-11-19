@@ -8,7 +8,7 @@ import { commitBatch } from "../db/commit";
 import { newId } from "../utils/id";
 import { envValue, runtime } from "../runtime/env";
 import { integration } from "../utils/integration";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import { z } from "zod";
 const QuoteDataSchema = z.object({
   quotes: z.array(z.object({ id: z.number(), text: z.string() })),
@@ -16,7 +16,7 @@ const QuoteDataSchema = z.object({
 export type DBNewQuote = Quote;
 function validateLanguage(language: string): void {
   if (!/^\w+$/.test(language)) {
-    throw new MonkeyError(400, "Invalid language name", language);
+    throw new ApiError(400, "Invalid language name", language);
   }
 }
 export async function add(
@@ -32,7 +32,7 @@ export async function add(
   const base = envValue("QUOTES_ASSET_URL");
   const assets = runtime().env.ASSETS;
   if (base === undefined && assets === undefined) {
-    throw new MonkeyError(503, "Quote assets are not configured");
+    throw new ApiError(503, "Quote assets are not configured");
   }
   const url = new URL(
     `/quotes/${language}.json`,
@@ -44,7 +44,7 @@ export async function add(
       : await assets.fetch(url);
   if (response.status === 404) return { languageError: 1 };
   if (!response.ok) {
-    throw new MonkeyError(503, "Quote assets could not be loaded");
+    throw new ApiError(503, "Quote assets could not be loaded");
   }
   const quotes = QuoteDataSchema.parse(await response.json());
   for (const quote of quotes.quotes) {
@@ -85,7 +85,7 @@ export async function add(
       ? 0
       : 1);
   if (inserted === 0) {
-    throw new MonkeyError(
+    throw new ApiError(
       409,
       "There are already 100 quotes in the queue for this language.",
     );
@@ -148,7 +148,7 @@ export async function approve(
       .limit(1)
   )[0];
   if (!row) {
-    throw new MonkeyError(
+    throw new ApiError(
       404,
       "Quote not found. It might have already been reviewed. Please refresh the list.",
     );
@@ -182,6 +182,6 @@ export async function refuse(quoteId: string): Promise<void> {
     quoteId,
   ).run();
   if (removed.rowCount === 0) {
-    throw new MonkeyError(409, "Quote is already being approved or reviewed");
+    throw new ApiError(409, "Quote is already being approved or reviewed");
   }
 }

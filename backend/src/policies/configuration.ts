@@ -1,5 +1,5 @@
 import type { EndpointMetadata } from "@caret/contracts/util/api";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import type { Configuration } from "@caret/schemas/configuration";
 import type {
   ConfigurationPath,
@@ -11,7 +11,7 @@ export function verifyConfiguration(
 ): void {
   for (const requirement of getRequireConfigurations(metadata) ?? []) {
     if (!getValue(configuration, requirement.path)) {
-      throw new MonkeyError(
+      throw new ApiError(
         503,
         requirement.invalidMessage ?? "This endpoint is currently unavailable.",
       );
@@ -27,19 +27,16 @@ function getValue(
 
   for (const key of keys) {
     if (result === undefined || result === null) {
-      throw new MonkeyError(500, `Invalid configuration path: "${path}"`);
+      throw new ApiError(500, `Invalid configuration path: "${path}"`);
     }
     result = result[key];
   }
 
   if (result === undefined || result === null) {
-    throw new MonkeyError(
-      500,
-      `Required configuration doesnt exist: "${path}"`,
-    );
+    throw new ApiError(500, `Required configuration doesnt exist: "${path}"`);
   }
   if (typeof result !== "boolean") {
-    throw new MonkeyError(
+    throw new ApiError(
       500,
       `Required configuration is not a boolean: "${path}"`,
     );

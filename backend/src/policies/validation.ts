@@ -16,7 +16,7 @@ export type InputValidation =
   | ({ success: false } & ValidationFailure);
 
 /**
- * Contract input validation shared by every transport, with the legacy HTTP
+ * Contract input validation shared by every transport, with the public API's
  * messages and per-field error strings. Query values are already decoded.
  */
 export function validateOperationInput(

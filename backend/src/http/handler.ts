@@ -15,10 +15,10 @@ import {
 } from "../policies/operation-runner";
 import type { OperationId } from "../policies/operations";
 import { edgeCacheControl } from "../policies/edge-cache";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import { createETagGenerator } from "../utils/etag";
 import { getFrontendUrl } from "../utils/misc";
-import { isCustomCode } from "../constants/monkey-status-codes";
+import { isCustomCode } from "../constants/result-status-codes";
 import { getVersion } from "../version";
 
 export type HttpInvocation = Omit<Invocation, "setHeader">;
@@ -47,7 +47,7 @@ async function parseBody(request: Request): Promise<unknown> {
     return JSON.parse(text.replace(/^\uFEFF/, "")) as unknown;
   }
   if (text.split("&").length > 1000) {
-    throw new MonkeyError(413, "Too many request parameters");
+    throw new ApiError(413, "Too many request parameters");
   }
   return qs.parse(text, { depth: 32, strictDepth: true, parameterLimit: 1000 });
 }

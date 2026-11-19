@@ -6,10 +6,10 @@ import {
   operationServices,
   type OperationServices,
 } from "../services/operations/registry";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import Logger from "../utils/logger";
 import { isDevEnvironment } from "../utils/misc";
-import type { MonkeyResponse } from "../utils/monkey-response";
+import type { ApiResponse } from "../utils/api-response";
 import { authenticate } from "./authentication";
 import { verifyConfiguration } from "./configuration";
 import { getOperation, type OperationId } from "./operations";
@@ -65,7 +65,7 @@ export type OperationRequest<K extends OperationId> = Parameters<
   ServiceOf<K>
 >[1];
 export type OperationData<K extends OperationId> =
-  Awaited<ReturnType<ServiceOf<K>>> extends MonkeyResponse<infer T> ? T : never;
+  Awaited<ReturnType<ServiceOf<K>>> extends ApiResponse<infer T> ? T : never;
 
 export type OperationOutcome<K extends OperationId> =
   | { ok: true; message: string; data: OperationData<K> }
@@ -110,12 +110,12 @@ export function assertAvailable(
     (invocation.runtime.env.MAINTENANCE === "true" ||
       scope.configuration.maintenance)
   ) {
-    throw new MonkeyError(503, "Server is down for maintenance");
+    throw new ApiError(503, "Server is down for maintenance");
   }
 }
 
 /**
- * Operation policies in their legacy order: authentication, operation limit,
+ * Operation policies in their fixed order: authentication, operation limit,
  * configuration gate, permissions, development gate, then contract input.
  * Mutates `scope.actor` so failures record against the resolved identity.
  */
@@ -142,7 +142,7 @@ export async function execute<K extends OperationId>(
   verifyConfiguration(scope.configuration, operation.metadata);
   await verifyPermissions(scope.actor, operation.metadata);
   if (developmentOnlyOperations.has(id) && !isDevEnvironment()) {
-    throw new MonkeyError(
+    throw new ApiError(
       503,
       "Development endpoints are only available in DEV mode.",
     );
@@ -164,7 +164,7 @@ export async function execute<K extends OperationId>(
   const service = operationServices[id] as (
     context: ServiceContext,
     input: ValidatedInput,
-  ) => Promise<MonkeyResponse<unknown>>;
+  ) => Promise<ApiResponse<unknown>>;
   const response = await service(
     {
       ...scope,
@@ -189,7 +189,7 @@ export async function execute<K extends OperationId>(
           code,
         })),
       });
-      throw new MonkeyError(500, "Invalid service response");
+      throw new ApiError(500, "Invalid service response");
     }
     shareable(invocation, id);
     return {
@@ -215,7 +215,7 @@ export type OperationFailure = {
 };
 
 /**
- * Legacy error mapping, bad-authentication accounting and server-error
+ * HTTP error mapping, bad-authentication accounting and server-error
  * logging; shared so every transport reports failures identically.
  */
 export async function describeFailure(
@@ -224,17 +224,17 @@ export async function describeFailure(
   scope: PolicyScope | undefined,
   endpoint: string,
 ): Promise<OperationFailure> {
-  const monkeyError = error instanceof MonkeyError ? error : undefined;
-  const errorId = monkeyError?.errorId ?? invocation.requestId;
-  const uid = monkeyError?.uid ?? scope?.actor.uid ?? "";
+  const apiError = error instanceof ApiError ? error : undefined;
+  const errorId = apiError?.errorId ?? invocation.requestId;
+  const uid = apiError?.uid ?? scope?.actor.uid ?? "";
   let status = 500;
   let message: string;
   if (error instanceof URIError || error instanceof SyntaxError) {
     status = 400;
     message = "Unprocessable request";
-  } else if (monkeyError !== undefined) {
-    status = monkeyError.status;
-    message = monkeyError.message;
+  } else if (apiError !== undefined) {
+    status = apiError.status;
+    message = apiError.message;
   } else {
     message = `Something went wrong. Please try again later. - ${errorId}`;
   }

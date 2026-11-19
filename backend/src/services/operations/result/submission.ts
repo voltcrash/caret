@@ -3,9 +3,9 @@ import type { PreparedQuery } from "../../../db/query";
 import { atomicUserWithReads } from "../../../db/mutation";
 import type { RankingRow } from "../../../db/ranking";
 
-import MonkeyError from "../../../utils/error";
+import ApiError from "../../../utils/error";
 
-import MonkeyStatusCodes from "../../../constants/monkey-status-codes";
+import ResultStatusCodes from "../../../constants/result-status-codes";
 import { getDailyLeaderboard } from "../../../utils/daily-leaderboards";
 
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
@@ -19,7 +19,7 @@ import { applyProgression } from "./progression";
 import { getBySubmissionHash } from "../../../dal/result";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { omit } from "../../../utils/misc";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 type RankRead = {
   query: PreparedQuery;
   /** Apply the batched read's row. */
@@ -105,22 +105,20 @@ export async function addResult(
     async () => await addResultAtomic(context, input),
     (outcome) => {
       ranks =
-        outcome instanceof MonkeyError
-          ? []
-          : rankReads(context, input, outcome);
+        outcome instanceof ApiError ? [] : rankReads(context, input, outcome);
       // Ranks read in the committing batch see its writes: no extra trip.
       return ranks.map(({ query }) => query);
     },
   ).catch((error: unknown) => {
     if (isUniqueViolation(error)) {
-      const status = MonkeyStatusCodes.DUPLICATE_RESULT;
-      throw new MonkeyError(status.code, "Duplicate result");
+      const status = ResultStatusCodes.DUPLICATE_RESULT;
+      throw new ApiError(status.code, "Duplicate result");
     }
     throw error;
   });
   // Rejections before progression may commit their audit/strike writes. Throw
   // only after that batch succeeds; thrown errors inside atomicUser roll back.
-  if (response instanceof MonkeyError) throw response;
+  if (response instanceof ApiError) throw response;
   if (reads !== undefined) {
     ranks.forEach(({ apply }, index) => {
       apply((reads[index]?.results[0] as RankingRow | undefined) ?? null);
@@ -135,7 +133,7 @@ export async function addResult(
 async function addResultAtomic(
   context: ServiceContext,
   input: OperationInput<undefined, AddResultRequest>,
-): Promise<AddResultResponse | MonkeyError> {
+): Promise<AddResultResponse | ApiError> {
   if (input.body.acknowledgeDuplicate) {
     const hash = objectHash(
       omit({ ...input.body.result, uid: context.actor.uid }, [
@@ -145,7 +143,7 @@ async function addResultAtomic(
     );
     const saved = await getBySubmissionHash(context.actor.uid, hash);
     if (saved !== undefined) {
-      return new MonkeyResponse("Result already saved", {
+      return new ApiResponse("Result already saved", {
         verification: saved.verification,
         insertedId: saved._id,
         isPb: saved.isPb ?? false,
@@ -159,6 +157,6 @@ async function addResultAtomic(
     }
   }
   const validated = await validateSubmission(context, input);
-  if (validated instanceof MonkeyError) return validated;
+  if (validated instanceof ApiError) return validated;
   return await applyProgression(validated);
 }

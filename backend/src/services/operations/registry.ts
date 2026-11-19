@@ -1,5 +1,5 @@
 import type { OperationId } from "../../policies/operations";
-import type { MonkeyResponse } from "../../utils/monkey-response";
+import type { ApiResponse } from "../../utils/api-response";
 import type { ServiceContext } from "../context";
 import * as Admin from "./admin";
 import * as Config from "./config";
@@ -17,7 +17,7 @@ import * as User from "./user";
 type Service = (
   context: ServiceContext,
   input: never,
-) => Promise<MonkeyResponse<unknown>>;
+) => Promise<ApiResponse<unknown>>;
 
 /**
  * The single business implementation of every contract operation. Start

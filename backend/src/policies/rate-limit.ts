@@ -12,7 +12,7 @@ import {
 } from "./rate-counter";
 import { getIpKey } from "./ip-key";
 import { getFrontendUrl, isDevEnvironment } from "../utils/misc";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 
 /** Development raises every limit so local use and tests rarely hit them. */
 export const REQUEST_MULTIPLIER = 100;
@@ -42,15 +42,15 @@ export async function enforceLimit(
   if (await consume(`${id}:${actor}`, options)) return;
   header("Retry-After", String(tierFor(options).period));
   if (id === "root") {
-    throw new MonkeyError(
+    throw new ApiError(
       429,
       "Maximum API request (root) limit reached. Please try again later.",
     );
   }
-  throw new MonkeyError(429, "Request limit reached, please try again later.");
+  throw new ApiError(429, "Request limit reached, please try again later.");
 }
 
-/** Named limits retain the legacy shared buckets (e.g. userGet), across transports. */
+/** Named limits share one bucket (e.g. userGet) across operations and transports. */
 export async function enforceOperationLimit(
   metadata: EndpointMetadata,
   context: RateContext,
@@ -61,7 +61,7 @@ export async function enforceOperationLimit(
   const id = limit;
   const options = limits[id];
   if (options === undefined) {
-    throw new MonkeyError(
+    throw new ApiError(
       500,
       `Unknown rateLimiterId '${id}', how did you manage to do this?`,
     );
@@ -138,7 +138,7 @@ export function assertGoodAuthentication(
 ): void {
   if (!configuration.rateLimiting.badAuthentication.enabled) return;
   if (points >= BAD_AUTH_THRESHOLD * (isDevEnvironment() ? 100 : 1)) {
-    throw new MonkeyError(
+    throw new ApiError(
       429,
       "Too many bad authentication attempts, please try again later.",
     );

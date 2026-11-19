@@ -3,8 +3,8 @@ import type { ClientQuery } from "@caret/schemas/shared";
 import { atomicUser } from "../../../db/mutation";
 import * as ResultDAL from "../../../dal/result";
 
-import { MonkeyResponse } from "../../../utils/monkey-response";
-import MonkeyError from "../../../utils/error";
+import { ApiResponse } from "../../../utils/api-response";
+import ApiError from "../../../utils/error";
 
 import * as UserDAL from "../../../dal/user";
 
@@ -35,7 +35,7 @@ export async function getResults(
       beforeTimestamp: input.query.beforeTimestamp,
       beforeId: input.query.beforeId,
     });
-    return new MonkeyResponse("History export page retrieved", data);
+    return new ApiResponse("History export page retrieved", data);
   }
   const premiumFeaturesEnabled = context.configuration.users.premium.enabled;
   const { onOrAfterTimestamp = NaN, offset = 0 } = input.query;
@@ -56,7 +56,7 @@ export async function getResults(
     !premiumFeaturesEnabled &&
     limit + offset > context.configuration.results.limits.regularUser
   ) {
-    throw new MonkeyError(503, "Premium feature disabled.");
+    throw new ApiError(503, "Premium feature disabled.");
   }
 
   if (limit + offset > maxLimit) {
@@ -64,7 +64,7 @@ export async function getResults(
       //batch is partly in the allowed ranged. Set the limit to the max allowed and return partly results.
       limit = maxLimit - offset;
     } else {
-      throw new MonkeyError(422, `Max results limit of ${maxLimit} exceeded.`);
+      throw new ApiError(422, `Max results limit of ${maxLimit} exceeded.`);
     }
   }
 
@@ -85,7 +85,7 @@ export async function getResults(
     uid,
   );
 
-  return new MonkeyResponse("Results retrieved", results);
+  return new ApiResponse("Results retrieved", results);
 }
 
 export async function getResultById(
@@ -96,7 +96,7 @@ export async function getResultById(
   const { resultId } = input.params;
 
   const result = await ResultDAL.getResult(uid, resultId);
-  return new MonkeyResponse("Result retrieved", result);
+  return new ApiResponse("Result retrieved", result);
 }
 
 export async function getLastResult(
@@ -105,7 +105,7 @@ export async function getLastResult(
 ): Promise<GetLastResultResponse> {
   const { uid } = context.actor;
   const result = await ResultDAL.getLastResult(uid, input.query?.client);
-  return new MonkeyResponse("Result retrieved", result);
+  return new ApiResponse("Result retrieved", result);
 }
 
 export async function updateTags(
@@ -120,7 +120,7 @@ export async function updateTags(
     const result = await ResultDAL.getResult(uid, resultId);
 
     if (!qualifiesForRanked(context, result.verification)) {
-      return new MonkeyResponse("Result tags updated", { tagPbs: [] });
+      return new ApiResponse("Result tags updated", { tagPbs: [] });
     }
     result.tags = tagIds;
     result.difficulty ??= "normal";
@@ -132,7 +132,7 @@ export async function updateTags(
 
     const user = await UserDAL.getPartialUser(uid, "update tags", ["tags"]);
     const tagPbs = await UserDAL.checkIfTagPb(uid, user, result);
-    return new MonkeyResponse("Result tags updated", {
+    return new ApiResponse("Result tags updated", {
       tagPbs,
     });
   });

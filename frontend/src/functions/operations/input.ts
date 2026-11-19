@@ -10,7 +10,7 @@ const InputSchema = z
 
 /**
  * Transport shape only. Contract validation runs inside the policy runner,
- * after authentication and limits, exactly where the legacy route ran it.
+ * after authentication and limits, as it does for `/api` routes.
  */
 export function operationInput(input: unknown): z.output<typeof InputSchema> {
   return InputSchema.parse(input);

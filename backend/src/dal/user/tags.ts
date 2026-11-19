@@ -1,4 +1,4 @@
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import { newId } from "../../utils/id";
 
 import { mutateUser } from "../../db/mutation";
@@ -13,7 +13,7 @@ export async function addTag(uid: string, name: string): Promise<DBUserTag> {
   const tag = { _id: newId(), name, personalBests: emptyPb() };
   await mutateUser(uid, (user) => {
     if ((user.tags?.length ?? 0) >= 15) {
-      throw new MonkeyError(400, "Maximum number of tags reached");
+      throw new ApiError(400, "Maximum number of tags reached");
     }
     (user.tags ??= []).push(tag);
   });
@@ -28,7 +28,7 @@ export async function getTags(
 }
 function tagById(user: DBUser, id: string): DBUserTag {
   const tag = user.tags?.find((item) => item._id === id);
-  if (!tag) throw new MonkeyError(404, "Tag not found");
+  if (!tag) throw new ApiError(404, "Tag not found");
   return tag;
 }
 export async function editTag(

@@ -1,5 +1,5 @@
 import * as UserDAL from "../../../dal/user";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import {
   AddFavoriteQuoteRequest,
   GetFavoriteQuotesResponse,
@@ -15,12 +15,12 @@ export async function getFavoriteQuotes(
 
   const quotes = await UserDAL.getFavoriteQuotes(uid);
 
-  return new MonkeyResponse("Favorite quotes retrieved", quotes);
+  return new ApiResponse("Favorite quotes retrieved", quotes);
 }
 export async function addFavoriteQuote(
   context: ServiceContext,
   input: OperationInput<undefined, AddFavoriteQuoteRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   const { language, quoteId } = input.body;
@@ -32,16 +32,16 @@ export async function addFavoriteQuote(
     context.configuration.quotes.maxFavorites,
   );
 
-  return new MonkeyResponse("Quote added to favorites", null);
+  return new ApiResponse("Quote added to favorites", null);
 }
 export async function removeFavoriteQuote(
   context: ServiceContext,
   input: OperationInput<undefined, RemoveFavoriteQuoteRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   const { quoteId, language } = input.body;
   await UserDAL.removeFavoriteQuote(uid, language, quoteId);
 
-  return new MonkeyResponse("Quote removed from favorites", null);
+  return new ApiResponse("Quote removed from favorites", null);
 }

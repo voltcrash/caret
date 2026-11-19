@@ -2,8 +2,8 @@ import * as ResultDAL from "../../../dal/result";
 import * as PublicDAL from "../../../dal/public";
 import { isDevEnvironment } from "../../../utils/misc";
 
-import { MonkeyResponse } from "../../../utils/monkey-response";
-import MonkeyError from "../../../utils/error";
+import { ApiResponse } from "../../../utils/api-response";
+import ApiError from "../../../utils/error";
 
 import { getDailyLeaderboard } from "../../../utils/daily-leaderboards";
 import * as UserDAL from "../../../dal/user";
@@ -163,7 +163,7 @@ export async function applyProgression(
       );
 
   if (isNaN(xpGained.xp)) {
-    throw new MonkeyError(
+    throw new ApiError(
       500,
       "Calculated XP is NaN",
       JSON.stringify({
@@ -175,7 +175,7 @@ export async function applyProgression(
   }
 
   if (xpGained.xp < 0) {
-    throw new MonkeyError(
+    throw new ApiError(
       500,
       "Calculated XP is negative",
       JSON.stringify({
@@ -279,5 +279,5 @@ export async function applyProgression(
     data.weeklyXpLeaderboardRank = 0;
   }
 
-  return new MonkeyResponse("Result saved", data);
+  return new ApiResponse("Result saved", data);
 }

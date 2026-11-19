@@ -1,6 +1,6 @@
 import { PartialConfig } from "@caret/schemas/configs";
 import * as ConfigDAL from "../../dal/config";
-import { MonkeyResponse } from "../../utils/monkey-response";
+import { ApiResponse } from "../../utils/api-response";
 import { GetConfigResponse } from "@caret/contracts/configs";
 import type { ServiceContext, OperationInput } from "../context";
 
@@ -11,27 +11,27 @@ export async function getConfig(
   const { uid } = context.actor;
   const data = (await ConfigDAL.getConfig(uid))?.config ?? null;
 
-  return new MonkeyResponse("Configuration retrieved", data);
+  return new ApiResponse("Configuration retrieved", data);
 }
 
 export async function saveConfig(
   context: ServiceContext,
   input: OperationInput<undefined, PartialConfig>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const config = input.body;
   const { uid } = context.actor;
 
   await ConfigDAL.saveConfig(uid, config);
 
-  return new MonkeyResponse("Config updated", null);
+  return new ApiResponse("Config updated", null);
 }
 
 export async function deleteConfig(
   context: ServiceContext,
   _input: OperationInput,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   await ConfigDAL.deleteConfig(uid);
-  return new MonkeyResponse("Config deleted", null);
+  return new ApiResponse("Config deleted", null);
 }

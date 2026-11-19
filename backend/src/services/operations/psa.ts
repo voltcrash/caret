@@ -1,6 +1,6 @@
 import { GetPsaResponse } from "@caret/contracts/psas";
 import * as PsaDAL from "../../dal/psa";
-import { MonkeyResponse } from "../../utils/monkey-response";
+import { ApiResponse } from "../../utils/api-response";
 import type { ServiceContext, OperationInput } from "../context";
 import { PSA } from "@caret/schemas/psas";
 import { cacheWithTTL } from "../../utils/ttl-cache";
@@ -14,5 +14,5 @@ export async function getPsas(
   _context: ServiceContext,
   _input: OperationInput,
 ): Promise<GetPsaResponse> {
-  return new MonkeyResponse("PSAs retrieved", (await cache()) ?? []);
+  return new ApiResponse("PSAs retrieved", (await cache()) ?? []);
 }

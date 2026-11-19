@@ -4,7 +4,7 @@ import { PartialConfigSchema } from "@caret/schemas/configs";
 import {
   CommonResponses,
   meta,
-  MonkeyResponseSchema,
+  ApiResponseSchema,
   responseWithNullableData,
 } from "./util/api";
 
@@ -37,7 +37,7 @@ export const configsContract = c.router(
       path: "",
       body: PartialConfigSchema.strict(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "configUpdate",
@@ -50,7 +50,7 @@ export const configsContract = c.router(
       path: "",
       body: c.noBody(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "configDelete",

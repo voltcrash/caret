@@ -4,7 +4,7 @@ import type { PreparedQuery, QueryResult } from "./query";
 import { users } from "./schema";
 import { database, encode, statement } from "./client";
 import { newId } from "../utils/id";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import { postgresError } from "./retry";
 import { commitBatch } from "./commit";
 import type { DBUser } from "../dal/user";
@@ -87,7 +87,7 @@ export async function atomicUserWithReads<T>(
         .where(eq(users.uid, uid))
         .limit(1)
     )[0];
-    if (!row) throw new MonkeyError(404, "User not found");
+    if (!row) throw new ApiError(404, "User not found");
     const user = row.data;
     const draft: Draft = {
       uid,
@@ -124,7 +124,7 @@ export async function atomicUserWithReads<T>(
       }
     }
   }
-  throw new MonkeyError(409, "Concurrent update; please retry");
+  throw new ApiError(409, "Concurrent update; please retry");
 }
 
 export async function mutateUser<T>(

@@ -1,5 +1,5 @@
 import * as UserDAL from "../../../dal/user";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import {
   AddResultFilterPresetRequest,
   AddResultFilterPresetResponse,
@@ -20,7 +20,7 @@ export async function addResultFilterPreset(
     filter,
     maxPresetsPerUser,
   );
-  return new MonkeyResponse("Result filter preset created", createdId);
+  return new ApiResponse("Result filter preset created", createdId);
 }
 export async function removeResultFilterPreset(
   context: ServiceContext,
@@ -29,10 +29,10 @@ export async function removeResultFilterPreset(
     undefined,
     RemoveResultFilterPresetPathParams
   >,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { presetId } = input.params;
 
   await UserDAL.removeResultFilterPreset(uid, presetId);
-  return new MonkeyResponse("Result filter preset deleted", null);
+  return new ApiResponse("Result filter preset deleted", null);
 }

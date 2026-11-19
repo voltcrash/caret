@@ -11,11 +11,11 @@ import * as AdminUids from "../../src/dal/admin-uids";
 import * as UserDal from "../../src/dal/user";
 import { verifyPermissions } from "../../src/policies/permission";
 import type { Actor } from "../../src/services/context";
-import MonkeyError from "../../src/utils/error";
+import ApiError from "../../src/utils/error";
 import * as Misc from "../../src/utils/misc";
-import { enableMonkeyErrorExpects } from "../__testData__/monkey-error";
+import { enableApiErrorExpects } from "../__testData__/api-error";
 
-enableMonkeyErrorExpects();
+enableApiErrorExpects();
 const uid = "123456789";
 
 type TestRequest = {
@@ -89,8 +89,8 @@ describe("permission policy", () => {
 
       //THEN
       expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(403, "You don't have permission to do this."),
+        expect.toMatchApiError(
+          new ApiError(403, "You don't have permission to do this."),
         ),
       );
     });
@@ -124,8 +124,8 @@ describe("permission policy", () => {
 
       //THEN
       expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(403, "You don't have permission to do this."),
+        expect.toMatchApiError(
+          new ApiError(403, "You don't have permission to do this."),
         ),
       );
     });
@@ -138,8 +138,8 @@ describe("permission policy", () => {
 
       //THEN
       expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(403, "You don't have permission to do this."),
+        expect.toMatchApiError(
+          new ApiError(403, "You don't have permission to do this."),
         ),
       );
       expect(isAdminMock).toHaveBeenCalledWith(uid);
@@ -169,8 +169,8 @@ describe("permission policy", () => {
         next,
       );
       expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(
+        expect.toMatchApiError(
+          new ApiError(
             403,
             "Failed to check permissions, authentication required.",
           ),
@@ -225,8 +225,8 @@ describe("permission policy", () => {
 
       //THEN
       expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(403, "You don't have permission to do this."),
+        expect.toMatchApiError(
+          new ApiError(403, "You don't have permission to do this."),
         ),
       );
     });
@@ -240,8 +240,8 @@ describe("permission policy", () => {
 
       //THEN
       expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(403, "You don't have permission to do this."),
+        expect.toMatchApiError(
+          new ApiError(403, "You don't have permission to do this."),
         ),
       );
     });
@@ -261,8 +261,8 @@ describe("permission policy", () => {
 
       //THEN
       expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(403, "You don't have permission to do this."),
+        expect.toMatchApiError(
+          new ApiError(403, "You don't have permission to do this."),
         ),
       );
       expect(getPartialUserMock).toHaveBeenCalledWith(

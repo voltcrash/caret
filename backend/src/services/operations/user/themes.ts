@@ -1,5 +1,5 @@
 import * as UserDAL from "../../../dal/user";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import {
   AddCustomThemeRequest,
   AddCustomThemeResponse,
@@ -15,7 +15,7 @@ export async function getCustomThemes(
 ): Promise<GetCustomThemesResponse> {
   const { uid } = context.actor;
   const customThemes = await UserDAL.getThemes(uid);
-  return new MonkeyResponse("Custom themes retrieved", customThemes);
+  return new ApiResponse("Custom themes retrieved", customThemes);
 }
 export async function addCustomTheme(
   context: ServiceContext,
@@ -25,24 +25,24 @@ export async function addCustomTheme(
   const { name, colors } = input.body;
 
   const addedTheme = await UserDAL.addTheme(uid, { name, colors });
-  return new MonkeyResponse("Custom theme added", addedTheme);
+  return new ApiResponse("Custom theme added", addedTheme);
 }
 export async function removeCustomTheme(
   context: ServiceContext,
   input: OperationInput<undefined, DeleteCustomThemeRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { themeId } = input.body;
   await UserDAL.removeTheme(uid, themeId);
-  return new MonkeyResponse("Custom theme removed", null);
+  return new ApiResponse("Custom theme removed", null);
 }
 export async function editCustomTheme(
   context: ServiceContext,
   input: OperationInput<undefined, EditCustomThemeRequst>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { themeId, theme } = input.body;
 
   await UserDAL.editTheme(uid, themeId, theme);
-  return new MonkeyResponse("Custom theme updated", null);
+  return new ApiResponse("Custom theme updated", null);
 }

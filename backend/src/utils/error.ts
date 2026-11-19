@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { isDevEnvironment } from "./misc";
-import { MonkeyServerErrorType } from "@caret/contracts/util/api";
+import { ApiServerErrorType } from "@caret/contracts/util/api";
 
-class MonkeyError extends Error implements MonkeyServerErrorType {
+class ApiError extends Error implements ApiServerErrorType {
   status: number;
   errorId: string;
   uid?: string;
@@ -30,4 +30,4 @@ class MonkeyError extends Error implements MonkeyServerErrorType {
   }
 }
 
-export default MonkeyError;
+export default ApiError;

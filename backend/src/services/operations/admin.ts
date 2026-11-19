@@ -1,4 +1,4 @@
-import { MonkeyResponse } from "../../utils/monkey-response";
+import { ApiResponse } from "../../utils/api-response";
 import * as UserDAL from "../../dal/user";
 import * as ReportDAL from "../../dal/report";
 import {
@@ -15,7 +15,7 @@ import {
   ToggleBanRequest,
   ToggleBanResponse,
 } from "@caret/contracts/admin";
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import { addImportantLog, countLogs, getLogs } from "../../dal/logs";
 import type { ServiceContext, OperationInput } from "../context";
 import { purgeUserFromDailyLeaderboards } from "../../utils/daily-leaderboards";
@@ -26,8 +26,8 @@ import { atomicUser } from "../../db/mutation";
 export async function test(
   _context: ServiceContext,
   _input: OperationInput,
-): Promise<MonkeyResponse> {
-  return new MonkeyResponse("OK", null);
+): Promise<ApiResponse> {
+  return new ApiResponse("OK", null);
 }
 
 export async function toggleBan(
@@ -61,7 +61,7 @@ export async function toggleBan(
       uid,
     );
 
-    return new MonkeyResponse(`Ban toggled`, {
+    return new ApiResponse(`Ban toggled`, {
       banned: banning,
     });
   });
@@ -70,7 +70,7 @@ export async function toggleBan(
 export async function clearStreakHourOffset(
   context: ServiceContext,
   input: OperationInput<undefined, ClearStreakHourOffsetRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = input.body;
 
   await UserDAL.clearStreakHourOffset(uid);
@@ -80,17 +80,17 @@ export async function clearStreakHourOffset(
     uid,
   );
 
-  return new MonkeyResponse("Streak hour offset cleared", null);
+  return new ApiResponse("Streak hour offset cleared", null);
 }
 
 export async function deleteUser(
   context: ServiceContext,
   input: OperationInput<undefined, DeleteUserRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = input.body;
 
   if (uid === context.actor.uid) {
-    throw new MonkeyError(
+    throw new ApiError(
       403,
       "You cannot delete your own account with this endpoint",
     );
@@ -104,23 +104,23 @@ export async function deleteUser(
     uid,
   );
 
-  return new MonkeyResponse("User deleted", null);
+  return new ApiResponse("User deleted", null);
 }
 
 export async function acceptReports(
   _context: ServiceContext,
   input: OperationInput<undefined, AcceptReportsRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   await removeReports(input.body.reports.map(({ reportId }) => reportId));
-  return new MonkeyResponse("Reports removed.", null);
+  return new ApiResponse("Reports removed.", null);
 }
 
 export async function rejectReports(
   _context: ServiceContext,
   input: OperationInput<undefined, RejectReportsRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   await removeReports(input.body.reports.map(({ reportId }) => reportId));
-  return new MonkeyResponse("Reports removed.", null);
+  return new ApiResponse("Reports removed.", null);
 }
 
 async function removeReports(reportIds: string[]): Promise<void> {
@@ -131,7 +131,7 @@ async function removeReports(reportIds: string[]): Promise<void> {
   );
 
   if (missingReportIds.length > 0) {
-    throw new MonkeyError(
+    throw new ApiError(
       404,
       `Reports not found for some IDs ${missingReportIds.join(",")}`,
     );
@@ -143,7 +143,7 @@ async function removeReports(reportIds: string[]): Promise<void> {
 export async function clearSuspicious(
   context: ServiceContext,
   input: OperationInput<undefined, ClearSuspiciousRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = input.body;
 
   await UserDAL.clearSuspicious(uid);
@@ -153,7 +153,7 @@ export async function clearSuspicious(
     uid,
   );
 
-  return new MonkeyResponse("Suspicious flag cleared", null);
+  return new ApiResponse("Suspicious flag cleared", null);
 }
 
 export async function getAnticheatAudits(
@@ -161,7 +161,7 @@ export async function getAnticheatAudits(
   input: OperationInput<GetAnticheatAuditsQuery>,
 ): Promise<GetAnticheatAuditsResponse> {
   const audits = await getLogs(input.query);
-  return new MonkeyResponse(
+  return new ApiResponse(
     "Anticheat audits retrieved",
     audits.map((audit) => ({
       ...audit,
@@ -180,7 +180,7 @@ export async function getAnticheatSummary(
     countLogs("anticheat_flagged", since, "$.message.signals", true),
     countLogs("anticheat_sample", since, "$.message.mode"),
   ]);
-  return new MonkeyResponse("Anticheat summary retrieved", {
+  return new ApiResponse("Anticheat summary retrieved", {
     since,
     rejected,
     flagged,

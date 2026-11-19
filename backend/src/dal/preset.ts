@@ -5,7 +5,7 @@ import { presets } from "../db/schema";
 import { atomicUser, stage } from "../db/mutation";
 import { commitBatch } from "../db/commit";
 import { newId } from "../utils/id";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 type DBConfigPreset = Preset & { uid: string };
 export async function getPresets(uid: string): Promise<DBConfigPreset[]> {
   return (
@@ -40,7 +40,7 @@ export async function addPreset(
     ((await statement("SELECT id FROM presets WHERE id=?", id).first()) === null
       ? 0
       : 1);
-  if (inserted === 0) throw new MonkeyError(409, "Too many presets");
+  if (inserted === 0) throw new ApiError(409, "Too many presets");
   return { presetId: id };
 }
 export async function editPreset(
@@ -82,6 +82,6 @@ export async function removePreset(
     .delete(presets)
     .where(and(eq(presets.id, presetId), eq(presets.uid, uid)));
   if ((result.rowCount ?? 0) === 0) {
-    throw new MonkeyError(404, "Preset not found");
+    throw new ApiError(404, "Preset not found");
   }
 }

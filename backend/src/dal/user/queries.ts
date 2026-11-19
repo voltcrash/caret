@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 
 import { database } from "../../db/client";
 import { currentUserDraft, readUser } from "../../db/mutation";
@@ -16,7 +16,7 @@ export async function getUser(
   _client: Client = "web",
 ): Promise<DBUser> {
   const user = await readUser(uid);
-  if (!user) throw new MonkeyError(404, "User not found", stack);
+  if (!user) throw new ApiError(404, "User not found", stack);
   user.personalBests ??= emptyPb();
   return user;
 }
@@ -49,7 +49,7 @@ export async function getPartialUser<K extends keyof DBUser>(
         .limit(1)
     )[0]?.data;
   }
-  if (user === undefined) throw new MonkeyError(404, "User not found", stack);
+  if (user === undefined) throw new ApiError(404, "User not found", stack);
   return Object.fromEntries(
     fields
       .filter((key) => key === "personalBests" || user[key] !== undefined)
@@ -86,6 +86,6 @@ export async function getUserByName(
   _client: Client = "web",
 ): Promise<DBUser> {
   const user = await findByName(name);
-  if (!user) throw new MonkeyError(404, "User not found", stack);
+  if (!user) throw new ApiError(404, "User not found", stack);
   return user;
 }
