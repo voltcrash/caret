@@ -1,9 +1,10 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
+import { parseSync } from "vite-plus";
 import { describe, expect, it } from "vite-plus/test";
 
 const root = resolve(import.meta.dirname, "../..");
-const shared = resolve(root, "src/ts");
+const shared = [resolve(root, "src/ts")];
 const features = resolve(root, "src/features");
 const baselineFile = resolve(
   import.meta.dirname,
@@ -18,14 +19,33 @@ function sources(directory: string): string[] {
   });
 }
 
+/** Module specifiers from the AST: static, re-export, side-effect and dynamic imports. */
+function specifiers(file: string, source: string): string[] {
+  const { module, errors } = parseSync(file, source, {
+    lang: file.endsWith(".tsx") ? "tsx" : "ts",
+  });
+  if (errors.length > 0) throw new Error(`Cannot parse ${file}`);
+  return [
+    ...module.staticImports.map((entry) => entry.moduleRequest.value),
+    ...module.staticExports.flatMap((entry) =>
+      entry.entries.flatMap((item) =>
+        item.moduleRequest === null ? [] : [item.moduleRequest.value],
+      ),
+    ),
+    ...module.dynamicImports.map((entry) =>
+      source
+        .slice(entry.moduleRequest.start, entry.moduleRequest.end)
+        .replaceAll(/^["'`]|["'`]$/g, ""),
+    ),
+  ];
+}
+
 /** `importer -> feature module` for every shared module importing a feature. */
 function sharedFeatureImports(): string[] {
   const edges = new Set<string>();
-  for (const file of sources(shared)) {
-    const source = readFileSync(file, "utf8");
-    for (const [, specifier = ""] of source.matchAll(
-      /(?:from|import\(|vi\.mock\()\s*["'](\.{1,2}\/[^"']+)["']/g,
-    )) {
+  for (const file of shared.flatMap(sources)) {
+    for (const specifier of specifiers(file, readFileSync(file, "utf8"))) {
+      if (!specifier.startsWith(".")) continue;
       const target = resolve(dirname(file), specifier);
       if (!target.startsWith(`${features}/`)) continue;
       edges.add(
