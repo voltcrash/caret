@@ -35,6 +35,12 @@ export const frontendLint: OxlintConfig = {
       rules: {},
     },
     {
+      files: ["src/**/*.ts", "src/**/*.tsx"],
+      rules: {
+        "caret-rules/no-module-let": "error",
+      },
+    },
+    {
       files: ["storybook/**/*.tsx"],
       rules: {
         "explicit-function-return-type": "off",

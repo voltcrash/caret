@@ -19,6 +19,7 @@ export type Banner = {
     }
 );
 
+// oxlint-disable-next-line caret-rules/no-module-let -- Ids only need to be unique; a counter shared across mounts keeps them so.
 let id = 0;
 const [banners, setBanners] = createAppStore<Banner[]>([]);
 

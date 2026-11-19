@@ -19,6 +19,7 @@ export type Notification = {
   onDismiss?: (reason: "click" | "timeout" | "clear") => void;
 };
 
+// oxlint-disable-next-line caret-rules/no-module-let -- Ids only need to be unique; a counter shared across mounts keeps them so.
 let id = 0;
 const [notifications, setNotifications] = createAppStore<Notification[]>([]);
 const timers = createAppOwned(() => {

@@ -46,6 +46,7 @@ export { getVideoUrl };
 export const [getDistributionOpen, setDistributionOpen] = createAppSignal(true);
 export const [getScatterOpen, setScatterOpen] = createAppSignal(true);
 
+// oxlint-disable-next-line caret-rules/no-module-let -- Mark ids only need to be unique across mounts.
 let markSerial = 0;
 export function nextMarkId(): string {
   return `mark-${++markSerial}`;

@@ -53,6 +53,7 @@ const hotData = import.meta.hot?.data as
   | undefined;
 const retainedBridge = hotData?.capsLockBridge;
 const capsLockBridge: CapsLockBridge = retainedBridge ?? {};
+// oxlint-disable-next-line caret-rules/no-module-let -- The caps-lock library listener cannot be removed, so it is installed once per document.
 let bridgeInstalled = retainedBridge !== undefined;
 export function useCapsLockEvents(): void {
   onMount(() => {

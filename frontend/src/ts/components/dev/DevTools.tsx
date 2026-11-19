@@ -3,6 +3,7 @@ import { envConfig } from "virtual:env-config";
 
 import { getModalVisibility } from "../../states/modals";
 
+// oxlint-disable-next-line caret-rules/no-module-let -- Assigned once at module load in development builds.
 let DevComponents: (() => JSXElement) | undefined;
 
 if (import.meta.env.DEV) {
