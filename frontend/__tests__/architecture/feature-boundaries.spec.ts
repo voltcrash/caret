@@ -19,25 +19,64 @@ function sources(directory: string): string[] {
   });
 }
 
-/** Module specifiers from the AST: static, re-export, side-effect and dynamic imports. */
+type Node = { type?: string; [key: string]: unknown };
+
+/** A literal module request, unwrapping parentheses; undefined if computed. */
+function literal(node: unknown): string | undefined {
+  const value = node as Node | null | undefined;
+  if (value?.type === "ParenthesizedExpression") {
+    return literal(value["expression"]);
+  }
+  if (value?.type === "Literal" && typeof value["value"] === "string") {
+    return value["value"];
+  }
+  if (
+    value?.type === "TemplateLiteral" &&
+    (value["expressions"] as unknown[]).length === 0
+  ) {
+    const [quasi] = value["quasis"] as { value: { cooked: string } }[];
+    return quasi?.value.cooked;
+  }
+  return undefined;
+}
+
+/** Module requests anywhere in the AST: imports, re-exports, `import()` and `typeof import()`. */
 function specifiers(file: string, source: string): string[] {
-  const { module, errors } = parseSync(file, source, {
+  const { program, errors } = parseSync(file, source, {
     lang: file.endsWith(".tsx") ? "tsx" : "ts",
   });
   if (errors.length > 0) throw new Error(`Cannot parse ${file}`);
-  return [
-    ...module.staticImports.map((entry) => entry.moduleRequest.value),
-    ...module.staticExports.flatMap((entry) =>
-      entry.entries.flatMap((item) =>
-        item.moduleRequest === null ? [] : [item.moduleRequest.value],
-      ),
-    ),
-    ...module.dynamicImports.map((entry) =>
-      source
-        .slice(entry.moduleRequest.start, entry.moduleRequest.end)
-        .replaceAll(/^["'`]|["'`]$/g, ""),
-    ),
-  ];
+  const found: string[] = [];
+  const visit = (node: unknown): void => {
+    if (Array.isArray(node)) {
+      for (const item of node) visit(item);
+      return;
+    }
+    if (node === null || typeof node !== "object") return;
+    const value = node as Node;
+    if (
+      value.type === "ImportDeclaration" ||
+      value.type === "ExportNamedDeclaration" ||
+      value.type === "ExportAllDeclaration" ||
+      value.type === "ImportExpression" ||
+      value.type === "TSImportType"
+    ) {
+      const request = literal(value["source"]);
+      if (request !== undefined) found.push(request);
+    }
+    for (const [key, child] of Object.entries(value)) {
+      if (key !== "parent") visit(child);
+    }
+  };
+  visit(program);
+  return found;
+}
+
+/** Relative and Vite root (`/src/...`) requests, resolved to a path. */
+function target(file: string, specifier: string): string | undefined {
+  if (specifier.startsWith(".")) return resolve(dirname(file), specifier);
+  if (specifier.startsWith("/src/")) return resolve(root, specifier.slice(1));
+  return undefined;
 }
 
 /** `importer -> feature module` for every shared module importing a feature. */
@@ -45,11 +84,10 @@ function sharedFeatureImports(): string[] {
   const edges = new Set<string>();
   for (const file of shared.flatMap(sources)) {
     for (const specifier of specifiers(file, readFileSync(file, "utf8"))) {
-      if (!specifier.startsWith(".")) continue;
-      const target = resolve(dirname(file), specifier);
-      if (!target.startsWith(`${features}/`)) continue;
+      const path = target(file, specifier);
+      if (path === undefined || !path.startsWith(`${features}/`)) continue;
       edges.add(
-        `${relative(root, file)} -> ${relative(root, target).replace(/\.tsx?$/, "")}`,
+        `${relative(root, file)} -> ${relative(root, path).replace(/\.tsx?$/, "")}`,
       );
     }
   }
