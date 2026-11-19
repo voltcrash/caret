@@ -9,6 +9,8 @@ type TraceEvent = {
   cat: string;
   ph: string;
   ts: number;
+  id?: string;
+  id2?: { local?: string };
   dur?: number;
   args?: {
     data?: {
@@ -88,6 +90,12 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
   await page.keyboard.type(text, { delay: KEY_DELAY });
   // Let the last move and line scroll settle.
   await page.waitForTimeout(500);
+  // A throttled timer can stop the test early; the numbers would then cover
+  // a page that ignored the rest of the input.
+  await expect(page.locator("#result")).toBeHidden();
+  await expect(
+    page.getByText("Stopping the test due to bad performance"),
+  ).toHaveCount(0);
   const trace = await browser.stopTracing();
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
 
@@ -101,12 +109,30 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
 
   const events = (JSON.parse(trace.toString()) as { traceEvents: TraceEvent[] })
     .traceEvents;
-  const animations = events.filter(
-    (event) => event.name === "Animation" && event.ph === "b",
-  );
-  const failed = animations.filter(
-    (event) => (event.args?.data?.compositeFailed ?? 0) !== 0,
-  );
+  // Each animation is an async trace: its begin event names the node, and the
+  // compositor's verdict arrives on later events with the same id. Ids are
+  // reused, so read the events in order.
+  const animationEvents = events
+    .filter((event) => event.name === "Animation")
+    .sort((a, b) => a.ts - b.ts);
+  const nodeByAnimation = new Map<string, string>();
+  let caretAnimations = 0;
+  let caretMainThreadAnimations = 0;
+  const failed: TraceEvent[] = [];
+  for (const event of animationEvents) {
+    const key = `${event.pid}:${event.id2?.local ?? event.id ?? ""}`;
+    if (event.ph === "b") {
+      const node = event.args?.data?.nodeName ?? "";
+      nodeByAnimation.set(key, node);
+      if (node.includes("id='caret'")) caretAnimations++;
+    }
+    if ((event.args?.data?.compositeFailed ?? 0) !== 0) {
+      failed.push(event);
+      if (nodeByAnimation.get(key)?.includes("id='caret'") === true) {
+        caretMainThreadAnimations++;
+      }
+    }
+  }
   const unsupported = new Map<string, number>();
   for (const event of failed) {
     for (const property of event.args?.data?.unsupportedProperties ?? []) {
@@ -163,7 +189,8 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
     frameP95: percentile(0.95),
     frameP99: percentile(0.99),
     longAnimationFrames: longFrames.length,
-    animations: animations.length,
+    caretAnimations,
+    caretMainThreadAnimations,
     mainThreadAnimations: failed.length,
     unsupportedProperties: Object.fromEntries(unsupported),
     mainThreadBusyMs: busyMs,
@@ -174,6 +201,8 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
     layoutMs: mainThread(["Layout"]),
     paintMs: mainThread(["Paint", "PrePaint"]),
   };
+  expect(result.caretAnimations).toBeGreaterThan(0);
+  expect(result.caretMainThreadAnimations).toBe(0);
   const output = process.env["CARET_SMOOTHNESS_BENCHMARK_OUTPUT"];
   if (output !== undefined) {
     await writeFile(output, `${JSON.stringify(result, null, 2)}\n`);

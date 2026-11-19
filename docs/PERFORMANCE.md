@@ -163,7 +163,7 @@ Chrome CPU throttling. Medians of three local runs (Apple silicon):
 | 20×      | Main-thread frames over 33 ms |       165 |       122 |
 | 20×      | Main-thread frame p95         |    117 ms |     67 ms |
 
-Every caret animation in the trace ran on the compositor. Reproduce with:
+All 120 caret glides in each trace ran on the compositor. Reproduce with:
 
 ```sh
 CARET_SMOOTHNESS_CPU_THROTTLE=20 vp -C frontend exec playwright test \
