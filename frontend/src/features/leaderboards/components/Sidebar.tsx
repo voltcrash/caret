@@ -4,8 +4,8 @@ import { Mode } from "@caret/schemas/shared";
 import { Accessor, For, JSXElement, Show } from "solid-js";
 
 import { Button } from "../../../ts/components/common/Button";
-import { Selection } from "../../../ts/states/leaderboard-selection";
 import { FaSolidIcon } from "../../../ts/types/font-awesome";
+import { Selection } from "../selection-state";
 
 type GroupItem<T> = { id: T; text: string; icon: FaSolidIcon };
 

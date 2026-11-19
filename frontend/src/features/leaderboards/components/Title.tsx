@@ -14,8 +14,8 @@ import { createMemo, JSXElement, Show } from "solid-js";
 import { Balloon } from "../../../ts/components/common/Balloon";
 import { Button } from "../../../ts/components/common/Button";
 import { H2 } from "../../../ts/components/common/Headers";
-import { Selection } from "../../../ts/states/leaderboard-selection";
 import { capitalizeFirstLetter } from "../../../ts/utils/strings";
+import { Selection } from "../selection-state";
 
 export function Title(props: {
   selection: Selection;

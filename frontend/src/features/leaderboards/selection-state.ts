@@ -6,8 +6,8 @@ import {
   LeaderboardUrlParamsSchema,
   type Selection,
   SelectionSchema,
-} from "../../features/leaderboards/selection";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+} from "./selection";
+import { useLocalStorage } from "../../ts/hooks/useLocalStorage";
 
 export type { LeaderboardType, Selection };
 export { LeaderboardUrlParamsSchema };

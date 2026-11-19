@@ -20,10 +20,6 @@ import { getSnapshot, updateLbMemory } from "../../ts/db";
 import { getServerConfigurationQueryOptions } from "../../ts/queries/server-configuration";
 import { baseKey } from "../../ts/queries/utils/keys";
 import { getUserId, isAuthenticated } from "../../ts/states/core";
-import {
-  getSelection as getStoredSelection,
-  setSelection as storeSelection,
-} from "../../ts/states/leaderboard-selection";
 import { showErrorNotification } from "../../ts/states/notifications";
 import { Navigation } from "./components/Navigation";
 import { NextUpdate } from "./components/NextUpdate";
@@ -37,6 +33,10 @@ import {
   type LeaderboardView,
   type Selection,
 } from "./selection";
+import {
+  getSelection as getStoredSelection,
+  setSelection as storeSelection,
+} from "./selection-state";
 import { LeaderboardSidebarSkeleton } from "./sidebar-skeleton";
 import { LeaderboardTableSkeleton } from "./table-skeleton";
 
