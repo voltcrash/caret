@@ -21,6 +21,7 @@ import { setConfigStore } from "../../../../../src/ts/config/store";
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 function mount(timerStyle: "bar" | "mini"): HTMLElement {
@@ -55,8 +56,18 @@ describe("BarTimerProgress", () => {
     live.setShown(false);
     live.setTarget({ width: "100vw", duration: 125 });
     expect(bar.getAnimations()).toHaveLength(1);
-    live.setTarget({ width: "0vw", duration: 0 });
+  });
+
+  it("stops animating once a hidden bar has faded out", () => {
+    const bar = mount("bar");
+    live.setShown(true);
+    live.setTarget({ width: "90vw", duration: 0 });
+    live.setShown(false);
+    const now = performance.now();
+    vi.spyOn(performance, "now").mockReturnValue(now + 1000);
+    live.setTarget({ width: "80vw", duration: 1000, ease: "linear" });
     expect(bar.getAnimations()).toHaveLength(0);
+    expect(bar.style.scale).toBe("0.8 1");
   });
 
   it("scales the shown bar on the compositor instead of resizing it", () => {

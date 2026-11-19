@@ -9,14 +9,15 @@ import { liveStatsBgColor } from "./styles";
 
 // anime.js's default `out(2)`, which the bar used before.
 const BAR_EASE = "cubic-bezier(0.5, 1, 0.89, 1)";
+const FADE_MS = 125;
 
 export function BarTimerProgress() {
   let barEl: HTMLElement | undefined;
   let animation: Animation | undefined;
-  // Finishing hides the bar as it fills; it fades out while filling, so the
-  // first new target after hiding still animates.
-  let drawn = false;
-  let previousTo: string | undefined;
+  // Finishing hides the bar as it fills; the fill still animates while the
+  // bar fades out, but nothing animates once the fade has ended.
+  let wasShown = false;
+  let hiddenAt = Number.NEGATIVE_INFINITY;
 
   const shown = () =>
     showLiveStats() &&
@@ -44,10 +45,11 @@ export function BarTimerProgress() {
       animation = undefined;
     }
     barEl.style.scale = to;
-    const duration = visible || drawn ? applyReducedMotion(target.duration) : 0;
-    if (visible) drawn = true;
-    else if (to !== previousTo) drawn = false;
-    previousTo = to;
+    if (wasShown && !visible) hiddenAt = performance.now();
+    wasShown = visible;
+    const fading = performance.now() - hiddenAt < FADE_MS;
+    const duration =
+      visible || fading ? applyReducedMotion(target.duration) : 0;
     if (duration > 0 && from !== to) {
       animation = barEl.animate(
         { scale: [from, to] },
@@ -64,7 +66,7 @@ export function BarTimerProgress() {
     <div class="relative z-99" style={{ opacity: getConfig.timerOpacity }}>
       <Anime
         initial={{ opacity: 0 }}
-        animation={{ opacity: shown() ? 1 : 0, duration: 125 }}
+        animation={{ opacity: shown() ? 1 : 0, duration: FADE_MS }}
       >
         <div
           ref={(el) => (barEl = el)}
