@@ -18,8 +18,8 @@ import {
 import { getTheme } from "../../../ts/states/theme";
 import { cn } from "../../../ts/utils/cn";
 import { isMacLike } from "../../../ts/utils/misc";
-import { convertLayoutToKeymap } from "../keymapConverter";
-import { KeyboardDefinition, KeyDefinition } from "../keymapLayouts";
+import { convertLayoutToKeymap } from "../keymap/converter";
+import { KeyboardDefinition, KeyDefinition } from "../keymap/layouts";
 
 const symbolsPattern = /^[^\p{L}\p{N}]{1}$/u;
 

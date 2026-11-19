@@ -6,7 +6,7 @@ import {
   KeyDefinition,
   KeymapLayout,
   keymapLayouts,
-} from "./keymapLayouts";
+} from "./layouts";
 
 type ConvertOptions = {
   keymapStyle: KeymapStyle;
