@@ -5,17 +5,17 @@ import {
   createResultsQueryState,
   getResultsQueryOnce,
   useResultsLiveQuery,
-} from "../../../collections/results";
-import { SnapshotResult } from "../../../constants/default-snapshot";
-import { createEffectOn } from "../../../hooks/effects";
-import { useRef } from "../../../hooks/useRef";
-import { isAuthenticated } from "../../../states/core";
-import { hideLoaderBar, showLoaderBar } from "../../../states/loader-bar";
-import { showErrorNotification } from "../../../states/notifications";
-import { filters, setFilters } from "../../../states/result-filters";
-import { downloadResultsCSV } from "../../../utils/misc";
-import AsyncContent from "../../common/AsyncContent";
-import { Button } from "../../common/Button";
+} from "../../../ts/collections/results";
+import AsyncContent from "../../../ts/components/common/AsyncContent";
+import { Button } from "../../../ts/components/common/Button";
+import { SnapshotResult } from "../../../ts/constants/default-snapshot";
+import { createEffectOn } from "../../../ts/hooks/effects";
+import { useRef } from "../../../ts/hooks/useRef";
+import { isAuthenticated } from "../../../ts/states/core";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { showErrorNotification } from "../../../ts/states/notifications";
+import { filters, setFilters } from "../../../ts/states/result-filters";
+import { downloadResultsCSV } from "../../../ts/utils/misc";
 import { Charts } from "./Charts";
 import { Filters } from "./Filters";
 import { MyProfile } from "./MyProfile";
@@ -76,7 +76,7 @@ export function AccountContent(props: { client: Client }): JSXElement {
           onClick={() => {
             setIsExporting(true);
             setExportedCount(0);
-            void import("../../../../features/account/export.client")
+            void import("../export.client")
               .then(async ({ exportAllResults }) => {
                 const results = await exportAllResults(setExportedCount);
                 await downloadResultsCSV(results);

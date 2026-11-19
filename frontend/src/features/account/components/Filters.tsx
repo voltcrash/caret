@@ -13,25 +13,25 @@ import {
   deleteResultFilterPreset,
   insertResultFilterPreset,
   useResultFilterPresetsLiveQuery,
-} from "../../../collections/result-filter-presets";
-import { type TagItem, useTagsLiveQuery } from "../../../collections/tags";
-import { getConfig } from "../../../config/store";
-import defaultResultFilters from "../../../constants/default-result-filters";
-import { showSimpleModal } from "../../../states/simple-modal";
-import { FaSolidIcon } from "../../../types/font-awesome";
-import { cn } from "../../../utils/cn";
-import { createErrorMessage } from "../../../utils/error";
+} from "../../../ts/collections/result-filter-presets";
+import { type TagItem, useTagsLiveQuery } from "../../../ts/collections/tags";
+import { AnimeShow } from "../../../ts/components/common/anime";
+import AsyncContent from "../../../ts/components/common/AsyncContent";
+import { Button } from "../../../ts/components/common/Button";
+import { H3 } from "../../../ts/components/common/Headers";
+import { Separator } from "../../../ts/components/common/Separator";
+import Select from "../../../ts/components/ui/Select";
+import { getConfig } from "../../../ts/config/store";
+import defaultResultFilters from "../../../ts/constants/default-result-filters";
+import { showSimpleModal } from "../../../ts/states/simple-modal";
+import { FaSolidIcon } from "../../../ts/types/font-awesome";
+import { cn } from "../../../ts/utils/cn";
+import { createErrorMessage } from "../../../ts/utils/error";
 import {
   getLanguageDisplayString,
   normalizeName,
   replaceUnderscoresWithSpaces,
-} from "../../../utils/strings";
-import { AnimeShow } from "../../common/anime";
-import AsyncContent from "../../common/AsyncContent";
-import { Button } from "../../common/Button";
-import { H3 } from "../../common/Headers";
-import { Separator } from "../../common/Separator";
-import Select from "../../ui/Select";
+} from "../../../ts/utils/strings";
 import { verifyResultFiltersStructure } from "./utils";
 
 export function Filters(props: {

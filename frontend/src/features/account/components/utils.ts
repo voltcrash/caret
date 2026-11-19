@@ -1,6 +1,6 @@
 import { ResultFilters, ResultFiltersSchema } from "@caret/schemas/users";
 
-import defaultResultFilters from "../../../constants/default-result-filters";
+import defaultResultFilters from "../../../ts/constants/default-result-filters";
 import { sanitize } from "@caret/util/sanitize";
 import { typedKeys } from "@caret/util/objects";
 

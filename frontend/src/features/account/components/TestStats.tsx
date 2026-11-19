@@ -4,12 +4,12 @@ import {
   ResultsQueryState,
   ResultStats,
   useResultStatsLiveQuery,
-} from "../../../collections/results";
-import { getFormatting } from "../../../states/core";
-import { secondsToString } from "../../../utils/date-and-time";
-import AsyncContent from "../../common/AsyncContent";
-import { Balloon } from "../../common/Balloon";
-import { Fa } from "../../common/Fa";
+} from "../../../ts/collections/results";
+import AsyncContent from "../../../ts/components/common/AsyncContent";
+import { Balloon } from "../../../ts/components/common/Balloon";
+import { Fa } from "../../../ts/components/common/Fa";
+import { getFormatting } from "../../../ts/states/core";
+import { secondsToString } from "../../../ts/utils/date-and-time";
 
 export function TestStats(props: {
   queryState: Accessor<ResultsQueryState | undefined>;

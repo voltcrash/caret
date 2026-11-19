@@ -3,20 +3,23 @@ import { Mode } from "@caret/schemas/shared";
 import { format as dateFormat } from "date-fns/format";
 import { Accessor, createMemo, createSignal, JSXElement, Show } from "solid-js";
 
-import { type TagItem, useTagsLiveQuery } from "../../../collections/tags";
-import { SnapshotResult } from "../../../constants/default-snapshot";
-import { getFormatting } from "../../../states/core";
-import { showEditResultTagsModal } from "../../../states/edit-result-tags";
-import { showModal } from "../../../states/modals";
-import { showNoticeNotification } from "../../../states/notifications";
-import { cn } from "../../../utils/cn";
-import { Formatting } from "../../../utils/format";
-import { replaceUnderscoresWithSpaces } from "../../../utils/strings";
-import { Balloon } from "../../common/Balloon";
-import { Button } from "../../common/Button";
-import { Fa, FaProps } from "../../common/Fa";
-import { DataTable, DataTableColumnDef } from "../../ui/table/DataTable";
-import { createDataTableColumnHelper as createColumnHelper } from "../../ui/table/features";
+import { type TagItem, useTagsLiveQuery } from "../../../ts/collections/tags";
+import { Balloon } from "../../../ts/components/common/Balloon";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa, FaProps } from "../../../ts/components/common/Fa";
+import {
+  DataTable,
+  DataTableColumnDef,
+} from "../../../ts/components/ui/table/DataTable";
+import { createDataTableColumnHelper as createColumnHelper } from "../../../ts/components/ui/table/features";
+import { SnapshotResult } from "../../../ts/constants/default-snapshot";
+import { getFormatting } from "../../../ts/states/core";
+import { showEditResultTagsModal } from "../../../ts/states/edit-result-tags";
+import { showModal } from "../../../ts/states/modals";
+import { showNoticeNotification } from "../../../ts/states/notifications";
+import { cn } from "../../../ts/utils/cn";
+import { Formatting } from "../../../ts/utils/format";
+import { replaceUnderscoresWithSpaces } from "../../../ts/utils/strings";
 import { MiniResultChart } from "./MiniResultChart";
 
 type Sorting = {

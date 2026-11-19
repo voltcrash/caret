@@ -6,14 +6,14 @@ import { Accessor, JSXElement } from "solid-js";
 import {
   ResultsQueryState,
   useResultStatsLiveQuery,
-} from "../../../collections/results";
-import { getTheme } from "../../../states/theme";
-import { secondsToString } from "../../../utils/date-and-time";
-import { Formatting } from "../../../utils/format";
-import { fitLine } from "../../../utils/numbers";
-import { TypingSpeedUnitSettings } from "../../../utils/typing-speed-units";
-import AsyncContent from "../../common/AsyncContent";
-import { ChartJs } from "../../common/ChartJs";
+} from "../../../ts/collections/results";
+import AsyncContent from "../../../ts/components/common/AsyncContent";
+import { ChartJs } from "../../../ts/components/common/ChartJs";
+import { getTheme } from "../../../ts/states/theme";
+import { secondsToString } from "../../../ts/utils/date-and-time";
+import { Formatting } from "../../../ts/utils/format";
+import { fitLine } from "../../../ts/utils/numbers";
+import { TypingSpeedUnitSettings } from "../../../ts/utils/typing-speed-units";
 
 function trendline(
   days: { dayTimestamp: unknown; timeTyping: number }[],

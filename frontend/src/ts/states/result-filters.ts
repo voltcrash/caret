@@ -1,6 +1,6 @@
 import { appStore } from "../../app/state";
 import { ResultFilters, ResultFiltersSchema } from "@caret/schemas/users";
-import { mergeWithDefaultFilters } from "../components/pages/account/utils";
+import { mergeWithDefaultFilters } from "../../features/account/components/utils";
 import defaultResultFilters from "../constants/default-result-filters";
 import { useLocalStorageStore } from "../hooks/useLocalStorageStore";
 import { isObject } from "../utils/misc";

@@ -5,19 +5,19 @@ import { Accessor, createMemo, JSXElement } from "solid-js";
 import {
   buildResultsQuery,
   ResultsQueryState,
-} from "../../../collections/results";
-import { type TagItem, useTagsLiveQuery } from "../../../collections/tags";
-import { getConfig } from "../../../config/store";
-import { getFormatting, isAuthenticated } from "../../../states/core";
-import { FaSolidIcon } from "../../../types/font-awesome";
+} from "../../../ts/collections/results";
+import { type TagItem, useTagsLiveQuery } from "../../../ts/collections/tags";
+import AsyncContent from "../../../ts/components/common/AsyncContent";
+import { Balloon } from "../../../ts/components/common/Balloon";
+import { Fa } from "../../../ts/components/common/Fa";
+import { getConfig } from "../../../ts/config/store";
+import { getFormatting, isAuthenticated } from "../../../ts/states/core";
+import { FaSolidIcon } from "../../../ts/types/font-awesome";
 import {
   capitalizeFirstLetter,
   replaceUnderscoresWithSpaces,
-} from "../../../utils/strings";
-import { get as getTypingSpeedUnit } from "../../../utils/typing-speed-units";
-import AsyncContent from "../../common/AsyncContent";
-import { Balloon } from "../../common/Balloon";
-import { Fa } from "../../common/Fa";
+} from "../../../ts/utils/strings";
+import { get as getTypingSpeedUnit } from "../../../ts/utils/typing-speed-units";
 import { DailyActivityChart } from "./DailyActivityChart";
 import { HistogramChart } from "./HistogramChart";
 import { HistoryChart, HistoryChartClickEvent } from "./HistoryChart";

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vite-plus/test";
 import defaultResultFilters from "../../../../src/ts/constants/default-result-filters";
-import { mergeWithDefaultFilters } from "../../../../src/ts/components/pages/account/utils";
+import { mergeWithDefaultFilters } from "../../../../src/features/account/components/utils";
 
 describe("utils.ts", () => {
   describe("mergeWithDefaultFilters", () => {

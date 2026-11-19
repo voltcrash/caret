@@ -2,14 +2,14 @@ import { ChartData } from "@caret/schemas/results";
 import { useQuery } from "@tanstack/solid-query";
 import { createMemo, JSXElement } from "solid-js";
 
-import { getSingleResultQueryOptions } from "../../../collections/results";
-import { getConfig } from "../../../config/store";
-import { isModalOpen } from "../../../states/modals";
-import { getTheme } from "../../../states/theme";
-import { get as getTypingSpeedUnit } from "../../../utils/typing-speed-units";
-import { AnimatedModal } from "../../common/AnimatedModal";
-import AsyncContent from "../../common/AsyncContent";
-import { ChartJs } from "../../common/ChartJs";
+import { getSingleResultQueryOptions } from "../../../ts/collections/results";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import AsyncContent from "../../../ts/components/common/AsyncContent";
+import { ChartJs } from "../../../ts/components/common/ChartJs";
+import { getConfig } from "../../../ts/config/store";
+import { isModalOpen } from "../../../ts/states/modals";
+import { getTheme } from "../../../ts/states/theme";
+import { get as getTypingSpeedUnit } from "../../../ts/utils/typing-speed-units";
 
 export function MiniResultChart(props: { resultId: string }): JSXElement {
   const query = useQuery(() => ({
