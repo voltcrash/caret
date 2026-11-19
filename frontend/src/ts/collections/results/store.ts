@@ -6,7 +6,7 @@ import { Client, Mode } from "@caret/schemas/shared";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { BTreeIndex, createCollection } from "@tanstack/solid-db";
 import { SnapshotResult } from "../../constants/default-snapshot";
-import { getQueryClient } from "../../queries";
+import { getQueryClient } from "../../../data/queries";
 import { isAuthenticated } from "../../states/core";
 import { getLastResult, setLastResult } from "../../states/snapshot";
 import { getTagsOnce } from "../tags";

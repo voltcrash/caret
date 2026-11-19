@@ -33,3 +33,6 @@ export const clientOnlyFeatureFiles = [
   "src/features/typing/lifecycle/route.ts",
   "src/features/typing/scope.ts",
 ];
+
+/** Browser data owners (account queries, IndexedDB collections); never SSR. */
+export const clientOnlyDataFiles = ["src/data/queries/**"];

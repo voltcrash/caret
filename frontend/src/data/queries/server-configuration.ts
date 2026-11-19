@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/solid-query";
-import { baseKey } from "./utils/keys";
-import { operation } from "../../data/operations";
+import { baseKey } from "./keys";
+import { operation } from "../operations";
 import { envConfig } from "virtual:env-config";
 
 const queryKeys = {

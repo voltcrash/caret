@@ -13,7 +13,7 @@ import {
   ModifiableTestActivityCalendar,
   type StoredTestActivity,
 } from "../ts/elements/test-activity-calendar";
-import type { AccountData } from "../ts/queries/account";
+import type { AccountData } from "../data/queries/account";
 import type { AccountDataOwner } from "./account-data";
 import { createAppOwned, requireApplication } from "./application";
 

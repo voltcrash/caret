@@ -6,9 +6,9 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import { getQueryClient } from "../queries";
+import { getQueryClient } from "../../data/queries";
 import { defineCollection } from "./utils/scope";
-import { baseKey } from "../queries/utils/keys";
+import { baseKey } from "../../data/queries/keys";
 import { applyIdWorkaround, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
 import { isAuthenticated } from "../states/core";

@@ -1,8 +1,11 @@
 import { createEffect, createSignal, onCleanup } from "solid-js";
 import { QueryObserver } from "@tanstack/solid-query";
 import { createAccountOwned } from "../../app/account-scope";
-import { getQueryClient } from "../queries";
-import { getQuoteRatingQueryOptions, type QuoteStats } from "../queries/quotes";
+import { getQueryClient } from "../../data/queries";
+import {
+  getQuoteRatingQueryOptions,
+  type QuoteStats,
+} from "../../data/queries/quotes";
 import { createAppSignal } from "../../app/state";
 
 import { Quote } from "../controllers/quotes-controller";

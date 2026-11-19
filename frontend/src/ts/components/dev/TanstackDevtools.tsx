@@ -3,7 +3,7 @@ import { hotkeysDevtoolsPlugin } from "@tanstack/solid-hotkeys-devtools";
 import { SolidQueryDevtoolsPanel } from "@tanstack/solid-query-devtools";
 import { JSXElement } from "solid-js";
 
-import { getQueryClient } from "../../queries";
+import { getQueryClient } from "../../../data/queries";
 
 export function TanStackDevtools(): JSXElement {
   return (

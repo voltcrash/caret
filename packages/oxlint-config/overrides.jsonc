@@ -24,7 +24,7 @@
       // These modules expose inferred factory results, not untyped API values.
       "files": [
         "**/src/ts/collections/**/*.ts",
-        "**/src/ts/queries/**/*.ts",
+        "**/src/data/queries/**/*.ts",
         "**/src/db/schema.ts",
         "**/src/rollback/http.ts",
         "**/src/ts/auth-client.ts",

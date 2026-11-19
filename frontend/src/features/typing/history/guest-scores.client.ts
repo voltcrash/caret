@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import type { SessionState } from "@caret/schemas/auth-session";
 import { sessionKey } from "../../auth/session";
-import { getQueryClient } from "../../../ts/queries";
+import { getQueryClient } from "../../../data/queries";
 import { appSignal, createAccountSignal } from "../../../app/state";
 import { useLocalStorage } from "../../../ts/hooks/useLocalStorage";
 

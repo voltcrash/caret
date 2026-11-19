@@ -1,7 +1,7 @@
 import { afterEach, expect, it, vi } from "vite-plus/test";
 import type { Quote } from "@caret/web-shared/quotes";
-import { getQueryClient } from "../../src/ts/queries";
-import { getQuoteRatingQueryOptions } from "../../src/ts/queries/quotes";
+import { getQueryClient } from "../../src/data/queries";
+import { getQuoteRatingQueryOptions } from "../../src/data/queries/quotes";
 import {
   getQuoteStats,
   quoteStats,

@@ -5,7 +5,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "tags-user",
 }));
-vi.mock("../../src/ts/queries/account", () => ({
+vi.mock("../../src/data/queries/account", () => ({
   loadAccountData: async () => ({
     tags: [
       { _id: "b", name: "beta_tag", personalBests: {} },

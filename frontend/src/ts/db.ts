@@ -17,13 +17,13 @@ import { setLastResult } from "./states/snapshot";
 import { XpBreakdown } from "@caret/schemas/results";
 import { setXpBarData } from "./states/header";
 import { FunboxMetadata } from "@caret/funbox";
-import { getQueryClient } from "./queries";
+import { getQueryClient } from "../data/queries";
 import {
   type AccountData,
   getAccountActivityQueryOptions,
   getAccountQueryOptions,
   loadAccountData,
-} from "./queries/account";
+} from "../data/queries/account";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 import { updateTagsInFilterStorage } from "./states/result-filters";
 import { emptyPersonalBests, personalBestList } from "./utils/personal-bests";

@@ -7,8 +7,8 @@ import {
   SnapshotResult,
   SavedResult,
 } from "../constants/default-snapshot";
-import { getQueryClient } from "../queries";
-import { getAccountQueryOptions } from "../queries/account";
+import { getQueryClient } from "../../data/queries";
+import { getAccountQueryOptions } from "../../data/queries/account";
 
 import { Mode } from "@caret/schemas/shared";
 

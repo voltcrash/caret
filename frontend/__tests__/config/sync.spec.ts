@@ -1,8 +1,8 @@
 import { beforeEach, expect, it, vi } from "vite-plus/test";
 import { requireApplication } from "../../src/app/application";
 import { deleteConfig, saveConfig } from "../../src/ts/config/sync";
-import { getQueryClient } from "../../src/ts/queries";
-import { getRemotePreferencesQueryOptions } from "../../src/ts/queries/preferences";
+import { getQueryClient } from "../../src/data/queries";
+import { getRemotePreferencesQueryOptions } from "../../src/data/queries/preferences";
 import {
   mockOperation,
   ok,

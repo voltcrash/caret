@@ -3,16 +3,16 @@ import { Client, PersonalBests } from "@caret/schemas/shared";
 import { queryOptions } from "@tanstack/solid-query";
 
 import { captureAccount } from "../../app/account-scope";
-import { operation } from "../../data/operations";
+import { operation } from "../operations";
 import {
   getDefaultSnapshot,
   type Snapshot,
-} from "../constants/default-snapshot";
-import { ModifiableTestActivityCalendar } from "../elements/test-activity-calendar";
-import { getUserId } from "../states/core";
-import { getFirstDayOfTheWeek } from "../utils/date-and-time";
-import { SnapshotInitError } from "../utils/snapshot-init-error";
-import { baseKey } from "./utils/keys";
+} from "../../ts/constants/default-snapshot";
+import { ModifiableTestActivityCalendar } from "../../ts/elements/test-activity-calendar";
+import { getUserId } from "../../ts/states/core";
+import { getFirstDayOfTheWeek } from "../../ts/utils/date-and-time";
+import { SnapshotInitError } from "../../ts/utils/snapshot-init-error";
+import { baseKey } from "./keys";
 import { getQueryClient } from ".";
 
 type UserData = GetUserResponse["data"];

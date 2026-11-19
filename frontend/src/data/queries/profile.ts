@@ -1,6 +1,6 @@
-import { baseKey } from "./utils/keys";
+import { baseKey } from "./keys";
 import { getQueryClient } from ".";
-import { getSnapshot } from "../states/snapshot";
+import { getSnapshot } from "../../ts/states/snapshot";
 
 const queryKeys = {
   root: () => baseKey("profiles", { isUserSpecific: true }),

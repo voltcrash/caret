@@ -16,6 +16,7 @@ import { startWebManifest } from "./vite-plugins/web-manifest";
 import { startServiceWorker } from "./vite-plugins/service-worker";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import {
+  clientOnlyDataFiles,
   clientOnlyFeatureFiles,
   ssrSafeLegacyFiles,
 } from "./vite-plugins/import-boundaries";
@@ -165,7 +166,12 @@ export default defineConfig(async ({ mode, command }) => {
           // Legacy modules are browser state unless explicitly SSR-safe.
           // Patterns match root-relative paths.
           server: {
-            files: ["src/ts/**", "**/*.client.*", ...clientOnlyFeatureFiles],
+            files: [
+              "src/ts/**",
+              "**/*.client.*",
+              ...clientOnlyFeatureFiles,
+              ...clientOnlyDataFiles,
+            ],
             excludeFiles: ["**/node_modules/**", ...ssrSafeLegacyFiles],
           },
         },

@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, expect, it } from "vite-plus/test";
 import { requireApplication } from "../../src/app/application";
 import { getSnapshot, setSnapshot } from "../../src/ts/db";
-import { getQueryClient } from "../../src/ts/queries";
+import { getQueryClient } from "../../src/data/queries";
 import {
   getAccountQueryOptions,
   loadAccountData,
-} from "../../src/ts/queries/account";
+} from "../../src/data/queries/account";
 import { getSnapshot as getReactiveSnapshot } from "../../src/ts/states/snapshot";
 import { getTags, waitForTagsReady } from "../../src/ts/collections/tags";
 import {
