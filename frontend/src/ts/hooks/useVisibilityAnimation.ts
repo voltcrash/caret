@@ -1,4 +1,4 @@
-import { Accessor, createEffect, onCleanup } from "solid-js";
+import { Accessor, createEffect, createMemo, onCleanup } from "solid-js";
 import { animate, AnimationParams, JSAnimation } from "animejs";
 import { updateClassNames } from "../utils/cn";
 import { reduceMotionParams } from "../utils/motion";
@@ -11,10 +11,13 @@ export function useVisibilityAnimation(options: {
 }): void {
   let showAnimation: undefined | JSAnimation = undefined;
   let hideAnimation: undefined | JSAnimation = undefined;
+  // Callers may report the same visibility again (the loader bar is hidden on
+  // every keystroke); only a change should restart an animation.
+  const isVisible = createMemo(() => options.isVisible());
 
   createEffect(() => {
     const el = options.element();
-    const visible = options.isVisible();
+    const visible = isVisible();
 
     if (!el) return;
 

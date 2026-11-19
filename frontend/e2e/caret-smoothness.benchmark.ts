@@ -1,0 +1,211 @@
+import { writeFile } from "node:fs/promises";
+import { chromium } from "playwright";
+import { expect, openTest, test } from "./fixtures";
+
+type TraceEvent = {
+  name: string;
+  pid: number;
+  tid: number;
+  cat: string;
+  ph: string;
+  ts: number;
+  id?: string;
+  id2?: { local?: string };
+  dur?: number;
+  args?: {
+    data?: {
+      compositeFailed?: number;
+      unsupportedProperties?: string[];
+      nodeName?: string;
+      displayName?: string;
+    };
+  };
+};
+
+// Low-end hardware: Chrome's "low-end mobile" CPU preset.
+const CPU_THROTTLE = Number(process.env["CARET_SMOOTHNESS_CPU_THROTTLE"] ?? 6);
+const CHARACTERS = 120;
+// 150 wpm: one character every 80 ms.
+const KEY_DELAY = 80;
+
+test.use({
+  viewport: { width: 1280, height: 800 },
+  config: {
+    mode: "time",
+    time: 60,
+    smoothCaret: "medium",
+    smoothLineScroll: true,
+    paceCaret: "off",
+    quickRestart: "off",
+  },
+});
+
+/**
+ * Types at 150 wpm on a throttled CPU and reports how much the caret costs
+ * the main thread, and whether its animations run on the compositor.
+ */
+test("caret stays on the compositor while typing on a slow CPU", async ({
+  page,
+}) => {
+  await openTest(page);
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+  });
+  const text = (await page.locator("#words .word").allTextContents())
+    .join(" ")
+    .slice(0, CHARACTERS);
+  await page.locator("#wordsWrapper").click();
+  await expect(page.locator("#wordsInput")).toBeFocused();
+
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: CPU_THROTTLE });
+  await page.evaluate(() => {
+    const state = window as unknown as {
+      __caretFrames: number[];
+      __caretLongFrames: number[];
+    };
+    state.__caretFrames = [];
+    state.__caretLongFrames = [];
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        state.__caretLongFrames.push(entry.duration);
+      }
+    }).observe({ type: "long-animation-frame", buffered: false });
+    let last = performance.now();
+    const tick = (now: number): void => {
+      state.__caretFrames.push(now - last);
+      last = now;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+
+  const browser = page.context().browser();
+  if (browser === null || browser.browserType() !== chromium) {
+    throw new Error("Caret tracing needs Chromium");
+  }
+  await browser.startTracing(page, {
+    categories: ["blink.animations", "devtools.timeline", "toplevel"],
+  });
+  await page.keyboard.type(text, { delay: KEY_DELAY });
+  // Let the last move and line scroll settle.
+  await page.waitForTimeout(500);
+  // A throttled timer can stop the test early; the numbers would then cover
+  // a page that ignored the rest of the input.
+  await expect(page.locator("#result")).toBeHidden();
+  await expect(
+    page.getByText("Stopping the test due to bad performance"),
+  ).toHaveCount(0);
+  const trace = await browser.stopTracing();
+  await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
+
+  const { frames, longFrames } = await page.evaluate(() => {
+    const state = window as unknown as {
+      __caretFrames: number[];
+      __caretLongFrames: number[];
+    };
+    return { frames: state.__caretFrames, longFrames: state.__caretLongFrames };
+  });
+
+  const events = (JSON.parse(trace.toString()) as { traceEvents: TraceEvent[] })
+    .traceEvents;
+  // Each animation is an async trace: its begin event names the node, and the
+  // compositor's verdict arrives on later events with the same id. Ids are
+  // reused, so read the events in order.
+  const animationEvents = events
+    .filter((event) => event.name === "Animation")
+    .sort((a, b) => a.ts - b.ts);
+  const nodeByAnimation = new Map<string, string>();
+  let caretAnimations = 0;
+  let caretMainThreadAnimations = 0;
+  const failed: TraceEvent[] = [];
+  for (const event of animationEvents) {
+    const key = `${event.pid}:${event.id2?.local ?? event.id ?? ""}`;
+    if (event.ph === "b") {
+      const node = event.args?.data?.nodeName ?? "";
+      nodeByAnimation.set(key, node);
+      if (node.includes("id='caret'")) caretAnimations++;
+    }
+    if ((event.args?.data?.compositeFailed ?? 0) !== 0) {
+      failed.push(event);
+      if (nodeByAnimation.get(key)?.includes("id='caret'") === true) {
+        caretMainThreadAnimations++;
+      }
+    }
+  }
+  const unsupported = new Map<string, number>();
+  for (const event of failed) {
+    for (const property of event.args?.data?.unsupportedProperties ?? []) {
+      unsupported.set(property, (unsupported.get(property) ?? 0) + 1);
+    }
+  }
+  const mainThread = (names: string[]): number =>
+    events
+      .filter((event) => names.includes(event.name) && event.ph === "X")
+      .reduce((sum, event) => sum + (event.dur ?? 0), 0) / 1000;
+  const rendererMain = new Set(
+    events
+      .filter(
+        (event) =>
+          event.name === "thread_name" &&
+          (event.args as { name?: string } | undefined)?.name ===
+            "CrRendererMain",
+      )
+      .map((event) => `${event.pid}:${event.tid}`),
+  );
+  const onMainThread = events.filter(
+    (event) =>
+      event.ph === "X" && rendererMain.has(`${event.pid}:${event.tid}`),
+  );
+  const busyMs =
+    onMainThread
+      .filter((event) =>
+        ["RunTask", "ThreadControllerImpl::RunTask"].includes(event.name),
+      )
+      .reduce((sum, event) => sum + (event.dur ?? 0), 0) / 1000;
+  const styleRecalcs = onMainThread.filter(
+    (event) => event.name === "UpdateLayoutTree",
+  ).length;
+  const layouts = onMainThread.filter(
+    (event) => event.name === "Layout",
+  ).length;
+  // App script run from animation frames, such as anime.js ticking; the
+  // frame counter above contributes one callback per recorded frame.
+  const animationFrameCallbacks = Math.max(
+    0,
+    onMainThread.filter((event) => event.name === "FireAnimationFrame").length -
+      frames.length,
+  );
+  const sorted = frames.slice(1).sort((a, b) => a - b);
+  const percentile = (p: number): number =>
+    sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;
+  const result = {
+    cpuThrottle: CPU_THROTTLE,
+    characters: text.length,
+    frames: sorted.length,
+    // Frames the main thread took longer than two vsyncs to produce.
+    slowFrames: sorted.filter((frame) => frame > 33.4).length,
+    frameP50: percentile(0.5),
+    frameP95: percentile(0.95),
+    frameP99: percentile(0.99),
+    longAnimationFrames: longFrames.length,
+    caretAnimations,
+    caretMainThreadAnimations,
+    mainThreadAnimations: failed.length,
+    unsupportedProperties: Object.fromEntries(unsupported),
+    mainThreadBusyMs: busyMs,
+    animationFrameCallbacks,
+    styleRecalcs,
+    layouts,
+    styleMs: mainThread(["UpdateLayoutTree", "RecalculateStyles"]),
+    layoutMs: mainThread(["Layout"]),
+    paintMs: mainThread(["Paint", "PrePaint"]),
+  };
+  expect(result.caretAnimations).toBeGreaterThan(0);
+  expect(result.caretMainThreadAnimations).toBe(0);
+  const output = process.env["CARET_SMOOTHNESS_BENCHMARK_OUTPUT"];
+  if (output !== undefined) {
+    await writeFile(output, `${JSON.stringify(result, null, 2)}\n`);
+  }
+  console.info(JSON.stringify(result));
+});
