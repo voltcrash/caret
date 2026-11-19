@@ -92,8 +92,8 @@ export function inventory(): object[] {
   for (const [id, files] of Object.entries(nativeFactories)) {
     callers.set(id, [...(callers.get(id) ?? []), ...files]);
   }
-  const functionIndex = readFileSync(
-    resolve(root, "frontend/src/functions/operations/index.ts"),
+  const webOperations = readFileSync(
+    resolve(root, "frontend/src/functions/operations/web-operations.ts"),
     "utf8",
   );
   const operations: object[] = [];
@@ -111,7 +111,7 @@ export function inventory(): object[] {
       const group = id.split(".")[0];
       const retain = isRetainedHttpOperation(id as OperationId);
       const httpAdapter = `frontend/src/routes/${`api${route.path}`.replace(/:(\w+)/g, "$$$1").replaceAll("/", ".")}.ts`;
-      const functionAdapter = functionIndex.includes(`"${id}":`)
+      const functionAdapter = webOperations.includes(`"${id}",`)
         ? `frontend/src/functions/operations/${group}.ts`
         : null;
       operations.push({
