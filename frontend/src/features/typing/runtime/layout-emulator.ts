@@ -1,9 +1,11 @@
+import { createAppOwned } from "../../../app/application";
+import { appObject } from "../../../app/state";
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
 import { getCharFromLayout } from "@caret/web-shared/layout-emulator";
 import { showErrorNotification } from "../../../ts/states/notifications";
 import { waitForInputLayout } from "../../../ts/states/test";
 
-let isAltGrPressed = false;
+const altGr = appObject(createAppOwned(() => ({ pressed: false })));
 export async function getCharFromEvent(
   event: KeyboardEvent,
 ): Promise<string | null> {
@@ -12,7 +14,7 @@ export async function getCharFromEvent(
     return getCharFromLayout(layout, {
       code: event.code,
       shift: event.shiftKey,
-      altGr: isAltGrPressed,
+      altGr: altGr.pressed,
       capsLock: isCapsLockOn(),
       key: event.key,
     });
@@ -26,14 +28,14 @@ export function updateAltGrState(event: KeyboardEvent): void {
   const shouldHandleLeftAlt =
     event.code === "AltLeft" && navigator.userAgent.includes("Mac");
   if (event.code !== "AltRight" && !shouldHandleLeftAlt) return;
-  if (event.type === "keydown") isAltGrPressed = true;
-  if (event.type === "keyup") isAltGrPressed = false;
+  if (event.type === "keydown") altGr.pressed = true;
+  if (event.type === "keyup") altGr.pressed = false;
 }
 
 export function getIsAltGrPressed(): boolean {
-  return isAltGrPressed;
+  return altGr.pressed;
 }
 
 export function resetAltGrState(): void {
-  isAltGrPressed = false;
+  altGr.pressed = false;
 }

@@ -1,3 +1,5 @@
+import { createAppOwned } from "../../../../app/application";
+import { appObject } from "../../../../app/state";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { hasClassName, updateClassNames } from "../../../../ts/utils/cn";
 import { CaretStyle } from "@caret/schemas/configs";
@@ -33,12 +35,12 @@ const smoothCaretDurations: Readonly<Record<string, number>> = {
   fast: 85,
 };
 
-let lockedMainCaretInTape = true;
-let caretDebug = false;
+const lockedMainCaretInTape = true;
+const debug = appObject(createAppOwned(() => ({ enabled: false })));
 
 export function toggleCaretDebug(): void {
-  caretDebug = !caretDebug;
-  if (!caretDebug) {
+  debug.enabled = !debug.enabled;
+  if (!debug.enabled) {
     for (const l of getWordsCache().querySelectorAll<HTMLElement>(
       ".word letter",
     )) {
@@ -432,7 +434,7 @@ export class CaretController {
       );
     }
 
-    if (caretDebug) {
+    if (debug.enabled) {
       if (this.id === "paceCaret") {
         for (const l of getWordsCache().querySelectorAll<HTMLElement>(
           ".word letter",
@@ -471,7 +473,7 @@ export class CaretController {
           break;
         }
       }
-      if (caretDebug) {
+      if (debug.enabled) {
         setClass(letter, "debugCaretTarget2", true);
       }
     }
