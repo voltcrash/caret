@@ -62,12 +62,7 @@ export class CaretGlide {
     // Restarting toward the same target would only stall the glide.
     if (this.isMoving() && sameValues(this.to, to)) return;
     const from = this.current();
-    if (
-      !this.inline ||
-      duration <= 0 ||
-      sameValues(from, to) ||
-      !canAnimate(this.element)
-    ) {
+    if (!this.inline || duration <= 0 || sameValues(from, to)) {
       this.jump(to);
       return;
     }
@@ -143,8 +138,4 @@ export class CaretGlide {
 
 function sameValues(a: number[], b: number[]): boolean {
   return a.length === b.length && a.every((value, i) => value === b[i]);
-}
-
-function canAnimate(element: HTMLElement): boolean {
-  return typeof element.animate === "function";
 }
