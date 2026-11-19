@@ -8,23 +8,23 @@ import { createForm } from "@tanstack/solid-form";
 import { For } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import { NO_BADGE_ID } from "../../controllers/badge-controller";
-import { getSnapshot, setSnapshot } from "../../db";
-import { invalidateMyProfile } from "../../queries/profile";
-import { hideModal } from "../../states/modals";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { UserBadge } from "../../../ts/components/common/UserBadge";
+import { Checkbox } from "../../../ts/components/ui/form/Checkbox";
+import { InputField } from "../../../ts/components/ui/form/InputField";
+import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
+import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
+import { fromSchema } from "../../../ts/components/ui/form/utils";
+import { NO_BADGE_ID } from "../../../ts/controllers/badge-controller";
+import { getSnapshot, setSnapshot } from "../../../ts/db";
+import { invalidateMyProfile } from "../../../ts/queries/profile";
+import { hideModal } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { cn } from "../../utils/cn";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { UserBadge } from "../common/UserBadge";
-import { Checkbox } from "../ui/form/Checkbox";
-import { InputField } from "../ui/form/InputField";
-import { SubmitButton } from "../ui/form/SubmitButton";
-import { TextareaField } from "../ui/form/TextareaField";
-import { fromSchema } from "../ui/form/utils";
+} from "../../../ts/states/notifications";
+import { cn } from "../../../ts/utils/cn";
 
 export function EditProfile() {
   const snapshot = getSnapshot();

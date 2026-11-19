@@ -22,7 +22,6 @@ import { Button } from "../../../ts/components/common/Button";
 import { UserAvatar } from "../../../ts/components/common/UserAvatar";
 import { UserBadge } from "../../../ts/components/common/UserBadge";
 import { UserFlags } from "../../../ts/components/common/UserFlags";
-import { EditProfile } from "../../../ts/components/modals/EditProfileModal";
 import { Snapshot } from "../../../ts/constants/default-snapshot";
 import { bp } from "../../../ts/states/breakpoints";
 import { getUserId, isAuthenticated } from "../../../ts/states/core";
@@ -34,6 +33,7 @@ import { cn } from "../../../ts/utils/cn";
 import { secondsToString } from "../../../ts/utils/date-and-time";
 import { formatXp, getXpDetails } from "../../../ts/utils/levels";
 import { formatTypingStatsRatio } from "../../../ts/utils/misc";
+import { EditProfile } from "./EditProfileModal";
 
 type Variant = "basic" | "hasSocials" | "hasBioOrKeyboard" | "full";
 
