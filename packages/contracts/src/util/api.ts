@@ -57,20 +57,20 @@ export const ApiResponseSchema = z.object({
 });
 export type ApiResponseType = z.infer<typeof ApiResponseSchema>;
 
-export const MonkeyValidationErrorSchema = ApiResponseSchema.extend({
+export const ApiValidationErrorSchema = ApiResponseSchema.extend({
   validationErrors: z.array(z.string()),
 });
-export type MonkeyValidationError = z.infer<typeof MonkeyValidationErrorSchema>;
+export type ApiValidationError = z.infer<typeof ApiValidationErrorSchema>;
 
 /** @alias */
-export const MonkeyClientError = ApiResponseSchema;
-export type MonkeyClientErrorType = z.infer<typeof MonkeyClientError>;
+export const ApiClientError = ApiResponseSchema;
+export type ApiClientErrorType = z.infer<typeof ApiClientError>;
 
-export const MonkeyServerError = MonkeyClientError.extend({
+export const ApiServerError = ApiClientError.extend({
   errorId: z.string(),
   uid: z.string().optional(),
 });
-export type MonkeyServerErrorType = z.infer<typeof MonkeyServerError>;
+export type ApiServerErrorType = z.infer<typeof ApiServerError>;
 
 export function responseWithNullableData<T extends z.ZodType>(
   dataSchema: T,
@@ -103,15 +103,15 @@ export function responseWithData<T extends z.ZodType>(
 }
 
 export const CommonResponses = {
-  400: MonkeyClientError.describe("Generic client error"),
-  401: MonkeyClientError.describe(
+  400: ApiClientError.describe("Generic client error"),
+  401: ApiClientError.describe(
     "Authentication required but not provided or invalid",
   ),
-  403: MonkeyClientError.describe("Operation not permitted"),
-  422: MonkeyValidationErrorSchema.describe("Request validation failed"),
-  429: MonkeyClientError.describe("Rate limit exceeded"),
-  500: MonkeyServerError.describe("Generic server error"),
-  503: MonkeyServerError.describe(
+  403: ApiClientError.describe("Operation not permitted"),
+  422: ApiValidationErrorSchema.describe("Request validation failed"),
+  429: ApiClientError.describe("Rate limit exceeded"),
+  500: ApiServerError.describe("Generic server error"),
+  503: ApiServerError.describe(
     "Endpoint disabled or server is under maintenance",
   ),
 };
@@ -119,13 +119,13 @@ export const CommonResponses = {
 export type CommonResponsesType =
   | {
       status: 400 | 401 | 403 | 429;
-      body: MonkeyClientErrorType;
+      body: ApiClientErrorType;
     }
   | {
       status: 422;
-      body: MonkeyValidationError;
+      body: ApiValidationError;
     }
   | {
       status: 500 | 503;
-      body: MonkeyServerErrorType;
+      body: ApiServerErrorType;
     };

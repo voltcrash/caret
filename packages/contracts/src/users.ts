@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   CommonResponses,
   meta,
-  MonkeyClientError,
+  ApiClientError,
   ApiResponseSchema,
   responseWithData,
   responseWithNullableData,
@@ -644,7 +644,7 @@ export const usersContract = c.router(
       query: GetProfileQuerySchema.strict(),
       responses: {
         200: GetProfileResponseSchema,
-        404: MonkeyClientError.describe("User not found"),
+        404: ApiClientError.describe("User not found"),
       },
       metadata: meta({
         authenticationOptions: { isPublic: true },
