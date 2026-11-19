@@ -26,8 +26,8 @@ import { showConfetti } from "./result/confetti";
 export { showConfetti } from "./result/confetti";
 import { getEventLogAccuracy } from "./result/accuracy";
 import {
-  result,
-  resultAnnotation,
+  currentResult,
+  resultAnnotations,
   setCurrentResult,
   resetResultAnnotations,
 } from "./result/context";
@@ -128,7 +128,7 @@ export async function update(
 
   setResultState(
     "stats",
-    buildResultStats(result, {
+    buildResultStats(currentResult(), {
       accuracy: getEventLogAccuracy(),
       quote: randomQuote,
       testInvalid: isTestInvalid(),
@@ -157,7 +157,8 @@ export async function update(
   applyMinMaxChartValues();
 
   ((getResultChart().options as PluginChartOptions<"line" | "scatter">).plugins
-    .annotation.annotations as AnnotationOptions<"line">[]) = resultAnnotation;
+    .annotation.annotations as AnnotationOptions<"line">[]) =
+    resultAnnotations();
   getResultChart().resize();
 
   const noStress = GlarsesMode.get();
@@ -170,8 +171,9 @@ export async function update(
     setResultState("wordsHistory", { visible: false, slideDuration: 0 });
     setResultState("replay", { visible: false, slideDuration: 0 });
 
+    const { wpm, acc, rawWpm, consistency } = currentResult();
     console.log(
-      `Test Completed: ${result.wpm} wpm ${result.acc}% acc ${result.rawWpm} raw ${result.consistency}% consistency`,
+      `Test Completed: ${wpm} wpm ${acc}% acc ${rawWpm} raw ${consistency}% consistency`,
     );
   } else {
     if (!isAuthenticated()) {

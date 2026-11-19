@@ -2,7 +2,7 @@ import {
   updateMinMaxChartValues,
   applyMinMaxChartValues,
 } from "./chart-bounds";
-import { resultAnnotation } from "./context";
+import { resultAnnotations } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { setConfig } from "../../../../ts/config/setters";
 import { isAuthenticated } from "../../../../ts/states/core";
@@ -41,7 +41,7 @@ export function updateResultChartDataVisibility(): void {
   getResultChartDataset("burst").hidden = !vis.burst;
   getResultChartDataset("error").hidden = !vis.errors;
 
-  for (const annotation of resultAnnotation) {
+  for (const annotation of resultAnnotations()) {
     if (annotation.id === "lpb") {
       annotation.display = vis.pbLine;
     } else if (annotation.id === "tpb") {
@@ -50,7 +50,7 @@ export function updateResultChartDataVisibility(): void {
   }
 
   // Check if there are any tag PB annotations
-  const hasTagPbAnnotations = resultAnnotation.some(
+  const hasTagPbAnnotations = resultAnnotations().some(
     (annotation) => annotation.id === "tpb",
   );
 
