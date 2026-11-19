@@ -4,6 +4,8 @@ import { expect, openTest, test } from "./fixtures";
 
 type TraceEvent = {
   name: string;
+  pid: number;
+  tid: number;
   cat: string;
   ph: string;
   ts: number;
@@ -81,7 +83,7 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
     throw new Error("Caret tracing needs Chromium");
   }
   await browser.startTracing(page, {
-    categories: ["blink.animations", "devtools.timeline"],
+    categories: ["blink.animations", "devtools.timeline", "toplevel"],
   });
   await page.keyboard.type(text, { delay: KEY_DELAY });
   // Let the last move and line scroll settle.
@@ -115,6 +117,32 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
     events
       .filter((event) => names.includes(event.name) && event.ph === "X")
       .reduce((sum, event) => sum + (event.dur ?? 0), 0) / 1000;
+  const rendererMain = new Set(
+    events
+      .filter(
+        (event) =>
+          event.name === "thread_name" &&
+          (event.args as { name?: string } | undefined)?.name ===
+            "CrRendererMain",
+      )
+      .map((event) => `${event.pid}:${event.tid}`),
+  );
+  const onMainThread = events.filter(
+    (event) =>
+      event.ph === "X" && rendererMain.has(`${event.pid}:${event.tid}`),
+  );
+  const busyMs =
+    onMainThread
+      .filter((event) =>
+        ["RunTask", "ThreadControllerImpl::RunTask"].includes(event.name),
+      )
+      .reduce((sum, event) => sum + (event.dur ?? 0), 0) / 1000;
+  const styleRecalcs = onMainThread.filter(
+    (event) => event.name === "UpdateLayoutTree",
+  ).length;
+  const layouts = onMainThread.filter(
+    (event) => event.name === "Layout",
+  ).length;
   const sorted = frames.slice(1).sort((a, b) => a - b);
   const percentile = (p: number): number =>
     sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;
@@ -131,6 +159,9 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
     animations: animations.length,
     mainThreadAnimations: failed.length,
     unsupportedProperties: Object.fromEntries(unsupported),
+    mainThreadBusyMs: busyMs,
+    styleRecalcs,
+    layouts,
     styleMs: mainThread(["UpdateLayoutTree", "RecalculateStyles"]),
     layoutMs: mainThread(["Layout"]),
     paintMs: mainThread(["Paint", "PrePaint"]),
