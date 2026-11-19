@@ -57,7 +57,7 @@ describe("Stage 0 operation ownership", () => {
     expect(
       operations.find((operation) => operation.id === "users.get")
         ?.browserCallers,
-    ).toContain("frontend/src/ts/queries/account.ts");
+    ).toContain("frontend/src/data/queries/account.ts");
   });
 
   it("assigns every browser capability to a function and every protocol to an existing Start route", () => {
