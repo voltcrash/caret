@@ -489,7 +489,7 @@ describe("result controller test", () => {
     const resultAddMock = vi.spyOn(ResultDal, "addResult");
     const resultGetLastTimestampMock = vi.spyOn(
       ResultDal,
-      "getLastResultTimestamp",
+      "getLastOnlineResultTimestamp",
     );
     const hasSubmissionHashMock = vi.spyOn(ResultDal, "hasSubmissionHash");
     const userUpdateLastTimingHashesMock = vi.spyOn(

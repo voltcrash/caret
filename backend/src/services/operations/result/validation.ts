@@ -37,7 +37,7 @@ export async function validateSubmission(
 
   // Independent of the user row; read both in one round trip.
   const lastResultTimestampRead = tryCatch(
-    ResultDAL.getLastResultTimestamp(uid, input.body.result.client),
+    ResultDAL.getLastOnlineResultTimestamp(uid, input.body.result.client),
   );
   const user = await UserDAL.getUser(uid, "add result");
 
