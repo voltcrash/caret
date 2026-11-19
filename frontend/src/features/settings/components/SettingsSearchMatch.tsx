@@ -1,7 +1,7 @@
 import { createMemo, For, JSXElement, Show } from "solid-js";
 
-import { getSettingsSearchTokens } from "../../../ts/states/settings-search";
 import { getSettingsSearchHighlights } from "../../../ts/utils/settings-search";
+import { getSettingsSearchTokens } from "../search-state";
 
 export function SettingsSearchMatch(props: {
   text: string;

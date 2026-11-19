@@ -14,10 +14,10 @@ import {
 import { setConfig } from "../../../../ts/config/setters";
 import { getConfig } from "../../../../ts/config/store";
 import { applyCustomBackground } from "../../../../ts/controllers/theme-controller";
-import { useSavedIndicator } from "../../../../ts/hooks/useSavedIndicator";
 import { showNoticeNotification } from "../../../../ts/states/notifications";
 import FileStorage from "../../../../ts/utils/file-storage";
 import { getOptions } from "../../../../ts/utils/zod";
+import { useSavedIndicator } from "../../hooks/useSavedIndicator";
 import { SearchableSetting } from "../SearchableSetting";
 import { SettingsSearchMatch } from "../SettingsSearchMatch";
 

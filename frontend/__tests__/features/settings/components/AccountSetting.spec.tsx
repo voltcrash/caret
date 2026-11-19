@@ -6,24 +6,24 @@ import "../../../__harness__/mock-static";
 import { AuthenticationTab } from "../../../../src/features/settings/components/account/AuthenticationTab";
 import { Section } from "../../../../src/features/settings/components/account/utils";
 import { SettingsSectionContext } from "../../../../src/features/settings/components/settings-section-context";
-import { setUserId } from "../../../../src/ts/states/core";
-import { highlightSetting } from "../../../../src/ts/states/settings-highlight";
 import {
   getSearchMatchCounts,
   setSettingsSearch,
-} from "../../../../src/ts/states/settings-search";
+} from "../../../../src/features/settings/search-state";
+import { setUserId } from "../../../../src/ts/states/core";
+import { highlightSetting } from "../../../../src/ts/states/settings-highlight";
 import { createSectionHost } from "../../../__harness__/settings-section-host";
 
 const host = createSectionHost();
 
 vi.mock(
-  "../../../../src/ts/components/modals/account-settings/ReauthConfirmModals",
+  "../../../../src/features/settings/components/account/ReauthConfirmModals",
   () => ({
     showRevokeAllTokensModal: vi.fn(),
   }),
 );
 vi.mock(
-  "../../../../src/ts/components/modals/account-settings/RemoveAuthMethodModal",
+  "../../../../src/features/settings/components/account/RemoveAuthMethodModal",
   () => ({
     showRemoveAuthMethodModal: vi.fn(),
   }),

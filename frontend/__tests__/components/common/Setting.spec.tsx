@@ -1,7 +1,7 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
-import { Setting } from "../../../src/ts/components/common/Setting";
+import { Setting } from "../../../src/features/settings/components/Setting";
 import {
   highlightSetting,
   setHighlightedSetting,

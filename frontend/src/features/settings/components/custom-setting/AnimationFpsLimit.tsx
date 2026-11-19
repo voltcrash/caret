@@ -6,7 +6,7 @@ import { Button } from "../../../../ts/components/common/Button";
 import { Separator } from "../../../../ts/components/common/Separator";
 import { InputField } from "../../../../ts/components/ui/form/InputField";
 import { fromSchema } from "../../../../ts/components/ui/form/utils";
-import { useSavedIndicator } from "../../../../ts/hooks/useSavedIndicator";
+import { useSavedIndicator } from "../../hooks/useSavedIndicator";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function AnimationFpsLimit(): JSXElement {

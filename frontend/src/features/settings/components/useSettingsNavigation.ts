@@ -12,10 +12,7 @@ import {
   getHeaderBottom,
   getPageScroller,
 } from "../../../ts/states/page-layout";
-import {
-  isSettingsSearchActive,
-  setSettingsSearch,
-} from "../../../ts/states/settings-search";
+import { isSettingsSearchActive, setSettingsSearch } from "../search-state";
 import {
   SettingsSection,
   SettingsSectionHost,

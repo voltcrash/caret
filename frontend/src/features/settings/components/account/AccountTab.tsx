@@ -1,11 +1,11 @@
 import { Fa } from "../../../../ts/components/common/Fa";
-import {
-  showOptOutOfLeaderboardsModal,
-  showResetPersonalBestsModal,
-} from "../../../../ts/components/modals/account-settings/ReauthConfirmModals";
 import { showUpdateNameModal } from "../../../../ts/components/modals/account-settings/UpdateNameModal";
 import { showModal } from "../../../../ts/states/modals";
 import { getSnapshot } from "../../../../ts/states/snapshot";
+import {
+  showOptOutOfLeaderboardsModal,
+  showResetPersonalBestsModal,
+} from "./ReauthConfirmModals";
 import { Section } from "./utils";
 
 export function AccountTab() {

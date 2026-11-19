@@ -9,7 +9,7 @@ import { fromSchema } from "../../../../ts/components/ui/form/utils";
 import { configMetadata } from "../../../../ts/config/metadata";
 import { setConfig } from "../../../../ts/config/setters";
 import { getConfig } from "../../../../ts/config/store";
-import { useSavedIndicator } from "../../../../ts/hooks/useSavedIndicator";
+import { useSavedIndicator } from "../../hooks/useSavedIndicator";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function MinBurst(): JSXElement {

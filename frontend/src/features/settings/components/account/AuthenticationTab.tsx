@@ -11,8 +11,8 @@ import {
   isUsingAuthenticationReactive,
 } from "../../../../ts/auth";
 import { Button } from "../../../../ts/components/common/Button";
-import { showRevokeAllTokensModal } from "../../../../ts/components/modals/account-settings/ReauthConfirmModals";
-import { showRemoveAuthMethodModal } from "../../../../ts/components/modals/account-settings/RemoveAuthMethodModal";
+import { showRevokeAllTokensModal } from "./ReauthConfirmModals";
+import { showRemoveAuthMethodModal } from "./RemoveAuthMethodModal";
 import { Section } from "./utils";
 
 export function AuthenticationTab() {

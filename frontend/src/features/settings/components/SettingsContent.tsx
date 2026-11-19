@@ -20,11 +20,6 @@ import {
 } from "../../../ts/controllers/sound-controller";
 import { showModal } from "../../../ts/states/modals";
 import {
-  getSearchMatchCounts,
-  getSettingsSearch,
-  isSettingsSearchActive,
-} from "../../../ts/states/settings-search";
-import {
   getAvailableSettingsSections,
   SettingsSection,
   SettingsSectionHostContext,
@@ -33,6 +28,11 @@ import {
 import { showSimpleModal } from "../../../ts/states/simple-modal";
 import { cn } from "../../../ts/utils/cn";
 import fileStorage from "../../../ts/utils/file-storage";
+import {
+  getSearchMatchCounts,
+  getSettingsSearch,
+  isSettingsSearchActive,
+} from "../search-state";
 import { AccountTab } from "./account/AccountTab";
 import { AuthenticationTab } from "./account/AuthenticationTab";
 import { DangerZoneTab } from "./account/DangerZoneTab";

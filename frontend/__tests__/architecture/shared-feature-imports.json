@@ -26,7 +26,6 @@
   "src/ts/commandline/metadata/input.ts -> src/features/typing/runtime/test/logic",
   "src/ts/commandline/metadata/keymap.ts -> src/features/typing/runtime/test/logic",
   "src/ts/commandline/metadata/test.ts -> src/features/typing/runtime/test/logic",
-  "src/ts/components/common/Setting.tsx -> src/features/settings/components/settings-section-context",
   "src/ts/components/layout/header/Nav.tsx -> src/features/account/settled.client",
   "src/ts/components/layout/header/Nav.tsx -> src/features/auth/session",
   "src/ts/components/modals/DevOptionsModal.tsx -> src/features/typing/components/words/caret-controller",

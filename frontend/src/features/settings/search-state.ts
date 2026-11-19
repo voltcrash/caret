@@ -6,8 +6,8 @@ import {
   scoreSettingSearch,
   SettingSearchIndex,
   tokenizeSettingsSearch,
-} from "../utils/settings-search";
-import { SettingsSection } from "./settings-sections";
+} from "../../ts/utils/settings-search";
+import { SettingsSection } from "../../ts/states/settings-sections";
 
 // the current settings filter query, shared between the search input and the
 // settings/sections that hide themselves when they don't match

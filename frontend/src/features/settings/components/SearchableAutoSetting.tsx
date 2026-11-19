@@ -13,8 +13,8 @@ import {
 } from "../../../ts/config/metadata";
 import { setConfig } from "../../../ts/config/setters";
 import { getConfig } from "../../../ts/config/store";
-import { useSavedIndicator } from "../../../ts/hooks/useSavedIndicator";
 import { cn } from "../../../ts/utils/cn";
+import { useSavedIndicator } from "../hooks/useSavedIndicator";
 import { SearchableSetting } from "./SearchableSetting";
 import { SettingsSearchMatch } from "./SettingsSearchMatch";
 

@@ -1,14 +1,17 @@
 import { z } from "zod";
 
 import { operation } from "../../../../data/operations";
-import { reauthenticate } from "../../../auth";
-import { resetConfig } from "../../../config/lifecycle";
-import { getSnapshot, setSnapshot } from "../../../db";
-import { isAuthenticated } from "../../../states/core";
-import { showNoticeNotification } from "../../../states/notifications";
-import { ExecReturn, showSimpleModal } from "../../../states/simple-modal";
-import FileStorage from "../../../utils/file-storage";
-import { reloadAfter } from "../../../utils/misc";
+import { reauthenticate } from "../../../../ts/auth";
+import { resetConfig } from "../../../../ts/config/lifecycle";
+import { getSnapshot, setSnapshot } from "../../../../ts/db";
+import { isAuthenticated } from "../../../../ts/states/core";
+import { showNoticeNotification } from "../../../../ts/states/notifications";
+import {
+  ExecReturn,
+  showSimpleModal,
+} from "../../../../ts/states/simple-modal";
+import FileStorage from "../../../../ts/utils/file-storage";
+import { reloadAfter } from "../../../../ts/utils/misc";
 
 export function showDeleteAccountModal(): void {
   showReauthConfirmModal({

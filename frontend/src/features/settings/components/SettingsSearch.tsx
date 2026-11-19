@@ -3,15 +3,9 @@ import { JSXElement, onCleanup, onMount, Show } from "solid-js";
 import { Button } from "../../../ts/components/common/Button";
 import { Fa } from "../../../ts/components/common/Fa";
 import { isAnyPopupVisible } from "../../../ts/states/overlay-visibility";
-import {
-  getSettingsSearch,
-  setSettingsSearch,
-} from "../../../ts/states/settings-search";
 import { cn } from "../../../ts/utils/cn";
-import {
-  isEditableElement,
-  isTypeToSearchKey,
-} from "../../../ts/utils/type-to-search";
+import { getSettingsSearch, setSettingsSearch } from "../search-state";
+import { isEditableElement, isTypeToSearchKey } from "../type-to-search";
 
 export function SettingsSearch(): JSXElement {
   // reset the filter when leaving the settings page

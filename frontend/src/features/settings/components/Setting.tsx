@@ -10,21 +10,21 @@ import { z } from "zod";
 
 import { replaceUrl } from "../../../app/navigate";
 import { serialize } from "../../../app/url-search-params";
-import { SettingsSectionContext } from "../../../features/settings/components/settings-section-context";
-import { useRef } from "../../hooks/useRef";
+import { Button } from "../../../ts/components/common/Button";
+import { FaProps } from "../../../ts/components/common/Fa";
+import { H3 } from "../../../ts/components/common/Headers";
+import { useRef } from "../../../ts/hooks/useRef";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
+} from "../../../ts/states/notifications";
 import {
   getHighlightedSetting,
   setHighlightedSetting,
   registerSettingHighlight,
-} from "../../states/settings-highlight";
-import { cn } from "../../utils/cn";
-import { Button } from "./Button";
-import { FaProps } from "./Fa";
-import { H3 } from "./Headers";
+} from "../../../ts/states/settings-highlight";
+import { cn } from "../../../ts/utils/cn";
+import { SettingsSectionContext } from "./settings-section-context";
 
 export type SettingProps = {
   title: string | JSXElement;

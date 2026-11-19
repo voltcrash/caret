@@ -6,10 +6,10 @@ import { page, userEvent } from "vite-plus/test/browser";
 import { z } from "zod";
 
 import "../../src/app/app.css";
+import { isEditableElement } from "../../src/features/settings/type-to-search";
 import { Button } from "../../src/ts/components/common/Button";
 import Select from "../../src/ts/components/ui/Select";
 import { LocalStorageWithSchema } from "../../src/ts/utils/local-storage-with-schema";
-import { isEditableElement } from "../../src/ts/utils/type-to-search";
 
 afterEach(() => {
   cleanup();

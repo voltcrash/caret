@@ -5,11 +5,11 @@ import "../../../__harness__/mock-static";
 import { SearchableAutoSetting } from "../../../../src/features/settings/components/SearchableAutoSetting";
 import { SearchableSetting } from "../../../../src/features/settings/components/SearchableSetting";
 import { SettingsSectionContext } from "../../../../src/features/settings/components/settings-section-context";
+import { setSettingsSearch } from "../../../../src/features/settings/search-state";
 import {
   highlightSetting,
   setHighlightedSetting,
 } from "../../../../src/ts/states/settings-highlight";
-import { setSettingsSearch } from "../../../../src/ts/states/settings-search";
 import { createSectionHost } from "../../../__harness__/settings-section-host";
 
 const host = createSectionHost();

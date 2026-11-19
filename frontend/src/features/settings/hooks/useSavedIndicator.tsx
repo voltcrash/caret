@@ -1,7 +1,7 @@
 import { createSignal, JSXElement, onCleanup } from "solid-js";
 
-import { AnimeShow } from "../components/common/anime";
-import { Fa } from "../components/common/Fa";
+import { AnimeShow } from "../../../ts/components/common/anime";
+import { Fa } from "../../../ts/components/common/Fa";
 
 export function useSavedIndicator(): {
   component: () => JSXElement;
