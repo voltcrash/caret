@@ -129,7 +129,7 @@ export async function getLastResult(
   if (!row) throw new MonkeyError(404, "No last result found");
   return unpack(row);
 }
-export async function getLastResultTimestamp(
+export async function getLastOnlineResultTimestamp(
   uid: string,
   client: Client = "web",
 ): Promise<number> {
@@ -137,7 +137,13 @@ export async function getLastResultTimestamp(
     await database()
       .select({ timestamp: results.timestamp })
       .from(results)
-      .where(and(eq(results.uid, uid), eq(results.client, client)))
+      .where(
+        and(
+          eq(results.uid, uid),
+          eq(results.client, client),
+          sql`${results.data}->>'offline' IS DISTINCT FROM 'true'`,
+        ),
+      )
       .orderBy(desc(results.timestamp), desc(results.id))
       .limit(1)
   )[0];

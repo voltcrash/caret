@@ -9,7 +9,7 @@ import { getDailyLeaderboard } from "../../../utils/daily-leaderboards";
 import * as UserDAL from "../../../dal/user";
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
 import { canFunboxGetPb } from "../../../utils/pb";
-import { buildDbResult } from "../../../utils/result";
+import { buildDbResult, resultAuditSummary } from "../../../utils/result";
 
 import { addLog } from "../../../dal/logs";
 import { AddResultResponse } from "@caret/contracts/results";
@@ -19,7 +19,7 @@ import { getCurrentDayTimestamp } from "@caret/util/date-and-time";
 
 import { getCachedConfiguration } from "../../../init/configuration";
 
-import type { ValidatedSubmission } from "./context";
+import { qualifiesForRanked, type ValidatedSubmission } from "./context";
 import { calculateXp, type XpResult } from "./xp";
 import { reviewKeyTiming } from "./timing-review";
 export async function applyProgression(
@@ -40,9 +40,7 @@ export async function applyProgression(
   } = submission;
   let isPb = false;
   let tagPbs: string[] = [];
-  const ranked =
-    !context.configuration.anticheat.logVerification.requireForRanked ||
-    submission.verification === "verified";
+  const ranked = qualifiesForRanked(context, submission.verification);
 
   if (!offline && !completedEvent.bailedOut && ranked) {
     [isPb, tagPbs] = await Promise.all([
@@ -139,7 +137,11 @@ export async function applyProgression(
       const reset = getCurrentDayTimestamp();
       const limit = 6 * 60 * 60 * 1000;
       if (now - reset >= limit) {
-        await addLog("daily_leaderboard_top_10_result", completedEvent, uid);
+        await addLog(
+          "daily_leaderboard_top_10_result",
+          resultAuditSummary(completedEvent),
+          uid,
+        );
       }
     }
   }
@@ -166,7 +168,7 @@ export async function applyProgression(
       "Calculated XP is NaN",
       JSON.stringify({
         xpGained,
-        result: completedEvent,
+        result: resultAuditSummary(completedEvent),
       }),
       uid,
     );
@@ -178,7 +180,7 @@ export async function applyProgression(
       "Calculated XP is negative",
       JSON.stringify({
         xpGained,
-        result: completedEvent,
+        result: resultAuditSummary(completedEvent),
       }),
       uid,
     );

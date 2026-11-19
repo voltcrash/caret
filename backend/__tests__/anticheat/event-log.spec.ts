@@ -102,6 +102,24 @@ describe("event log verification", () => {
       ],
     });
   });
+  it("summarizes nested chart series in mismatch audits", () => {
+    const chart = time15.completedEvent.chartData;
+    if (chart === "toolong") throw new Error("Missing fixture chart");
+    const edited = {
+      ...time15.completedEvent,
+      chartData: { ...chart, err: [] },
+    };
+    expect(verifyEventLog(edited, encode(time15.eventLog))).toMatchObject({
+      kind: "mismatch",
+      mismatches: [
+        {
+          field: "chartData",
+          submitted: { err: { length: 0 } },
+          replayed: { err: { length: chart.err.length } },
+        },
+      ],
+    });
+  });
   it("draws no conclusion from clients on other scoring rules", () => {
     const edited = { ...time15.completedEvent, wpm: 250 };
     expect(

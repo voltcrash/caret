@@ -15,6 +15,7 @@ describe("PostgreSQL personal-best and progression policies", () => {
 
   it.each([
     ["offline", { offline: true }],
+    ["bailout", { bailedOut: true }],
     ["quote", { mode: "quote", mode2: "1" }],
     ["stop-on-letter error", { stopOnLetter: true, acc: 95 }],
   ] satisfies [string, Partial<CompletedEvent>][])(

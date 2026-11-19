@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vite-plus/test";
+import { completedEvent } from "../__testData__/completed-event";
 import * as pb from "../../src/utils/pb";
 import { Mode, PersonalBests } from "@caret/schemas/shared";
 import { Result } from "@caret/schemas/results";
@@ -121,93 +122,22 @@ describe("Pb Utils", () => {
       );
     });
   });
-  describe("updateLeaderboardPersonalBests", () => {
-    const userPbs: PersonalBests = {
-      time: {
-        "15": [
-          {
-            acc: 100,
-            consistency: 100,
-            difficulty: "normal",
-            lazyMode: false,
-            language: "english",
-            numbers: false,
-            punctuation: false,
-            raw: 100,
-            timestamp: 0,
-            wpm: 100,
-          },
-          {
-            acc: 100,
-            consistency: 100,
-            difficulty: "normal",
-            lazyMode: false,
-            language: "spanish",
-            numbers: false,
-            punctuation: false,
-            raw: 100,
-            timestamp: 0,
-            wpm: 100,
-          },
-        ],
-      },
+  it("ranks the eligible run independently of faster practice PBs", () => {
+    const practice = completedEvent({ mode2: "15", lazyMode: true, wpm: 120 });
+    const personalBests: PersonalBests = {
+      time: {},
       words: {},
       custom: {},
       quote: {},
       zen: {},
     };
-    it("should update leaderboard personal bests if they dont exist or the structure is incomplete", () => {
-      const lbpbstartingvalues = [
-        undefined,
-        {},
-        { time: {} },
-        { time: { "15": {} } },
-        { time: { "15": { english: {} } } },
-      ];
-
-      const result15 = {
-        mode: "time",
-        mode2: "15",
-      } as unknown as Result<Mode>;
-
-      for (const lbPb of lbpbstartingvalues) {
-        const lbPbPb = pb.updateLeaderboardPersonalBests(
-          userPbs,
-          structuredClone(lbPb) as pb.LbPersonalBests,
-          result15,
-        );
-
-        expect(lbPbPb).toEqual({
-          time: {
-            "15": {
-              english: {
-                acc: 100,
-                consistency: 100,
-                difficulty: "normal",
-                lazyMode: false,
-                language: "english",
-                numbers: false,
-                punctuation: false,
-                raw: 100,
-                timestamp: 0,
-                wpm: 100,
-              },
-              spanish: {
-                acc: 100,
-                consistency: 100,
-                difficulty: "normal",
-                lazyMode: false,
-                language: "spanish",
-                numbers: false,
-                punctuation: false,
-                raw: 100,
-                timestamp: 0,
-                wpm: 100,
-              },
-            },
-          },
-        });
-      }
-    });
+    const board: pb.LbPersonalBests = { time: {} };
+    pb.checkAndUpdatePb(personalBests, board, practice);
+    expect(board.time).toEqual({});
+    const ranked = { ...practice, lazyMode: false, wpm: 80 };
+    pb.checkAndUpdatePb(personalBests, board, ranked);
+    expect(board.time[15]?.["english"]?.wpm).toBe(80);
+    pb.checkAndUpdatePb(personalBests, board, { ...ranked, wpm: 70 });
+    expect(board.time[15]?.["english"]?.wpm).toBe(80);
   });
 });

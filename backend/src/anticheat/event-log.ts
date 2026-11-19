@@ -32,7 +32,16 @@ export type EventLogVerdict =
 
 // Arrays are whole key timelines; audit logs keep their length, not the values.
 function summarize(value: unknown): unknown {
-  return Array.isArray(value) ? { length: value.length } : value;
+  if (Array.isArray(value)) return { length: value.length };
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([field, series]) => [
+        field,
+        summarize(series),
+      ]),
+    );
+  }
+  return value;
 }
 
 function decode(eventLog: ResultEventLog): WebLog {

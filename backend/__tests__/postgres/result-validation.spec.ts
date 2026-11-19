@@ -29,6 +29,16 @@ describe("result submission validation with PostgreSQL", () => {
       expect(response.status, await response.clone().text()).toBe(200);
       const body = (await response.json()) as { data: Record<string, unknown> };
       expect(body.data["isPb"]).toBe(false);
+      const tag = await withRuntime(
+        test.env,
+        async () => await Users.addTag(account.uid, "practice"),
+      );
+      const edited = await test.request(account, "/results/tags", "PATCH", {
+        resultId: body.data["insertedId"],
+        tagIds: [tag._id],
+      });
+      expect(edited.status).toBe(200);
+      expect(await edited.json()).toMatchObject({ data: { tagPbs: [] } });
       expect(body.data["dailyLeaderboardRank"]).toBeUndefined();
       expect(body.data["weeklyXpLeaderboardRank"]).toBeUndefined();
     } finally {
@@ -40,6 +50,23 @@ describe("result submission validation with PostgreSQL", () => {
           }),
       );
     }
+  });
+
+  it("preserves stop-on-letter eligibility when tagging a saved result", async () => {
+    const account = await test.account();
+    const saved = await test.submit(account, { stopOnLetter: true, acc: 95 });
+    expect(saved.status).toBe(200);
+    const { data } = (await saved.json()) as { data: { insertedId: string } };
+    const tag = await withRuntime(
+      test.env,
+      async () => await Users.addTag(account.uid, "practice"),
+    );
+    const edited = await test.request(account, "/results/tags", "PATCH", {
+      resultId: data.insertedId,
+      tagIds: [tag._id],
+    });
+    expect(edited.status).toBe(200);
+    expect(await edited.json()).toMatchObject({ data: { tagPbs: [] } });
   });
 
   it("exports owned results with a stable cursor across equal timestamps", async () => {

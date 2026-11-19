@@ -45,14 +45,21 @@ export function checkAndUpdatePb(
     (userPb[mode][mode2] as PersonalBest[]).push(buildPersonalBest(result));
   }
 
-  if (lbPersonalBests !== undefined && lbPersonalBests !== null) {
-    const newLbPb = updateLeaderboardPersonalBests(
-      userPb,
-      lbPersonalBests,
-      result,
-    );
-    if (newLbPb !== null) {
-      lbPersonalBests = newLbPb;
+  if (
+    lbPersonalBests &&
+    result.mode === "time" &&
+    (mode2 === "15" || mode2 === "60") &&
+    !result.lazyMode
+  ) {
+    const duration = Number(mode2);
+    const language = result.language ?? "english";
+    lbPersonalBests.time ??= {};
+    const board = (lbPersonalBests.time[duration] ??= {});
+    if (
+      board[language]?.wpm === undefined ||
+      board[language].wpm < result.wpm
+    ) {
+      board[language] = buildPersonalBest(result);
     }
   }
 
@@ -157,54 +164,4 @@ function buildPersonalBest(result: Result): PersonalBest {
     numbers: result.numbers,
     timestamp: Date.now(),
   };
-}
-
-export function updateLeaderboardPersonalBests(
-  userPersonalBests: PersonalBests,
-  lbPersonalBests: LbPersonalBests,
-  result: Result,
-): LbPersonalBests | null {
-  if (!shouldUpdateLeaderboardPersonalBests(result)) {
-    return null;
-  }
-  const lbPb = lbPersonalBests ?? {};
-  const mode = result.mode as keyof typeof lbPb;
-  const mode2 = result.mode2 as unknown as keyof (typeof lbPb)[typeof mode];
-  lbPb[mode] ??= {};
-  lbPb[mode][mode2] ??= {};
-
-  const bestForEveryLanguage: Record<string, PersonalBest> = {};
-  (userPersonalBests[mode][mode2] as PersonalBest[]).forEach(
-    (pb: PersonalBest) => {
-      const language = pb.language;
-      if (
-        bestForEveryLanguage[language] === undefined ||
-        bestForEveryLanguage[language].wpm < pb.wpm
-      ) {
-        bestForEveryLanguage[language] = pb;
-      }
-    },
-  );
-  Object.entries(bestForEveryLanguage).forEach(([language, pb]) => {
-    const languageDoesNotExist = lbPb[mode][mode2]?.[language] === undefined;
-    const languageIsEmpty =
-      lbPb[mode][mode2]?.[language] &&
-      Object.keys(lbPb[mode][mode2][language]).length === 0;
-
-    if (
-      (languageDoesNotExist ||
-        languageIsEmpty ||
-        (lbPb[mode][mode2]?.[language]?.wpm ?? 0) < pb.wpm) &&
-      lbPb[mode][mode2] !== undefined
-    ) {
-      lbPb[mode][mode2][language] = pb;
-    }
-  });
-  return lbPb;
-}
-
-function shouldUpdateLeaderboardPersonalBests(result: Result): boolean {
-  const isValidTimeMode =
-    result.mode === "time" && (result.mode2 === "15" || result.mode2 === "60");
-  return isValidTimeMode && !result.lazyMode;
 }

@@ -21,6 +21,8 @@ import {
 
 import type { ServiceContext, OperationInput } from "../../context";
 
+import { qualifiesForRanked } from "./context";
+
 export async function getResults(
   context: ServiceContext,
   input: OperationInput<GetResultsQuery>,
@@ -117,6 +119,9 @@ export async function updateTags(
     await ResultDAL.updateTags(uid, resultId, tagIds);
     const result = await ResultDAL.getResult(uid, resultId);
 
+    if (!qualifiesForRanked(context, result.verification)) {
+      return new MonkeyResponse("Result tags updated", { tagPbs: [] });
+    }
     result.tags = tagIds;
     result.difficulty ??= "normal";
     result.language ??= "english";

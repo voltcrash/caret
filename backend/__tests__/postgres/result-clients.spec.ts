@@ -56,7 +56,24 @@ describe("web result history", () => {
         (await Results.getResult("client-history", summary?._id ?? ""))
           .chartData,
       ).toBeDefined();
-      expect(await Results.getLastResultTimestamp("client-history")).toBe(5000);
+      await Results.addResult(
+        "client-history",
+        buildDbResult(
+          completedEvent({
+            uid: "client-history",
+            offline: true,
+            timestamp: 6000,
+          }),
+          "history",
+          false,
+        ),
+      );
+      expect((await Results.getLastResult("client-history")).timestamp).toBe(
+        6000,
+      );
+      expect(await Results.getLastOnlineResultTimestamp("client-history")).toBe(
+        5000,
+      );
     });
   });
   it("rejects retired clients at the database boundary", async () => {

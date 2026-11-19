@@ -2,6 +2,7 @@ import * as ResultDAL from "../../../dal/result";
 
 import { omit } from "../../../utils/misc";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
+import { resultAuditSummary } from "../../../utils/result";
 import Logger from "../../../utils/logger";
 
 import MonkeyError from "../../../utils/error";
@@ -37,7 +38,7 @@ export async function validateSubmission(
 
   // Independent of the user row; read both in one round trip.
   const lastResultTimestampRead = tryCatch(
-    ResultDAL.getLastResultTimestamp(uid, input.body.result.client),
+    ResultDAL.getLastOnlineResultTimestamp(uid, input.body.result.client),
   );
   const user = await UserDAL.getUser(uid, "add result");
 
@@ -62,6 +63,15 @@ export async function validateSubmission(
       400,
       "Offline results must be within the last 30 days",
     );
+  }
+
+  // An offline completion time comes from the device. Its duration must still
+  // fit within the account's lifetime at receipt, even for out-of-order uploads.
+  if (
+    offline &&
+    completedEvent.testDuration * 1000 > Date.now() - (user.addedAt ?? 0) + 1000
+  ) {
+    throw new MonkeyError(400, "Offline result duration exceeds account age");
   }
 
   if (isTestTooShort(completedEvent)) {
@@ -91,7 +101,7 @@ export async function validateSubmission(
         {
           serverhash,
           resulthash,
-          result: completedEvent,
+          result: resultAuditSummary(completedEvent),
         },
         uid,
       );
@@ -153,7 +163,11 @@ export async function validateSubmission(
   }
 
   if (user.suspicious && completedEvent.testDuration <= 120) {
-    await addImportantLog("suspicious_user_result", completedEvent, uid);
+    await addImportantLog(
+      "suspicious_user_result",
+      resultAuditSummary(completedEvent),
+      uid,
+    );
   }
 
   if (
@@ -162,7 +176,11 @@ export async function validateSubmission(
     completedEvent.wpm > 250 &&
     user.lbOptOut !== true
   ) {
-    await addImportantLog("highwpm_user_result", completedEvent, uid);
+    await addImportantLog(
+      "highwpm_user_result",
+      resultAuditSummary(completedEvent),
+      uid,
+    );
   }
 
   const resultFailure =

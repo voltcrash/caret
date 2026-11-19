@@ -10,7 +10,11 @@ async function insert(
   uid: string,
   important: boolean,
 ): Promise<void> {
-  console.info(JSON.stringify({ event, uid, message }));
+  console.info(
+    JSON.stringify(
+      event === "anticheat_sample" ? { event, uid } : { event, uid, message },
+    ),
+  );
   await stage(
     statement(
       "INSERT INTO audit_logs(id,uid,event,timestamp,important,data) VALUES(?,?,?,?,?,?)",

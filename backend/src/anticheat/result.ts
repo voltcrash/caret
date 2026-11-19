@@ -66,9 +66,11 @@ export function getResultFailure(
   }
 
   let timeLimit: number | undefined;
-  if (result.mode === "time" || result.mode === "words") {
+  if (result.mode === "custom" || result.mode === "zen") {
+    if (result.mode2 !== result.mode) return "invalid-mode";
+  } else if (!(result.mode === "quote" && result.mode2 === "-1")) {
     if (
-      !/^\d+$/.test(result.mode2) ||
+      !/^(0|[1-9]\d*)$/.test(result.mode2) ||
       !Number.isSafeInteger(Number(result.mode2))
     ) {
       return "invalid-mode";
