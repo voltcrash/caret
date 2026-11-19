@@ -8,7 +8,7 @@ import { PresetType } from "@caret/schemas/presets";
 
 import { untrack } from "solid-js";
 
-import { getActiveTags } from "../../../collections/tags";
+import { getActiveTags } from "../../../../data/collections/tags";
 import { configMetadata } from "../../../config/metadata";
 import { getConfigChanges as getConfigChangesFromConfig } from "../../../config/utils";
 import { getDefaultConfig } from "../../../constants/default-config";

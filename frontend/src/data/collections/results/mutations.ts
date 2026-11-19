@@ -1,11 +1,11 @@
-import { operation } from "../../../data/operations";
+import { operation } from "../../operations";
 import { captureAccount } from "../../../app/account-scope";
 import { resultsByClient, getResults } from "./store";
 import { normalizeResult } from "./normalize";
 import { UpdateTagsResult, ActionType } from "./types";
 import { Client } from "@caret/schemas/shared";
 import { createOptimisticAction } from "@tanstack/solid-db";
-import { getLastResult } from "../../states/snapshot";
+import { getLastResult } from "../../../ts/states/snapshot";
 import { reconcileLocalTagPB, saveLocalTagPB } from "../tags";
 
 function createActions(client: Client) {

@@ -13,7 +13,7 @@ import {
   getPreset,
   getPresets,
   waitForPresetsReady,
-} from "../../src/ts/collections/presets";
+} from "../../src/data/collections/presets";
 
 get.mockResolvedValue({
   status: 200,

@@ -3,7 +3,7 @@ import { appObject } from "../../../app/state";
 import * as PresetController from "../../controllers/preset-controller";
 import { isAuthenticated } from "../../states/core";
 import { Command, CommandsSubgroup } from "../types";
-import { getPresets } from "../../collections/presets";
+import { getPresets } from "../../../data/collections/presets";
 import { showModal } from "../../states/modals";
 
 const getSubgroup = createAccountOwned<CommandsSubgroup>(() => ({

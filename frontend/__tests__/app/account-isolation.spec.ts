@@ -26,7 +26,7 @@ import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
 import * as DB from "../../src/ts/db";
 import { setUserId } from "../../src/ts/states/core";
 import { getSnapshot } from "../../src/ts/states/snapshot";
-import { getTags } from "../../src/ts/collections/tags";
+import { getTags } from "../../src/data/collections/tags";
 import { mockHttpFixture, mockOperation } from "../__harness__/operations";
 
 mockOperation("users.get", async () => {

@@ -6,7 +6,7 @@ import { Accessor, JSXElement } from "solid-js";
 import {
   ResultsQueryState,
   useResultStatsLiveQuery,
-} from "../../../ts/collections/results";
+} from "../../../data/collections/results";
 import AsyncContent from "../../../ts/components/common/AsyncContent";
 import { ChartJs } from "../../../ts/components/common/ChartJs";
 import { getTheme } from "../../../ts/states/theme";

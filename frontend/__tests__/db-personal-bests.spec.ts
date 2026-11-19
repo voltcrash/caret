@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 
 const insertLocalResult = vi.hoisted(() => vi.fn());
-vi.mock("../src/ts/collections/results", () => ({
+vi.mock("../src/data/collections/results", () => ({
   insertLocalResult,
 }));
 

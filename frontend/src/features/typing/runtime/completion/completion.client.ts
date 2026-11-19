@@ -115,7 +115,7 @@ export function createCompletion(
     once("saveState", Result.resetResultSaveState);
     const tags =
       user !== null && snapshot.account.isCurrent()
-        ? (await import("../../../../ts/collections/tags"))
+        ? (await import("../../../../data/collections/tags"))
             .getActiveTags()
             .map((tag) => tag._id)
         : [];

@@ -3,8 +3,8 @@ import { requireApplication } from "../../src/app/application";
 import {
   waitForPresetsReady,
   getPresets,
-} from "../../src/ts/collections/presets";
-import { waitForTagsReady, getTags } from "../../src/ts/collections/tags";
+} from "../../src/data/collections/presets";
+import { waitForTagsReady, getTags } from "../../src/data/collections/tags";
 import { setUserId } from "../../src/ts/states/core";
 import {
   fail,

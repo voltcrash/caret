@@ -24,7 +24,7 @@ export function getString(): string {
 export async function addAllFromToday(): Promise<void> {
   const lease = captureAccount();
   const { getResultsSinceDayOnce } =
-    await import("../../../ts/collections/results");
+    await import("../../../data/collections/results");
   if (!lease.isCurrent()) return;
   const day = getLocalMidnight(new Date()).getTime();
   const results = await getResultsSinceDayOnce(day);

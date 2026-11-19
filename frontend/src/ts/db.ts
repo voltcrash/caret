@@ -244,7 +244,7 @@ export function saveLocalResult(data: SaveLocalResultData): void {
 
   if (data.result !== undefined) {
     const result = data.result;
-    void import("./collections/results").then(async (m) =>
+    void import("../data/collections/results").then(async (m) =>
       lease.isCurrent() ? m.insertLocalResult({ result }) : undefined,
     );
     setLastResult(data.result);

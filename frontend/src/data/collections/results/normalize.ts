@@ -1,7 +1,7 @@
 import { ResultMinified } from "@caret/schemas/results";
 import { Mode } from "@caret/schemas/shared";
 
-import { SnapshotResult } from "../../constants/default-snapshot";
+import { SnapshotResult } from "../../../ts/constants/default-snapshot";
 
 export function normalizeResult(
   result: ResultMinified | SnapshotResult<Mode>,

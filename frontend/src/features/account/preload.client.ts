@@ -23,7 +23,7 @@ export async function preloadAccount(
     (async () => {
       await accountQueryCache().restore();
       lease.assertCurrent();
-      const results = await import("../../ts/collections/results");
+      const results = await import("../../data/collections/results");
       lease.assertCurrent();
       await results.waitForResultsReady();
     })(),

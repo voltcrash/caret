@@ -12,7 +12,7 @@ import {
 const results = vi.hoisted(() => ({
   since: vi.fn(),
 }));
-vi.mock("../../../src/ts/collections/results", () => ({
+vi.mock("../../../src/data/collections/results", () => ({
   getResultsSinceDayOnce: results.since,
 }));
 

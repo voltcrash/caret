@@ -263,7 +263,7 @@ async function saveResultInternal(
   if (data.alreadySaved) {
     await Promise.all([
       DB.initSnapshot(),
-      (await import("../../../../ts/collections/results")).refetchResults(),
+      (await import("../../../../data/collections/results")).refetchResults(),
     ]);
     return response;
   }

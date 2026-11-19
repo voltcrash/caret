@@ -5,7 +5,7 @@ import {
   createResultsQueryState,
   getResultsQueryOnce,
   useResultsLiveQuery,
-} from "../../../ts/collections/results";
+} from "../../../data/collections/results";
 import AsyncContent from "../../../ts/components/common/AsyncContent";
 import { Button } from "../../../ts/components/common/Button";
 import { SnapshotResult } from "../../../ts/constants/default-snapshot";

@@ -12,8 +12,8 @@ vi.mock("../../src/ts/states/core", async (original) => ({
   getUserId: () => "tags-user",
 }));
 
-vi.mock("../../src/ts/collections/tags", async (original) => ({
-  ...(await original<typeof import("../../src/ts/collections/tags")>()),
+vi.mock("../../src/data/collections/tags", async (original) => ({
+  ...(await original<typeof import("../../src/data/collections/tags")>()),
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
   useActiveTagsLiveQuery: () => [],
@@ -35,7 +35,7 @@ vi.mock("../../src/ts/utils/misc", async (original) => ({
 
 import type { SnapshotResult } from "../../src/ts/constants/default-snapshot";
 import type { Mode } from "@caret/schemas/shared";
-import { isResultsReady, updateTags } from "../../src/ts/collections/results";
+import { isResultsReady, updateTags } from "../../src/data/collections/results";
 import { setLastResult } from "../../src/ts/states/snapshot";
 
 update.mockResolvedValue({

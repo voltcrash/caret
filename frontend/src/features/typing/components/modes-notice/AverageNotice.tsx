@@ -1,6 +1,6 @@
 import { createMemo, JSXElement } from "solid-js";
 
-import { useUserAverage10LiveQuery } from "../../../../ts/collections/results";
+import { useUserAverage10LiveQuery } from "../../../../data/collections/results";
 import { getConfig } from "../../../../ts/config/store";
 import { getFormatting, isAuthenticated } from "../../../../ts/states/core";
 import { Notice } from "./Notice";

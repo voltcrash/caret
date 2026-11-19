@@ -25,7 +25,7 @@ import {
   saveLocalTagPB,
   toggleTagActive,
   waitForTagsReady,
-} from "../../src/ts/collections/tags";
+} from "../../src/data/collections/tags";
 
 function collect<T>(read: () => T): { values: T[]; dispose: () => void } {
   const values: T[] = [];

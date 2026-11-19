@@ -1,5 +1,5 @@
 import { Client } from "@caret/schemas/shared";
-import { baseKey } from "../../../data/queries/keys";
+import { baseKey } from "../../queries/keys";
 
 export const queryKeys = {
   root: (client: Client = "web") => [

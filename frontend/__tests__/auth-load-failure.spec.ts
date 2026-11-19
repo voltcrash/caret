@@ -5,16 +5,16 @@ const services = vi.hoisted(() => ({
   signOut: vi.fn(async () => undefined),
 }));
 vi.mock("../src/ts/db", () => ({ initSnapshot: services.snapshot }));
-vi.mock("../src/ts/collections/presets", () => ({
+vi.mock("../src/data/collections/presets", () => ({
   waitForPresetsReady: vi.fn(async () => undefined),
 }));
-vi.mock("../src/ts/collections/tags", () => ({
+vi.mock("../src/data/collections/tags", () => ({
   waitForTagsReady: vi.fn(async () => undefined),
 }));
-vi.mock("../src/ts/collections/custom-themes", () => ({
+vi.mock("../src/data/collections/custom-themes", () => ({
   startCustomThemesSync: vi.fn(),
 }));
-vi.mock("../src/ts/collections/results", () => ({
+vi.mock("../src/data/collections/results", () => ({
   refetchResults: vi.fn(async () => undefined),
 }));
 vi.mock("../src/ts/config/remote", () => ({

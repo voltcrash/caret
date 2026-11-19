@@ -8,7 +8,7 @@ import {
   deleteCustomTheme,
   editCustomTheme,
   useCustomThemesLiveQuery,
-} from "../../../../ts/collections/custom-themes";
+} from "../../../../data/collections/custom-themes";
 import { AnimeSwitch } from "../../../../ts/components/common/anime";
 import { AnimeMatch } from "../../../../ts/components/common/anime/AnimeMatch";
 import { Button } from "../../../../ts/components/common/Button";

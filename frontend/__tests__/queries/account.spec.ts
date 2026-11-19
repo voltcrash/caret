@@ -7,7 +7,7 @@ import {
   loadAccountData,
 } from "../../src/data/queries/account";
 import { getSnapshot as getReactiveSnapshot } from "../../src/ts/states/snapshot";
-import { getTags, waitForTagsReady } from "../../src/ts/collections/tags";
+import { getTags, waitForTagsReady } from "../../src/data/collections/tags";
 import {
   fail,
   mockOperation,

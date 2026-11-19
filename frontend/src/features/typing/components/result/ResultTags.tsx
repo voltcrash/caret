@@ -1,6 +1,6 @@
 import { For, JSXElement, Show } from "solid-js";
 
-import { useTagsLiveQuery } from "../../../../ts/collections/tags";
+import { useTagsLiveQuery } from "../../../../data/collections/tags";
 import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { showEditResultTagsModal } from "../../../../ts/states/edit-result-tags";

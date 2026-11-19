@@ -7,9 +7,9 @@ import {
   clearActiveTags,
   setTagActive,
   saveActiveToLocalStorage,
-} from "../collections/tags";
+} from "../../data/collections/tags";
 import { saveFullConfigToLocalStorage } from "../config/persistence";
-import { getPreset, type PresetItem } from "../collections/presets";
+import { getPreset, type PresetItem } from "../../data/collections/presets";
 import { untrack } from "solid-js";
 import { captureAccount } from "../../app/account-scope";
 

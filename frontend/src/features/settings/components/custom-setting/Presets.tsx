@@ -3,7 +3,7 @@ import { JSXElement, For } from "solid-js";
 import {
   deletePreset,
   usePresetsLiveQuery,
-} from "../../../../ts/collections/presets";
+} from "../../../../data/collections/presets";
 import { Button } from "../../../../ts/components/common/Button";
 import { apply } from "../../../../ts/controllers/preset-controller";
 import { showEditPresetModal } from "../../../../ts/states/edit-preset-modal";

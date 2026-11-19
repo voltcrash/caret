@@ -1,6 +1,6 @@
 import { JSXElement } from "solid-js";
 
-import { useActiveTagsLiveQuery } from "../../../../ts/collections/tags";
+import { useActiveTagsLiveQuery } from "../../../../data/collections/tags";
 import { Notice } from "./Notice";
 
 export function TagsNotice(): JSXElement {

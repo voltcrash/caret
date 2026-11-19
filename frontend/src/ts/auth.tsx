@@ -115,15 +115,15 @@ async function getDataAndInit(notifyOnFailure: boolean): Promise<AccountLoad> {
     // collections sync on their own; waiting keeps tags and presets inside the account loading gate
     const accountReady = Promise.all([
       DB.initSnapshot(),
-      import("./collections/presets").then(async (m) => {
+      import("../data/collections/presets").then(async (m) => {
         lease.assertCurrent();
         return m.waitForPresetsReady();
       }),
-      import("./collections/tags").then(async (m) => {
+      import("../data/collections/tags").then(async (m) => {
         lease.assertCurrent();
         return m.waitForTagsReady();
       }),
-      import("./collections/custom-themes").then((m) => {
+      import("../data/collections/custom-themes").then((m) => {
         lease.assertCurrent();
         m.startCustomThemesSync();
         return undefined;

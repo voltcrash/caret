@@ -2,14 +2,14 @@ import { TagNameSchema } from "@caret/schemas/users";
 import { For, JSXElement } from "solid-js";
 import { z } from "zod";
 
-import { deleteLocalTag } from "../../../../ts/collections/results";
+import { deleteLocalTag } from "../../../../data/collections/results";
 import {
   clearTagPBs,
   deleteTag,
   toggleTagActive,
   updateTagName,
   useTagsLiveQuery,
-} from "../../../../ts/collections/tags";
+} from "../../../../data/collections/tags";
 import { Button } from "../../../../ts/components/common/Button";
 import { showAddTagModal } from "../../../../ts/components/modals/AddTagModal";
 import { showSimpleModal } from "../../../../ts/states/simple-modal";

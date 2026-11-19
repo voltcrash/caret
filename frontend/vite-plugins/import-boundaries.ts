@@ -35,4 +35,7 @@ export const clientOnlyFeatureFiles = [
 ];
 
 /** Browser data owners (account queries, IndexedDB collections); never SSR. */
-export const clientOnlyDataFiles = ["src/data/queries/**"];
+export const clientOnlyDataFiles = [
+  "src/data/queries/**",
+  "src/data/collections/**",
+];

@@ -22,7 +22,7 @@ export function AccountView(props: { client: Client }): JSXElement {
     async () => {
       const lease = captureAccount();
       const { waitForResultsReady } =
-        await import("../../ts/collections/results");
+        await import("../../data/collections/results");
       lease.assertCurrent();
       await waitForResultsReady();
       lease.assertCurrent();
