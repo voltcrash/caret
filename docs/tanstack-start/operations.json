@@ -1132,7 +1132,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/features/typing/runtime/result-saving.ts",
+      "frontend/src/features/typing/runtime/result/saving.ts",
       "frontend/src/ts/components/modals/LastSignedOutResultModal.tsx"
     ],
     "target": "web server function over backend service",

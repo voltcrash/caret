@@ -144,7 +144,7 @@ it.each([
 
 it.each([
   "frontend/src/ts/input/listeners/input.ts",
-  "frontend/src/features/typing/runtime/test-logic.ts",
+  "frontend/src/features/typing/runtime/test/logic.ts",
   "packages/web-shared/src/layout-emulator.ts",
   "frontend/cross-browser-e2e/typing.spec.ts",
   "frontend/playwright.cross-browser.config.ts",
