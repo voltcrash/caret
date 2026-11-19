@@ -1,4 +1,4 @@
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import { envValue } from "../runtime/env";
 import { cancelRegistration } from "../dal/user/account";
 import * as AuthUtils from "../utils/auth";
@@ -82,7 +82,7 @@ export async function handleAuthRequest(
   try {
     return await dispatchAuthRequest(incoming, ip);
   } catch (error) {
-    if (error instanceof MonkeyError) {
+    if (error instanceof ApiError) {
       return Response.json(
         { message: error.message },
         { status: error.status },

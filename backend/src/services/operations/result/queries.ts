@@ -4,7 +4,7 @@ import { atomicUser } from "../../../db/mutation";
 import * as ResultDAL from "../../../dal/result";
 
 import { ApiResponse } from "../../../utils/api-response";
-import MonkeyError from "../../../utils/error";
+import ApiError from "../../../utils/error";
 
 import * as UserDAL from "../../../dal/user";
 
@@ -56,7 +56,7 @@ export async function getResults(
     !premiumFeaturesEnabled &&
     limit + offset > context.configuration.results.limits.regularUser
   ) {
-    throw new MonkeyError(503, "Premium feature disabled.");
+    throw new ApiError(503, "Premium feature disabled.");
   }
 
   if (limit + offset > maxLimit) {
@@ -64,7 +64,7 @@ export async function getResults(
       //batch is partly in the allowed ranged. Set the limit to the max allowed and return partly results.
       limit = maxLimit - offset;
     } else {
-      throw new MonkeyError(422, `Max results limit of ${maxLimit} exceeded.`);
+      throw new ApiError(422, `Max results limit of ${maxLimit} exceeded.`);
     }
   }
 

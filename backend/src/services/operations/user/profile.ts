@@ -1,7 +1,7 @@
 import { generateCurrentTestActivity } from "./activity";
 import { getAllTimeLbs } from "./leaderboards";
 import * as UserDAL from "../../../dal/user";
-import MonkeyError from "../../../utils/error";
+import ApiError from "../../../utils/error";
 import { ApiResponse } from "../../../utils/api-response";
 import { sanitizeString } from "../../../utils/misc";
 import { UserProfile, UserProfileDetails } from "@caret/schemas/users";
@@ -133,7 +133,7 @@ export async function updateProfile(
   ]);
 
   if (user.banned) {
-    throw new MonkeyError(403, "Banned users cannot update their profile");
+    throw new ApiError(403, "Banned users cannot update their profile");
   }
 
   user.inventory?.badges.forEach((badge) => {

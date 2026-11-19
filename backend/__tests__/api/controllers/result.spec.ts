@@ -21,7 +21,7 @@ import { enableRateLimitExpects } from "../../__testData__/rate-limit";
 import { DBResult } from "../../../src/utils/result";
 import { omit } from "../../../src/utils/misc";
 import { CompletedEvent } from "@caret/schemas/results";
-import MonkeyError from "../../../src/utils/error";
+import ApiError from "../../../src/utils/error";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { BASE_CONFIGURATION } from "../../../src/constants/base-configuration";
 import { consistency } from "../../../src/anticheat/result";
@@ -672,7 +672,7 @@ describe("result controller test", () => {
     });
     it("treats only a missing history as the first result and clears abandoned-test credit", async () => {
       resultGetLastTimestampMock.mockRejectedValue(
-        new MonkeyError(404, "No last result found"),
+        new ApiError(404, "No last result found"),
       );
       await mockApp
         .post("/results")

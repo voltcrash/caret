@@ -10,12 +10,12 @@ import * as AuthUtils from "../../src/utils/auth";
 import { authenticate as authenticatePolicy } from "../../src/policies/authentication";
 import type { Actor } from "../../src/services/context";
 import { AuthenticatedSession } from "../../src/utils/auth";
-import MonkeyError from "../../src/utils/error";
+import ApiError from "../../src/utils/error";
 import * as Misc from "../../src/utils/misc";
 import { RequestAuthenticationOptions } from "@caret/contracts/util/api";
-import { enableMonkeyErrorExpects } from "../__testData__/monkey-error";
+import { enableApiErrorExpects } from "../__testData__/api-error";
 
-enableMonkeyErrorExpects();
+enableApiErrorExpects();
 const mockDecodedToken: AuthenticatedSession = {
   uid: "123456789",
   email: "newuser@mail.com",
@@ -83,7 +83,7 @@ describe("policies/authentication", () => {
     it("should fail if token is not fresh", async () => {
       //GIVEN
       Date.now = vi.fn(() => 60001);
-      const expectedError = new MonkeyError(
+      const expectedError = new ApiError(
         401,
         "Unauthorized\nStack: This endpoint requires a fresh token",
       );
@@ -91,12 +91,12 @@ describe("policies/authentication", () => {
       //WHEN
       await expect(async () =>
         authenticate({}, { requireFreshToken: true }),
-      ).rejects.toMatchMonkeyError(expectedError);
+      ).rejects.toMatchApiError(expectedError);
 
       //THEN
 
       expect(nextFunction).toHaveBeenLastCalledWith(
-        expect.toMatchMonkeyError(expectedError),
+        expect.toMatchApiError(expectedError),
       );
     });
     it("should allow the request if token is fresh", async () => {
@@ -198,8 +198,8 @@ describe("policies/authentication", () => {
       //WHEN / THEN
       await expect(async () =>
         authenticate({ headers: { authorization: "Uid 123" } }),
-      ).rejects.toMatchMonkeyError(
-        new MonkeyError(401, "Bearer type uid is not supported"),
+      ).rejects.toMatchApiError(
+        new ApiError(401, "Bearer type uid is not supported"),
       );
     });
     it("should fail without authentication", async () => {

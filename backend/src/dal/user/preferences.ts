@@ -1,4 +1,4 @@
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import { newId } from "../../utils/id";
 
 import { mutateUser } from "../../db/mutation";
@@ -32,7 +32,7 @@ export async function addResultFilterPreset(
   const id = newId();
   await mutateUser(uid, (user) => {
     if ((user.resultFilterPresets?.length ?? 0) >= maxFiltersPerUser) {
-      throw new MonkeyError(409, "Maximum number of custom filters reached");
+      throw new ApiError(409, "Maximum number of custom filters reached");
     }
     (user.resultFilterPresets ??= []).push({ ...resultFilter, _id: id });
   });
@@ -44,7 +44,7 @@ export async function removeResultFilterPreset(
 ): Promise<void> {
   await mutateUser(uid, (user) => {
     if (!user.resultFilterPresets?.some((item) => item._id === id)) {
-      throw new MonkeyError(404, "Custom filter not found");
+      throw new ApiError(404, "Custom filter not found");
     }
     user.resultFilterPresets = user.resultFilterPresets.filter(
       (item) => item._id !== id,
@@ -58,7 +58,7 @@ export async function addTheme(
   const theme = { _id: newId(), name, colors };
   await mutateUser(uid, (user) => {
     if ((user.customThemes?.length ?? 0) >= 20) {
-      throw new MonkeyError(409, "Maximum number of custom themes reached");
+      throw new ApiError(409, "Maximum number of custom themes reached");
     }
     (user.customThemes ??= []).push(theme);
   });
@@ -66,7 +66,7 @@ export async function addTheme(
 }
 function themeById(user: DBUser, id: string): DBCustomTheme {
   const theme = user.customThemes?.find((item) => item._id === id);
-  if (!theme) throw new MonkeyError(404, "Custom theme not found");
+  if (!theme) throw new ApiError(404, "Custom theme not found");
   return theme;
 }
 export async function removeTheme(uid: string, id: string): Promise<void> {
@@ -106,7 +106,7 @@ export async function addFavoriteQuote(
         0,
       ) >= maxQuotes
     ) {
-      throw new MonkeyError(409, "Maximum number of favorite quotes reached");
+      throw new ApiError(409, "Maximum number of favorite quotes reached");
     }
     const quotes = ((favorites as Record<string, string[]>)[language] ??= []);
     if (!quotes.includes(quoteId)) quotes.push(quoteId);

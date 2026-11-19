@@ -1,18 +1,15 @@
 import { expect } from "vite-plus/test";
-import MonkeyError from "../../src/utils/error";
+import ApiError from "../../src/utils/error";
 import { MatcherResult } from "../vitest";
 
-export function enableMonkeyErrorExpects(): void {
+export function enableApiErrorExpects(): void {
   expect.extend({
-    toMatchMonkeyError(
-      received: MonkeyError,
-      expected: MonkeyError,
-    ): MatcherResult {
+    toMatchApiError(received: ApiError, expected: ApiError): MatcherResult {
       return {
         pass:
           received.status === expected.status &&
           received.message === expected.message,
-        message: () => "MonkeyError does not match:",
+        message: () => "ApiError does not match:",
         actual: { status: received.status, message: received.message },
         expected: { status: expected.status, message: expected.message },
       };

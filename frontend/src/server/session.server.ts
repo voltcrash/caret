@@ -12,7 +12,7 @@ import {
   setResponseHeader,
   setResponseStatus,
 } from "@tanstack/solid-start/server";
-import MonkeyError from "@caret/backend/errors";
+import ApiError from "@caret/backend/errors";
 import type { SessionState } from "@caret/schemas/auth-session";
 import type { ServiceContext } from "./context.server";
 
@@ -44,9 +44,9 @@ export async function readSessionState(
         request.runtime.env.MAINTENANCE !== "true",
     };
   } catch (error) {
-    setResponseStatus(error instanceof MonkeyError ? error.status : 500);
+    setResponseStatus(error instanceof ApiError ? error.status : 500);
     throw new Error(
-      error instanceof MonkeyError
+      error instanceof ApiError
         ? error.message
         : `Unable to read session ${request.requestId}`,
     );

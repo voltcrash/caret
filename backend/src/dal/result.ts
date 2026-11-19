@@ -1,6 +1,6 @@
 import type { Client } from "@caret/schemas/shared";
 import { and, desc, eq, gte, inArray, sql, lt, or } from "drizzle-orm";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import { database, encode, statement } from "../db/client";
 import { stage } from "../db/mutation";
 import { results } from "../db/schema";
@@ -52,7 +52,7 @@ export async function addResult(
 ): Promise<{ insertedId: string }> {
   // Existence only; the full user is already loaded by callers.
   if (!(await exists(uid))) {
-    throw new MonkeyError(404, "User not found", "add result");
+    throw new ApiError(404, "User not found", "add result");
   }
   result.uid ??= uid;
   await stage(
@@ -84,7 +84,7 @@ export async function updateTags(
 }> {
   const allowed = new Set((await getTags(uid)).map((tag) => tag._id));
   if (tags.some((id) => !allowed.has(id))) {
-    throw new MonkeyError(422, "One of the tag id's is not valid");
+    throw new ApiError(422, "One of the tag id's is not valid");
   }
   await getResult(uid, resultId);
   await stage(
@@ -111,7 +111,7 @@ export async function getResult(uid: string, id: string): Promise<DBResult> {
       )
       .limit(1)
   )[0];
-  if (!row) throw new MonkeyError(404, "Result not found");
+  if (!row) throw new ApiError(404, "Result not found");
   return unpack(row);
 }
 export async function getLastResult(
@@ -126,7 +126,7 @@ export async function getLastResult(
       .orderBy(desc(results.timestamp), desc(results.id))
       .limit(1)
   )[0];
-  if (!row) throw new MonkeyError(404, "No last result found");
+  if (!row) throw new ApiError(404, "No last result found");
   return unpack(row);
 }
 export async function getLastOnlineResultTimestamp(
@@ -147,7 +147,7 @@ export async function getLastOnlineResultTimestamp(
       .orderBy(desc(results.timestamp), desc(results.id))
       .limit(1)
   )[0];
-  if (!row) throw new MonkeyError(404, "No last result found");
+  if (!row) throw new ApiError(404, "No last result found");
   return row.timestamp;
 }
 type GetResultsOpts = {

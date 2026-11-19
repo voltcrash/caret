@@ -2,7 +2,7 @@ import { verifyCaptcha } from "./captcha";
 import { atomicUser } from "../../../db/mutation";
 import { isUniqueViolation } from "../../../db/client";
 import * as UserDAL from "../../../dal/user";
-import MonkeyError from "../../../utils/error";
+import ApiError from "../../../utils/error";
 import { ApiResponse } from "../../../utils/api-response";
 import { deleteUserAccount } from "../../../services/user-deletion";
 import * as AuthUtil from "../../../utils/auth";
@@ -25,24 +25,24 @@ export async function createNewUser(
   const { email, uid } = context.actor;
 
   const existingUser = await UserDAL.exists(uid);
-  if (existingUser) throw new MonkeyError(409, "Account already registered");
+  if (existingUser) throw new ApiError(409, "Account already registered");
 
   // Expired challenges and verification outages can be retried in this session.
   await verifyCaptcha(captcha, "signup");
 
   // Profile conflicts must preserve the authenticated onboarding session.
   if (email.endsWith("@tidal.lol") || email.endsWith("@selfbot.cc")) {
-    throw new MonkeyError(400, "Invalid domain");
+    throw new ApiError(400, "Invalid domain");
   }
 
   const available = await UserDAL.isNameAvailable(name, uid);
   if (!available) {
-    throw new MonkeyError(409, "Username unavailable");
+    throw new ApiError(409, "Username unavailable");
   }
 
   const blocklisted = await BlocklistDal.contains({ name, email });
   if (blocklisted) {
-    throw new MonkeyError(409, "Username or email blocked");
+    throw new ApiError(409, "Username or email blocked");
   }
 
   await UserDAL.addUser(name, email, uid, true);
@@ -75,7 +75,7 @@ export async function resetUser(
       "name",
     ]);
     if (user.banned) {
-      throw new MonkeyError(403, "Banned users cannot reset their account");
+      throw new ApiError(403, "Banned users cannot reset their account");
     }
     await UserDAL.resetUser(uid);
     return user;
@@ -93,7 +93,7 @@ export async function updateName(
 
   const blocklisted = await BlocklistDal.contains({ name });
   if (blocklisted) {
-    throw new MonkeyError(409, "Username blocked");
+    throw new ApiError(409, "Username blocked");
   }
 
   await atomicUser(uid, async () => {
@@ -105,14 +105,14 @@ export async function updateName(
     ]);
 
     if (user.banned) {
-      throw new MonkeyError(403, "Banned users cannot change their name");
+      throw new ApiError(403, "Banned users cannot change their name");
     }
 
     if (
       !user?.needsToChangeName &&
       Date.now() - (user.lastNameChange ?? 0) < MILLISECONDS_IN_DAY * 30
     ) {
-      throw new MonkeyError(409, "You can change your name once every 30 days");
+      throw new ApiError(409, "You can change your name once every 30 days");
     }
 
     await UserDAL.updateName(uid, name, user.name);
@@ -124,7 +124,7 @@ export async function updateName(
     );
   }).catch((error: unknown) => {
     if (isUniqueViolation(error)) {
-      throw new MonkeyError(409, "Username already taken", name);
+      throw new ApiError(409, "Username already taken", name);
     }
     throw error;
   });

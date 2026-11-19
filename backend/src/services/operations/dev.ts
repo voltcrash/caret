@@ -8,7 +8,7 @@ import { UTCDate } from "@date-fns/utc";
 import * as ResultDal from "../../dal/result";
 import { newId } from "../../utils/id";
 import * as LeaderboardDal from "../../dal/leaderboards";
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 
 import { Mode, PersonalBest, PersonalBests } from "@caret/schemas/shared";
 import {
@@ -34,7 +34,7 @@ export async function createTestData(
 ): Promise<GenerateDataResponse> {
   const { username } = input.body;
   const user = await UserDal.findByName(username);
-  if (!user) throw new MonkeyError(404, `User ${username} does not exist.`);
+  if (!user) throw new ApiError(404, `User ${username} does not exist.`);
 
   const { uid, email } = user;
 

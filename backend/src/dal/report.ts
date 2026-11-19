@@ -2,7 +2,7 @@ import { inArray } from "drizzle-orm";
 import { database, statement, encode, isUniqueViolation } from "../db/client";
 import { reports } from "../db/schema";
 import { commitBatch } from "../db/commit";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 export type DBReport = {
   _id: string;
   id: string;
@@ -33,7 +33,7 @@ export async function createReport(
   contentReportLimit: number,
 ): Promise<void> {
   if (report.type === "user" && report.contentId === report.uid) {
-    throw new MonkeyError(400, "You cannot report yourself.");
+    throw new ApiError(400, "You cannot report yourself.");
   }
   try {
     const committed = await commitBatch([
@@ -67,7 +67,7 @@ export async function createReport(
       const count = await statement(
         "SELECT count(*) AS count FROM reports",
       ).first<number>("count");
-      throw new MonkeyError(
+      throw new ApiError(
         (count ?? 0) >= maxReports ? 503 : 409,
         (count ?? 0) >= maxReports
           ? "Reports are not being accepted at this time due to a large backlog of reports. Please try again later."
@@ -76,7 +76,7 @@ export async function createReport(
     }
   } catch (error) {
     if (isUniqueViolation(error)) {
-      throw new MonkeyError(409, "You have already reported this content.");
+      throw new ApiError(409, "You have already reported this content.");
     }
     throw error;
   }

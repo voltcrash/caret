@@ -1,5 +1,5 @@
 import { getAuth } from "../init/auth";
-import MonkeyError from "./error";
+import ApiError from "./error";
 
 export type AuthenticatedSession = {
   uid: string;
@@ -33,13 +33,10 @@ export async function verifySession(
     lookup.setCookie?.(cookie);
   }
   if (result === null) {
-    throw new MonkeyError(
-      401,
-      "Session expired or revoked - please login again",
-    );
+    throw new ApiError(401, "Session expired or revoked - please login again");
   }
   if ("disabled" in result.user && result.user.disabled === true) {
-    throw new MonkeyError(403, "Account disabled");
+    throw new ApiError(403, "Account disabled");
   }
   return {
     uid: result.user.id,

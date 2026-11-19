@@ -1,6 +1,6 @@
 import type { Assertion, AsymmetricMatchersContaining } from "vite-plus/test";
 import type { TestRequest } from "./__testData__/test-client";
-import MonkeyError from "../src/utils/error";
+import ApiError from "../src/utils/error";
 
 type ExpectedRateLimit = {
   /** max calls */
@@ -14,7 +14,7 @@ interface RestRequestMatcher<R = TestRequest> {
   ) => Promise<RestRequestMatcher<R>>;
 }
 interface ThrowMatcher<R = MatcherResult> {
-  toMatchMonkeyError: (expected: { status: number; message: string }) => R;
+  toMatchApiError: (expected: { status: number; message: string }) => R;
 }
 
 declare module "vitest" {

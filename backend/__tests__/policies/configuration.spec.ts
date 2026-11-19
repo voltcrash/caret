@@ -10,10 +10,10 @@ import {
 } from "vite-plus/test";
 import type { EndpointMetadata } from "@caret/contracts/util/api";
 import { verifyConfiguration } from "../../src/policies/configuration";
-import MonkeyError from "../../src/utils/error";
-import { enableMonkeyErrorExpects } from "../__testData__/monkey-error";
+import ApiError from "../../src/utils/error";
+import { enableApiErrorExpects } from "../__testData__/api-error";
 
-enableMonkeyErrorExpects();
+enableApiErrorExpects();
 type TestRequest = {
   tsRestRoute: { metadata: EndpointMetadata };
   ctx?: { configuration: Partial<Configuration> };
@@ -86,8 +86,8 @@ describe("configuration policy", async () => {
 
     //THEN
     expect(next).toHaveBeenCalledWith(
-      expect.toMatchMonkeyError(
-        new MonkeyError(503, "This endpoint is currently unavailable."),
+      expect.toMatchApiError(
+        new ApiError(503, "This endpoint is currently unavailable."),
       ),
     );
   });
@@ -103,7 +103,7 @@ describe("configuration policy", async () => {
 
     //THEN
     expect(next).toHaveBeenCalledWith(
-      expect.toMatchMonkeyError(new MonkeyError(503, "Feature not enabled.")),
+      expect.toMatchApiError(new ApiError(503, "Feature not enabled.")),
     );
   });
   it("should fail for invalid path", async () => {
@@ -115,8 +115,8 @@ describe("configuration policy", async () => {
 
     //THEN
     expect(next).toHaveBeenCalledWith(
-      expect.toMatchMonkeyError(
-        new MonkeyError(500, 'Invalid configuration path: "invalid.path"'),
+      expect.toMatchApiError(
+        new ApiError(500, 'Invalid configuration path: "invalid.path"'),
       ),
     );
   });
@@ -132,8 +132,8 @@ describe("configuration policy", async () => {
 
     //THEN
     expect(next).toHaveBeenCalledWith(
-      expect.toMatchMonkeyError(
-        new MonkeyError(
+      expect.toMatchApiError(
+        new ApiError(
           500,
           'Required configuration doesnt exist: "admin.endpointsEnabled"',
         ),
@@ -152,8 +152,8 @@ describe("configuration policy", async () => {
 
     //THEN
     expect(next).toHaveBeenCalledWith(
-      expect.toMatchMonkeyError(
-        new MonkeyError(
+      expect.toMatchApiError(
+        new ApiError(
           500,
           'Required configuration doesnt exist: "admin.endpointsEnabled"',
         ),
@@ -172,8 +172,8 @@ describe("configuration policy", async () => {
 
     //THEN
     expect(next).toHaveBeenCalledWith(
-      expect.toMatchMonkeyError(
-        new MonkeyError(
+      expect.toMatchApiError(
+        new ApiError(
           500,
           'Required configuration is not a boolean: "admin.endpointsEnabled"',
         ),
@@ -208,7 +208,7 @@ describe("configuration policy", async () => {
 
     //THEN
     expect(next).toHaveBeenCalledWith(
-      expect.toMatchMonkeyError(new MonkeyError(503, "admin disabled")),
+      expect.toMatchApiError(new ApiError(503, "admin disabled")),
     );
   });
 });

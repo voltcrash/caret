@@ -6,7 +6,7 @@ import { getPartialUser, updateQuoteRatings } from "../../dal/user";
 import * as ReportDAL from "../../dal/report";
 import * as NewQuotesDAL from "../../dal/new-quotes";
 import * as QuoteRatingsDAL from "../../dal/quote-ratings";
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import { verify } from "../../utils/captcha";
 import { ApiResponse } from "../../utils/api-response";
 import { newId } from "../../utils/id";
@@ -32,13 +32,13 @@ async function verifyCaptcha(
 ): Promise<void> {
   const { data: verified, error } = await tryCatch(verify(captcha, action));
   if (error) {
-    throw new MonkeyError(
+    throw new ApiError(
       422,
       "Captcha verification unavailable, please try again",
     );
   }
   if (!verified) {
-    throw new MonkeyError(422, "Captcha check failed");
+    throw new ApiError(422, "Captcha check failed");
   }
 }
 
@@ -75,7 +75,7 @@ export async function addQuote(
 
   const { banned } = await getPartialUser(uid, "add quote", ["banned"]);
   if (banned === true) {
-    throw new MonkeyError(403, "Banned users cannot submit quotes");
+    throw new ApiError(403, "Banned users cannot submit quotes");
   }
 
   await verifyCaptcha(captcha, "quote-submit");
@@ -92,7 +92,7 @@ async function assertQuoteModScope(
   if (quoteMod === true) return;
   const language = await NewQuotesDAL.getLanguage(quoteId);
   if (language !== undefined && language !== quoteMod) {
-    throw new MonkeyError(403, "You don't have permission to do this.");
+    throw new ApiError(403, "You don't have permission to do this.");
   }
 }
 
@@ -110,7 +110,7 @@ export async function approveQuote(
   await assertQuoteModScope(quoteMod, quoteId);
 
   if (!name) {
-    throw new MonkeyError(500, "Missing name field");
+    throw new ApiError(500, "Missing name field");
   }
 
   const data = await NewQuotesDAL.approve(quoteId, editText, editSource, name);

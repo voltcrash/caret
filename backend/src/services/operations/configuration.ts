@@ -6,7 +6,7 @@ import {
   GetConfigurationResponse,
   PatchConfigurationRequest,
 } from "@caret/contracts/configuration";
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import type { ServiceContext, OperationInput } from "../context";
 
 export async function getConfiguration(
@@ -35,7 +35,7 @@ export async function updateConfiguration(
   const success = await Configuration.patchConfiguration(configuration);
 
   if (!success) {
-    throw new MonkeyError(500, "Configuration update failed");
+    throw new ApiError(500, "Configuration update failed");
   }
 
   return new ApiResponse("Configuration updated", null);

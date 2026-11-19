@@ -1,7 +1,7 @@
 import type { Client } from "@caret/schemas/shared";
 import { ApiResponse } from "../../utils/api-response";
 import * as LeaderboardsDAL from "../../dal/leaderboards";
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import * as DailyLeaderboards from "../../utils/daily-leaderboards";
 import * as WeeklyXpLeaderboard from "../../services/weekly-xp-leaderboard";
 import {
@@ -39,7 +39,7 @@ export async function getLeaderboard(
     (mode2 !== "15" && mode2 !== "60") ||
     language !== "english"
   ) {
-    throw new MonkeyError(404, "There is no leaderboard for this mode");
+    throw new ApiError(404, "There is no leaderboard for this mode");
   }
 
   const leaderboard = await LeaderboardsDAL.get(
@@ -107,7 +107,7 @@ function getDailyLeaderboardWithError(
     client,
   );
   if (!dailyLeaderboard) {
-    throw new MonkeyError(404, "There is no daily leaderboard for this mode");
+    throw new ApiError(404, "There is no daily leaderboard for this mode");
   }
 
   return dailyLeaderboard;
@@ -174,7 +174,7 @@ function getWeeklyXpLeaderboardWithError(
     client,
   );
   if (!weeklyXpLeaderboard) {
-    throw new MonkeyError(404, "XP leaderboard for this week not found.");
+    throw new ApiError(404, "XP leaderboard for this week not found.");
   }
 
   return weeklyXpLeaderboard;

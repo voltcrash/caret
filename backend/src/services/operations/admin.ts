@@ -15,7 +15,7 @@ import {
   ToggleBanRequest,
   ToggleBanResponse,
 } from "@caret/contracts/admin";
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import { addImportantLog, countLogs, getLogs } from "../../dal/logs";
 import type { ServiceContext, OperationInput } from "../context";
 import { purgeUserFromDailyLeaderboards } from "../../utils/daily-leaderboards";
@@ -90,7 +90,7 @@ export async function deleteUser(
   const { uid } = input.body;
 
   if (uid === context.actor.uid) {
-    throw new MonkeyError(
+    throw new ApiError(
       403,
       "You cannot delete your own account with this endpoint",
     );
@@ -131,7 +131,7 @@ async function removeReports(reportIds: string[]): Promise<void> {
   );
 
   if (missingReportIds.length > 0) {
-    throw new MonkeyError(
+    throw new ApiError(
       404,
       `Reports not found for some IDs ${missingReportIds.join(",")}`,
     );

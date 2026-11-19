@@ -5,7 +5,7 @@ import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { resultAuditSummary } from "../../../utils/result";
 import Logger from "../../../utils/logger";
 
-import MonkeyError from "../../../utils/error";
+import ApiError from "../../../utils/error";
 import { isTestTooShort } from "../../../utils/validation";
 import {
   getResultFailure,
@@ -33,7 +33,7 @@ import type { ValidatedSubmission } from "./context";
 export async function validateSubmission(
   context: ServiceContext,
   input: OperationInput<undefined, AddResultRequest>,
-): Promise<ValidatedSubmission | MonkeyError> {
+): Promise<ValidatedSubmission | ApiError> {
   const { uid } = context.actor;
 
   // Independent of the user row; read both in one round trip.
@@ -43,7 +43,7 @@ export async function validateSubmission(
   const user = await UserDAL.getUser(uid, "add result");
 
   if (user.needsToChangeName) {
-    throw new MonkeyError(
+    throw new ApiError(
       403,
       "Please change your name before submitting a result",
     );
@@ -59,10 +59,7 @@ export async function validateSubmission(
     (completedEvent.timestamp < Date.now() - 30 * 86400000 ||
       completedEvent.timestamp > Date.now() + 1000)
   ) {
-    throw new MonkeyError(
-      400,
-      "Offline results must be within the last 30 days",
-    );
+    throw new ApiError(400, "Offline results must be within the last 30 days");
   }
 
   // An offline completion time comes from the device. Its duration must still
@@ -71,16 +68,16 @@ export async function validateSubmission(
     offline &&
     completedEvent.testDuration * 1000 > Date.now() - (user.addedAt ?? 0) + 1000
   ) {
-    throw new MonkeyError(400, "Offline result duration exceeds account age");
+    throw new ApiError(400, "Offline result duration exceeds account age");
   }
 
   if (isTestTooShort(completedEvent)) {
     const status = ResultStatusCodes.TEST_TOO_SHORT;
-    throw new MonkeyError(status.code, status.message);
+    throw new ApiError(status.code, status.message);
   }
 
   if (user.lbOptOut !== true && completedEvent.acc < 75) {
-    throw new MonkeyError(400, "Accuracy too low");
+    throw new ApiError(400, "Accuracy too low");
   }
 
   const resulthash = completedEvent.hash;
@@ -106,7 +103,7 @@ export async function validateSubmission(
         uid,
       );
       const status = ResultStatusCodes.RESULT_HASH_INVALID;
-      return new MonkeyError(status.code, "Incorrect result hash");
+      return new ApiError(status.code, "Incorrect result hash");
     }
   } else {
     Logger.warning("Object hash check is disabled, skipping hash check");
@@ -123,15 +120,15 @@ export async function validateSubmission(
     ])
   ) {
     const status = ResultStatusCodes.DUPLICATE_RESULT;
-    throw new MonkeyError(status.code, "Duplicate result");
+    throw new ApiError(status.code, "Duplicate result");
   }
 
   if (completedEvent.funbox.length !== new Set(completedEvent.funbox).size) {
-    throw new MonkeyError(400, "Duplicate funboxes");
+    throw new ApiError(400, "Duplicate funboxes");
   }
 
   if (!serverAudit().compatible(completedEvent.funbox)) {
-    throw new MonkeyError(400, "Impossible funbox combination");
+    throw new ApiError(400, "Impossible funbox combination");
   }
 
   let keySpacingStats: KeyStats | undefined = undefined;
@@ -213,7 +210,7 @@ export async function validateSubmission(
       uid,
     );
     const status = ResultStatusCodes.RESULT_DATA_INVALID;
-    return new MonkeyError(status.code, "Result data doesn't make sense");
+    return new ApiError(status.code, "Result data doesn't make sense");
   }
 
   const { eventLog } = input.body;
@@ -253,7 +250,7 @@ export async function validateSubmission(
         uid,
       );
       const status = ResultStatusCodes.RESULT_DATA_INVALID;
-      return new MonkeyError(
+      return new ApiError(
         status.code,
         "Result data doesn't match its event log",
       );
@@ -284,7 +281,7 @@ export async function validateSubmission(
   // An unavailable database must not be interpreted as an empty result history.
   if (
     lastResultError &&
-    !(lastResultError instanceof MonkeyError && lastResultError.status === 404)
+    !(lastResultError instanceof ApiError && lastResultError.status === 404)
   ) {
     throw lastResultError;
   }
@@ -328,7 +325,7 @@ export async function validateSubmission(
       uid,
     );
     const status = ResultStatusCodes.RESULT_SPACING_INVALID;
-    return new MonkeyError(status.code, "Invalid result spacing");
+    return new ApiError(status.code, "Invalid result spacing");
   }
 
   // The fixed-timing signature is independent of the selected test mode.
@@ -353,10 +350,10 @@ export async function validateSubmission(
         uid,
       );
       const status = ResultStatusCodes.MISSING_KEY_DATA;
-      return new MonkeyError(status.code, "Missing key data");
+      return new ApiError(status.code, "Missing key data");
     }
     if (completedEvent.keyOverlap === undefined) {
-      throw new MonkeyError(400, "Old key data format");
+      throw new ApiError(400, "Old key data format");
     }
     const botFailure = getBotFailure(completedEvent);
     if (botFailure !== undefined) {
@@ -391,7 +388,7 @@ export async function validateSubmission(
         }
       }
       const status = ResultStatusCodes.BOT_DETECTED;
-      return new MonkeyError(status.code, "Possible bot detected");
+      return new ApiError(status.code, "Possible bot detected");
     }
   }
 
@@ -413,7 +410,7 @@ export async function validateSubmission(
         uid,
       );
       const status = ResultStatusCodes.DUPLICATE_RESULT;
-      return new MonkeyError(status.code, "Duplicate result");
+      return new ApiError(status.code, "Duplicate result");
     }
     await UserDAL.updateLastTimingHashes(
       uid,

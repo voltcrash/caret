@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { isDevEnvironment } from "./misc";
 import { ApiServerErrorType } from "@caret/contracts/util/api";
 
-class MonkeyError extends Error implements ApiServerErrorType {
+class ApiError extends Error implements ApiServerErrorType {
   status: number;
   errorId: string;
   uid?: string;
@@ -30,4 +30,4 @@ class MonkeyError extends Error implements ApiServerErrorType {
   }
 }
 
-export default MonkeyError;
+export default ApiError;

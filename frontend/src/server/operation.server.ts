@@ -20,7 +20,7 @@ import type { OperationResult } from "../data/operation-result";
 import type { ServiceContext as RequestContext } from "./context.server";
 import { migrateConfig } from "@caret/web-shared/config/migrate";
 import { PartialConfigSchema } from "@caret/schemas/configs";
-import MonkeyError from "@caret/backend/errors";
+import ApiError from "@caret/backend/errors";
 import {
   GetPresetResponseSchema,
   type GetPresetResponse,
@@ -89,7 +89,7 @@ export async function callOperation<K extends OperationId>(
     }
     if (id === "configs.get" && outcome.data !== null) {
       if (typeof outcome.data === "object" && "config" in outcome.data) {
-        throw new MonkeyError(
+        throw new ApiError(
           500,
           "Config data is not in the correct format. Please refresh the page or contact support.",
         );

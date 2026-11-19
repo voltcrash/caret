@@ -6,7 +6,7 @@ import {
   operationServices,
   type OperationServices,
 } from "../services/operations/registry";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import Logger from "../utils/logger";
 import { isDevEnvironment } from "../utils/misc";
 import type { ApiResponse } from "../utils/api-response";
@@ -110,7 +110,7 @@ export function assertAvailable(
     (invocation.runtime.env.MAINTENANCE === "true" ||
       scope.configuration.maintenance)
   ) {
-    throw new MonkeyError(503, "Server is down for maintenance");
+    throw new ApiError(503, "Server is down for maintenance");
   }
 }
 
@@ -142,7 +142,7 @@ export async function execute<K extends OperationId>(
   verifyConfiguration(scope.configuration, operation.metadata);
   await verifyPermissions(scope.actor, operation.metadata);
   if (developmentOnlyOperations.has(id) && !isDevEnvironment()) {
-    throw new MonkeyError(
+    throw new ApiError(
       503,
       "Development endpoints are only available in DEV mode.",
     );
@@ -189,7 +189,7 @@ export async function execute<K extends OperationId>(
           code,
         })),
       });
-      throw new MonkeyError(500, "Invalid service response");
+      throw new ApiError(500, "Invalid service response");
     }
     shareable(invocation, id);
     return {
@@ -224,17 +224,17 @@ export async function describeFailure(
   scope: PolicyScope | undefined,
   endpoint: string,
 ): Promise<OperationFailure> {
-  const monkeyError = error instanceof MonkeyError ? error : undefined;
-  const errorId = monkeyError?.errorId ?? invocation.requestId;
-  const uid = monkeyError?.uid ?? scope?.actor.uid ?? "";
+  const apiError = error instanceof ApiError ? error : undefined;
+  const errorId = apiError?.errorId ?? invocation.requestId;
+  const uid = apiError?.uid ?? scope?.actor.uid ?? "";
   let status = 500;
   let message: string;
   if (error instanceof URIError || error instanceof SyntaxError) {
     status = 400;
     message = "Unprocessable request";
-  } else if (monkeyError !== undefined) {
-    status = monkeyError.status;
-    message = monkeyError.message;
+  } else if (apiError !== undefined) {
+    status = apiError.status;
+    message = apiError.message;
   } else {
     message = `Something went wrong. Please try again later. - ${errorId}`;
   }

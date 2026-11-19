@@ -1,4 +1,4 @@
-import MonkeyError from "../../utils/error";
+import ApiError from "../../utils/error";
 import { newId } from "../../utils/id";
 import { statement, isUniqueViolation } from "../../db/client";
 import { currentUserDraft, mutateUser, stage } from "../../db/mutation";
@@ -47,11 +47,11 @@ export async function addUser(
       committed?.[1]?.rowCount === 0 ||
       (committed === undefined && !(await exists(uid)))
     ) {
-      throw new MonkeyError(401, "Sign up was cancelled; sign in again");
+      throw new ApiError(401, "Sign up was cancelled; sign in again");
     }
   } catch (error) {
     if (isUniqueViolation(error)) {
-      throw new MonkeyError(
+      throw new ApiError(
         409,
         "User document or name already exists",
         "addUser",
@@ -77,7 +77,7 @@ export async function cancelRegistration(uid: string): Promise<void> {
     (committed === undefined || committed[1]?.rowCount === 0) &&
     (await exists(uid))
   ) {
-    throw new MonkeyError(409, "Account registration is already complete");
+    throw new ApiError(409, "Account registration is already complete");
   }
 }
 export async function exists(uid: string): Promise<boolean> {
@@ -92,7 +92,7 @@ export async function exists(uid: string): Promise<boolean> {
 export async function resetUser(uid: string): Promise<void> {
   await mutateUser(uid, async (user) => {
     if (user.banned) {
-      throw new MonkeyError(403, "Banned users cannot reset their account");
+      throw new ApiError(403, "Banned users cannot reset their account");
     }
     Object.assign(user, {
       personalBests: emptyPb(),
@@ -131,7 +131,7 @@ export async function updateName(
   previousName: string,
 ): Promise<void> {
   if (name === previousName) {
-    throw new MonkeyError(400, "New name is the same as the old name");
+    throw new ApiError(400, "New name is the same as the old name");
   }
   try {
     await mutateUser(uid, (user) => {
@@ -142,7 +142,7 @@ export async function updateName(
     });
   } catch (error) {
     if (isUniqueViolation(error)) {
-      throw new MonkeyError(409, "Username already taken", name);
+      throw new ApiError(409, "Username already taken", name);
     }
     throw error;
   }

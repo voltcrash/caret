@@ -1,6 +1,6 @@
 import { getSessionCookie } from "better-auth/cookies";
 import type { RequestAuthenticationOptions } from "@caret/contracts/util/api";
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import { verifySession, type SessionLookup } from "../utils/auth";
 import { isDevEnvironment } from "../utils/misc";
 import { GUEST, type Actor } from "../services/context";
@@ -59,7 +59,7 @@ export async function authenticate(input: {
     );
   }
   if (isPublicOperation(options)) return { ...GUEST };
-  throw new MonkeyError(
+  throw new ApiError(
     401,
     "Unauthorized",
     `endpoint: ${input.endpoint} no authorization header found`,
@@ -74,7 +74,7 @@ async function authenticateWithAuthHeader(
   const [authScheme, token] = authHeader.split(" ");
 
   if (token === undefined) {
-    throw new MonkeyError(
+    throw new ApiError(
       401,
       "Missing authentication token",
       "authenticateWithAuthHeader",
@@ -93,7 +93,7 @@ async function authenticateWithAuthHeader(
       return authenticateWithUid(token);
   }
 
-  throw new MonkeyError(
+  throw new ApiError(
     401,
     "Unknown authentication scheme",
     `The authentication scheme "${authScheme}" is not implemented`,
@@ -111,7 +111,7 @@ async function authenticateWithSession(
     options.requireFreshToken === true &&
     Date.now() - session.createdAt.getTime() > FRESH_SESSION_MS
   ) {
-    throw new MonkeyError(
+    throw new ApiError(
       401,
       "Unauthorized",
       "This endpoint requires a fresh token",
@@ -122,12 +122,12 @@ async function authenticateWithSession(
 
 function authenticateWithUid(token: string): Actor {
   if (!isDevEnvironment()) {
-    throw new MonkeyError(401, "Bearer type uid is not supported");
+    throw new ApiError(401, "Bearer type uid is not supported");
   }
   const [uid, email] = token.split("|");
 
   if (uid === undefined || uid === "") {
-    throw new MonkeyError(401, "Missing uid");
+    throw new ApiError(401, "Missing uid");
   }
 
   return { type: "Bearer", uid, email: email ?? "" };

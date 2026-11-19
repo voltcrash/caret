@@ -1,4 +1,4 @@
-import MonkeyError from "../utils/error";
+import ApiError from "../utils/error";
 import type { Actor } from "../services/context";
 import { DBUser, getPartialUser } from "../dal/user";
 import { isAdmin } from "../dal/admin-uids";
@@ -73,14 +73,14 @@ export async function verifyPermissions(
   const checks = requiredPermissionIds.map((id) => permissionChecks[id]);
 
   if (checks.some((it) => it === undefined)) {
-    throw new MonkeyError(500, "Unknown permission id.");
+    throw new ApiError(500, "Unknown permission id.");
   }
 
   //handle request checks
   const requestChecks = checks.filter((it) => it.type === "request");
   for (const check of requestChecks) {
     if (!(await check.criteria(actor, metadata))) {
-      throw new MonkeyError(
+      throw new ApiError(
         403,
         check.invalidMessage ?? "You don't have permission to do this.",
       );
@@ -92,7 +92,7 @@ export async function verifyPermissions(
   const checkResult = await checkUserPermissions(actor, userChecks);
 
   if (!checkResult.passed) {
-    throw new MonkeyError(
+    throw new ApiError(
       403,
       checkResult.invalidMessage ?? "You don't have permission to do this.",
     );

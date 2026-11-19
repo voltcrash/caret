@@ -1,6 +1,6 @@
 import type { ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
-import MonkeyError from "../../../utils/error";
+import ApiError from "../../../utils/error";
 import { ApiResponse } from "../../../utils/api-response";
 import * as Dates from "date-fns";
 import { UTCDateMini } from "@date-fns/utc";
@@ -32,7 +32,7 @@ export async function setStreakHourOffset(
     user.streak?.hourOffset !== undefined &&
     user.streak?.hourOffset !== null
   ) {
-    throw new MonkeyError(403, "Streak hour offset already set");
+    throw new ApiError(403, "Streak hour offset already set");
   }
 
   await UserDAL.setStreakHourOffset(uid, hourOffset, input.query?.client);
@@ -92,11 +92,11 @@ export async function getTestActivity(
   const userHasPremium = await UserDAL.checkIfUserIsPremium(uid, user);
 
   if (!premiumFeaturesEnabled) {
-    throw new MonkeyError(503, "Premium features are disabled");
+    throw new ApiError(503, "Premium features are disabled");
   }
 
   if (!userHasPremium) {
-    throw new MonkeyError(503, "User does not have premium");
+    throw new ApiError(503, "User does not have premium");
   }
 
   return new ApiResponse(
