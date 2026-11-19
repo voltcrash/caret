@@ -5,7 +5,7 @@ import { decodeText } from "@caret/typing-engine/text";
 import { getBrowserEngine } from "../engine/owner.client";
 import { captureTypingRoute } from "../scope";
 import { getEngineSession } from "./session.client";
-import { getContentHost } from "./content.client";
+import { getContentHost } from "./content/host.client";
 import * as TestUI from "./test/ui";
 import * as TestWords from "./test/words";
 import * as TestLogic from "./test/logic";

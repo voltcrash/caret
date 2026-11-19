@@ -1,19 +1,22 @@
-import { createAppOwned } from "../../../app/application";
-import { appObject, createAccountSignal } from "../../../app/state";
+import { createAppOwned } from "../../../../app/application";
+import { appObject, createAccountSignal } from "../../../../app/state";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
-import { getEngineSession } from "./session.client";
-import * as TestWords from "./test/words";
-import { showNoticeNotification } from "../../../ts/states/notifications";
+import { getEngineSession } from "../session.client";
+import * as TestWords from "../test/words";
+import { showNoticeNotification } from "../../../../ts/states/notifications";
 
-import { getConfig, getMutableConfig } from "../../../ts/config/store";
-import { setConfig } from "../../../ts/config/setters";
+import { getConfig, getMutableConfig } from "../../../../ts/config/store";
+import { setConfig } from "../../../../ts/config/setters";
 import * as CustomText from "./custom-text";
-import { configEvent } from "../../../ts/events/config";
+import { configEvent } from "../../../../ts/events/config";
 import { Mode } from "@caret/schemas/shared";
 import { CustomTextSettings } from "@caret/schemas/results";
-import { setCustomTextIndicator } from "../../../ts/states/core";
-import { getLastEventLog } from "../../../ts/states/test";
-import { practiceHistory, type PracticeWord } from "../history/practice.client";
+import { setCustomTextIndicator } from "../../../../ts/states/core";
+import { getLastEventLog } from "../../../../ts/states/test";
+import {
+  practiceHistory,
+  type PracticeWord,
+} from "../../history/practice.client";
 
 type Before = {
   mode: Mode | null;

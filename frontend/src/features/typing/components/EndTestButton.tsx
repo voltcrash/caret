@@ -6,7 +6,7 @@ import { createEffectOn } from "../../../ts/hooks/effects";
 import { getCustomTextIndicator } from "../../../ts/states/core";
 import { isTestActive, setBailedOut } from "../../../ts/states/test";
 import { canQuickRestart } from "../../../ts/utils/quick-restart";
-import * as CustomText from "../runtime/custom-text";
+import * as CustomText from "../runtime/content/custom-text";
 import * as TestLogic from "../runtime/test/logic";
 
 const CONFIRM_MS = 3000;

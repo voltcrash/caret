@@ -111,7 +111,7 @@ vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   appendEmptyWordElement: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/content.client", () => ({
+vi.mock("../../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({
     prepare: async () => {
       mocks.session?.dispose();
@@ -155,7 +155,7 @@ vi.mock("../../../src/features/typing/runtime/caret", () => ({
 vi.mock("../../../src/features/typing/runtime/replay", () => ({
   pauseReplay: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/practise-words", () => ({
+vi.mock("../../../src/features/typing/runtime/content/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));
@@ -249,7 +249,7 @@ import { getEngineSession } from "../../../src/features/typing/runtime/session.c
 import { analyzeLog } from "@caret/typing-engine/browser.client";
 import { encodeText } from "@caret/typing-engine/text";
 import * as SlowTimer from "../../../src/ts/states/slow-timer";
-import * as CustomText from "../../../src/features/typing/runtime/custom-text";
+import * as CustomText from "../../../src/features/typing/runtime/content/custom-text";
 import {
   restart,
   startTest,

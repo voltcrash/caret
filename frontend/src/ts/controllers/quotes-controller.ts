@@ -1,4 +1,4 @@
-import { getContentHost } from "../../features/typing/runtime/content.client";
+import { getContentHost } from "../../features/typing/runtime/content/host.client";
 import { operation } from "../../data/operations";
 import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";

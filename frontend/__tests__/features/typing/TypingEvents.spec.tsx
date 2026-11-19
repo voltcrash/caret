@@ -71,7 +71,7 @@ vi.mock("../../../src/ts/states/overlay-visibility", () => ({
 vi.mock("../../../src/ts/utils/quick-restart", () => ({
   canQuickRestart: () => state.quickRestart,
 }));
-vi.mock("../../../src/features/typing/runtime/custom-text", () => ({
+vi.mock("../../../src/features/typing/runtime/content/custom-text", () => ({
   getData: () => ({}),
 }));
 vi.mock("../../../src/features/typing/runtime/focus", () => ({

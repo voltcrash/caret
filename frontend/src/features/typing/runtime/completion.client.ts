@@ -5,7 +5,7 @@ import {
   showErrorNotification,
   showSuccessNotification,
 } from "../../../ts/states/notifications";
-import * as CustomText from "./custom-text";
+import * as CustomText from "./content/custom-text";
 
 import * as PaceCaret from "./pace-caret";
 import * as DB from "../../../ts/db";
@@ -37,7 +37,7 @@ import {
   getMissedWords,
   getWordBurstHistory,
 } from "../engine/analysis.client";
-import * as PractiseWords from "./practise-words";
+import * as PractiseWords from "./content/practise-words";
 import { recordGuestScore } from "../history/guest-scores.client";
 import { practiceHistory } from "../history/practice.client";
 type InvalidResultReason =

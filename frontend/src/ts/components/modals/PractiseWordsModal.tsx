@@ -1,7 +1,7 @@
 import { For, JSXElement, ParentProps, createSignal } from "solid-js";
 
 import { practiceHistory } from "../../../features/typing/history/practice.client";
-import * as PractiseWords from "../../../features/typing/runtime/practise-words";
+import * as PractiseWords from "../../../features/typing/runtime/content/practise-words";
 import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { hideModalAndClearChain } from "../../states/modals";
 import { AnimatedModal } from "../common/AnimatedModal";

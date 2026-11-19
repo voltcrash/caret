@@ -11,11 +11,11 @@ import {
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
 import { getBrowserEngine } from "./engine/owner.client";
+import { usePractiseEvents } from "./runtime/content/practise-words";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { useEngineInputProjection } from "./runtime/input-projection.client";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
-import { usePractiseEvents } from "./runtime/practise-words";
 import { useTestLogicEvents } from "./runtime/test/logic";
 import * as TestTimer from "./runtime/test/timer";
 import { useTtsEvents } from "./runtime/tts";

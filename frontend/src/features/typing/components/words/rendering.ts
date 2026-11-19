@@ -18,7 +18,7 @@ import { getMutableConfig } from "../../../../ts/config/store";
 import * as SlowTimer from "../../../../ts/states/slow-timer";
 import { getActiveWordIndex } from "../../../../ts/states/test";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
-import * as CustomText from "../../runtime/custom-text";
+import * as CustomText from "../../runtime/content/custom-text";
 import { findSingleActiveFunboxWithFunction } from "../../runtime/funbox/list";
 import * as PaceCaret from "../../runtime/pace-caret";
 import * as TestWords from "../../runtime/test/words";

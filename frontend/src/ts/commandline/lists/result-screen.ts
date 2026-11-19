@@ -7,7 +7,7 @@ import {
 } from "../../states/notifications";
 import * as TestWords from "../../../features/typing/runtime/test/words";
 import { getMutableConfig } from "../../config/store";
-import * as PractiseWords from "../../../features/typing/runtime/practise-words";
+import * as PractiseWords from "../../../features/typing/runtime/content/practise-words";
 import { Command, CommandsSubgroup } from "../types";
 import * as TestScreenshot from "../../../features/typing/runtime/test/screenshot";
 import { getInputHistory } from "../../../features/typing/engine/analysis.client";

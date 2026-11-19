@@ -51,7 +51,7 @@ vi.mock("../../../src/features/typing/engine/owner.client", () => ({
     captureSession: () => ({ isCurrent: () => true }),
   }),
 }));
-vi.mock("../../../src/features/typing/runtime/content.client", () => ({
+vi.mock("../../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({ supplyActive: vi.fn() }),
 }));
 vi.mock("../../../src/features/typing/runtime/test/words", () => {
@@ -106,7 +106,7 @@ vi.mock("../../../src/ts/input/state", () => ({
   isAwaitingNextWord: () => false,
 }));
 
-vi.mock("../../../src/features/typing/runtime/custom-text", () => ({
+vi.mock("../../../src/features/typing/runtime/content/custom-text", () => ({
   getLimit: () => ({ mode: "words", value: 0 }),
 }));
 

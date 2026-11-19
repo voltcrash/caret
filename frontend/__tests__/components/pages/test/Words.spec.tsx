@@ -95,7 +95,7 @@ vi.mock("../../../../src/features/typing/runtime/pace-caret", () => ({
   getCaret: () => mocks.caret,
   resetCaretPosition: vi.fn(),
 }));
-vi.mock("../../../../src/features/typing/runtime/custom-text", () => ({
+vi.mock("../../../../src/features/typing/runtime/content/custom-text", () => ({
   getLimitMode: () => "word",
   getLimitValue: () => 15,
 }));

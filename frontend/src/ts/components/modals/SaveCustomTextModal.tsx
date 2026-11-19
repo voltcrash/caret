@@ -2,7 +2,7 @@ import { createForm } from "@tanstack/solid-form";
 import { Accessor, JSXElement } from "solid-js";
 import { z } from "zod";
 
-import * as CustomText from "../../../features/typing/runtime/custom-text";
+import * as CustomText from "../../../features/typing/runtime/content/custom-text";
 import { setCustomTextIndicator } from "../../states/core";
 import { hideModal } from "../../states/modals";
 import {

@@ -58,7 +58,7 @@ const mocks = vi.hoisted(() => ({
   onFinish: undefined as ((event: { reason?: string }) => void) | undefined,
 }));
 
-vi.mock("../../src/features/typing/runtime/content.client", () => ({
+vi.mock("../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({ prepare: mocks.generate }),
 }));
 vi.mock("../../src/features/typing/engine/owner.client", () => ({
@@ -177,7 +177,7 @@ vi.mock("../../src/features/typing/runtime/test/timer", () => ({
 vi.mock("../../src/features/typing/runtime/replay", () => ({
   pauseReplay: vi.fn(),
 }));
-vi.mock("../../src/features/typing/runtime/practise-words", () => ({
+vi.mock("../../src/features/typing/runtime/content/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));

@@ -51,7 +51,7 @@ import * as Arrays from "../../../../ts/utils/arrays";
 import * as TodayTracker from "../today-tracker";
 
 import * as Focus from "../focus";
-import * as CustomText from "../custom-text";
+import * as CustomText from "../content/custom-text";
 import * as Funbox from "../funbox/funbox";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
 import { CompletedEvent } from "@caret/schemas/results";

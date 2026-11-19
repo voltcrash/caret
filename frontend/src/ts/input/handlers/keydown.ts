@@ -9,7 +9,7 @@ import {
 import * as KeyConverter from "../../utils/key-converter";
 import * as ShiftTracker from "../../../features/typing/runtime/shift-tracker";
 import { canQuickRestart } from "../../utils/quick-restart";
-import * as CustomText from "../../../features/typing/runtime/custom-text";
+import * as CustomText from "../../../features/typing/runtime/content/custom-text";
 import {
   getLastBailoutAttempt,
   setCorrectShiftUsed,

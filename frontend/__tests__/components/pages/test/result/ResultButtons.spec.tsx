@@ -61,7 +61,7 @@ vi.mock("../../../../../src/ts/states/core", async () => {
 });
 
 import { ResultButtons } from "../../../../../src/features/typing/components/result/ResultButtons";
-import { setPracticeResult } from "../../../../../src/features/typing/runtime/practise-words";
+import { setPracticeResult } from "../../../../../src/features/typing/runtime/content/practise-words";
 import { getConfig, setConfigStore } from "../../../../../src/ts/config/store";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
 import { setResultState } from "../../../../../src/ts/states/result";

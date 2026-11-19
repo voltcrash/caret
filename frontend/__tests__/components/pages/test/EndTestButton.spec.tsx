@@ -27,7 +27,7 @@ vi.mock("../../../../src/ts/states/test", async () => ({
   setBailedOut: vi.fn(),
 }));
 
-vi.mock("../../../../src/features/typing/runtime/custom-text", () => ({
+vi.mock("../../../../src/features/typing/runtime/content/custom-text", () => ({
   getData: () => ({ limit: { mode: "word", value: 0 } }),
 }));
 

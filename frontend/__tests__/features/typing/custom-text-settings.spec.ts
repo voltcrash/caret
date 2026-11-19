@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
-import * as CustomText from "../../../src/features/typing/runtime/custom-text";
+import * as CustomText from "../../../src/features/typing/runtime/content/custom-text";
 
 afterEach(() => vi.restoreAllMocks());
 

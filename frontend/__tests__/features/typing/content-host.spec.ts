@@ -57,7 +57,7 @@ vi.mock("../../../src/ts/utils/json-data", async (original) => ({
 vi.mock("../../../src/ts/db", () => ({ getSnapshot: () => null }));
 import { mountApplication } from "../../../src/app/application";
 import { getMutableConfig } from "../../../src/ts/config/store";
-import { getContentHost } from "../../../src/features/typing/runtime/content.client";
+import { getContentHost } from "../../../src/features/typing/runtime/content/host.client";
 import {
   initialContentKey,
   initialTypingState,

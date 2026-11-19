@@ -1,5 +1,5 @@
 import { getMutableConfig } from "../../../../ts/config/store";
-import * as CustomText from "../custom-text";
+import * as CustomText from "../content/custom-text";
 import {
   getLastEventLog,
   getKoreanStatus,

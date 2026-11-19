@@ -1,7 +1,7 @@
 import { applyPendingLocalConfig } from "../../../ts/config/lifecycle";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
 import { getBrowserEngine } from "../engine/owner.client";
-import { getContentHost } from "./content.client";
+import { getContentHost } from "./content/host.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import {
   applyEngineRecovery,
@@ -18,7 +18,7 @@ import {
   showNoticeNotification,
   showErrorNotification,
 } from "../../../ts/states/notifications";
-import * as CustomText from "./custom-text";
+import * as CustomText from "./content/custom-text";
 
 import * as Funbox from "./funbox/funbox";
 

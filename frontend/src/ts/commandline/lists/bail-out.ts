@@ -1,6 +1,6 @@
 import { getMutableConfig } from "../../config/store";
 import { getCustomTextIndicator } from "../../states/core";
-import * as CustomText from "../../../features/typing/runtime/custom-text";
+import * as CustomText from "../../../features/typing/runtime/content/custom-text";
 import { setBailedOut } from "../../states/test";
 import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { Command, CommandsSubgroup } from "../types";

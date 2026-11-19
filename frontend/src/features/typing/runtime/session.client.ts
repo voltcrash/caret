@@ -36,7 +36,7 @@ import type {
   RestartOptions,
 } from "@caret/typing-engine/browser.client";
 import { getMutableConfig } from "../../../ts/config/store";
-import * as CustomText from "./custom-text";
+import * as CustomText from "./content/custom-text";
 import type { CompletedEvent } from "@caret/schemas/results";
 
 type NativeCompletion = Extract<Query, { op: "completed" }>["context"];

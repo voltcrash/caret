@@ -7,7 +7,7 @@ import { encodeText, decodeText } from "@caret/typing-engine/text";
 import {
   engineLanguage,
   engineQuotes,
-} from "../../src/features/typing/runtime/content-assets.client";
+} from "../../src/features/typing/runtime/content/assets.client";
 import type { Config } from "@caret/schemas/configs";
 import type { CustomTextSettings } from "@caret/schemas/results";
 import type { LanguageObject } from "@caret/schemas/languages";

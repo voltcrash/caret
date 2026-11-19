@@ -2,12 +2,12 @@ import { languageHashes } from "virtual:language-hashes";
 import {
   initialTypingState,
   initialContentKey,
-} from "../initial/snapshot.client";
-import { saveNextTypingPreview } from "../initial/next-snapshot.client";
-import { createAppOwned } from "../../../app/application";
-import { getBrowserEngine } from "../engine/owner.client";
-import { getEngineSession } from "./session.client";
-import { captureTypingRoute } from "../scope";
+} from "../../initial/snapshot.client";
+import { saveNextTypingPreview } from "../../initial/next-snapshot.client";
+import { createAppOwned } from "../../../../app/application";
+import { getBrowserEngine } from "../../engine/owner.client";
+import { getEngineSession } from "../session.client";
+import { captureTypingRoute } from "../../scope";
 import { projectEngineConfig } from "@caret/typing-engine/config";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { decodeText, encodeText } from "@caret/typing-engine/text";
@@ -24,23 +24,23 @@ import {
   type Language,
 } from "@caret/schemas/languages";
 import { QuoteDataSchema } from "@caret/schemas/quotes";
-import { getMutableConfig } from "../../../ts/config/store";
-import { cachedFetchJson, getLanguage } from "../../../ts/utils/json-data";
-import { removeLanguageSize } from "../../../ts/utils/strings";
+import { getMutableConfig } from "../../../../ts/config/store";
+import { cachedFetchJson, getLanguage } from "../../../../ts/utils/json-data";
+import { removeLanguageSize } from "../../../../ts/utils/strings";
 import {
   getSelectedQuoteId,
   isRepeated,
   setCurrentQuote,
   getCurrentQuote,
-} from "../../../ts/states/test";
-import { showNoticeNotification } from "../../../ts/states/notifications";
-import { getSnapshot } from "../../../ts/db";
+} from "../../../../ts/states/test";
+import { showNoticeNotification } from "../../../../ts/states/notifications";
+import { getSnapshot } from "../../../../ts/db";
 import * as CustomText from "./custom-text";
 import {
   engineLanguage,
   engineQuotes,
   fetchEngineSource,
-} from "./content-assets.client";
+} from "./assets.client";
 
 function random(): Random {
   return {

@@ -11,7 +11,7 @@ import {
   isRepeated,
 } from "../../../ts/states/test";
 import { buildEventLog, getTestSession } from "./events/data";
-import * as CustomText from "./custom-text";
+import * as CustomText from "./content/custom-text";
 import { words } from "./test/words";
 
 /** Capture once after finalization, before any module/animation await. */

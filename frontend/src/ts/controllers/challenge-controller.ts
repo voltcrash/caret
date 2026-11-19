@@ -6,7 +6,7 @@ import {
   showNoticeNotification,
   showSuccessNotification,
 } from "../states/notifications";
-import * as CustomText from "../../features/typing/runtime/custom-text";
+import * as CustomText from "../../features/typing/runtime/content/custom-text";
 import * as Funbox from "../../features/typing/runtime/funbox/funbox";
 
 import { setConfig } from "../config/setters";
