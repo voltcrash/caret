@@ -1,4 +1,5 @@
-import { createAppSignal } from "../../app/state";
+import { createAppOwned } from "../../app/application";
+import { appObject, createAppSignal } from "../../app/state";
 
 import type { EventLog, TestEventType } from "@caret/web-shared/events/types";
 
@@ -46,10 +47,9 @@ export { getVideoUrl };
 export const [getDistributionOpen, setDistributionOpen] = createAppSignal(true);
 export const [getScatterOpen, setScatterOpen] = createAppSignal(true);
 
-// oxlint-disable-next-line caret-rules/no-module-let -- Mark ids only need to be unique across mounts.
-let markSerial = 0;
+const marks = appObject(createAppOwned(() => ({ serial: 0 })));
 export function nextMarkId(): string {
-  return `mark-${++markSerial}`;
+  return `mark-${++marks.serial}`;
 }
 
 function getEventLogMaxMs(log: EventLog): number {

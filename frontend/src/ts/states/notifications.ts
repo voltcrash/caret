@@ -1,6 +1,6 @@
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../app/application";
-import { createAppStore } from "../../app/state";
+import { appObject, createAppStore } from "../../app/state";
 
 import { createErrorMessage } from "../utils/error";
 import { MessageContent } from "../types/message-content";
@@ -19,8 +19,7 @@ export type Notification = {
   onDismiss?: (reason: "click" | "timeout" | "clear") => void;
 };
 
-// oxlint-disable-next-line caret-rules/no-module-let -- Ids only need to be unique; a counter shared across mounts keeps them so.
-let id = 0;
+const ids = appObject(createAppOwned(() => ({ next: 0 })));
 const [notifications, setNotifications] = createAppStore<Notification[]>([]);
 const timers = createAppOwned(() => {
   const timers = new Map<number, ReturnType<typeof setTimeout>>();
@@ -34,7 +33,7 @@ const timers = createAppOwned(() => {
 function addNotificationToStore(
   notification: Omit<Notification, "id">,
 ): number {
-  const newId = id++;
+  const newId = ids.next++;
   setNotifications((prev) => [{ ...notification, id: newId }, ...prev]);
   return newId;
 }

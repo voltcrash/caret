@@ -86,7 +86,10 @@ const plugin = {
     "no-module-let": defineRule({
       createOnce(context) {
         const check = (node) => {
-          if (node?.type !== "VariableDeclaration" || node.kind === "const") {
+          if (
+            node?.type !== "VariableDeclaration" ||
+            (node.kind !== "let" && node.kind !== "var")
+          ) {
             return;
           }
           context.report({
