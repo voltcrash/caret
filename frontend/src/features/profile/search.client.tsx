@@ -4,13 +4,13 @@ import { useQueryClient } from "@tanstack/solid-query";
 import { useNavigate } from "@tanstack/solid-router";
 import { createSignal, type JSXElement, onMount } from "solid-js";
 
-import { isUserNotFound, profileOptions } from "../../data/profile";
 import { H2 } from "../../ts/components/common/Headers";
 import { InputField } from "../../ts/components/ui/form/InputField";
 import { SubmitButton } from "../../ts/components/ui/form/SubmitButton";
 import { fromSchema } from "../../ts/components/ui/form/utils";
 import { useRef } from "../../ts/hooks/useRef";
 import { showNoticeNotification } from "../../ts/states/notifications";
+import { isUserNotFound, profileOptions } from "./queries";
 
 /** `/profile` lookup; a fresh form per visit, focused on entry. */
 export function ProfileSearch(): JSXElement {

@@ -8,7 +8,6 @@ import { createForm } from "@tanstack/solid-form";
 import { For } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import { invalidateMyProfile } from "../../../data/queries/profile";
 import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
 import { Button } from "../../../ts/components/common/Button";
 import { UserBadge } from "../../../ts/components/common/UserBadge";
@@ -25,6 +24,7 @@ import {
   showSuccessNotification,
 } from "../../../ts/states/notifications";
 import { cn } from "../../../ts/utils/cn";
+import { invalidateMyProfile } from "../my-profile.client";
 
 export function EditProfile() {
   const snapshot = getSnapshot();
