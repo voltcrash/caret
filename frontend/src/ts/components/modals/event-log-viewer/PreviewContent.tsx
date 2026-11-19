@@ -9,7 +9,7 @@ import {
   untrack,
 } from "solid-js";
 
-import { getInspection } from "../../../../features/typing/analysis.client";
+import { getInspection } from "../../../../features/typing/engine/analysis.client";
 import {
   getCurrentMs,
   getVisibleTypes,

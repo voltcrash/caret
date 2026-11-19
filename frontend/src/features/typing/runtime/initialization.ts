@@ -1,6 +1,6 @@
 import { applyPendingLocalConfig } from "../../../ts/config/lifecycle";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
-import { getBrowserEngine } from "../engine.client";
+import { getBrowserEngine } from "../engine/owner.client";
 import { getContentHost } from "./content.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import {

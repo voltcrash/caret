@@ -80,7 +80,7 @@ describe("EndTestButton", () => {
   });
 });
 
-vi.mock("../../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     status: () => ({ state: "ready" }),
     api: () => ({ policy: evaluatePolicy }),

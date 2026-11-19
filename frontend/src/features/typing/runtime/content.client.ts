@@ -5,7 +5,7 @@ import {
 } from "../initial/snapshot.client";
 import { saveNextTypingPreview } from "../initial/next-snapshot.client";
 import { createAppOwned } from "../../../app/application";
-import { getBrowserEngine } from "../engine.client";
+import { getBrowserEngine } from "../engine/owner.client";
 import { getEngineSession } from "./session.client";
 import { captureTypingRoute } from "../scope";
 import { projectEngineConfig } from "@caret/typing-engine/config";

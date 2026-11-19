@@ -1,4 +1,4 @@
-import { getBrowserEngine } from "./engine.client";
+import { getBrowserEngine } from "./owner.client";
 import type {
   PolicyQuery,
   PolicyResponse,

@@ -10,7 +10,7 @@ import {
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
-import { getBrowserEngine } from "./engine.client";
+import { getBrowserEngine } from "./engine/owner.client";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { useEngineInputProjection } from "./runtime/input-projection.client";

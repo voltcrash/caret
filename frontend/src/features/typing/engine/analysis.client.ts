@@ -1,5 +1,5 @@
-import { createAppOwned } from "../../app/application";
-import { getBrowserEngine } from "./engine.client";
+import { createAppOwned } from "../../../app/application";
+import { getBrowserEngine } from "./owner.client";
 import { decodeText, toEngineLog } from "@caret/typing-engine/text";
 import type { WebLog } from "@caret/typing-engine/text";
 import type { Query, Response } from "@caret/typing-engine/browser.client";

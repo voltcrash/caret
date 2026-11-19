@@ -4,7 +4,7 @@ import { getAllFunboxes } from "@caret/funbox";
 import {
   checkCompatibility,
   enginePolicyReady,
-} from "../../../features/typing/policy.client";
+} from "../../../features/typing/engine/policy.client";
 import { Command, CommandsSubgroup } from "../types";
 import { getActiveFunboxNames } from "../../../features/typing/runtime/funbox/list";
 

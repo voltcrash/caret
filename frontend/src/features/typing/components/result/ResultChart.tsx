@@ -27,7 +27,7 @@ import * as Arrays from "../../../../ts/utils/arrays";
 import { cn } from "../../../../ts/utils/cn";
 import { blendTwoHexColors } from "../../../../ts/utils/colors";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
-import { getWordIndexesForSecond } from "../../analysis.client";
+import { getWordIndexesForSecond } from "../../engine/analysis.client";
 import { toggleResultChartLegend } from "../../runtime/result";
 
 type LegendButton = {

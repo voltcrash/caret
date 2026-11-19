@@ -1,6 +1,6 @@
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../../app/application";
-import { getBrowserEngine } from "../engine.client";
+import { getBrowserEngine } from "../engine/owner.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { getTypingLifecycle } from "../lifecycle/controller";
 import { isUpdateReserved } from "../../../app/update-safety";

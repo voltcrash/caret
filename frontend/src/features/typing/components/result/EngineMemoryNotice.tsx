@@ -6,7 +6,7 @@ import {
   getResultVisible,
   isResultCalculating,
 } from "../../../../ts/states/test";
-import { getBrowserEngine } from "../../engine.client";
+import { getBrowserEngine } from "../../engine/owner.client";
 import { resultOutbox } from "../../result-outbox.client";
 
 /** A new document safely releases Wasm's high-water memory and every handle. */

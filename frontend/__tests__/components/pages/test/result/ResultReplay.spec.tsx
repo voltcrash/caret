@@ -60,7 +60,7 @@ vi.mock("../../../../../src/features/typing/runtime/events/data", () => ({
       analyzeLog(toEngineLog(log()), { op: "replay", zen: false }),
   }),
 }));
-vi.mock("../../../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     api: () => ({
       createReplay: (data: Parameters<typeof analyzeLog>[0], zen: boolean) =>
@@ -68,7 +68,7 @@ vi.mock("../../../../../src/features/typing/engine.client", () => ({
     }),
   }),
 }));
-vi.mock("../../../../../src/features/typing/analysis.client", () => ({
+vi.mock("../../../../../src/features/typing/engine/analysis.client", () => ({
   getWpmHistory: () => [60, 70],
 }));
 

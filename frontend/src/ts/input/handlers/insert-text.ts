@@ -1,6 +1,6 @@
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { decodeText, encodeText } from "@caret/typing-engine/text";
-import { getBrowserEngine } from "../../../features/typing/engine.client";
+import { getBrowserEngine } from "../../../features/typing/engine/owner.client";
 import { getEngineSession } from "../../../features/typing/runtime/session.client";
 import { getContentHost } from "../../../features/typing/runtime/content.client";
 import { getMutableConfig } from "../../config/store";

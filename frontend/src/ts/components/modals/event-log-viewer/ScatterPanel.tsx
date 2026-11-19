@@ -5,8 +5,8 @@ import { createMemo, JSXElement, Show } from "solid-js";
 import {
   getKeypressDurations,
   getKeypressSpacing,
-} from "../../../../features/typing/analysis.client";
-import { requireBrowserAudit } from "../../../../features/typing/audit.client";
+} from "../../../../features/typing/engine/analysis.client";
+import { requireBrowserAudit } from "../../../../features/typing/engine/audit.client";
 import {
   getScatterOpen,
   setScatterOpen,

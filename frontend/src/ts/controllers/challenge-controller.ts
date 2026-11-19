@@ -1,5 +1,5 @@
 import { createAppOwned } from "../../app/application";
-import { getBrowserAudit } from "../../features/typing/audit.client";
+import { getBrowserAudit } from "../../features/typing/engine/audit.client";
 import { captureTypingMount } from "../../features/typing/scope";
 import {
   showErrorNotification,

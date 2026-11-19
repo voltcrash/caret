@@ -18,7 +18,7 @@ import {
 } from "../../../ts/states/words-layout";
 import { cn } from "../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../ts/utils/pointer";
-import { getBrowserEngine } from "../engine.client";
+import { getBrowserEngine } from "../engine/owner.client";
 import { focusWords } from "../runtime/test-ui";
 import { words } from "../runtime/test-words";
 import { CapsWarning } from "./CapsWarning";

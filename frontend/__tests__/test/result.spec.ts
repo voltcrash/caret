@@ -88,7 +88,7 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getKoreanStatus: () => false,
   isTestInvalid: () => state.testInvalid,
 }));
-vi.mock("../../src/features/typing/analysis.client", () => ({
+vi.mock("../../src/features/typing/engine/analysis.client", () => ({
   getAccuracy: () => state.accuracy,
   getRawHistory: () => [],
   getTimerBoundaryLabels: () => [],
@@ -673,7 +673,7 @@ describe("result update", () => {
   });
 });
 
-vi.mock("../../src/features/typing/engine.client", () => ({
+vi.mock("../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     status: () => ({ state: "ready" }),
     api: () => ({ policy: evaluatePolicy }),

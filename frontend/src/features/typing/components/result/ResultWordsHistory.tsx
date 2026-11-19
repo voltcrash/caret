@@ -36,7 +36,7 @@ import {
   getInputHistory,
   getMissedWords,
   getWordBurstHistory,
-} from "../../analysis.client";
+} from "../../engine/analysis.client";
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,

@@ -1,5 +1,5 @@
 import { createSignal, onCleanup } from "solid-js";
-import { createAppOwned } from "../../app/application";
+import { createAppOwned } from "../../../app/application";
 import type { Audit } from "@caret/typing-engine/audit";
 
 /**

@@ -17,7 +17,7 @@ const mocks = vi.hoisted(() => {
     altGrReset: vi.fn(),
   };
 });
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     releaseSession: mocks.engineRelease,
     status: () => ({ state: mocks.engineFailed ? "failed" : "ready" }),

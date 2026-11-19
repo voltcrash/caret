@@ -2,9 +2,9 @@ import type { EventLog } from "@caret/web-shared/events/types";
 
 import { JSXElement, Show, createSignal, onCleanup } from "solid-js";
 
-import { getInspection } from "../../../features/typing/analysis.client";
-import { getBrowserAudit } from "../../../features/typing/audit.client";
-import { getBrowserEngine } from "../../../features/typing/engine.client";
+import { getInspection } from "../../../features/typing/engine/analysis.client";
+import { getBrowserAudit } from "../../../features/typing/engine/audit.client";
+import { getBrowserEngine } from "../../../features/typing/engine/owner.client";
 import {
   getError,
   getEventLog,

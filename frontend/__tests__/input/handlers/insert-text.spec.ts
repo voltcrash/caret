@@ -43,7 +43,7 @@ const native = vi.hoisted(() => ({
     | import("@caret/typing-engine/browser.client").BrowserSession
     | undefined,
 }));
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     session: () => native.session,
     generation: () => 1,
