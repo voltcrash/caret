@@ -65,6 +65,15 @@ export async function validateSubmission(
     );
   }
 
+  // An offline completion time comes from the device. Its duration must still
+  // fit within the account's lifetime at receipt, even for out-of-order uploads.
+  if (
+    offline &&
+    completedEvent.testDuration * 1000 > Date.now() - (user.addedAt ?? 0) + 1000
+  ) {
+    throw new MonkeyError(400, "Offline result duration exceeds account age");
+  }
+
   if (isTestTooShort(completedEvent)) {
     const status = MonkeyStatusCodes.TEST_TOO_SHORT;
     throw new MonkeyError(status.code, status.message);

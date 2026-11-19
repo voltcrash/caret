@@ -240,6 +240,13 @@ describe("production anticheat with PostgreSQL", () => {
         .first("count"),
     ).toBe(1);
   });
+  it("bounds offline duration to server account age before granting practice credit", async () => {
+    const user = await account(0);
+    expect(
+      (await submit(user, { offline: true, timestamp: Date.now() })).status,
+    ).toBe(400);
+    await assertNoProgress(user.uid);
+  });
   it.each(["/api/results", "/results"])(
     "rejects forged scores at %s without saving progression, even with the old bypass binding",
     async (path) => {
