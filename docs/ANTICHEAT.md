@@ -22,7 +22,9 @@ telemetry checks; verification/leaderboard opt-out exempts only the bot heuristi
   exclusion of the last gap. Both key sentinels must appear together and only
   after 122 seconds.
 - Server timestamps bound result duration plus credited abandoned time against
-  the previous save; first saves use server account creation time. The existing
+  the previous online save. The first online save uses server account creation time,
+  including when the account already has offline history. Offline duration must
+  fit within the account age at receipt. The existing
   one-second allowance applies. Accounts without creation time fall
   back to the epoch. Database read failures fail closed.
 
@@ -88,7 +90,10 @@ behavior version for compatibility monitoring.
 `anticheat.logVerification.requireForRanked` defaults false. Enable it only
 after reviewing compatibility; it requires a matching log for new PBs and
 all-time/daily/weekly ranked progression while preserving unverified practice
-saves. Existing rankings are not rewritten.
+saves. Tag edits apply the same verification requirement. Bailouts and new stop-on-letter
+results with errors remain ineligible for tag PBs after saving. Older stored results
+may lack the stop-on-letter setting. All-time boards evaluate the eligible run's
+own score. Existing rankings are not rewritten.
 
 Logs that do not fit, mostly from long tests, are omitted, as on clients
 without `CompressionStream`; such results save unverified, as before.
@@ -156,7 +161,9 @@ account. `0` disables escalation; admins clear the flag with
 
 ## Timing samples
 
-Raw key timings are behavioural data, so capture is off by default.
+Raw key timings are behavioural data, so capture is off by default. Routine
+score audits retain summaries. With capture enabled, raw samples go to the audit
+table and the Worker console records only the sample event and user ID.
 `anticheat.samples.captureFlagged` stores the gaps/holds of flagged results;
 `randomRate` (0-1) stores a random baseline of reviewed results. Both write
 non-important `anticheat_sample` audits, which the hourly task deletes after 30
