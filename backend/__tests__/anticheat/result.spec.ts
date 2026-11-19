@@ -76,6 +76,17 @@ describe("result integrity", () => {
       expect(getResultFailure(completedEvent({ mode2 }))).toBe("invalid-mode");
     },
   );
+  it.each([
+    ["zen", "30"],
+    ["custom", "zen"],
+    ["quote", "custom"],
+    ["time", "015"],
+    ["words", "010"],
+  ] as const)("rejects an inconsistent %s setting %s", (mode, mode2) => {
+    expect(getResultFailure(completedEvent({ mode, mode2 }))).toBe(
+      "invalid-mode",
+    );
+  });
   it("validates custom time limits and requires custom settings", () => {
     expect(
       getResultFailure(completedEvent({ mode: "custom", mode2: "custom" })),
