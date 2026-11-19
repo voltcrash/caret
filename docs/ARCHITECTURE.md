@@ -57,6 +57,13 @@ use `app/navigate.ts` (`navigate`, `replaceUrl`). The typing guard
 or a test restarts; `force` skips those checks but never an active `no_quit`
 test.
 
+Operations: a contract (`packages/contracts`) and its service
+(`backend/src/services/operations/registry.ts`) define each operation.
+`frontend/scripts/generate-operations.ts` writes the `/api` route files from the
+contracts and one narrow server function per ID listed in
+`frontend/src/functions/operations/web-operations.ts`; CI checks both are
+current. Never edit the generated files by hand.
+
 Data: first-party reads/mutations are server functions; Query owns remote data,
 DB collections own browser history. App state lives under one mounted
 application owner (`app/application.ts`); account-scoped state resets on actor

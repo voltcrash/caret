@@ -435,8 +435,8 @@ jobs:
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
 
-      - name: Check operation ownership and declared HTTP routes
-        run: vp -C backend exec vpx ./scripts/migration-inventory.ts --check && vp -C frontend exec vpx ./scripts/generate-http-routes.ts --check
+      - name: Check operation ownership and generated operation files
+        run: vp -C backend exec vpx ./scripts/migration-inventory.ts --check && vp -C frontend exec vpx ./scripts/generate-operations.ts --check
 
       - name: Download Start Worker
         uses: actions/download-artifact@v8.0.2

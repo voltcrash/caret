@@ -22,5 +22,5 @@ Validate the operation inventory from the repository root:
 
 ```sh
 vp -C backend exec vpx ./scripts/migration-inventory.ts --check
-vp -C frontend exec vpx ./scripts/generate-http-routes.ts --check
+vp -C frontend exec vpx ./scripts/generate-operations.ts --check
 ```
