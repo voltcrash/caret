@@ -2,7 +2,7 @@ import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, createSignal, For } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import { updateQuoteRating } from "../../../features/typing/runtime/result";
+import { updateQuoteRating } from "../../../features/typing/runtime/result/screen";
 import * as DB from "../../db";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import { hideModalAndClearChain } from "../../states/modals";

@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({
   chart: { id: "chart" },
 }));
 
-vi.mock("../../../../../src/features/typing/runtime/result", () => ({
+vi.mock("../../../../../src/features/typing/runtime/result/screen", () => ({
   toggleResultChartLegend: mocks.toggleResultChartLegend,
 }));
 vi.mock("../../../../../src/features/typing/engine/analysis.client", () => ({

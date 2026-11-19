@@ -1,35 +1,38 @@
-import { captureAccount, createAccountOwned } from "../../../app/account-scope";
-import { appObject } from "../../../app/state";
-import { captureTypingResult } from "../scope";
-import { operation } from "../../../data/operations";
+import {
+  captureAccount,
+  createAccountOwned,
+} from "../../../../app/account-scope";
+import { appObject } from "../../../../app/state";
+import { captureTypingResult } from "../../scope";
+import { operation } from "../../../../data/operations";
 import {
   pendingResultSaves,
   trackResultSave,
-} from "../../../app/update-safety";
-import { resultOutbox } from "../history/outbox.client";
-import type { OperationResponse } from "../../../data/operation-types";
-import type { OperationResult } from "../../../data/operation-result";
+} from "../../../../app/update-safety";
+import { resultOutbox } from "../../history/outbox.client";
+import type { OperationResponse } from "../../../../data/operation-types";
+import type { OperationResult } from "../../../../data/operation-result";
 
 import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
+} from "../../../../ts/states/notifications";
 
-import * as DB from "../../../ts/db";
+import * as DB from "../../../../ts/db";
 
-import { getResultVisible } from "../../../ts/states/test";
+import { getResultVisible } from "../../../../ts/states/test";
 
-import { hashResult } from "../../../ts/utils/result-hash";
+import { hashResult } from "../../../../ts/utils/result-hash";
 
 import { CompletedEvent } from "@caret/schemas/results";
 import type { WebLog } from "@caret/typing-engine/text";
-import { encodeEventLog } from "./event-log-transport";
+import { encodeEventLog } from "../event-log-transport";
 
-import { SavedResult } from "../../../ts/constants/default-snapshot";
+import { SavedResult } from "../../../../ts/constants/default-snapshot";
 
-import { trackAccountWork } from "../../../ts/states/header";
-import { getMutableConfig } from "../../../ts/config/store";
+import { trackAccountWork } from "../../../../ts/states/header";
+import { getMutableConfig } from "../../../../ts/config/store";
 
 const getRetrySavingState = createAccountOwned<RetrySaving>(() => ({
   completedEvent: null,
@@ -104,7 +107,7 @@ export async function retrySavingResult(): Promise<void> {
       return;
     }
 
-    const Result = await import("./result");
+    const Result = await import("./screen");
     if (!account.isCurrent()) return;
     state.canRetry = false;
     Result.updateRetrySaving(false);
@@ -211,7 +214,7 @@ async function saveResultInternal(
     if (!account.isCurrent()) return null;
     throw error;
   }
-  const Result = await import("./result");
+  const Result = await import("./screen");
   if (!account.isCurrent()) return response;
 
   if (!response.ok) {
@@ -260,7 +263,7 @@ async function saveResultInternal(
   if (data.alreadySaved) {
     await Promise.all([
       DB.initSnapshot(),
-      (await import("../../../ts/collections/results")).refetchResults(),
+      (await import("../../../../ts/collections/results")).refetchResults(),
     ]);
     return response;
   }
@@ -317,5 +320,5 @@ export async function discardPendingResults(): Promise<void> {
   retrySavingState.completedEvent = null;
   retrySavingState.eventLog = null;
   retrySavingState.canRetry = false;
-  (await import("./result")).updateRetrySaving(false);
+  (await import("./screen")).updateRetrySaving(false);
 }

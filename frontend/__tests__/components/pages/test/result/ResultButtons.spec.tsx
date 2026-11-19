@@ -37,7 +37,7 @@ vi.mock("../../../../../src/features/typing/runtime/test/screenshot", () => ({
 vi.mock("../../../../../src/features/typing/runtime/replay", () => ({
   toggleReplayDisplay: mocks.toggleReplayDisplay,
 }));
-vi.mock("../../../../../src/features/typing/runtime/result", () => ({
+vi.mock("../../../../../src/features/typing/runtime/result/screen", () => ({
   toggleResultWords: mocks.toggleResultWords,
 }));
 vi.mock("../../../../../src/ts/states/modals", () => ({

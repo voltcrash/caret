@@ -1,6 +1,6 @@
 import { createEffect, createSignal, For } from "solid-js";
 
-import { updateTagsAfterEdit } from "../../../features/typing/runtime/result";
+import { updateTagsAfterEdit } from "../../../features/typing/runtime/result/screen";
 import { updateTags } from "../../collections/results";
 import { useTagsLiveQuery } from "../../collections/tags";
 import { getSelectedResult } from "../../states/edit-result-tags";

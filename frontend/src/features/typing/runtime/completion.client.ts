@@ -52,7 +52,7 @@ type InvalidResultReason =
 
 import { countInvalidResultFields } from "@caret/web-shared/result-fields";
 
-import { saveResult } from "./result-saving";
+import { saveResult } from "./result/saving";
 const invalidMessages: Record<
   Exclude<InvalidResultReason, "failed">,
   string
@@ -110,7 +110,7 @@ export function createCompletion(
       words,
       user,
     } = snapshot;
-    const Result = await import("./result");
+    const Result = await import("./result/screen");
     if (!lease.isCurrent()) return;
     once("saveState", Result.resetResultSaveState);
     const tags =
@@ -330,7 +330,7 @@ export function createCompletion(
     build,
     present: async (lease: { isCurrent: () => boolean }): Promise<void> => {
       if (presentation === undefined) throw new Error("Result is not built");
-      const Result = await import("./result");
+      const Result = await import("./result/screen");
       if (!lease.isCurrent()) return;
       await Result.update(...presentation(), lease);
     },

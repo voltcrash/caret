@@ -38,7 +38,7 @@ export function TypingRuntime(): null {
       addToGlobal({
         enableTimerDebug: TestTimer.enableTimerDebug,
         toggleSmoothedBurst: async () => {
-          const Result = await import("./runtime/result");
+          const Result = await import("./runtime/result/screen");
           Result.toggleSmoothedBurst();
         },
         lastEventLog: getLastEventLog,

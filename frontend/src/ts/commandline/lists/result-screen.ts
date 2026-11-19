@@ -1,5 +1,5 @@
 import * as TestLogic from "../../../features/typing/runtime/test/logic";
-import { toggleResultWords } from "../../../features/typing/runtime/result";
+import { toggleResultWords } from "../../../features/typing/runtime/result/screen";
 import { showModal } from "../../states/modals";
 import {
   showErrorNotification,

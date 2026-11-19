@@ -26,7 +26,7 @@ import { cn } from "../../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../../ts/utils/pointer";
 import * as PractiseWords from "../../runtime/practise-words";
 import { toggleReplayDisplay } from "../../runtime/replay";
-import { toggleResultWords } from "../../runtime/result";
+import { toggleResultWords } from "../../runtime/result/screen";
 import * as TestLogic from "../../runtime/test/logic";
 import * as TestScreenshot from "../../runtime/test/screenshot";
 import { isTypingRouteActive } from "../../scope";

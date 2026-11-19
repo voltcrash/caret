@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { operation } from "../../../data/operations";
 import { toggleCaretDebug } from "../../../features/typing/components/words/caret-controller";
-import { toggleUserFakeChartData } from "../../../features/typing/runtime/result";
+import { toggleUserFakeChartData } from "../../../features/typing/runtime/result/screen";
 import { disableSlowTimerFail } from "../../../features/typing/runtime/test/timer";
 import { addXp } from "../../db";
 import { getInputElement } from "../../input/input-element";

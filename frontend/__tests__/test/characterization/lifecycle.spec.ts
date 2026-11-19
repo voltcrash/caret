@@ -162,7 +162,7 @@ vi.mock("../../../src/features/typing/runtime/practise-words", () => ({
 vi.mock("../../../src/features/typing/runtime/today-tracker", () => ({
   addSeconds: mocks.todaySeconds,
 }));
-vi.mock("../../../src/features/typing/runtime/result", () => ({
+vi.mock("../../../src/features/typing/runtime/result/screen", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: vi.fn(),
   resetResultSaveState: vi.fn(),

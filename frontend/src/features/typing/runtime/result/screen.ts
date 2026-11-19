@@ -1,78 +1,75 @@
-import { captureTypingPresentation } from "../scope";
-import { getTypingLifecycle } from "../lifecycle/controller";
-import { updateTags } from "./result/tags";
-export { updateSavedResultId, updateTagsAfterEdit } from "./result/tags";
-import { updateResultChartDataVisibility } from "./result/chart-visibility";
-export { toggleResultChartLegend } from "./result/chart-visibility";
-import { updateChartPBLine } from "./result/chart-pb";
-import { updateChartData } from "./result/chart-data";
-export {
-  toggleSmoothedBurst,
-  toggleUserFakeChartData,
-} from "./result/chart-data";
+import { captureTypingPresentation } from "../../scope";
+import { getTypingLifecycle } from "../../lifecycle/controller";
+import { updateTags } from "./tags";
+export { updateSavedResultId, updateTagsAfterEdit } from "./tags";
+import { updateResultChartDataVisibility } from "./chart-visibility";
+export { toggleResultChartLegend } from "./chart-visibility";
+import { updateChartPBLine } from "./chart-pb";
+import { updateChartData } from "./chart-data";
+export { toggleSmoothedBurst, toggleUserFakeChartData } from "./chart-data";
 
 import {
   updateMinMaxChartValues,
   applyMinMaxChartValues,
-} from "./result/chart-bounds";
+} from "./chart-bounds";
 
-import { updateRateQuote, updateQuoteFavorite } from "./result/quotes";
-export { updateQuoteRating } from "./result/quotes";
-import { toggleResultWords } from "./result/history";
-export { toggleResultWords } from "./result/history";
-import { updateCrown, hideCrown } from "./result/crown";
-export { showCrown, showErrorCrownIfNeeded } from "./result/crown";
-import { showConfetti } from "./result/confetti";
-export { showConfetti } from "./result/confetti";
-import { getEventLogAccuracy } from "./result/accuracy";
+import { updateRateQuote, updateQuoteFavorite } from "./quotes";
+export { updateQuoteRating } from "./quotes";
+import { toggleResultWords } from "./history";
+export { toggleResultWords } from "./history";
+import { updateCrown, hideCrown } from "./crown";
+export { showCrown, showErrorCrownIfNeeded } from "./crown";
+import { showConfetti } from "./confetti";
+export { showConfetti } from "./confetti";
+import { getEventLogAccuracy } from "./accuracy";
 import {
   currentResult,
   resultAnnotations,
   setCurrentResult,
   resetResultAnnotations,
-} from "./result/context";
-import { clearWords, clearWordsBlur } from "./test/ui";
-import { showResultScreen } from "../components/result/useResultScreen";
+} from "./context";
+import { clearWords, clearWordsBlur } from "../test/ui";
+import { showResultScreen } from "../../components/result/useResultScreen";
 import type { PluginChartOptions } from "chart.js";
 
-import { getMutableConfig } from "../../../ts/config/store";
+import { getMutableConfig } from "../../../../ts/config/store";
 
-import { Quote } from "../../../ts/controllers/quotes-controller";
+import { Quote } from "../../../../ts/controllers/quotes-controller";
 
-import { showNoticeNotification } from "../../../ts/states/notifications";
+import { showNoticeNotification } from "../../../../ts/states/notifications";
 import {
   getCustomTextIndicator,
   isAuthenticated,
-} from "../../../ts/states/core";
+} from "../../../../ts/states/core";
 
-import * as GlarsesMode from "../../../ts/states/glarses-mode";
+import * as GlarsesMode from "../../../../ts/states/glarses-mode";
 
-import * as Misc from "../../../ts/utils/misc";
+import * as Misc from "../../../../ts/utils/misc";
 
-import * as Arrays from "../../../ts/utils/arrays";
+import * as Arrays from "../../../../ts/utils/arrays";
 
-import * as TodayTracker from "./today-tracker";
+import * as TodayTracker from "../today-tracker";
 
-import * as Focus from "./focus";
-import * as CustomText from "./custom-text";
-import * as Funbox from "./funbox/funbox";
+import * as Focus from "../focus";
+import * as CustomText from "../custom-text";
+import * as Funbox from "../funbox/funbox";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
 import { CompletedEvent } from "@caret/schemas/results";
 
-import { canQuickRestart as canQuickRestartFn } from "../../../ts/utils/quick-restart";
+import { canQuickRestart as canQuickRestartFn } from "../../../../ts/utils/quick-restart";
 
-import { blurInputElement } from "../../../ts/input/input-element";
-import * as ConnectionState from "../../../ts/states/connection";
+import { blurInputElement } from "../../../../ts/input/input-element";
+import * as ConnectionState from "../../../../ts/states/connection";
 
-import { getCurrentQuote, isTestInvalid } from "../../../ts/states/test";
+import { getCurrentQuote, isTestInvalid } from "../../../../ts/states/test";
 
 import {
   getResultChart,
   resultState,
   prepareResultChart,
   setResultState,
-} from "../../../ts/states/result";
-import { buildResultStats } from "./result-view-model";
+} from "../../../../ts/states/result";
+import { buildResultStats } from "./view-model";
 
 export function updateTodayTracker(): void {
   setResultState("timeToday", TodayTracker.getString());

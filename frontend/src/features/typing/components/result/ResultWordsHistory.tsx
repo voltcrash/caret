@@ -40,7 +40,7 @@ import {
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,
-} from "../../runtime/result-view-model";
+} from "../../runtime/result/view-model";
 import * as TestWords from "../../runtime/test/words";
 
 async function copyToClipboard(

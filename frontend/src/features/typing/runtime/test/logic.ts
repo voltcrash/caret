@@ -67,7 +67,7 @@ import { init } from "../initialization";
 import { finish } from "../completion";
 export { finish } from "../completion";
 export async function retrySavingResult(): Promise<void> {
-  const saving = await import("../result-saving");
+  const saving = await import("../result/saving");
   await saving.retrySavingResult();
 }
 export function startTest(now: number): boolean {

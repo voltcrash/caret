@@ -12,10 +12,10 @@ import {
   saveResult,
   retrySavingResult,
   discardPendingResults,
-} from "../../src/features/typing/runtime/result-saving";
+} from "../../src/features/typing/runtime/result/saving";
 import { resultOutbox } from "../../src/features/typing/history/outbox.client";
 import { requireApplication } from "../../src/app/application";
-import { showConfetti } from "../../src/features/typing/runtime/result";
+import { showConfetti } from "../../src/features/typing/runtime/result/screen";
 import { __testing } from "../../src/ts/config/testing";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
 import * as DB from "../../src/ts/db";
@@ -28,7 +28,7 @@ import {
   resetOperations,
 } from "../__harness__/operations";
 
-vi.mock("../../src/features/typing/runtime/result", () => ({
+vi.mock("../../src/features/typing/runtime/result/screen", () => ({
   showConfetti: vi.fn(),
   showCrown: vi.fn(),
   showErrorCrownIfNeeded: vi.fn(),

@@ -107,7 +107,7 @@ import {
   toggleUserFakeChartData,
   update,
   updateTagsAfterEdit,
-} from "../../src/features/typing/runtime/result";
+} from "../../src/features/typing/runtime/result/screen";
 import {
   resultState,
   getResultChart,
