@@ -1,22 +1,19 @@
-import { captureTypingRoute } from "../scope";
-import { getTypingLifecycle } from "../lifecycle/controller";
-import { animateAsync } from "../../../ts/anim";
-import { updateClassNames } from "../../../ts/utils/cn";
-import { applyReducedMotion } from "../../../ts/utils/misc";
-import { getTypingTestElement } from "../../../ts/states/test-dom";
-import { getBailedOut, isTestActive } from "../../../ts/states/test";
+import { captureTypingRoute } from "../../scope";
+import { getTypingLifecycle } from "../../lifecycle/controller";
+import { animateAsync } from "../../../../ts/anim";
+import { updateClassNames } from "../../../../ts/utils/cn";
+import { applyReducedMotion } from "../../../../ts/utils/misc";
+import { getTypingTestElement } from "../../../../ts/states/test-dom";
+import { getBailedOut, isTestActive } from "../../../../ts/states/test";
 import {
   getTestSession,
   forceReleaseAllKeys,
   cleanupData,
-} from "./events/data";
-import {
-  captureCompletionSnapshot,
-  type CompletionSnapshot,
-} from "./completion-snapshot";
-import { prepareResultScreen } from "../../../ts/states/result";
-import * as TestUI from "./test/ui";
-import * as TestTimer from "./test/timer";
+} from "../events/data";
+import { captureCompletionSnapshot, type CompletionSnapshot } from "./snapshot";
+import { prepareResultScreen } from "../../../../ts/states/result";
+import * as TestUI from "../test/ui";
+import * as TestTimer from "../test/timer";
 
 /** Claim completion before native acknowledgement can synchronously notify again. */
 export async function finish(difficultyFailed = false): Promise<void> {

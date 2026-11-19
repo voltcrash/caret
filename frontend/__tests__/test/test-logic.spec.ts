@@ -4,7 +4,7 @@ import { mockHttpFixture } from "../__harness__/operations";
 import { animateAsync } from "../../src/ts/anim";
 import * as TestUI from "../../src/features/typing/runtime/test/ui";
 import * as TodayTracker from "../../src/features/typing/runtime/today-tracker";
-import { retryCompletion } from "../../src/features/typing/runtime/completion";
+import { retryCompletion } from "../../src/features/typing/runtime/completion/finish";
 import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { createRoot, onCleanup } from "solid-js";

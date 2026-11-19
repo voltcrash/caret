@@ -1,17 +1,17 @@
-import type { CompletionSnapshot } from "./completion-snapshot";
+import type { CompletionSnapshot } from "./snapshot";
 
 import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import * as CustomText from "./content/custom-text";
+} from "../../../../ts/states/notifications";
+import * as CustomText from "../content/custom-text";
 
-import * as PaceCaret from "./pace-caret";
-import * as DB from "../../../ts/db";
+import * as PaceCaret from "../pace-caret";
+import * as DB from "../../../../ts/db";
 
-import * as TodayTracker from "./today-tracker";
-import * as ChallengeContoller from "../../../ts/controllers/challenge-controller";
+import * as TodayTracker from "../today-tracker";
+import * as ChallengeContoller from "../../../../ts/controllers/challenge-controller";
 
 import {
   setLastEventLog,
@@ -21,25 +21,25 @@ import {
   setIsTestInvalid,
   setLastResult,
   setLastSignedOutResult,
-} from "../../../ts/states/test";
+} from "../../../../ts/states/test";
 
-import * as AnalyticsController from "../../../ts/controllers/analytics-controller";
+import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
 
 import {
   CompletedEvent,
   CompletedEventCustomText,
 } from "@caret/schemas/results";
 
-import { getTestSession } from "./events/data";
+import { getTestSession } from "../events/data";
 import {
   analyze,
   getAnalysis,
   getMissedWords,
   getWordBurstHistory,
-} from "../engine/analysis.client";
-import * as PractiseWords from "./content/practise-words";
-import { recordGuestScore } from "../history/guest-scores.client";
-import { practiceHistory } from "../history/practice.client";
+} from "../../engine/analysis.client";
+import * as PractiseWords from "../content/practise-words";
+import { recordGuestScore } from "../../history/guest-scores.client";
+import { practiceHistory } from "../../history/practice.client";
 type InvalidResultReason =
   | "inconsistent duration"
   | "failed"
@@ -52,7 +52,7 @@ type InvalidResultReason =
 
 import { countInvalidResultFields } from "@caret/web-shared/result-fields";
 
-import { saveResult } from "./result/saving";
+import { saveResult } from "../result/saving";
 const invalidMessages: Record<
   Exclude<InvalidResultReason, "failed">,
   string
@@ -110,12 +110,12 @@ export function createCompletion(
       words,
       user,
     } = snapshot;
-    const Result = await import("./result/screen");
+    const Result = await import("../result/screen");
     if (!lease.isCurrent()) return;
     once("saveState", Result.resetResultSaveState);
     const tags =
       user !== null && snapshot.account.isCurrent()
-        ? (await import("../../../ts/collections/tags"))
+        ? (await import("../../../../ts/collections/tags"))
             .getActiveTags()
             .map((tag) => tag._id)
         : [];
@@ -330,7 +330,7 @@ export function createCompletion(
     build,
     present: async (lease: { isCurrent: () => boolean }): Promise<void> => {
       if (presentation === undefined) throw new Error("Result is not built");
-      const Result = await import("./result/screen");
+      const Result = await import("../result/screen");
       if (!lease.isCurrent()) return;
       await Result.update(...presentation(), lease);
     },

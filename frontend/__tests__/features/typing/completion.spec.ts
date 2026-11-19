@@ -24,7 +24,7 @@ vi.mock("../../../src/ts/states/test", async () => ({
     .lifecycleSelectors,
   getBailedOut: () => false,
 }));
-vi.mock("../../../src/features/typing/runtime/completion-snapshot", () => ({
+vi.mock("../../../src/features/typing/runtime/completion/snapshot", () => ({
   captureCompletionSnapshot: mocks.snapshot,
 }));
 vi.mock("../../../src/ts/states/result", () => ({
@@ -41,19 +41,22 @@ vi.mock("../../../src/features/typing/runtime/events/data", () => ({
 vi.mock("../../../src/features/typing/runtime/test/timer", () => ({
   clear: mocks.clear,
 }));
-vi.mock("../../../src/features/typing/runtime/completion.client", () => ({
-  createCompletion: (_snapshot: unknown, failed: boolean) => ({
-    build: async (lease: { isCurrent: () => boolean }) =>
-      await mocks.complete(failed, lease),
-    present: mocks.present,
-    saved: async () => undefined,
+vi.mock(
+  "../../../src/features/typing/runtime/completion/completion.client",
+  () => ({
+    createCompletion: (_snapshot: unknown, failed: boolean) => ({
+      build: async (lease: { isCurrent: () => boolean }) =>
+        await mocks.complete(failed, lease),
+      present: mocks.present,
+      saved: async () => undefined,
+    }),
   }),
-}));
+);
 
 import {
   finish,
   retryCompletion,
-} from "../../../src/features/typing/runtime/completion";
+} from "../../../src/features/typing/runtime/completion/finish";
 
 beforeEach(() => {
   resetTypingLifecycle("running");

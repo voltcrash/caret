@@ -64,8 +64,8 @@ import { nthElementFromArray } from "../../../../ts/utils/arrays";
 import { beginGuestScore } from "../../history/guest-scores.client";
 import { testLogicState } from "./logic-state";
 import { init } from "../initialization";
-import { finish } from "../completion";
-export { finish } from "../completion";
+import { finish } from "../completion/finish";
+export { finish } from "../completion/finish";
 export async function retrySavingResult(): Promise<void> {
   const saving = await import("../result/saving");
   await saving.retrySavingResult();

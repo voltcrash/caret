@@ -1,7 +1,7 @@
-import { captureAccount } from "../../../app/account-scope";
-import { getAuthenticatedUser } from "../../../ts/auth-client";
-import { getMutableConfig } from "../../../ts/config/store";
-import { getCustomTextIndicator } from "../../../ts/states/core";
+import { captureAccount } from "../../../../app/account-scope";
+import { getAuthenticatedUser } from "../../../../ts/auth-client";
+import { getMutableConfig } from "../../../../ts/config/store";
+import { getCustomTextIndicator } from "../../../../ts/states/core";
 import {
   getBailedOut,
   getCurrentQuote,
@@ -9,10 +9,10 @@ import {
   getIncompleteTests,
   getRestartCount,
   isRepeated,
-} from "../../../ts/states/test";
-import { buildEventLog, getTestSession } from "./events/data";
-import * as CustomText from "./content/custom-text";
-import { words } from "./test/words";
+} from "../../../../ts/states/test";
+import { buildEventLog, getTestSession } from "../events/data";
+import * as CustomText from "../content/custom-text";
+import { words } from "../test/words";
 
 /** Capture once after finalization, before any module/animation await. */
 export function captureCompletionSnapshot(): CompletionSnapshot {
