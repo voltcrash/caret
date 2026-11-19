@@ -10,10 +10,10 @@ const mocks = vi.hoisted(() => ({
   chart: { id: "chart" },
 }));
 
-vi.mock("../../../../../src/features/typing/runtime/result", () => ({
+vi.mock("../../../../../src/features/typing/runtime/result/screen", () => ({
   toggleResultChartLegend: mocks.toggleResultChartLegend,
 }));
-vi.mock("../../../../../src/features/typing/analysis.client", () => ({
+vi.mock("../../../../../src/features/typing/engine/analysis.client", () => ({
   getWordIndexesForSecond: mocks.getWordIndexesForSecond,
 }));
 vi.mock("../../../../../src/ts/states/test", () => ({

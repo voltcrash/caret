@@ -25,11 +25,11 @@ vi.mock(
   () => ({ EngineMemoryNotice: () => null }),
 );
 
-vi.mock("../../../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/logic", () => ({
   restart: mocks.restart,
   retrySavingResult: mocks.retrySavingResult,
 }));
-vi.mock("../../../../../src/features/typing/runtime/test-screenshot", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/screenshot", () => ({
   download: mocks.download,
   share: mocks.share,
   copyToClipboard: mocks.copyToClipboard,
@@ -37,7 +37,7 @@ vi.mock("../../../../../src/features/typing/runtime/test-screenshot", () => ({
 vi.mock("../../../../../src/features/typing/runtime/replay", () => ({
   toggleReplayDisplay: mocks.toggleReplayDisplay,
 }));
-vi.mock("../../../../../src/features/typing/runtime/result", () => ({
+vi.mock("../../../../../src/features/typing/runtime/result/screen", () => ({
   toggleResultWords: mocks.toggleResultWords,
 }));
 vi.mock("../../../../../src/ts/states/modals", () => ({
@@ -61,7 +61,7 @@ vi.mock("../../../../../src/ts/states/core", async () => {
 });
 
 import { ResultButtons } from "../../../../../src/features/typing/components/result/ResultButtons";
-import { setPracticeResult } from "../../../../../src/features/typing/runtime/practise-words";
+import { setPracticeResult } from "../../../../../src/features/typing/runtime/content/practise-words";
 import { getConfig, setConfigStore } from "../../../../../src/ts/config/store";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
 import { setResultState } from "../../../../../src/ts/states/result";

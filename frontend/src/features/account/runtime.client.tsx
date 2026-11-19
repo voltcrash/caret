@@ -44,7 +44,7 @@ export function AccountRuntime(): null {
       }
       const lease = account.capture();
       const retryPending = (): void => {
-        void import("../typing/runtime/result-saving")
+        void import("../typing/runtime/result/saving")
           .then(async (saving) => {
             if (lease.isCurrent()) await saving.retrySavingResult();
           })

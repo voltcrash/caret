@@ -4,7 +4,7 @@ import { Button } from "../../../ts/components/common/Button";
 import { getConfig } from "../../../ts/config/store";
 import { getCustomTextIndicator } from "../../../ts/states/core";
 import { isTestActive, setBailedOut } from "../../../ts/states/test";
-import * as TestLogic from "../runtime/test-logic";
+import * as TestLogic from "../runtime/test/logic";
 
 // Touch-only equivalent of shift+enter saving progress on a long custom text.
 // shift+enter bails out of long custom texts; saving progress is bailing out.

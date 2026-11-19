@@ -46,7 +46,7 @@ const mocks = vi.hoisted(() => {
     analyze: vi.fn(),
   };
 });
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     session: () => mocks,
     generation: () => mocks.generation,
@@ -240,7 +240,7 @@ it("retains the captured tick/explicit finish clock when acknowledging a deferre
 
 it("sends custom limits only when their mode or value changes", async () => {
   const CustomText =
-    await import("../../../src/features/typing/runtime/custom-text");
+    await import("../../../src/features/typing/runtime/content/custom-text");
   const { getMutableConfig } = await import("../../../src/ts/config/store");
   const previousMode = getMutableConfig().mode;
   getMutableConfig().mode = "custom";

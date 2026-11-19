@@ -17,10 +17,10 @@ const mocks = vi.hoisted(() => ({
   createSession: vi.fn(),
   prepareNext: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/next-snapshot.client", () => ({
+vi.mock("../../../src/features/typing/initial/next-snapshot.client", () => ({
   saveNextTypingPreview: mocks.prepareNext,
 }));
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     load: async () => undefined,
     status: () => ({ state: "ready" }),
@@ -57,12 +57,12 @@ vi.mock("../../../src/ts/utils/json-data", async (original) => ({
 vi.mock("../../../src/ts/db", () => ({ getSnapshot: () => null }));
 import { mountApplication } from "../../../src/app/application";
 import { getMutableConfig } from "../../../src/ts/config/store";
-import { getContentHost } from "../../../src/features/typing/runtime/content.client";
+import { getContentHost } from "../../../src/features/typing/runtime/content/host.client";
 import {
   initialContentKey,
   initialTypingState,
-} from "../../../src/features/typing/initial-snapshot.client";
-import { previewSettings } from "../../../src/features/typing/initial-snapshot";
+} from "../../../src/features/typing/initial/snapshot.client";
+import { previewSettings } from "../../../src/features/typing/initial/snapshot";
 import {
   createTestApplication,
   releaseTestApplication,

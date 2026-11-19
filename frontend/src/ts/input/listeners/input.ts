@@ -7,7 +7,7 @@ import {
   getLastInsertCompositionTextData,
   setLastInsertCompositionTextData,
 } from "../state";
-import * as TestUI from "../../../features/typing/runtime/test-ui";
+import * as TestUI from "../../../features/typing/runtime/test/ui";
 import { onBeforeInsertText } from "../handlers/before-insert-text";
 import { onBeforeDelete } from "../handlers/before-delete";
 import * as CompositionState from "../../states/composition";

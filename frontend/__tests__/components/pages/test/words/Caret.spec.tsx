@@ -24,7 +24,7 @@ vi.mock("../../../../../src/features/typing/runtime/pace-caret", () => ({
     return bindings.unregisterPace;
   },
 }));
-vi.mock("../../../../../src/features/typing/runtime/test-words", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/words", () => ({
   words: { get: () => undefined },
 }));
 vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({

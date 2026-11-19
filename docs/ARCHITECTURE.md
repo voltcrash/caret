@@ -44,6 +44,21 @@ for the operation inventory, remaining compatibility rules and archived evidence
 | `frontend/src/sw/` | Service worker generated per build |
 | `backend/src/` | Services, policies, DAL, Drizzle/Neon PostgreSQL, Better Auth, jobs (server-only package) |
 
+Typing feature (`frontend/src/features/typing/`):
+
+| Path | Role |
+| --- | --- |
+| `page*.tsx`, `runtime.client.tsx` | Route page and client-only typing leaf |
+| `initial/` | SSR initial content, snapshot and first-paint view |
+| `lifecycle/` | Route enter/exit, lifecycle controller and state machine |
+| `engine/` | Browser engine owner and Rust analysis, audit and policy wrappers |
+| `history/` | Result outbox, guest scores and practice history |
+| `keymap/` | Keymap layouts and conversion |
+| `components/` | Test page, words renderer, result screen and live stats |
+| `runtime/test/` | Test logic, timer, words and UI facade |
+| `runtime/content/`, `runtime/completion/`, `runtime/result/` | Content loading, test completion, result screen and saving |
+| `runtime/events/`, `runtime/funbox/` | Session events and funbox behaviour |
+
 Rendering: SSR renders the document, shared layout and public content; the
 typing engine and browser integrations mount as client-only leaves
 (`*.client.*`). Start import protection keeps `backend/src` and `*.server.*`

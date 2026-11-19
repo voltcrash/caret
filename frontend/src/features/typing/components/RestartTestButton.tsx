@@ -10,7 +10,7 @@ import {
 } from "../../../ts/states/test";
 import { cn } from "../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../ts/utils/pointer";
-import * as TestLogic from "../runtime/test-logic";
+import * as TestLogic from "../runtime/test/logic";
 
 export function RestartTestButton(): JSXElement {
   const onClick = (): void => {

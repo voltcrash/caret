@@ -17,7 +17,7 @@ const mocks = vi.hoisted(() => {
     altGrReset: vi.fn(),
   };
 });
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     releaseSession: mocks.engineRelease,
     status: () => ({ state: mocks.engineFailed ? "failed" : "ready" }),
@@ -27,10 +27,10 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
 vi.mock("../../../src/app/readiness", () => ({
   preferencesReadiness: () => ({ wait: mocks.preferences }),
 }));
-vi.mock("../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../src/features/typing/runtime/test/logic", () => ({
   restart: mocks.restart,
 }));
-vi.mock("../../../src/features/typing/runtime/test-timer", () => ({
+vi.mock("../../../src/features/typing/runtime/test/timer", () => ({
   clear: mocks.timerClear,
 }));
 vi.mock("../../../src/features/typing/runtime/pace-caret", () => ({
@@ -63,7 +63,7 @@ import { isTypingReady, setTypingReady } from "../../../src/app/startup";
 import {
   enterTypingRoute,
   exitTypingRoute,
-} from "../../../src/features/typing/lifecycle";
+} from "../../../src/features/typing/lifecycle/route";
 import {
   isTypingRouteActive,
   mountTypingScope,

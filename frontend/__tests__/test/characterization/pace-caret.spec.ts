@@ -30,7 +30,7 @@ const mocks = vi.hoisted(() => ({
     | undefined,
 }));
 
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     session: () => mocks.session,
     generation: () => 0,
@@ -87,7 +87,7 @@ import { encodeText } from "@caret/typing-engine/text";
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import * as PaceCaret from "../../../src/features/typing/runtime/pace-caret";
-import * as TestWords from "../../../src/features/typing/runtime/test-words";
+import * as TestWords from "../../../src/features/typing/runtime/test/words";
 
 function commit(text: string): void {
   getEngineSession().command({

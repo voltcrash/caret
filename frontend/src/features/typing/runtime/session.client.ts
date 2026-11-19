@@ -1,8 +1,8 @@
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../../app/application";
-import { getBrowserEngine } from "../engine.client";
+import { getBrowserEngine } from "../engine/owner.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
-import { getTypingLifecycle } from "../lifecycle-controller";
+import { getTypingLifecycle } from "../lifecycle/controller";
 import { isUpdateReserved } from "../../../app/update-safety";
 import {
   engineConfigMatches,
@@ -36,7 +36,7 @@ import type {
   RestartOptions,
 } from "@caret/typing-engine/browser.client";
 import { getMutableConfig } from "../../../ts/config/store";
-import * as CustomText from "./custom-text";
+import * as CustomText from "./content/custom-text";
 import type { CompletedEvent } from "@caret/schemas/results";
 
 type NativeCompletion = Extract<Query, { op: "completed" }>["context"];

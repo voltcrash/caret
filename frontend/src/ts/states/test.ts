@@ -12,7 +12,7 @@ import { CompletedEvent, IncompleteTest } from "@caret/schemas/results";
 
 import { keymapEvent } from "../events/keymap";
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
-import * as CustomText from "../../features/typing/runtime/custom-text";
+import * as CustomText from "../../features/typing/runtime/content/custom-text";
 import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
 import { getLayout } from "../utils/json-data";
 import { mirrorLayoutKeys } from "../utils/key-converter";
@@ -28,7 +28,7 @@ export {
   isResultLoading,
   getResultVisible,
   getTestInitError,
-} from "../../features/typing/lifecycle-controller";
+} from "../../features/typing/lifecycle/controller";
 
 export const [wordsHaveNewline, setWordsHaveNewline] = createAppSignal(false);
 export const [wordsHaveTab, setWordsHaveTab] = createAppSignal(false);

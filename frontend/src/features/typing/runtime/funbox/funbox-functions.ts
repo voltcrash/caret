@@ -13,7 +13,7 @@ import {
   showNoticeNotification,
   showErrorNotification,
 } from "../../../../ts/states/notifications";
-import * as TestWords from "../test-words";
+import * as TestWords from "../test/words";
 import { getCurrentInput, getInputForWord } from "../events/data";
 import * as LayoutfluidFunboxTimer from "./layoutfluid-funbox-timer";
 import { highlight } from "../../../../ts/events/keymap";

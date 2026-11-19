@@ -1,12 +1,12 @@
 import { createAppOwned } from "../../app/application";
-import { getBrowserAudit } from "../../features/typing/audit.client";
+import { getBrowserAudit } from "../../features/typing/engine/audit.client";
 import { captureTypingMount } from "../../features/typing/scope";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
 } from "../states/notifications";
-import * as CustomText from "../../features/typing/runtime/custom-text";
+import * as CustomText from "../../features/typing/runtime/content/custom-text";
 import * as Funbox from "../../features/typing/runtime/funbox/funbox";
 
 import { setConfig } from "../config/setters";

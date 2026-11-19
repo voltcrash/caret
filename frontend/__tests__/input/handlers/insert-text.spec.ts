@@ -43,7 +43,7 @@ const native = vi.hoisted(() => ({
     | import("@caret/typing-engine/browser.client").BrowserSession
     | undefined,
 }));
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     session: () => native.session,
     generation: () => 1,
@@ -51,10 +51,10 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
     captureSession: () => ({ isCurrent: () => true }),
   }),
 }));
-vi.mock("../../../src/features/typing/runtime/content.client", () => ({
+vi.mock("../../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({ supplyActive: vi.fn() }),
 }));
-vi.mock("../../../src/features/typing/runtime/test-words", () => {
+vi.mock("../../../src/features/typing/runtime/test/words", () => {
   type CommitChar = " " | "\n" | "";
   type Word = { text: string; textWithCommit: string; commit: CommitChar };
   const list: Word[] = [];
@@ -106,19 +106,19 @@ vi.mock("../../../src/ts/input/state", () => ({
   isAwaitingNextWord: () => false,
 }));
 
-vi.mock("../../../src/features/typing/runtime/custom-text", () => ({
+vi.mock("../../../src/features/typing/runtime/content/custom-text", () => ({
   getLimit: () => ({ mode: "words", value: 0 }),
 }));
 
 // peripheral collaborators - none of them feed back into the events we assert
-vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   afterTestTextInput: vi.fn(),
   // words scrolled off the screen are removed from the dom
   getWordElement: vi.fn((index: number) =>
     mockState.wordsScrolledOff.has(index) ? null : {},
   ),
 }));
-vi.mock("../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../src/features/typing/runtime/test/logic", () => ({
   startTest: vi.fn(),
   fail: vi.fn(),
   finish: vi.fn(),
@@ -140,7 +140,7 @@ import {
 } from "../../../src/features/typing/runtime/events/data";
 
 import type { InputEventNoMs } from "@caret/web-shared/events/types";
-import { words as TestWords } from "../../../src/features/typing/runtime/test-words";
+import { words as TestWords } from "../../../src/features/typing/runtime/test/words";
 import { __testing } from "../../../src/ts/config/testing";
 import { nativeSession } from "../../__harness__/native-engine";
 import { getEngineSession } from "../../../src/features/typing/runtime/session.client";

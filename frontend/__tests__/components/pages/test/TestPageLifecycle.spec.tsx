@@ -51,7 +51,7 @@ vi.mock("../../../../src/features/typing/runtime/caret", () => ({
   show: callbacks.showCaret,
   hide: callbacks.hideCaret,
 }));
-vi.mock("../../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../../src/features/typing/runtime/test/logic", () => ({
   restart: callbacks.restart,
 }));
 

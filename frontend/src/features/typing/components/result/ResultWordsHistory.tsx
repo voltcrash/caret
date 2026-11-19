@@ -36,12 +36,12 @@ import {
   getInputHistory,
   getMissedWords,
   getWordBurstHistory,
-} from "../../analysis.client";
+} from "../../engine/analysis.client";
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,
-} from "../../runtime/result-view-model";
-import * as TestWords from "../../runtime/test-words";
+} from "../../runtime/result/view-model";
+import * as TestWords from "../../runtime/test/words";
 
 async function copyToClipboard(
   content: string,

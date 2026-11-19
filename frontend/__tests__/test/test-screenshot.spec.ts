@@ -58,7 +58,7 @@ vi.mock("../../src/features/typing/runtime/replay", () => ({
 }));
 vi.mock("../../src/ts/db", () => ({ getSnapshot: () => undefined }));
 
-import { download } from "../../src/features/typing/runtime/test-screenshot";
+import { download } from "../../src/features/typing/runtime/test/screenshot";
 
 beforeEach(() => {
   vi.clearAllMocks();

@@ -12,7 +12,7 @@ import {
 
 const { finish } = vi.hoisted(() => ({ finish: vi.fn() }));
 
-vi.mock("../../../../src/features/typing/runtime/test-logic", () => ({
+vi.mock("../../../../src/features/typing/runtime/test/logic", () => ({
   finish,
 }));
 vi.mock("../../../../src/ts/config/store", () => ({
@@ -22,12 +22,12 @@ vi.mock("../../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
 }));
 vi.mock("../../../../src/ts/states/test", async () => ({
-  ...(await import("../../../../src/features/typing/lifecycle-controller"))
+  ...(await import("../../../../src/features/typing/lifecycle/controller"))
     .lifecycleSelectors,
   setBailedOut: vi.fn(),
 }));
 
-vi.mock("../../../../src/features/typing/runtime/custom-text", () => ({
+vi.mock("../../../../src/features/typing/runtime/content/custom-text", () => ({
   getData: () => ({ limit: { mode: "word", value: 0 } }),
 }));
 
@@ -80,7 +80,7 @@ describe("EndTestButton", () => {
   });
 });
 
-vi.mock("../../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     status: () => ({ state: "ready" }),
     api: () => ({ policy: evaluatePolicy }),

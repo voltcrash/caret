@@ -4,7 +4,7 @@ import {
   engineLanguage,
   engineQuotes,
   fetchEngineSource,
-} from "../../../src/features/typing/runtime/content-assets.client";
+} from "../../../src/features/typing/runtime/content/assets.client";
 afterEach(() => vi.unstubAllGlobals());
 
 it("keeps raw Unicode words, accents, quote whitespace and language metadata for Rust", () => {

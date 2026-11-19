@@ -36,7 +36,7 @@ import { getCurrentInput } from "../../runtime/events/data";
 import { getLiveCachedAccuracy } from "../../runtime/events/live-cache";
 import * as Focus from "../../runtime/focus";
 import * as LayoutfluidFunboxTimer from "../../runtime/funbox/layoutfluid-funbox-timer";
-import * as TestWords from "../../runtime/test-words";
+import * as TestWords from "../../runtime/test/words";
 import { cancelPendingAnimationFramesStartingWith } from "../../../../ts/utils/debounced-animation-frame";
 import * as Misc from "../../../../ts/utils/misc";
 import { isCoarsePointer } from "../../../../ts/utils/pointer";

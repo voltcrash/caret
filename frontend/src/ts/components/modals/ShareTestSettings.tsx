@@ -6,7 +6,7 @@ import { createForm } from "@tanstack/solid-form";
 import { compressToURI } from "lz-ts";
 import { JSXElement, Show } from "solid-js";
 
-import * as CustomText from "../../../features/typing/runtime/custom-text";
+import * as CustomText from "../../../features/typing/runtime/content/custom-text";
 import { getConfig } from "../../config/store";
 import { showSuccessNotification } from "../../states/notifications";
 import { getCurrentQuote } from "../../states/test";

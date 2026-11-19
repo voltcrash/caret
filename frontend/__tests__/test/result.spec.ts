@@ -47,7 +47,7 @@ vi.mock("../../src/ts/db", () => ({
     state.localPbWpm === 0 ? undefined : { wpm: state.localPbWpm },
   getSnapshot: () => undefined,
 }));
-vi.mock("../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../src/features/typing/runtime/test/ui", () => ({
   clearWords: vi.fn(),
   clearWordsBlur: vi.fn(),
 }));
@@ -88,7 +88,7 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getKoreanStatus: () => false,
   isTestInvalid: () => state.testInvalid,
 }));
-vi.mock("../../src/features/typing/analysis.client", () => ({
+vi.mock("../../src/features/typing/engine/analysis.client", () => ({
   getAccuracy: () => state.accuracy,
   getRawHistory: () => [],
   getTimerBoundaryLabels: () => [],
@@ -107,7 +107,7 @@ import {
   toggleUserFakeChartData,
   update,
   updateTagsAfterEdit,
-} from "../../src/features/typing/runtime/result";
+} from "../../src/features/typing/runtime/result/screen";
 import {
   resultState,
   getResultChart,
@@ -673,7 +673,7 @@ describe("result update", () => {
   });
 });
 
-vi.mock("../../src/features/typing/engine.client", () => ({
+vi.mock("../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     status: () => ({ state: "ready" }),
     api: () => ({ policy: evaluatePolicy }),

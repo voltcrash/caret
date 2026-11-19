@@ -24,11 +24,11 @@ import {
 import { FaObject } from "../../../../ts/types/font-awesome";
 import { cn } from "../../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../../ts/utils/pointer";
-import * as PractiseWords from "../../runtime/practise-words";
+import * as PractiseWords from "../../runtime/content/practise-words";
 import { toggleReplayDisplay } from "../../runtime/replay";
-import { toggleResultWords } from "../../runtime/result";
-import * as TestLogic from "../../runtime/test-logic";
-import * as TestScreenshot from "../../runtime/test-screenshot";
+import { toggleResultWords } from "../../runtime/result/screen";
+import * as TestLogic from "../../runtime/test/logic";
+import * as TestScreenshot from "../../runtime/test/screenshot";
 import { isTypingRouteActive } from "../../scope";
 import { EngineMemoryNotice } from "./EngineMemoryNotice";
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { convertLayoutToKeymap } from "../../../../src/features/typing/keymapConverter";
+import { convertLayoutToKeymap } from "../../../../src/features/typing/keymap/converter";
 
 import qwertyLayout from "../../../../static/layouts/qwerty.json";
 import qwertzLayout from "../../../../static/layouts/qwertz.json";
@@ -14,7 +14,7 @@ import {
   HyperShort,
   Meta,
   Shift,
-} from "../../../../src/features/typing/keymapLayouts";
+} from "../../../../src/features/typing/keymap/layouts";
 
 function expectLegend(...legends: string[]): { legends: string[] } {
   if (legends.length === 1) {

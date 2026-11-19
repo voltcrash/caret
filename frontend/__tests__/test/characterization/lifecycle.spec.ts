@@ -43,7 +43,7 @@ const mocks = vi.hoisted(() => ({
   generation: 0,
 }));
 
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     load: async () => undefined,
     session: () => mocks.session,
@@ -56,7 +56,7 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
 }));
 
 vi.mock("../../../src/ts/states/test", async () => ({
-  ...(await import("../../../src/features/typing/lifecycle-controller"))
+  ...(await import("../../../src/features/typing/lifecycle/controller"))
     .lifecycleSelectors,
   isRepeated: () => false,
   setIsRepeated: vi.fn(),
@@ -101,7 +101,7 @@ vi.mock("../../../src/ts/utils/json-data", () => ({
     ({ name: "english", words: ["hello", "world"] }) as LanguageObject,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   onTestStart: vi.fn(),
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -111,7 +111,7 @@ vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   appendEmptyWordElement: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/content.client", () => ({
+vi.mock("../../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({
     prepare: async () => {
       mocks.session?.dispose();
@@ -155,14 +155,14 @@ vi.mock("../../../src/features/typing/runtime/caret", () => ({
 vi.mock("../../../src/features/typing/runtime/replay", () => ({
   pauseReplay: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/practise-words", () => ({
+vi.mock("../../../src/features/typing/runtime/content/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));
 vi.mock("../../../src/features/typing/runtime/today-tracker", () => ({
   addSeconds: mocks.todaySeconds,
 }));
-vi.mock("../../../src/features/typing/runtime/result", () => ({
+vi.mock("../../../src/features/typing/runtime/result/screen", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: vi.fn(),
   resetResultSaveState: vi.fn(),
@@ -249,12 +249,12 @@ import { getEngineSession } from "../../../src/features/typing/runtime/session.c
 import { analyzeLog } from "@caret/typing-engine/browser.client";
 import { encodeText } from "@caret/typing-engine/text";
 import * as SlowTimer from "../../../src/ts/states/slow-timer";
-import * as CustomText from "../../../src/features/typing/runtime/custom-text";
+import * as CustomText from "../../../src/features/typing/runtime/content/custom-text";
 import {
   restart,
   startTest,
   useTestLogicEvents,
-} from "../../../src/features/typing/runtime/test-logic";
+} from "../../../src/features/typing/runtime/test/logic";
 
 function type(
   now: number,

@@ -20,7 +20,10 @@ import * as MemoryTimer from "./memory-funbox-timer";
 import * as FunboxMemory from "./funbox-memory";
 import { HighlightMode, FunboxName } from "@caret/schemas/configs";
 import { Mode } from "@caret/schemas/shared";
-import { checkCompatibility, checkForcedConfig } from "../../policy.client";
+import {
+  checkCompatibility,
+  checkForcedConfig,
+} from "../../engine/policy.client";
 import {
   getAllFunboxes,
   getActiveFunboxNames,

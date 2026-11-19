@@ -24,7 +24,7 @@ import "../../__harness__/native-engine";
 import { analyzeLog, BrowserReplay } from "@caret/typing-engine/browser.client";
 import { toEngineLog } from "@caret/typing-engine/text";
 const recorded = vi.hoisted(() => ({ log: undefined as EventLog | undefined }));
-vi.mock("../../../src/features/typing/engine.client", () => ({
+vi.mock("../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     api: () => ({
       analyze: analyzeLog,
@@ -35,7 +35,7 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
   }),
 }));
 import * as Replay from "../../../src/features/typing/runtime/replay";
-import * as TestWords from "../../../src/features/typing/runtime/test-words";
+import * as TestWords from "../../../src/features/typing/runtime/test/words";
 
 const fixture = recording as unknown as { eventLog: EventLog };
 

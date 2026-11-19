@@ -71,7 +71,7 @@ vi.mock("../../../src/ts/states/overlay-visibility", () => ({
 vi.mock("../../../src/ts/utils/quick-restart", () => ({
   canQuickRestart: () => state.quickRestart,
 }));
-vi.mock("../../../src/features/typing/runtime/custom-text", () => ({
+vi.mock("../../../src/features/typing/runtime/content/custom-text", () => ({
   getData: () => ({}),
 }));
 vi.mock("../../../src/features/typing/runtime/focus", () => ({
@@ -81,7 +81,7 @@ vi.mock("../../../src/features/typing/runtime/caret", () => ({
   hide: ui.hideCaret,
   show: ui.showCaret,
 }));
-vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   focusWords: ui.focusWords,
   scrollTape: ui.scrollTape,
   centerActiveLine: ui.centerLine,

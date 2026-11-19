@@ -10,14 +10,14 @@ import {
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
-import { getBrowserEngine } from "./engine.client";
+import { getBrowserEngine } from "./engine/owner.client";
+import { usePractiseEvents } from "./runtime/content/practise-words";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { useEngineInputProjection } from "./runtime/input-projection.client";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
-import { usePractiseEvents } from "./runtime/practise-words";
-import { useTestLogicEvents } from "./runtime/test-logic";
-import * as TestTimer from "./runtime/test-timer";
+import { useTestLogicEvents } from "./runtime/test/logic";
+import * as TestTimer from "./runtime/test/timer";
 import { useTtsEvents } from "./runtime/tts";
 
 /** Session subscriptions belong to the mounted typing leaf. */
@@ -38,7 +38,7 @@ export function TypingRuntime(): null {
       addToGlobal({
         enableTimerDebug: TestTimer.enableTimerDebug,
         toggleSmoothedBurst: async () => {
-          const Result = await import("./runtime/result");
+          const Result = await import("./runtime/result/screen");
           Result.toggleSmoothedBurst();
         },
         lastEventLog: getLastEventLog,

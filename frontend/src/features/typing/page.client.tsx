@@ -14,9 +14,9 @@ import { isCoarsePointer } from "../../ts/utils/pointer";
 import { BarTimerProgress } from "./components/live-stats/BarTimerProgress";
 import { MonkeyPower } from "./components/MonkeyPower";
 import { TestPage } from "./components/TestPage";
-import { enterTypingRoute, exitTypingRoute } from "./lifecycle";
+import { enterTypingRoute, exitTypingRoute } from "./lifecycle/route";
 import { TypingRuntime } from "./runtime.client";
-import { focusWords } from "./runtime/test-ui";
+import { focusWords } from "./runtime/test/ui";
 import { mountTypingScope } from "./scope";
 import { useUrlSettings } from "./url-settings.client";
 

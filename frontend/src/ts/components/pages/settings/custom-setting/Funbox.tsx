@@ -4,7 +4,7 @@ import { For, JSXElement, type JSX } from "solid-js";
 import {
   checkCompatibility,
   enginePolicyReady,
-} from "../../../../../features/typing/policy.client";
+} from "../../../../../features/typing/engine/policy.client";
 import { getActiveFunboxNames } from "../../../../../features/typing/runtime/funbox/list";
 // import { canSetFunboxWithConfig } from "../../../../config/funbox-validation";
 import { configMetadata } from "../../../../config/metadata";

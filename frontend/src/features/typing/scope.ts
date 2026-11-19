@@ -13,7 +13,7 @@ import {
   requireApplication,
 } from "../../app/application";
 import { createOwnedScope, type OwnedScope } from "../../app/scope";
-import { getTypingLifecycle } from "./lifecycle-controller";
+import { getTypingLifecycle } from "./lifecycle/controller";
 
 type RouteScope = {
   owner: Owner;

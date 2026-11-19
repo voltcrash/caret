@@ -1,5 +1,5 @@
 import { getMutableConfig } from "../../../../ts/config/store";
-import * as CustomText from "../custom-text";
+import * as CustomText from "../content/custom-text";
 import {
   getLastEventLog,
   getKoreanStatus,
@@ -9,8 +9,8 @@ import {
   getCorrectedWordsHistory,
   getInputHistory,
   getWordBurstHistory,
-} from "../../analysis.client";
-import * as TestWords from "../test-words";
+} from "../../engine/analysis.client";
+import * as TestWords from "../test/words";
 import { buildWordsHistory } from "../word-markup";
 import { resultState, setResultState } from "../../../../ts/states/result";
 

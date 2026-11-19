@@ -9,7 +9,7 @@ import {
   setResultState,
   type ResultCrownType,
 } from "../../../../ts/states/result";
-import { buildCrown, type CanGetPb } from "../result-view-model";
+import { buildCrown, type CanGetPb } from "./view-model";
 
 export function showCrown(type: ResultCrownType): void {
   setResultState("crown", { visible: true, type });

@@ -2,9 +2,9 @@ import { resetTypingLifecycle } from "../__harness__/typing-lifecycle";
 import { isTestRestarting, getTestInitError } from "../../src/ts/states/test";
 import { mockHttpFixture } from "../__harness__/operations";
 import { animateAsync } from "../../src/ts/anim";
-import * as TestUI from "../../src/features/typing/runtime/test-ui";
+import * as TestUI from "../../src/features/typing/runtime/test/ui";
 import * as TodayTracker from "../../src/features/typing/runtime/today-tracker";
-import { retryCompletion } from "../../src/features/typing/runtime/completion";
+import { retryCompletion } from "../../src/features/typing/runtime/completion/finish";
 import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { createRoot, onCleanup } from "solid-js";
@@ -58,15 +58,15 @@ const mocks = vi.hoisted(() => ({
   onFinish: undefined as ((event: { reason?: string }) => void) | undefined,
 }));
 
-vi.mock("../../src/features/typing/runtime/content.client", () => ({
+vi.mock("../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({ prepare: mocks.generate }),
 }));
-vi.mock("../../src/features/typing/engine.client", () => ({
+vi.mock("../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({ load: mocks.engineLoad }),
 }));
 
 vi.mock("../../src/ts/states/test", async () => ({
-  ...(await import("../../src/features/typing/lifecycle-controller"))
+  ...(await import("../../src/features/typing/lifecycle/controller"))
     .lifecycleSelectors,
   isRepeated: () => mocks.repeated,
   setIsRepeated: (value: boolean) => {
@@ -106,7 +106,7 @@ vi.mock("../../src/ts/utils/json-data", () => ({
   getLanguage: async () => mocks.language,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../src/features/typing/runtime/test/ui", () => ({
   onTestStart: mocks.uiStart,
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -170,21 +170,21 @@ vi.mock("../../src/features/typing/runtime/pace-caret", () => ({
   init: vi.fn().mockResolvedValue(undefined),
   setLastTestWpm: vi.fn(),
 }));
-vi.mock("../../src/features/typing/runtime/test-timer", () => ({
+vi.mock("../../src/features/typing/runtime/test/timer", () => ({
   clear: vi.fn(),
   start: vi.fn().mockResolvedValue(undefined),
 }));
 vi.mock("../../src/features/typing/runtime/replay", () => ({
   pauseReplay: vi.fn(),
 }));
-vi.mock("../../src/features/typing/runtime/practise-words", () => ({
+vi.mock("../../src/features/typing/runtime/content/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));
 vi.mock("../../src/features/typing/runtime/today-tracker", () => ({
   addSeconds: vi.fn(),
 }));
-vi.mock("../../src/features/typing/runtime/result", () => ({
+vi.mock("../../src/features/typing/runtime/result/screen", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: mocks.retryUpdate,
   resetResultSaveState: vi.fn(),
@@ -256,7 +256,7 @@ vi.mock("../../src/ts/utils/result-hash", () => ({
   hashResult: vi.fn().mockResolvedValue("hash"),
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("../../src/features/typing/analysis.client", () => ({
+vi.mock("../../src/features/typing/engine/analysis.client", () => ({
   analyze: () => ({ reason: null, afk: false }),
   getAnalysis: () => ({
     incompleteTestSeconds: 0,
@@ -277,7 +277,7 @@ import {
   retrySavingResult,
   startTest,
   useTestLogicEvents,
-} from "../../src/features/typing/runtime/test-logic";
+} from "../../src/features/typing/runtime/test/logic";
 
 let disposeRuntime: () => void;
 afterEach(() => disposeRuntime());

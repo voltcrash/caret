@@ -9,7 +9,7 @@ import {
   setTestFocusState,
 } from "../../../ts/states/test";
 import * as Caret from "../runtime/caret";
-import { restart } from "../runtime/test-logic";
+import { restart } from "../runtime/test/logic";
 
 export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
   onMount(() => {

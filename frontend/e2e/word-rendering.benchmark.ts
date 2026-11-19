@@ -7,13 +7,13 @@ test("render 1,000 words with browser layout", async ({ page }) => {
   const prefix = "/src";
   const measurements = await page.evaluate(async (prefix) => {
     const renderingUrl = `${prefix}/features/typing/components/words/rendering.ts`;
-    const wordsUrl = `${prefix}/features/typing/runtime/test-words.ts`;
+    const wordsUrl = `${prefix}/features/typing/runtime/test/words.ts`;
     const { showWords, updateWordLetters } = (await import(
       /* @vite-ignore */ renderingUrl
     )) as typeof import("../src/features/typing/components/words/rendering");
     const { words } = (await import(
       /* @vite-ignore */ wordsUrl
-    )) as typeof import("../src/features/typing/runtime/test-words");
+    )) as typeof import("../src/features/typing/runtime/test/words");
     await document.fonts.ready;
     words.reset();
     for (let i = 0; i < 1_000; i++) {

@@ -3,7 +3,7 @@ import { JSXElement, Show } from "solid-js";
 import { Button } from "../../../ts/components/common/Button";
 import { getConfig } from "../../../ts/config/store";
 import { isTestActive } from "../../../ts/states/test";
-import * as TestLogic from "../runtime/test-logic";
+import * as TestLogic from "../runtime/test/logic";
 
 // Touch-only equivalent of shift+enter finishing a zen test.
 export function FinishZenButton(): JSXElement {

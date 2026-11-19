@@ -2,4 +2,4 @@ export {
   canSetConfigWithCurrentFunboxes,
   canSetFunboxWithConfig,
   type FunboxConfigError,
-} from "../../features/typing/policy.client";
+} from "../../features/typing/engine/policy.client";

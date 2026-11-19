@@ -22,7 +22,7 @@ vi.mock("../../../src/ts/input/input-element", () => ({
   }),
 }));
 
-vi.mock("../../../src/features/typing/runtime/test-words", () => ({
+vi.mock("../../../src/features/typing/runtime/test/words", () => ({
   words: {
     getCurrent: () => ({
       textWithCommit: mockState.word,
@@ -53,7 +53,7 @@ vi.mock("../../../src/features/typing/runtime/session.client", () => ({
     preflight: native.preflight,
   }),
 }));
-vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   lineState: { activeWordTop: 0, activeWordHeight: 10 },
   getPendingWordData: (): undefined => undefined,
   getActiveWordTopAndHeightWithDifferentData: () => ({
