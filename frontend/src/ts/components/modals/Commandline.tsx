@@ -1,6 +1,6 @@
 import { For, JSXElement, Show, createEffect, on } from "solid-js";
 
-import { getCustomThemes } from "../../collections/custom-themes";
+import { getCustomThemes } from "../../../data/collections/custom-themes";
 import {
   afterHideCommandline,
   canCommandlineGoBack,

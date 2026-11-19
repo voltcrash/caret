@@ -27,7 +27,7 @@ import {
   deleteCustomTheme,
   getCustomTheme,
   getCustomThemes,
-} from "../../src/ts/collections/custom-themes";
+} from "../../src/data/collections/custom-themes";
 
 it("reads custom themes sorted by name and tracks changes", async () => {
   const names: string[][] = [];

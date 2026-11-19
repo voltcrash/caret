@@ -7,7 +7,7 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   createCollectionReader,
   type CollectionReader,
-} from "../../src/ts/collections/utils/reader";
+} from "../../src/data/collections/utils/reader";
 import { mountApplication } from "../../src/app/application";
 import {
   createTestApplication,

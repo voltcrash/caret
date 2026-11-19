@@ -7,8 +7,8 @@ import { For, lazy, Show, Suspense, type JSXElement } from "solid-js";
 
 import type { LeaderboardView, Selection } from "./selection";
 
-import { leaderboardOptions } from "../../data/leaderboards";
 import { onlyCachedOnServer } from "../../data/prefetch";
+import { leaderboardOptions } from "./queries";
 import { LeaderboardSkeleton } from "./skeleton";
 
 const Content = lazy(

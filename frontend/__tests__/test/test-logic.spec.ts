@@ -228,7 +228,7 @@ vi.mock("../../src/ts/db", () => ({
   getLocalPB: () => undefined,
 }));
 
-vi.mock("../../src/ts/collections/tags", () => ({ getActiveTags: () => [] }));
+vi.mock("../../src/data/collections/tags", () => ({ getActiveTags: () => [] }));
 vi.mock("../../src/ts/controllers/challenge-controller", () => ({
   verify: () => null,
 }));

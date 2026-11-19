@@ -1,6 +1,6 @@
 import { OperationError } from "../../data/operation-result";
-import { getQueryClient } from "../queries";
-import { getRemotePreferencesQueryOptions } from "../queries/preferences";
+import { getQueryClient } from "../../data/queries";
+import { getRemotePreferencesQueryOptions } from "../../data/queries/preferences";
 import { waitForTestIdle } from "../../app/test-idle.client";
 import { captureAccount } from "../../app/account-scope";
 import * as ConfigSchemas from "@caret/schemas/configs";

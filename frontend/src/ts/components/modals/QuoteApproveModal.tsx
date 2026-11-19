@@ -5,8 +5,8 @@ import { format } from "date-fns/format";
 import { JSXElement, createSignal, For, Show } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import { getQueryClient } from "../../queries";
-import { getQuoteSubmissionsQueryOptions } from "../../queries/quotes";
+import { getQueryClient } from "../../../data/queries";
+import { getQuoteSubmissionsQueryOptions } from "../../../data/queries/quotes";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {
   showErrorNotification,

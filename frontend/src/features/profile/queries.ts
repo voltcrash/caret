@@ -2,20 +2,27 @@ import type { Client } from "@caret/schemas/shared";
 import type { UserProfile } from "@caret/schemas/users";
 import { queryOptions } from "@tanstack/solid-query";
 import { isServer } from "solid-js/web";
-import { OperationError } from "./operation-result";
-import { getProfile } from "../functions/profile";
+import { OperationError } from "../../data/operation-result";
+import { getProfile } from "../../functions/profile";
 
 /** Only a missing user is a missing profile; outages remain retryable. */
 export function isUserNotFound(error: unknown): boolean {
   return error instanceof OperationError && error.status === 404;
 }
 
+/** Query key prefix for public profiles; the route cache holds all clients. */
+export const profileKey = (uidOrName: string): readonly unknown[] => [
+  "public",
+  "profile",
+  uidOrName,
+];
+
 export const profileOptions = (
   uidOrName: string,
   client: Client,
 ): ReturnType<typeof queryOptions<UserProfile>> =>
   queryOptions<UserProfile>({
-    queryKey: ["public", "profile", uidOrName, client],
+    queryKey: [...profileKey(uidOrName), client],
     queryFn: async ({ signal }) => {
       const result = await getProfile({ data: { uidOrName, client }, signal });
       if (!result.ok) throw new OperationError(result);

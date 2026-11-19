@@ -3,7 +3,7 @@ import { PresetNameSchema, PresetType } from "@caret/schemas/presets";
 import { createForm } from "@tanstack/solid-form";
 import { createSignal, JSXElement, Show } from "solid-js";
 
-import { editPreset, getPreset } from "../../../collections/presets";
+import { editPreset, getPreset } from "../../../../data/collections/presets";
 import { createEffectOn } from "../../../hooks/effects";
 import { editPresetData } from "../../../states/edit-preset-modal";
 import { hideLoaderBar, showLoaderBar } from "../../../states/loader-bar";

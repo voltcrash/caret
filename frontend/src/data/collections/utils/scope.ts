@@ -3,7 +3,7 @@ import {
   requireApplication,
 } from "../../../app/application";
 import type { OwnedScope } from "../../../app/scope";
-import type { ModuleHotContext } from "../../hooks/createEvent";
+import type { ModuleHotContext } from "../../../ts/hooks/createEvent";
 
 /** Reactive; the mounted application's current account-data scope. */
 export function collectionScope(): OwnedScope {

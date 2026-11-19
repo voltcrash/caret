@@ -17,10 +17,10 @@ let dispose: () => void;
 
 const { query } = vi.hoisted(() => ({ query: vi.fn() }));
 
-vi.mock("../../src/ts/queries", () => ({
+vi.mock("../../src/data/queries", () => ({
   getQueryClient: () => ({ query }),
 }));
-vi.mock("../../src/ts/queries/server-configuration", () => ({
+vi.mock("../../src/data/queries/server-configuration", () => ({
   getServerConfigurationQueryOptions: () => ({
     queryKey: ["serverConfiguration"],
   }),

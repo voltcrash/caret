@@ -4,7 +4,7 @@ import {
   ResultsQueryState,
   ResultStats,
   useResultStatsLiveQuery,
-} from "../../../ts/collections/results";
+} from "../../../data/collections/results";
 import AsyncContent from "../../../ts/components/common/AsyncContent";
 import { Balloon } from "../../../ts/components/common/Balloon";
 import { Fa } from "../../../ts/components/common/Fa";

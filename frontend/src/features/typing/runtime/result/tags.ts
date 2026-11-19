@@ -12,7 +12,7 @@ import {
   getTags,
   saveLocalTagPB,
   type TagItem,
-} from "../../../../ts/collections/tags";
+} from "../../../../data/collections/tags";
 import { getTheme } from "../../../../ts/states/theme";
 import {
   resultState,

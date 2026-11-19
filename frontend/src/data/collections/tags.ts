@@ -1,4 +1,4 @@
-import { operation } from "../../data/operations";
+import { operation } from "../operations";
 import { UserTag } from "@caret/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -12,19 +12,22 @@ import { untrack } from "solid-js";
 import { z } from "zod";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
-import { baseKey } from "../queries/utils/keys";
-import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
+import { baseKey } from "../queries/keys";
+import { LocalStorageWithSchema } from "../../ts/utils/local-storage-with-schema";
 import { IdSchema } from "@caret/schemas/util";
-import { SnapshotResult } from "../constants/default-snapshot";
+import { SnapshotResult } from "../../ts/constants/default-snapshot";
 import { Mode, Mode2, PersonalBest } from "@caret/schemas/shared";
 import { Difficulty } from "@caret/schemas/configs";
 import { Language } from "@caret/schemas/languages";
 import { applyIdWorkaround, isTempId, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
 import { loadAccountData } from "../queries/account";
-import { updateTagsInFilterStorage } from "../states/result-filters";
-import { isAuthenticated } from "../states/core";
-import { emptyPersonalBests, personalBestList } from "../utils/personal-bests";
+import { updateTagsInFilterStorage } from "../../ts/states/result-filters";
+import { isAuthenticated } from "../../ts/states/core";
+import {
+  emptyPersonalBests,
+  personalBestList,
+} from "../../ts/utils/personal-bests";
 
 export type TagItem = UserTag & { active: boolean };
 

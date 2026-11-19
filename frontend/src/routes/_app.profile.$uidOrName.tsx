@@ -8,13 +8,13 @@ import { z } from "zod";
 
 import { urlSearch } from "../app/search";
 import { pageHead } from "../app/seo";
-import { isUserNotFound, profileOptions } from "../data/profile";
 import { ProfileMissing } from "../features/profile/missing";
 import {
   ProfilePage,
   profileFrame,
   preloadProfile,
 } from "../features/profile/page";
+import { isUserNotFound, profileOptions } from "../features/profile/queries";
 import { ProfileSkeleton } from "../features/profile/skeleton";
 
 const SearchSchema = z.object({ client: ClientSchema.optional() }).partial();

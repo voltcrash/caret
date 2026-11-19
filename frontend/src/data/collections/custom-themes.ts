@@ -1,4 +1,4 @@
-import { operation } from "../../data/operations";
+import { operation } from "../operations";
 import { CustomTheme } from "@caret/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -8,11 +8,11 @@ import {
 } from "@tanstack/solid-db";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
-import { baseKey } from "../queries/utils/keys";
+import { baseKey } from "../queries/keys";
 import { applyIdWorkaround, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
-import { isAuthenticated } from "../states/core";
-import { bindCustomThemesReader } from "../states/custom-themes";
+import { isAuthenticated } from "../../ts/states/core";
+import { bindCustomThemesReader } from "../../ts/states/custom-themes";
 
 type CustomThemeItem = CustomTheme;
 

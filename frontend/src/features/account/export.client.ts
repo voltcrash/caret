@@ -1,7 +1,7 @@
 import { operationData } from "../../data/operations";
 import { captureAccount } from "../../app/account-scope";
-import { normalizeResult } from "../../ts/collections/results/normalize";
-import { getTagsOnce } from "../../ts/collections/tags";
+import { normalizeResult } from "../../data/collections/results/normalize";
+import { getTagsOnce } from "../../data/collections/tags";
 import type { SnapshotResult } from "../../ts/constants/default-snapshot";
 import type { Mode } from "@caret/schemas/shared";
 import { OperationError } from "../../data/operation-result";

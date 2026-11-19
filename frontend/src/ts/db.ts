@@ -17,13 +17,13 @@ import { setLastResult } from "./states/snapshot";
 import { XpBreakdown } from "@caret/schemas/results";
 import { setXpBarData } from "./states/header";
 import { FunboxMetadata } from "@caret/funbox";
-import { getQueryClient } from "./queries";
+import { getQueryClient } from "../data/queries";
 import {
   type AccountData,
   getAccountActivityQueryOptions,
   getAccountQueryOptions,
   loadAccountData,
-} from "./queries/account";
+} from "../data/queries/account";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 import { updateTagsInFilterStorage } from "./states/result-filters";
 import { emptyPersonalBests, personalBestList } from "./utils/personal-bests";
@@ -244,7 +244,7 @@ export function saveLocalResult(data: SaveLocalResultData): void {
 
   if (data.result !== undefined) {
     const result = data.result;
-    void import("./collections/results").then(async (m) =>
+    void import("../data/collections/results").then(async (m) =>
       lease.isCurrent() ? m.insertLocalResult({ result }) : undefined,
     );
     setLastResult(data.result);

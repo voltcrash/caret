@@ -2,7 +2,7 @@ import { createAccountOwned } from "../../../app/account-scope";
 import { appObject } from "../../../app/state";
 import { setConfig } from "../../config/setters";
 import { isAuthenticated } from "../../states/core";
-import * as CustomThemes from "../../collections/custom-themes";
+import * as CustomThemes from "../../../data/collections/custom-themes";
 import * as ThemeController from "../../controllers/theme-controller";
 import { Command, CommandsSubgroup } from "../types";
 

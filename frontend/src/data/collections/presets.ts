@@ -1,4 +1,4 @@
-import { operation } from "../../data/operations";
+import { operation } from "../operations";
 import { Preset } from "@caret/schemas/presets";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -8,12 +8,12 @@ import {
 } from "@tanstack/solid-db";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
-import { baseKey } from "../queries/utils/keys";
+import { baseKey } from "../queries/keys";
 import { ConfigGroupName } from "@caret/schemas/configs";
 import { applyIdWorkaround, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
-import { isAuthenticated } from "../states/core";
-import { replaceUnderscoresWithSpaces } from "../utils/strings";
+import { isAuthenticated } from "../../ts/states/core";
+import { replaceUnderscoresWithSpaces } from "../../ts/utils/strings";
 
 export type PresetItem = Preset;
 

@@ -12,13 +12,12 @@ import {
   Show,
 } from "solid-js";
 
-import { boardKey, leaderboardOptions } from "../../data/leaderboards";
+import { baseKey } from "../../data/queries/keys";
+import { getServerConfigurationQueryOptions } from "../../data/queries/server-configuration";
 import { getLeaderboardRank } from "../../functions/leaderboards";
 import AsyncContent from "../../ts/components/common/AsyncContent";
 import { Separator } from "../../ts/components/common/Separator";
 import { getSnapshot, updateLbMemory } from "../../ts/db";
-import { getServerConfigurationQueryOptions } from "../../ts/queries/server-configuration";
-import { baseKey } from "../../ts/queries/utils/keys";
 import { getUserId, isAuthenticated } from "../../ts/states/core";
 import { showErrorNotification } from "../../ts/states/notifications";
 import { Navigation } from "./components/Navigation";
@@ -27,6 +26,7 @@ import { Sidebar } from "./components/Sidebar";
 import { Table } from "./components/Table";
 import { Title } from "./components/Title";
 import { UserRank } from "./components/UserRank";
+import { boardKey, leaderboardOptions } from "./queries";
 import {
   maxPageIndex,
   pageSize,

@@ -9,7 +9,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("../../../../../src/ts/states/edit-result-tags", () => ({
   showEditResultTagsModal: mocks.showEditResultTagsModal,
 }));
-vi.mock("../../../../../src/ts/collections/tags", () => ({
+vi.mock("../../../../../src/data/collections/tags", () => ({
   useTagsLiveQuery: () => () => mocks.userTags,
 }));
 

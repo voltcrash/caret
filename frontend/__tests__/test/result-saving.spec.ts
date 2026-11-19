@@ -41,7 +41,7 @@ vi.mock("../../src/features/typing/runtime/result/hash", () => ({
     async (result: CompletedEvent) => `hash-${result.timestamp}`,
   ),
 }));
-vi.mock("../../src/ts/collections/results", () => ({
+vi.mock("../../src/data/collections/results", () => ({
   insertLocalResult: vi.fn(),
 }));
 

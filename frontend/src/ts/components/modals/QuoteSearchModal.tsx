@@ -10,14 +10,14 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
+import { getQueryClient } from "../../../data/queries";
+import { getQuoteSubmissionEnabledQueryOptions } from "../../../data/queries/quotes";
 import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { setConfig } from "../../config/setters";
 import { getMutableConfig } from "../../config/store";
 import QuotesController, { Quote } from "../../controllers/quotes-controller";
 import * as DB from "../../db";
 import { createDebouncedEffectOn } from "../../hooks/effects";
-import { getQueryClient } from "../../queries";
-import { getQuoteSubmissionEnabledQueryOptions } from "../../queries/quotes";
 import { isAuthenticated } from "../../states/core";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {

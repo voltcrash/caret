@@ -2,7 +2,7 @@ import { ChartData } from "@caret/schemas/results";
 import { useQuery } from "@tanstack/solid-query";
 import { createMemo, JSXElement } from "solid-js";
 
-import { getSingleResultQueryOptions } from "../../../ts/collections/results";
+import { getSingleResultQueryOptions } from "../../../data/collections/results";
 import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
 import AsyncContent from "../../../ts/components/common/AsyncContent";
 import { ChartJs } from "../../../ts/components/common/ChartJs";

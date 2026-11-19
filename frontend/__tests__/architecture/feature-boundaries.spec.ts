@@ -4,7 +4,7 @@ import { parseSync } from "vite-plus";
 import { describe, expect, it } from "vite-plus/test";
 
 const root = resolve(import.meta.dirname, "../..");
-const shared = [resolve(root, "src/ts")];
+const shared = [resolve(root, "src/ts"), resolve(root, "src/data")];
 const features = resolve(root, "src/features");
 const baselineFile = resolve(
   import.meta.dirname,
@@ -95,7 +95,7 @@ function sharedFeatureImports(): string[] {
 }
 
 describe("shared code and features", () => {
-  // Shared code (src/ts) should not depend on features. Existing edges are a
+  // Shared code (src/ts, src/data) should not depend on features. Existing edges are a
   // ratchet: remove entries as they are untangled, never add new ones.
   it("adds no shared-to-feature imports beyond the recorded baseline", () => {
     const baseline = JSON.parse(readFileSync(baselineFile, "utf8")) as string[];

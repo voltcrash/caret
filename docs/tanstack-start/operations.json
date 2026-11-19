@@ -351,7 +351,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/preferences.ts"],
+    "browserCallers": ["frontend/src/data/queries/preferences.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -405,7 +405,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/server-configuration.ts"],
+    "browserCallers": ["frontend/src/data/queries/server-configuration.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -524,7 +524,7 @@
       "statuses": [200, 400, 401, 403, 404, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/leaderboards.ts"],
+    "browserCallers": ["frontend/src/features/leaderboards/queries.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -557,7 +557,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/leaderboards.ts"],
+    "browserCallers": ["frontend/src/features/leaderboards/queries.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -587,7 +587,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/leaderboards.ts"],
+    "browserCallers": ["frontend/src/features/leaderboards/view.client.tsx"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -613,7 +613,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/leaderboards.ts"],
+    "browserCallers": ["frontend/src/features/leaderboards/view.client.tsx"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -646,7 +646,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/leaderboards.ts"],
+    "browserCallers": ["frontend/src/features/leaderboards/queries.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -676,7 +676,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/leaderboards.ts"],
+    "browserCallers": ["frontend/src/features/leaderboards/view.client.tsx"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -702,7 +702,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "browserCallers": ["frontend/src/data/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -728,7 +728,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "browserCallers": ["frontend/src/data/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -754,7 +754,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "browserCallers": ["frontend/src/data/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -780,7 +780,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "browserCallers": ["frontend/src/data/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -981,7 +981,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
+    "browserCallers": ["frontend/src/data/queries/quotes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1007,7 +1007,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
+    "browserCallers": ["frontend/src/data/queries/quotes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1036,7 +1036,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
+    "browserCallers": ["frontend/src/data/queries/quotes.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -1161,8 +1161,8 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/features/account/export.client.ts",
-      "frontend/src/ts/collections/results/store.ts"
+      "frontend/src/data/collections/results/store.ts",
+      "frontend/src/features/account/export.client.ts"
     ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
@@ -1189,7 +1189,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/results/queries.ts"],
+    "browserCallers": ["frontend/src/data/collections/results/queries.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1241,7 +1241,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/results/mutations.ts"],
+    "browserCallers": ["frontend/src/data/collections/results/mutations.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1267,7 +1267,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "browserCallers": ["frontend/src/data/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1326,7 +1326,9 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
+    "browserCallers": [
+      "frontend/src/data/collections/result-filter-presets.ts"
+    ],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1385,7 +1387,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "browserCallers": ["frontend/src/data/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1442,7 +1444,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "browserCallers": ["frontend/src/data/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1499,7 +1501,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "browserCallers": ["frontend/src/data/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1525,7 +1527,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "browserCallers": ["frontend/src/data/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1551,7 +1553,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "browserCallers": ["frontend/src/data/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1577,7 +1579,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "browserCallers": ["frontend/src/data/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1603,7 +1605,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/account.ts"],
+    "browserCallers": ["frontend/src/data/queries/account.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1655,7 +1657,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "browserCallers": ["frontend/src/data/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1774,7 +1776,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/data/profile.ts",
+      "frontend/src/features/profile/queries.ts",
       "frontend/src/ts/commandline/lists/navigation.ts"
     ],
     "target": "retained server route over backend service",
@@ -1880,7 +1882,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/account.ts"],
+    "browserCallers": ["frontend/src/data/queries/account.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1970,7 +1972,9 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
+    "browserCallers": [
+      "frontend/src/data/collections/result-filter-presets.ts"
+    ],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",

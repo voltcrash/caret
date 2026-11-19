@@ -1,6 +1,9 @@
 import { FunboxName } from "@caret/schemas/configs";
 import { Client, Difficulty, Mode, Mode2 } from "@caret/schemas/shared";
-import { SnapshotResult, SavedResult } from "../../constants/default-snapshot";
+import {
+  SnapshotResult,
+  SavedResult,
+} from "../../../ts/constants/default-snapshot";
 
 export type ResultsQueryState = {
   client?: Client;

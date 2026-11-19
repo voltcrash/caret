@@ -1,5 +1,5 @@
 import { expect, it } from "vite-plus/test";
-import { applyIdWorkaround } from "../../src/ts/collections/utils/misc";
+import { applyIdWorkaround } from "../../src/data/collections/utils/misc";
 
 it("updates the id alias on the original collection item", () => {
   const item = { _id: "server-id", id: "old-id", name: "preset" };

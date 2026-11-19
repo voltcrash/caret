@@ -1,4 +1,4 @@
-import { operation } from "../../data/operations";
+import { operation } from "../operations";
 import { ResultFilters } from "@caret/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -8,14 +8,14 @@ import {
 } from "@tanstack/solid-db";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
-import { baseKey } from "../queries/utils/keys";
+import { baseKey } from "../queries/keys";
 import {
   replaceSpacesWithUnderscores,
   replaceUnderscoresWithSpaces,
-} from "../utils/strings";
+} from "../../ts/utils/strings";
 import { applyIdWorkaround, tempId } from "./utils/misc";
 import { loadAccountData } from "../queries/account";
-import { isAuthenticated } from "../states/core";
+import { isAuthenticated } from "../../ts/states/core";
 
 const queryKeys = {
   root: () => [...baseKey("resultFilterPresets", { isUserSpecific: true })],

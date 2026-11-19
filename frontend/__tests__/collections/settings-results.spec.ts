@@ -13,8 +13,8 @@ vi.mock("../../src/ts/states/core", async (original) => ({
   getUserId: () => "settings-user",
 }));
 
-vi.mock("../../src/ts/collections/tags", async (original) => ({
-  ...(await original<typeof import("../../src/ts/collections/tags")>()),
+vi.mock("../../src/data/collections/tags", async (original) => ({
+  ...(await original<typeof import("../../src/data/collections/tags")>()),
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
   useActiveTagsLiveQuery: () => [],
@@ -44,7 +44,7 @@ import {
   deleteLocalTag,
   waitForResultsReady,
   updateTags,
-} from "../../src/ts/collections/results";
+} from "../../src/data/collections/results";
 import defaultResultFilters from "../../src/ts/constants/default-result-filters";
 import type { SnapshotResult } from "../../src/ts/constants/default-snapshot";
 import type { Mode } from "@caret/schemas/shared";

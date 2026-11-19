@@ -5,7 +5,7 @@ import {
   getTag,
   getTags,
   toggleTagActive,
-} from "../../collections/tags";
+} from "../../../data/collections/tags";
 import { getMutableConfig } from "../../config/store";
 import * as PaceCaret from "../../../features/typing/runtime/pace-caret";
 import { isAuthenticated } from "../../states/core";

@@ -1,4 +1,4 @@
-import { requireApplication } from "../../../app/application";
+import { requireApplication } from "../../app/application";
 export function baseKey(
   key: string,
   options?: { isUserSpecific?: true },

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, it } from "vite-plus/test";
 import { showPsas } from "../../../src/features/announcements/psas.client";
-import { getQueryClient } from "../../../src/ts/queries";
+import { getQueryClient } from "../../../src/data/queries";
 import { getBanners, removeBanner } from "../../../src/ts/states/banners";
 import {
   mockOperation,

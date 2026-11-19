@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/solid-query";
-import { operationData } from "../../data/operations";
-import { baseKey } from "./utils/keys";
+import { operationData } from "../operations";
+import { baseKey } from "./keys";
 
 export function getRemotePreferencesQueryOptions() {
   return queryOptions({

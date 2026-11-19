@@ -6,9 +6,9 @@ import { createClientOnlyFn } from "@tanstack/solid-start";
 import { lazy, Show, Suspense, type JSXElement } from "solid-js";
 
 import { onlyCachedOnServer } from "../../data/prefetch";
-import { isUserNotFound, profileOptions } from "../../data/profile";
 import { Button } from "../../ts/components/common/Button";
 import { ProfileMissing } from "./missing";
+import { isUserNotFound, profileOptions } from "./queries";
 import { ProfileSkeleton } from "./skeleton";
 import { ProfileSummary } from "./summary";
 

@@ -68,7 +68,7 @@ vi.mock("../../src/ts/states/connection", () => ({
 vi.mock("../../src/ts/states/glarses-mode", () => ({
   get: () => false,
 }));
-vi.mock("../../src/ts/collections/tags", () => ({
+vi.mock("../../src/data/collections/tags", () => ({
   getLocalTagPB: () => state.tagPbWpm,
   saveLocalTagPB: vi.fn(),
   getActiveTags: () =>

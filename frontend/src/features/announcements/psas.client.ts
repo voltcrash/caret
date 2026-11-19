@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { OperationError } from "../../data/operation-result";
 import { operationData } from "../../data/operations";
-import { getQueryClient } from "../../ts/queries";
+import { getQueryClient } from "../../data/queries";
 import { addBanner } from "../../ts/states/banners";
 import { secondsToString } from "../../ts/utils/date-and-time";
 import { isDevEnvironment } from "../../ts/utils/env";

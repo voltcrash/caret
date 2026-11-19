@@ -9,8 +9,8 @@ vi.mock("../../src/ts/states/core", async (original) => ({
   getUserId: () => "typing-time",
 }));
 
-vi.mock("../../src/ts/collections/tags", async (original) => ({
-  ...(await original<typeof import("../../src/ts/collections/tags")>()),
+vi.mock("../../src/data/collections/tags", async (original) => ({
+  ...(await original<typeof import("../../src/data/collections/tags")>()),
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
   useActiveTagsLiveQuery: () => [],
@@ -34,7 +34,7 @@ import defaultFilters from "../../src/ts/constants/default-result-filters";
 import {
   createResultsQueryState,
   getResultsQueryOnce,
-} from "../../src/ts/collections/results";
+} from "../../src/data/collections/results";
 
 const cases = [
   { name: "subtracts AFK", fields: { afkDuration: 5 }, expected: 10 },

@@ -5,7 +5,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "tags-user",
 }));
-vi.mock("../../src/ts/queries/account", () => ({
+vi.mock("../../src/data/queries/account", () => ({
   loadAccountData: async () => ({
     tags: [
       { _id: "b", name: "beta_tag", personalBests: {} },
@@ -25,7 +25,7 @@ import {
   saveLocalTagPB,
   toggleTagActive,
   waitForTagsReady,
-} from "../../src/ts/collections/tags";
+} from "../../src/data/collections/tags";
 
 function collect<T>(read: () => T): { values: T[]; dispose: () => void } {
   const values: T[] = [];

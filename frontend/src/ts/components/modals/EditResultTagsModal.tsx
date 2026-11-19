@@ -1,8 +1,8 @@
 import { createEffect, createSignal, For } from "solid-js";
 
+import { updateTags } from "../../../data/collections/results";
+import { useTagsLiveQuery } from "../../../data/collections/tags";
 import { updateTagsAfterEdit } from "../../../features/typing/runtime/result/screen";
-import { updateTags } from "../../collections/results";
-import { useTagsLiveQuery } from "../../collections/tags";
 import { getSelectedResult } from "../../states/edit-result-tags";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import { hideModal } from "../../states/modals";

@@ -9,8 +9,8 @@ import * as ConfigUtils from "../../src/ts/config/utils";
 import * as Persistence from "../../src/ts/config/persistence";
 import * as Notifications from "../../src/ts/states/notifications";
 import * as TestLogic from "../../src/features/typing/runtime/test/logic";
-import * as Tags from "../../src/ts/collections/tags";
-import * as Presets from "../../src/ts/collections/presets";
+import * as Tags from "../../src/data/collections/tags";
+import * as Presets from "../../src/data/collections/presets";
 
 vi.mock("../../src/features/typing/runtime/test/logic", () => ({
   restart: vi.fn(),
@@ -183,5 +183,5 @@ vi.mock("../../src/ts/config/lifecycle", { spy: true });
 vi.mock("../../src/ts/config/utils", { spy: true });
 vi.mock("../../src/ts/config/persistence", { spy: true });
 vi.mock("../../src/ts/states/notifications", { spy: true });
-vi.mock("../../src/ts/collections/tags", { spy: true });
-vi.mock("../../src/ts/collections/presets", { spy: true });
+vi.mock("../../src/data/collections/tags", { spy: true });
+vi.mock("../../src/data/collections/presets", { spy: true });

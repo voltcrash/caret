@@ -3,7 +3,7 @@ import { onCleanup } from "solid-js";
 import { createAppOwned } from "../app/application";
 import type { SessionState } from "@caret/schemas/auth-session";
 import { sessionKey, sessionOptions } from "../features/auth/session";
-import { getQueryClient } from "./queries";
+import { getQueryClient } from "../data/queries";
 
 import { getAuthClient } from "../features/auth/client.client";
 export { getAuthClient };

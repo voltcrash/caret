@@ -1,4 +1,4 @@
-import { operation } from "../../../data/operations";
+import { operation } from "../../operations";
 import { resultsByClient } from "./store";
 import { queryKeys } from "./keys";
 import { ResultsQueryState } from "./types";
@@ -16,8 +16,8 @@ import {
 } from "@tanstack/solid-db";
 import { queryOptions } from "@tanstack/solid-query";
 import { Accessor } from "solid-js";
-import { SnapshotResult } from "../../constants/default-snapshot";
-import { isAuthenticated } from "../../states/core";
+import { SnapshotResult } from "../../../ts/constants/default-snapshot";
+import { isAuthenticated } from "../../../ts/states/core";
 
 export async function getResultsQueryOnce(options: {
   queryState: Accessor<ResultsQueryState | undefined>;

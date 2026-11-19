@@ -100,7 +100,7 @@ export async function init(lease = captureTypingRoute()): Promise<void> {
         getActiveFunboxes(),
       )?.wpm ?? 0;
   } else if (getMutableConfig().paceCaret === "tagPb") {
-    const { getActiveTagsPB } = await import("../../../ts/collections/tags");
+    const { getActiveTagsPB } = await import("../../../data/collections/tags");
     if (!lease.isCurrent()) return;
     wpm = getActiveTagsPB(
       getMutableConfig().mode,
@@ -113,13 +113,13 @@ export async function init(lease = captureTypingRoute()): Promise<void> {
     );
   } else if (getMutableConfig().paceCaret === "average") {
     const { getUserAverage10Once } =
-      await import("../../../ts/collections/results");
+      await import("../../../data/collections/results");
     wpm = Math.round(
       (await getUserAverage10Once({ ...getMutableConfig(), mode2 })).wpm,
     );
   } else if (getMutableConfig().paceCaret === "daily") {
     const { getUserDailyBestOnce } =
-      await import("../../../ts/collections/results");
+      await import("../../../data/collections/results");
     wpm = Math.round(
       (await getUserDailyBestOnce({ ...getMutableConfig(), mode2 })).wpm,
     );

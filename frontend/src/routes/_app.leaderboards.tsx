@@ -4,9 +4,9 @@ import { createFileRoute } from "@tanstack/solid-router";
 
 import { stringifySearch, urlSearch } from "../app/search";
 import { pageHead } from "../app/seo";
-import { leaderboardOptions } from "../data/leaderboards";
 import { prefetch } from "../data/prefetch";
 import { LeaderboardPage } from "../features/leaderboards/page";
+import { leaderboardOptions } from "../features/leaderboards/queries";
 import {
   applyUrlParams,
   defaultSelection,

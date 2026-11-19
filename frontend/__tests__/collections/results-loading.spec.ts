@@ -8,11 +8,11 @@ import {
 import {
   getResults,
   waitForResultsReady,
-} from "../../src/ts/collections/results/store";
-import { queryKeys } from "../../src/ts/collections/results/keys";
-import { normalizeResult } from "../../src/ts/collections/results/normalize";
+} from "../../src/data/collections/results/store";
+import { queryKeys } from "../../src/data/collections/results/keys";
+import { normalizeResult } from "../../src/data/collections/results/normalize";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
-import { getAccountQueryOptions } from "../../src/ts/queries/account";
+import { getAccountQueryOptions } from "../../src/data/queries/account";
 import { setUserId } from "../../src/ts/states/core";
 import { getLastResult } from "../../src/ts/states/snapshot";
 import {

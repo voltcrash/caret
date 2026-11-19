@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { boardKey, leaderboardOptions } from "../../src/data/leaderboards";
+import {
+  boardKey,
+  leaderboardOptions,
+} from "../../src/features/leaderboards/queries";
 import type { Selection } from "../../src/features/leaderboards/selection";
 
 describe("leaderboard query keys", () => {

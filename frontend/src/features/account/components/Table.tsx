@@ -3,7 +3,7 @@ import { Mode } from "@caret/schemas/shared";
 import { format as dateFormat } from "date-fns/format";
 import { Accessor, createMemo, createSignal, JSXElement, Show } from "solid-js";
 
-import { type TagItem, useTagsLiveQuery } from "../../../ts/collections/tags";
+import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
 import { Balloon } from "../../../ts/components/common/Balloon";
 import { Button } from "../../../ts/components/common/Button";
 import { Fa, FaProps } from "../../../ts/components/common/Fa";

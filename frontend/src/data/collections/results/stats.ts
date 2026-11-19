@@ -2,7 +2,7 @@ import { buildResultsQuery } from "./queries";
 import { ResultsQueryState } from "./types";
 import { avg, count, max, sum, useLiveQuery } from "@tanstack/solid-db";
 import { Accessor } from "solid-js";
-import { isAuthenticated } from "../../states/core";
+import { isAuthenticated } from "../../../ts/states/core";
 
 /**
  * get aggregated statistics for the current result selection

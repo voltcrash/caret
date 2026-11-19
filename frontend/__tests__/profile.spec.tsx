@@ -9,8 +9,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 import { OperationError } from "../src/data/operation-result";
-import { profileOptions, isUserNotFound } from "../src/data/profile";
 import { ProfilePage } from "../src/features/profile/page";
+import {
+  profileOptions,
+  isUserNotFound,
+} from "../src/features/profile/queries";
 import { getProfile } from "../src/functions/profile";
 
 vi.mock("../src/functions/profile", () => ({ getProfile: vi.fn() }));

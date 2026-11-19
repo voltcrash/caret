@@ -74,19 +74,19 @@ export function inventory(): object[] {
   }
   // Native SSR/browser factories also invoke dedicated, already-migrated functions.
   const nativeFactories: Record<string, string[]> = {
-    "users.getProfile": ["frontend/src/data/profile.ts"],
+    "users.getProfile": ["frontend/src/features/profile/queries.ts"],
     "users.create": ["frontend/src/features/auth/actions.client.ts"],
     ...Object.fromEntries(
-      [
-        "get",
-        "getDaily",
-        "getDailyRank",
-        "getRank",
-        "getWeeklyXp",
-        "getWeeklyXpRank",
-      ].map((name) => [
+      ["get", "getDaily", "getWeeklyXp"].map((name) => [
         `leaderboards.${name}`,
-        ["frontend/src/data/leaderboards.ts"],
+        ["frontend/src/features/leaderboards/queries.ts"],
+      ]),
+    ),
+    // Rank reads go through getLeaderboardRank in the client view.
+    ...Object.fromEntries(
+      ["getDailyRank", "getRank", "getWeeklyXpRank"].map((name) => [
+        `leaderboards.${name}`,
+        ["frontend/src/features/leaderboards/view.client.tsx"],
       ]),
     ),
   };

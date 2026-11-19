@@ -9,8 +9,8 @@ vi.mock("../../src/ts/states/core", async (original) => ({
   getUserId: () => "today-user",
 }));
 
-vi.mock("../../src/ts/collections/tags", async (original) => ({
-  ...(await original<typeof import("../../src/ts/collections/tags")>()),
+vi.mock("../../src/data/collections/tags", async (original) => ({
+  ...(await original<typeof import("../../src/data/collections/tags")>()),
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
   useActiveTagsLiveQuery: () => [],
@@ -33,7 +33,7 @@ vi.mock("../../src/ts/utils/misc", async (original) => ({
 import {
   getResultsSinceDayOnce,
   waitForResultsReady,
-} from "../../src/ts/collections/results";
+} from "../../src/data/collections/results";
 import * as TodayTracker from "../../src/features/typing/runtime/today-tracker";
 
 const midnight = new Date();

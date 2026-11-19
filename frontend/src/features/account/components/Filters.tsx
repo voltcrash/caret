@@ -13,8 +13,8 @@ import {
   deleteResultFilterPreset,
   insertResultFilterPreset,
   useResultFilterPresetsLiveQuery,
-} from "../../../ts/collections/result-filter-presets";
-import { type TagItem, useTagsLiveQuery } from "../../../ts/collections/tags";
+} from "../../../data/collections/result-filter-presets";
+import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
 import { AnimeShow } from "../../../ts/components/common/anime";
 import AsyncContent from "../../../ts/components/common/AsyncContent";
 import { Button } from "../../../ts/components/common/Button";

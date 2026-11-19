@@ -11,7 +11,7 @@ const { environment } = vi.hoisted(() => ({
   environment: { devOffline: false },
 }));
 vi.mock("virtual:env-config", () => ({ envConfig: environment }));
-import { getServerConfigurationQueryOptions } from "../../src/ts/queries/server-configuration";
+import { getServerConfigurationQueryOptions } from "../../src/data/queries/server-configuration";
 const client = new QueryClient();
 beforeEach(() => {
   resetOperations();

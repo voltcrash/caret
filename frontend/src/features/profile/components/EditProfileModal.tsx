@@ -18,13 +18,13 @@ import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
 import { fromSchema } from "../../../ts/components/ui/form/utils";
 import { NO_BADGE_ID } from "../../../ts/controllers/badge-controller";
 import { getSnapshot, setSnapshot } from "../../../ts/db";
-import { invalidateMyProfile } from "../../../ts/queries/profile";
 import { hideModal } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showSuccessNotification,
 } from "../../../ts/states/notifications";
 import { cn } from "../../../ts/utils/cn";
+import { invalidateMyProfile } from "../my-profile.client";
 
 export function EditProfile() {
   const snapshot = getSnapshot();

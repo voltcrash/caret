@@ -5,8 +5,8 @@ import { Accessor, createMemo, JSXElement } from "solid-js";
 import {
   buildResultsQuery,
   ResultsQueryState,
-} from "../../../ts/collections/results";
-import { type TagItem, useTagsLiveQuery } from "../../../ts/collections/tags";
+} from "../../../data/collections/results";
+import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
 import AsyncContent from "../../../ts/components/common/AsyncContent";
 import { Balloon } from "../../../ts/components/common/Balloon";
 import { Fa } from "../../../ts/components/common/Fa";
