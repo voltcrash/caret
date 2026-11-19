@@ -13,6 +13,10 @@ const BAR_EASE = "cubic-bezier(0.5, 1, 0.89, 1)";
 export function BarTimerProgress() {
   let barEl: HTMLElement | undefined;
   let animation: Animation | undefined;
+  // Finishing hides the bar as it fills; it fades out while filling, so the
+  // first new target after hiding still animates.
+  let drawn = false;
+  let previousTo: string | undefined;
 
   const shown = () =>
     showLiveStats() &&
@@ -40,7 +44,10 @@ export function BarTimerProgress() {
       animation = undefined;
     }
     barEl.style.scale = to;
-    const duration = visible ? applyReducedMotion(target.duration) : 0;
+    const duration = visible || drawn ? applyReducedMotion(target.duration) : 0;
+    if (visible) drawn = true;
+    else if (to !== previousTo) drawn = false;
+    previousTo = to;
     if (duration > 0 && from !== to) {
       animation = barEl.animate(
         { scale: [from, to] },

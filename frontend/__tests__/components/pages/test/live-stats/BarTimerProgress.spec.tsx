@@ -48,6 +48,17 @@ describe("BarTimerProgress", () => {
     expect(bar.getAnimations()).toHaveLength(0);
   });
 
+  it("keeps filling a bar that hides as the test finishes", () => {
+    const bar = mount("bar");
+    live.setShown(true);
+    live.setTarget({ width: "90vw", duration: 0 });
+    live.setShown(false);
+    live.setTarget({ width: "100vw", duration: 125 });
+    expect(bar.getAnimations()).toHaveLength(1);
+    live.setTarget({ width: "0vw", duration: 0 });
+    expect(bar.getAnimations()).toHaveLength(0);
+  });
+
   it("scales the shown bar on the compositor instead of resizing it", () => {
     const bar = mount("bar");
     live.setShown(true);
