@@ -1,3 +1,4 @@
+import { createBinding } from "../../../../app/binding";
 import { onCleanup, onMount } from "solid-js";
 
 import { showErrorNotification } from "../../../../ts/states/notifications";
@@ -11,13 +12,10 @@ type Crop = {
   cropWidth: number;
   cropHeight: number;
 };
-let createCanvas: ((crop: Crop) => HTMLCanvasElement | null) | undefined;
+const createCanvas = createBinding<(crop: Crop) => HTMLCanvasElement | null>();
 
 export function createCroppedScreenshot(crop: Crop): HTMLCanvasElement | null {
-  if (createCanvas === undefined) {
-    throw new Error("Result canvas is not mounted");
-  }
-  return createCanvas(crop);
+  return createCanvas.require("Result canvas is not mounted")(crop);
 }
 
 export function useScreenshotCanvas(): void {
@@ -46,9 +44,6 @@ export function useScreenshotCanvas(): void {
       );
       return canvas;
     };
-    createCanvas = create;
-    onCleanup(() => {
-      if (createCanvas === create) createCanvas = undefined;
-    });
+    onCleanup(createCanvas.bind(create));
   });
 }
