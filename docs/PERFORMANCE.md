@@ -135,3 +135,37 @@ resize and font-load events invalidate cached geometry. Long completed sessions
 can offer an explicit refresh to release retained Wasm memory, blocked while
 results are pending. This uses a fresh document rather than resetting shared
 bindings beneath active Wasm handles.
+
+## Smooth caret — November 2026
+
+The caret glides with a Web Animations `translate`, which the browser runs on
+the compositor. Typing work on the main thread (letters, stats, sounds) no
+longer delays or stutters a glide, and a glide costs no per-frame script,
+style, layout or paint. Glides ease out, so the caret moves on the frame after
+a keystroke, and a retargeted glide starts where the caret is drawn. Line and
+tape offsets stay anime.js margins so they move with the words.
+
+Two animations ran on every frame of a test without being seen: the timer bar
+animated its width even under other timer styles, and each keystroke restarted
+the hidden loader bar's fade. The bar now scales on the compositor only while
+shown, and visibility animations restart only when visibility changes.
+
+`e2e/caret-smoothness.benchmark.ts` types 120 characters at 150 wpm under
+Chrome CPU throttling. Medians of three local runs (Apple silicon):
+
+| Throttle | Metric                        |    Before |     After |
+| -------- | ----------------------------- | --------: | --------: |
+| 6×       | Main-thread busy              |  6,714 ms |  3,623 ms |
+| 6×       | Layouts                       |     1,167 |       449 |
+| 6×       | Paint                         |  1,311 ms |    486 ms |
+| 6×       | App animation-frame callbacks |       976 |       265 |
+| 20×      | Main-thread busy              | 21,114 ms | 14,010 ms |
+| 20×      | Main-thread frames over 33 ms |       165 |       122 |
+| 20×      | Main-thread frame p95         |    117 ms |     67 ms |
+
+Every caret animation in the trace ran on the compositor. Reproduce with:
+
+```sh
+CARET_SMOOTHNESS_CPU_THROTTLE=20 vp -C frontend exec playwright test \
+  --config playwright.benchmark.config.ts caret-smoothness
+```
