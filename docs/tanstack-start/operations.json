@@ -1415,7 +1415,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+      "frontend/src/features/settings/components/account/ReauthConfirmModals.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
@@ -1472,7 +1472,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+      "frontend/src/features/settings/components/account/ReauthConfirmModals.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
@@ -1910,7 +1910,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+      "frontend/src/features/settings/components/account/ReauthConfirmModals.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
@@ -2031,7 +2031,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+      "frontend/src/features/settings/components/account/ReauthConfirmModals.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
@@ -2063,7 +2063,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+      "frontend/src/features/settings/components/account/ReauthConfirmModals.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
@@ -2180,7 +2180,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/EditProfileModal.tsx"
+      "frontend/src/features/profile/components/EditProfileModal.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
