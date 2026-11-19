@@ -15,7 +15,7 @@ import {
   matchesTimingFingerprint,
   verifyEventLog,
 } from "../../../anticheat/index";
-import MonkeyStatusCodes from "../../../constants/monkey-status-codes";
+import ResultStatusCodes from "../../../constants/result-status-codes";
 import { purgeUserFromDailyLeaderboards } from "../../../utils/daily-leaderboards";
 import * as UserDAL from "../../../dal/user";
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
@@ -75,7 +75,7 @@ export async function validateSubmission(
   }
 
   if (isTestTooShort(completedEvent)) {
-    const status = MonkeyStatusCodes.TEST_TOO_SHORT;
+    const status = ResultStatusCodes.TEST_TOO_SHORT;
     throw new MonkeyError(status.code, status.message);
   }
 
@@ -105,7 +105,7 @@ export async function validateSubmission(
         },
         uid,
       );
-      const status = MonkeyStatusCodes.RESULT_HASH_INVALID;
+      const status = ResultStatusCodes.RESULT_HASH_INVALID;
       return new MonkeyError(status.code, "Incorrect result hash");
     }
   } else {
@@ -122,7 +122,7 @@ export async function validateSubmission(
       objectHash({ ...objectToHash, offline: true }),
     ])
   ) {
-    const status = MonkeyStatusCodes.DUPLICATE_RESULT;
+    const status = ResultStatusCodes.DUPLICATE_RESULT;
     throw new MonkeyError(status.code, "Duplicate result");
   }
 
@@ -212,7 +212,7 @@ export async function validateSubmission(
       },
       uid,
     );
-    const status = MonkeyStatusCodes.RESULT_DATA_INVALID;
+    const status = ResultStatusCodes.RESULT_DATA_INVALID;
     return new MonkeyError(status.code, "Result data doesn't make sense");
   }
 
@@ -252,7 +252,7 @@ export async function validateSubmission(
         },
         uid,
       );
-      const status = MonkeyStatusCodes.RESULT_DATA_INVALID;
+      const status = ResultStatusCodes.RESULT_DATA_INVALID;
       return new MonkeyError(
         status.code,
         "Result data doesn't match its event log",
@@ -327,7 +327,7 @@ export async function validateSubmission(
       },
       uid,
     );
-    const status = MonkeyStatusCodes.RESULT_SPACING_INVALID;
+    const status = ResultStatusCodes.RESULT_SPACING_INVALID;
     return new MonkeyError(status.code, "Invalid result spacing");
   }
 
@@ -352,7 +352,7 @@ export async function validateSubmission(
         },
         uid,
       );
-      const status = MonkeyStatusCodes.MISSING_KEY_DATA;
+      const status = ResultStatusCodes.MISSING_KEY_DATA;
       return new MonkeyError(status.code, "Missing key data");
     }
     if (completedEvent.keyOverlap === undefined) {
@@ -390,7 +390,7 @@ export async function validateSubmission(
           user.banned = true;
         }
       }
-      const status = MonkeyStatusCodes.BOT_DETECTED;
+      const status = ResultStatusCodes.BOT_DETECTED;
       return new MonkeyError(status.code, "Possible bot detected");
     }
   }
@@ -412,7 +412,7 @@ export async function validateSubmission(
         },
         uid,
       );
-      const status = MonkeyStatusCodes.DUPLICATE_RESULT;
+      const status = ResultStatusCodes.DUPLICATE_RESULT;
       return new MonkeyError(status.code, "Duplicate result");
     }
     await UserDAL.updateLastTimingHashes(

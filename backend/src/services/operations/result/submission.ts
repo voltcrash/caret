@@ -5,7 +5,7 @@ import type { RankingRow } from "../../../db/ranking";
 
 import MonkeyError from "../../../utils/error";
 
-import MonkeyStatusCodes from "../../../constants/monkey-status-codes";
+import ResultStatusCodes from "../../../constants/result-status-codes";
 import { getDailyLeaderboard } from "../../../utils/daily-leaderboards";
 
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
@@ -113,7 +113,7 @@ export async function addResult(
     },
   ).catch((error: unknown) => {
     if (isUniqueViolation(error)) {
-      const status = MonkeyStatusCodes.DUPLICATE_RESULT;
+      const status = ResultStatusCodes.DUPLICATE_RESULT;
       throw new MonkeyError(status.code, "Duplicate result");
     }
     throw error;

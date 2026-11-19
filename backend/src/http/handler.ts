@@ -18,7 +18,7 @@ import { edgeCacheControl } from "../policies/edge-cache";
 import MonkeyError from "../utils/error";
 import { createETagGenerator } from "../utils/etag";
 import { getFrontendUrl } from "../utils/misc";
-import { isCustomCode } from "../constants/monkey-status-codes";
+import { isCustomCode } from "../constants/result-status-codes";
 import { getVersion } from "../version";
 
 export type HttpInvocation = Omit<Invocation, "setHeader">;
