@@ -69,5 +69,7 @@ export function cubicBezier(
   };
 }
 
-/** anime.js `inOut(1.25)`, the caret's original glide, within 0.003. */
-export const caretGlideEasing = cubicBezier(0.31, 0.16, 0.69, 0.84);
+// Ease-out: the caret leaves at full speed and settles onto the letter, so a
+// keystroke moves it on the next frame, and typing mid-glide never slows it
+// down before speeding it up again.
+export const caretGlideEasing = cubicBezier(0.25, 0.46, 0.45, 0.94);

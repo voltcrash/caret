@@ -6,13 +6,6 @@ import {
   linearEasing,
 } from "../../../../../src/features/typing/components/words/caret-easing";
 
-// anime.js `inOut(1.25)`.
-function powerInOut(t: number): number {
-  return t < 0.5
-    ? Math.pow(2 * t, 1.25) / 2
-    : 1 - Math.pow(2 - 2 * t, 1.25) / 2;
-}
-
 describe("caret easing", () => {
   it("serializes as a CSS timing function", () => {
     expect(cubicBezier(0.25, 0.1, 0.25, 1).css).toBe(
@@ -38,13 +31,11 @@ describe("caret easing", () => {
     }
   });
 
-  it("matches the anime.js glide it replaces", () => {
-    for (let i = 0; i <= 100; i++) {
-      const t = i / 100;
-      expect(Math.abs(caretGlideEasing.at(t) - powerInOut(t))).toBeLessThan(
-        0.003,
-      );
-    }
+  it("leaves at once and settles onto the letter", () => {
+    // Already moving on the first frame, then a soft landing.
+    expect(caretGlideEasing.at(0.1)).toBeGreaterThan(0.15);
+    expect(caretGlideEasing.at(0.5)).toBeGreaterThan(0.7);
+    expect(1 - caretGlideEasing.at(0.9)).toBeLessThan(0.02);
   });
 
   it("matches a browser's own sampling of the curve", () => {
