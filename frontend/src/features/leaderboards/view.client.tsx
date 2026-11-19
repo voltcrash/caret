@@ -16,12 +16,6 @@ import { boardKey, leaderboardOptions } from "../../data/leaderboards";
 import { getLeaderboardRank } from "../../functions/leaderboards";
 import AsyncContent from "../../ts/components/common/AsyncContent";
 import { Separator } from "../../ts/components/common/Separator";
-import { Navigation } from "../../ts/components/pages/leaderboard/Navigation";
-import { NextUpdate } from "../../ts/components/pages/leaderboard/NextUpdate";
-import { Sidebar } from "../../ts/components/pages/leaderboard/Sidebar";
-import { Table } from "../../ts/components/pages/leaderboard/Table";
-import { Title } from "../../ts/components/pages/leaderboard/Title";
-import { UserRank } from "../../ts/components/pages/leaderboard/UserRank";
 import { getSnapshot, updateLbMemory } from "../../ts/db";
 import { getServerConfigurationQueryOptions } from "../../ts/queries/server-configuration";
 import { baseKey } from "../../ts/queries/utils/keys";
@@ -31,6 +25,12 @@ import {
   setSelection as storeSelection,
 } from "../../ts/states/leaderboard-selection";
 import { showErrorNotification } from "../../ts/states/notifications";
+import { Navigation } from "./components/Navigation";
+import { NextUpdate } from "./components/NextUpdate";
+import { Sidebar } from "./components/Sidebar";
+import { Table } from "./components/Table";
+import { Title } from "./components/Title";
+import { UserRank } from "./components/UserRank";
 import {
   maxPageIndex,
   pageSize,

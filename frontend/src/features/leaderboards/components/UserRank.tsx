@@ -5,9 +5,9 @@ import {
 import { formatDuration, intervalToDuration } from "date-fns";
 import { JSXElement, Match, Show, Switch } from "solid-js";
 
-import { getFormatting } from "../../../states/core";
-import { Fa } from "../../common/Fa";
-import { LoadingCircle } from "../../common/LoadingCircle";
+import { Fa } from "../../../ts/components/common/Fa";
+import { LoadingCircle } from "../../../ts/components/common/LoadingCircle";
+import { getFormatting } from "../../../ts/states/core";
 import { Table, TableEntry } from "./Table";
 
 export function UserRank(props: {

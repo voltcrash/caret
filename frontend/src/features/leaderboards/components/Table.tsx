@@ -6,19 +6,22 @@ import { format as dateFormat } from "date-fns/format";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Accessor, createMemo, JSXElement, Show } from "solid-js";
 
-import { createEffectOn } from "../../../hooks/effects";
-import { useRef } from "../../../hooks/useRef";
-import { bp, BreakpointKey } from "../../../states/breakpoints";
-import { getFormatting, getUserId } from "../../../states/core";
-import { cn } from "../../../utils/cn";
-import { secondsToString } from "../../../utils/date-and-time";
-import { Formatting } from "../../../utils/format";
-import { abbreviateNumber } from "../../../utils/numbers";
-import { Balloon } from "../../common/Balloon";
-import { Fa } from "../../common/Fa";
-import { User } from "../../common/User";
-import { DataTable, DataTableColumnDef } from "../../ui/table/DataTable";
-import { createDataTableColumnHelper as createColumnHelper } from "../../ui/table/features";
+import { Balloon } from "../../../ts/components/common/Balloon";
+import { Fa } from "../../../ts/components/common/Fa";
+import { User } from "../../../ts/components/common/User";
+import {
+  DataTable,
+  DataTableColumnDef,
+} from "../../../ts/components/ui/table/DataTable";
+import { createDataTableColumnHelper as createColumnHelper } from "../../../ts/components/ui/table/features";
+import { createEffectOn } from "../../../ts/hooks/effects";
+import { useRef } from "../../../ts/hooks/useRef";
+import { bp, BreakpointKey } from "../../../ts/states/breakpoints";
+import { getFormatting, getUserId } from "../../../ts/states/core";
+import { cn } from "../../../ts/utils/cn";
+import { secondsToString } from "../../../ts/utils/date-and-time";
+import { Formatting } from "../../../ts/utils/format";
+import { abbreviateNumber } from "../../../ts/utils/numbers";
 
 type SpeedEntry = LeaderboardEntry;
 type XpEntry = XpLeaderboardEntry;

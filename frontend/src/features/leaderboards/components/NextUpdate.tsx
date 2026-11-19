@@ -8,9 +8,9 @@ import {
   onCleanup,
 } from "solid-js";
 
-import { LeaderboardType } from "../../../states/leaderboard-selection";
-import { cn } from "../../../utils/cn";
-import { secondsToString } from "../../../utils/date-and-time";
+import { LeaderboardType } from "../../../ts/states/leaderboard-selection";
+import { cn } from "../../../ts/utils/cn";
+import { secondsToString } from "../../../ts/utils/date-and-time";
 
 export function NextUpdate(props: {
   type: LeaderboardType;
