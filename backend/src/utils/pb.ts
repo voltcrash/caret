@@ -55,7 +55,10 @@ export function checkAndUpdatePb(
     const language = result.language ?? "english";
     lbPersonalBests.time ??= {};
     const board = (lbPersonalBests.time[duration] ??= {});
-    if (!board[language]?.wpm || board[language].wpm < result.wpm) {
+    if (
+      board[language]?.wpm === undefined ||
+      board[language].wpm < result.wpm
+    ) {
       board[language] = buildPersonalBest(result);
     }
   }

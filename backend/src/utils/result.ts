@@ -16,7 +16,9 @@ export type DBResult = Result<Mode> & {
   chartData: ChartData | OldChartData | "toolong";
 };
 
-export function resultAuditSummary(result: CompletedEvent) {
+export function resultAuditSummary(
+  result: CompletedEvent,
+): Record<string, string | number> {
   const {
     client,
     mode,
