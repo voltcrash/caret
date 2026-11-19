@@ -39,13 +39,13 @@ for the operation inventory, remaining compatibility rules and archived evidence
 | `frontend/src/app/` | Document, providers, application owner, browser runtime, navigation |
 | `frontend/src/features/` | Route-level product features (typing, account, settings, …), each owning its components, state and hooks |
 | `frontend/src/functions/`, `src/server/` | Server functions and server-only policy adapters |
-| `frontend/src/data/` | Query options and browser operation client |
+| `frontend/src/data/` | Operation client (`operations.ts`), browser query helpers (`queries/`) and IndexedDB collections (`collections/`); feature-specific query options live in the feature (`features/*/queries.ts`) |
 | `frontend/src/ts/` | Shared UI kit, app-wide state, commandline and utilities; no new feature imports (see below) |
 | `frontend/src/sw/` | Service worker generated per build |
 | `backend/src/` | Services, policies, DAL, Drizzle/Neon PostgreSQL, Better Auth, jobs (server-only package) |
 
-Code used by one feature lives in that feature. Shared code in `src/ts` must
-not import features; `__tests__/architecture/feature-boundaries.spec.ts` fails
+Code used by one feature lives in that feature. Shared code in `src/ts` and
+`src/data` must not import features; `__tests__/architecture/feature-boundaries.spec.ts` fails
 on any edge missing from `shared-feature-imports.json`. Remove entries as edges
 are untangled; never add them.
 
