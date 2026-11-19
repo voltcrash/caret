@@ -1,11 +1,8 @@
+import { createAppOwned } from "../../../../app/application";
 import { scrollTape } from "./tape";
 import { updateWordWrapperClasses } from "./wrapper-classes";
 import { lineJump } from "./line-jumping";
-import {
-  activeWordTop,
-  lineState,
-  updateActiveWordGeometry,
-} from "./line-state";
+import { lineState, updateActiveWordGeometry } from "./line-state";
 import { updateWordsInputPosition } from "./sizing";
 import { setWordJoining } from "./joining";
 import { createHintsNodes, joinOverlappingHints } from "./hints";
@@ -135,7 +132,14 @@ export function appendEmptyWordElement(index: number): void {
   getWordsEl().append(word);
 }
 
-const appendFrames = new Set<number>();
+const renderState = createAppOwned(() => ({
+  appendFrames: new Set<number>(),
+  // because of the requestAnimationFrame, multiple calls to updateWordLetters
+  // can be made before the actual update happens. This map keeps track of the
+  // latest input for each word and is used in before-insert-text to
+  // make sure the currently typed word will not overflow to the next line
+  pendingWordData: new Map<number, string>(),
+}));
 
 export function addWord(
   word: string,
@@ -148,18 +152,17 @@ export function addWord(
     appendWordNodes(getWordsEl(), word, wordIndex);
   } else {
     const frame = requestAnimationFrame(() => {
-      appendFrames.delete(frame);
+      renderState().appendFrames.delete(frame);
       appendWordNodes(getWordsEl(), word, wordIndex);
     });
-    appendFrames.add(frame);
+    renderState().appendFrames.add(frame);
   }
 }
 
-// because of the requestAnimationFrame, multiple calls to updateWordLetters
-// can be made before the actual update happens. This map keeps track of the
-// latest input for each word and is used in before-insert-text to
-// make sure the currently typed word will not overflow to the next line
-export let pendingWordData: Map<number, string> = new Map();
+/** Latest input per word whose letters are still waiting for a frame. */
+export function getPendingWordData(wordIndex: number): string | undefined {
+  return renderState().pendingWordData.get(wordIndex);
+}
 
 export async function updateWordLetters({
   wordIndex,
@@ -170,11 +173,11 @@ export async function updateWordLetters({
   input: string;
   compositionData: string;
 }): Promise<void> {
-  pendingWordData.set(wordIndex, input);
+  renderState().pendingWordData.set(wordIndex, input);
   requestDebouncedAnimationFrame(
     `test-ui.updateWordLetters.${wordIndex}`,
     async () => {
-      pendingWordData.delete(wordIndex);
+      renderState().pendingWordData.delete(wordIndex);
       const currentWord = TestWords.words.get(wordIndex)?.display;
       if (currentWord === undefined && getMutableConfig().mode !== "zen") {
         return;
@@ -229,7 +232,7 @@ export async function updateWordLetters({
         // because the word jump check is disabled
         if (!getMutableConfig().showAllLines) {
           const wordTopAfterUpdate = wordAtIndex.offsetTop;
-          if (wordTopAfterUpdate > activeWordTop) {
+          if (wordTopAfterUpdate > lineState.activeWordTop) {
             let jump = false;
             if (!lineState.lineTransition) {
               lineState.wordTopBeforeLineJump = wordTopAfterUpdate;
@@ -237,7 +240,7 @@ export async function updateWordLetters({
             } else if (wordTopAfterUpdate > lineState.wordTopBeforeLineJump) {
               jump = true;
             }
-            if (jump) await lineJump(activeWordTop);
+            if (jump) await lineJump(lineState.activeWordTop);
           }
         }
       }
@@ -308,7 +311,7 @@ export function clearWordsBlur(): void {
 export function disposeWordRendering(): void {
   clearWordElements();
   clearWordTemplates();
-  pendingWordData.clear();
-  for (const frame of appendFrames) cancelAnimationFrame(frame);
-  appendFrames.clear();
+  renderState().pendingWordData.clear();
+  for (const frame of renderState().appendFrames) cancelAnimationFrame(frame);
+  renderState().appendFrames.clear();
 }

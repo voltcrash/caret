@@ -34,14 +34,14 @@ function measureWrap(
   preflight: Preflight,
 ): InsertionLayout {
   if (preflight.measureOverflow) {
-    const pending = TestUI.pendingWordData.get(getActiveWordIndex());
+    const pending = TestUI.getPendingWordData(getActiveWordIndex());
     const measured = TestUI.getActiveWordTopAndHeightWithDifferentData(
       (pending ?? getInputElementValue().inputValue) +
         decodeText(preflight.normalized),
     );
     layout.wrapped =
-      measured.top > TestUI.activeWordTop ||
-      measured.height > TestUI.activeWordHeight;
+      measured.top > TestUI.lineState.activeWordTop ||
+      measured.height > TestUI.lineState.activeWordHeight;
   }
   return layout;
 }

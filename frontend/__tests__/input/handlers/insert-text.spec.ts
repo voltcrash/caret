@@ -117,7 +117,7 @@ vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   getWordElement: vi.fn((index: number) =>
     mockState.wordsScrolledOff.has(index) ? null : {},
   ),
-  pendingWordData: new Map<number, string>(),
+  getPendingWordData: (): undefined => undefined,
 }));
 vi.mock("../../../src/features/typing/runtime/test-logic", () => ({
   startTest: vi.fn(),

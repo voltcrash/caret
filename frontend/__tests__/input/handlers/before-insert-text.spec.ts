@@ -54,9 +54,8 @@ vi.mock("../../../src/features/typing/runtime/session.client", () => ({
   }),
 }));
 vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
-  activeWordTop: 0,
-  activeWordHeight: 10,
-  pendingWordData: new Map<number, string>(),
+  lineState: { activeWordTop: 0, activeWordHeight: 10 },
+  getPendingWordData: (): undefined => undefined,
   getActiveWordTopAndHeightWithDifferentData: () => ({
     top: mockState.wrapsToNextLine ? 20 : 0,
     height: 10,
