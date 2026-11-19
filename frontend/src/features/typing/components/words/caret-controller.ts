@@ -11,6 +11,8 @@ import {
   requestDebouncedAnimationFrame,
 } from "../../../../ts/utils/debounced-animation-frame";
 import { animate, EasingParam, JSAnimation } from "animejs";
+import { caretGlideEasing, linearEasing } from "./caret-easing";
+import { CaretGlide } from "./caret-glide";
 
 import {
   getWordsElement as getWordsCache,
@@ -68,13 +70,18 @@ export class CaretController {
     this.wordMargins = new WeakMap();
   }
 
-  private posAnimation: JSAnimation | null = null;
+  // Position is a compositor `translate`; line and tape offsets stay margins
+  // so they move in step with the words' own margin animations.
+  private position: CaretGlide;
+  private width: CaretGlide;
   private marginTopAnimation: JSAnimation | null = null;
   private marginLeftAnimation: JSAnimation | null = null;
 
   constructor(element: HTMLElement, style: CaretStyle) {
     this.id = element.id;
     this.element = element;
+    this.position = new CaretGlide(element, "translate", [0, 0]);
+    this.width = new CaretGlide(element, "width", [0]);
     this.setStyle(style);
     if (this.id === "caret") {
       this.isMainCaret = true;
@@ -119,7 +126,7 @@ export class CaretController {
   }
 
   public resetWidth(): void {
-    Object.assign(this.element.style, { width: "" });
+    this.width.clear();
   }
 
   public getHeight(): number {
@@ -143,15 +150,8 @@ export class CaretController {
     top: number;
     width?: number;
   }): void {
-    this.posAnimation?.cancel();
-    let newStyle: Record<string, string> = {
-      left: `${options.left}px`,
-      top: `${options.top}px`,
-    };
-    if (options.width !== undefined) {
-      newStyle = { ...newStyle, width: `${options.width}px` };
-    }
-    Object.assign(this.element.style, newStyle);
+    this.position.jump([options.left, options.top]);
+    if (options.width !== undefined) this.width.jump([options.width]);
   }
 
   public startBlinking(): void {
@@ -175,7 +175,8 @@ export class CaretController {
   }
 
   public stopAllAnimations(): void {
-    this.posAnimation?.cancel();
+    this.position.stop();
+    this.width.stop();
     this.marginTopAnimation?.cancel();
     this.marginLeftAnimation?.cancel();
   }
@@ -276,7 +277,7 @@ export class CaretController {
     left: number;
     top: number;
     duration?: number;
-    easing?: EasingParam;
+    easing?: "linear";
     width?: number;
   }): void {
     const smoothCaretSpeed =
@@ -285,21 +286,13 @@ export class CaretController {
     const finalDuration = applyReducedMotion(
       options.duration ?? smoothCaretSpeed,
     );
+    const easing =
+      options.easing === "linear" ? linearEasing : caretGlideEasing;
 
-    const animation: Record<string, number> = {
-      left: options.left,
-      top: options.top,
-    };
-
+    this.position.glide([options.left, options.top], finalDuration, easing);
     if (options.width !== undefined) {
-      animation["width"] = options.width;
+      this.width.glide([options.width], finalDuration, easing);
     }
-
-    this.posAnimation = animate(this.element, {
-      ...animation,
-      duration: finalDuration,
-      ease: options.easing ?? "inOut(1.25)",
-    });
   }
 
   public cancelPendingMove(): void {
@@ -314,7 +307,7 @@ export class CaretController {
     animate?: boolean;
     animationOptions?: {
       duration?: number;
-      easing?: string;
+      easing?: "linear";
     };
   }): void {
     if (this.style === "off") return;
@@ -365,20 +358,16 @@ export class CaretController {
         isDirectionReversed: options.isDirectionReversed,
       });
 
-      // animation uses inline styles, so its fine to read inline here instead
-      // of computed styles which would be much slower
+      // margin animations use inline styles, so its fine to read inline here
+      // instead of computed styles which would be much slower
 
       // if the margin animation finished, we reset it here by removing the margin
       // and offsetting the top by the same amount
       let currentMarginTop = parseFloat(this.element.style.marginTop || "0");
       if (this.readyToResetMarginTop) {
         this.readyToResetMarginTop = false;
-        const currentTop = parseFloat(this.element.style.top || "0");
-
-        Object.assign(this.element.style, {
-          marginTop: "0px",
-          top: `${currentTop + currentMarginTop}px`,
-        });
+        Object.assign(this.element.style, { marginTop: "0px" });
+        this.position.shift([0, currentMarginTop]);
         currentMarginTop = 0;
       }
 
@@ -386,12 +375,8 @@ export class CaretController {
       let currentMarginLeft = parseFloat(this.element.style.marginLeft || "0");
       if (this.readyToResetMarginLeft) {
         this.readyToResetMarginLeft = false;
-        const currentLeft = parseFloat(this.element.style.left || "0");
-
-        Object.assign(this.element.style, {
-          marginLeft: "0px",
-          left: `${currentLeft + currentMarginLeft}px`,
-        });
+        Object.assign(this.element.style, { marginLeft: "0px" });
+        this.position.shift([currentMarginLeft, 0]);
         this.cumulativeTapeMarginCorrection += currentMarginLeft;
         currentMarginLeft = 0;
       }

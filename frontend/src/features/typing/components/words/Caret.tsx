@@ -59,7 +59,7 @@ export function Caret(props: {
         props.ref(el);
       }}
       class={cn(
-        "full-width default absolute h-[1.2em] origin-top-left rounded-(--roundness)",
+        "full-width default absolute top-0 left-0 h-[1.2em] origin-top-left rounded-(--roundness)",
         props.pace
           ? "hidden bg-sub opacity-50 [&.outline]:[animation:caretFlashSmooth_1s_infinite]"
           : "[animation:caretFlashSmooth_1s_infinite] bg-caret",
