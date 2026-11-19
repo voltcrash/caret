@@ -143,6 +143,13 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
   const layouts = onMainThread.filter(
     (event) => event.name === "Layout",
   ).length;
+  // App script run from animation frames, such as anime.js ticking; the
+  // frame counter above contributes one callback per recorded frame.
+  const animationFrameCallbacks = Math.max(
+    0,
+    onMainThread.filter((event) => event.name === "FireAnimationFrame").length -
+      frames.length,
+  );
   const sorted = frames.slice(1).sort((a, b) => a - b);
   const percentile = (p: number): number =>
     sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * p))] ?? 0;
@@ -160,6 +167,7 @@ test("caret stays on the compositor while typing on a slow CPU", async ({
     mainThreadAnimations: failed.length,
     unsupportedProperties: Object.fromEntries(unsupported),
     mainThreadBusyMs: busyMs,
+    animationFrameCallbacks,
     styleRecalcs,
     layouts,
     styleMs: mainThread(["UpdateLayoutTree", "RecalculateStyles"]),
