@@ -10,10 +10,13 @@ const live = vi.hoisted(() => ({
   shown: undefined as unknown as () => boolean,
   setShown: undefined as unknown as (shown: boolean) => void,
 }));
-vi.mock("../../../../../src/ts/states/live-stats", () => ({
-  getBarTarget: () => live.target(),
-  showLiveStats: () => live.shown(),
-}));
+vi.mock(
+  "../../../../../src/features/typing/components/live-stats/state",
+  () => ({
+    getBarTarget: () => live.target(),
+    showLiveStats: () => live.shown(),
+  }),
+);
 
 import { BarTimerProgress } from "../../../../../src/features/typing/components/live-stats/BarTimerProgress";
 import { setConfigStore } from "../../../../../src/ts/config/store";
