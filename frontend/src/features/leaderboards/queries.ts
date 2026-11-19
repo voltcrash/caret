@@ -1,9 +1,6 @@
 import { queryOptions } from "@tanstack/solid-query";
-import type {
-  LeaderboardPage,
-  Selection,
-} from "../features/leaderboards/selection";
-import { getLeaderboard } from "../functions/leaderboards";
+import type { LeaderboardPage, Selection } from "./selection";
+import { getLeaderboard } from "../../functions/leaderboards";
 
 /** Fields that select a board; weekly boards have no mode/language. */
 export function boardKey(selection: Selection): Record<string, unknown> {

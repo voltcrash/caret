@@ -12,7 +12,6 @@ import {
   Show,
 } from "solid-js";
 
-import { boardKey, leaderboardOptions } from "../../data/leaderboards";
 import { baseKey } from "../../data/queries/keys";
 import { getServerConfigurationQueryOptions } from "../../data/queries/server-configuration";
 import { getLeaderboardRank } from "../../functions/leaderboards";
@@ -27,6 +26,7 @@ import { Sidebar } from "./components/Sidebar";
 import { Table } from "./components/Table";
 import { Title } from "./components/Title";
 import { UserRank } from "./components/UserRank";
+import { boardKey, leaderboardOptions } from "./queries";
 import {
   maxPageIndex,
   pageSize,
