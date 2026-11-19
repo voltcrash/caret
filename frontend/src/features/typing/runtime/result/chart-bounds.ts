@@ -1,4 +1,6 @@
-import { resultAnnotation } from "./context";
+import { createAppOwned } from "../../../../app/application";
+import { appObject } from "../../../../app/state";
+import { resultAnnotations } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
 import {
@@ -6,9 +8,7 @@ import {
   getResultChartScale,
 } from "../../../../ts/states/result";
 
-let minChartVal: number;
-
-let maxChartVal: number;
+const bounds = appObject(createAppOwned(() => ({ min: 0, max: 0 })));
 
 export function updateMinMaxChartValues(): void {
   const values = [];
@@ -29,10 +29,10 @@ export function updateMinMaxChartValues(): void {
     values.push(...datasets.raw.data);
   }
 
-  maxChartVal = Math.max(...values);
+  bounds.max = Math.max(...values);
 
   let maxAnnotation: null | number = null;
-  for (const annotation of resultAnnotation) {
+  for (const annotation of resultAnnotations()) {
     if ((annotation.display ?? false) === false) continue;
     if (annotation.value === undefined) continue;
     // values.push(annotation.value as number);
@@ -50,33 +50,33 @@ export function updateMinMaxChartValues(): void {
     );
     const lpbRange = typingSpeedUnit.fromWpm(20);
     if (
-      maxChartVal >= maxAnnotation - lpbRange &&
-      maxChartVal <= maxAnnotation + lpbRange
+      bounds.max >= maxAnnotation - lpbRange &&
+      bounds.max <= maxAnnotation + lpbRange
     ) {
-      maxChartVal = Math.round(maxAnnotation + lpbRange);
+      bounds.max = Math.round(maxAnnotation + lpbRange);
     }
   }
 
-  maxChartVal = Math.ceil(maxChartVal / 10) * 10;
+  bounds.max = Math.ceil(bounds.max / 10) * 10;
 
-  minChartVal = 0;
+  bounds.min = 0;
 
   if (!getMutableConfig().startGraphsAtZero) {
-    minChartVal = Math.min(...values);
+    bounds.min = Math.min(...values);
 
     // Round down to nearest multiple of 10
-    minChartVal = Math.floor(minChartVal / 10) * 10;
+    bounds.min = Math.floor(bounds.min / 10) * 10;
   }
 }
 
 export function applyMinMaxChartValues(): void {
-  getResultChartScale("wpm").min = minChartVal;
-  getResultChartScale("wpm").max = maxChartVal;
-  getResultChartScale("raw").min = minChartVal;
-  getResultChartScale("raw").max = maxChartVal;
-  getResultChartScale("burst").min = minChartVal;
-  getResultChartScale("burst").max = maxChartVal;
+  getResultChartScale("wpm").min = bounds.min;
+  getResultChartScale("wpm").max = bounds.max;
+  getResultChartScale("raw").min = bounds.min;
+  getResultChartScale("raw").max = bounds.max;
+  getResultChartScale("burst").min = bounds.min;
+  getResultChartScale("burst").max = bounds.max;
 }
 export function setMaxChartValue(value: number): void {
-  maxChartVal = value;
+  bounds.max = value;
 }

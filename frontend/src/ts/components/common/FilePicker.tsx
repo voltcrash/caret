@@ -1,15 +1,15 @@
 import { createSignal, For, JSXElement, onCleanup, onMount } from "solid-js";
 
+import { createBinding } from "../../../app/binding";
 import { useRef } from "../../hooks/useRef";
 
 type PickRequest = {
   accept: string;
   onFile: (file: File | undefined, cleanup: () => void) => Promise<void>;
 };
-let open: ((request: PickRequest) => void) | undefined;
+const open = createBinding<(request: PickRequest) => void>();
 export function openFilePicker(request: PickRequest): void {
-  if (open === undefined) throw new Error("File picker is not mounted");
-  open(request);
+  open.require("File picker is not mounted")(request);
 }
 function Picker(props: PickRequest & { cleanup: () => void }): JSXElement {
   const [ref, input] = useRef<HTMLInputElement>();
@@ -32,12 +32,7 @@ export function FilePicker(): JSXElement {
   const handler = (request: PickRequest): void => {
     setRequests((previous) => [...previous, request]);
   };
-  onMount(() => {
-    open = handler;
-  });
-  onCleanup(() => {
-    if (open === handler) open = undefined;
-  });
+  onMount(() => onCleanup(open.bind(handler)));
   return (
     <For each={requests()}>
       {(request) => (

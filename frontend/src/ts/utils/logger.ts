@@ -13,6 +13,7 @@ const debugLogsLS = new LocalStorageWithSchema({
   fallback: false,
 });
 
+// oxlint-disable-next-line caret-rules/no-module-let -- installLogger patches the document-wide console.
 let debugLogs = false;
 
 export function installLogger(): () => void {

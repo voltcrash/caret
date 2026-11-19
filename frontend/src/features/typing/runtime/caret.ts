@@ -1,3 +1,4 @@
+import { createBinding } from "../../../app/binding";
 import { getMutableConfig } from "../../../ts/config/store";
 import { getCurrentInput } from "./events/data";
 import {
@@ -43,21 +44,19 @@ export function updatePosition(noAnim = false): void {
   });
 }
 
-let caret: CaretController | undefined;
-
 // The Caret component creates and disposes the controller.
-export function setCaret(controller: CaretController): () => void {
-  caret = controller;
-  return () => {
-    if (caret === controller) caret = undefined;
-  };
-}
+const caret = createBinding<CaretController>();
+export const setCaret = caret.bind;
 
 export function getCaret(): CaretController {
-  return (caret ??= new CaretController(
+  const current = caret.get();
+  if (current !== undefined) return current;
+  const controller = new CaretController(
     getCaretElement(),
     getMutableConfig().caretStyle,
-  ));
+  );
+  caret.bind(controller);
+  return controller;
 }
 
 export function show(noAnim = false): void {

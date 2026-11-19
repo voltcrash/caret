@@ -83,6 +83,34 @@ const plugin = {
         };
       },
     }),
+    "no-module-let": defineRule({
+      createOnce(context) {
+        const check = (node) => {
+          if (
+            node?.type !== "VariableDeclaration" ||
+            (node.kind !== "let" && node.kind !== "var")
+          ) {
+            return;
+          }
+          context.report({
+            node,
+            message:
+              "Module-level mutable state outlives the mounted app. Use createAppOwned, createAppSignal or createBinding.",
+          });
+        };
+        return {
+          Program(program) {
+            for (const statement of program.body) {
+              check(
+                statement.type === "ExportNamedDeclaration"
+                  ? statement.declaration
+                  : statement,
+              );
+            }
+          },
+        };
+      },
+    }),
     "no-non-reactive-access-in-components": defineRule({
       createOnce(context) {
         const getComponentAncestor = (node) => {

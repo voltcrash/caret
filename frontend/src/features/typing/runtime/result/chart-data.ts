@@ -1,6 +1,8 @@
+import { createAppOwned } from "../../../../app/application";
+import { appObject } from "../../../../app/state";
 import { captureTypingPresentation } from "../../scope";
 import { applyFakeChartData } from "./fake-chart";
-import { result, resultAnnotation } from "./context";
+import { currentResult, resultAnnotations } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { showSuccessNotification } from "../../../../ts/states/notifications";
 import * as Numbers from "@caret/util/numbers";
@@ -16,13 +18,13 @@ import {
   getResultChartScale,
 } from "../../../../ts/states/result";
 
-let useSmoothedBurst = true;
-
-let useFakeChartData = false;
+const chartOptions = appObject(
+  createAppOwned(() => ({ smoothedBurst: true, fakeChartData: false })),
+);
 
 export function toggleSmoothedBurst(): void {
-  useSmoothedBurst = !useSmoothedBurst;
-  showSuccessNotification(useSmoothedBurst ? "on" : "off");
+  chartOptions.smoothedBurst = !chartOptions.smoothedBurst;
+  showSuccessNotification(chartOptions.smoothedBurst ? "on" : "off");
   if (getResultVisible()) {
     void updateChartData().then(() => {
       getResultChart().update("resize");
@@ -31,8 +33,8 @@ export function toggleSmoothedBurst(): void {
 }
 
 export function toggleUserFakeChartData(): void {
-  useFakeChartData = !useFakeChartData;
-  showSuccessNotification(useFakeChartData ? "on" : "off");
+  chartOptions.fakeChartData = !chartOptions.fakeChartData;
+  showSuccessNotification(chartOptions.fakeChartData ? "on" : "off");
   if (getResultVisible()) {
     void updateChartData().then(() => {
       getResultChart().update("resize");
@@ -45,7 +47,8 @@ export async function updateChartData(): Promise<void> {
   const { Chart } = await import("chart.js");
   if (!lease.isCurrent()) return;
   const eventLog = getLastEventLog();
-  if (result.chartData === "toolong" || eventLog === null) {
+  const { chartData } = currentResult();
+  if (chartData === "toolong" || eventLog === null) {
     getResultChartDataset("wpm").data = [];
     getResultChartDataset("raw").data = [];
     getResultChartDataset("burst").data = [];
@@ -61,20 +64,18 @@ export async function updateChartData(): Promise<void> {
   const labels = getTimerBoundaryLabels(eventLog, false);
 
   const chartData1 = [
-    ...result.chartData.wpm.map((a) =>
-      Numbers.roundTo2(typingSpeedUnit.fromWpm(a)),
-    ),
+    ...chartData.wpm.map((a) => Numbers.roundTo2(typingSpeedUnit.fromWpm(a))),
   ];
 
   const chartData2 = getRawHistory(eventLog).map((a) =>
     Numbers.roundTo2(typingSpeedUnit.fromWpm(a)),
   );
 
-  const valueWindow = Math.max(...result.chartData.burst) * 0.25;
+  const valueWindow = Math.max(...chartData.burst) * 0.25;
   let smoothedBurst = Arrays.smoothWithValueWindow(
-    result.chartData.burst,
+    chartData.burst,
     1,
-    useSmoothedBurst ? valueWindow : 0,
+    chartOptions.smoothedBurst ? valueWindow : 0,
   );
 
   const chartData3 = [
@@ -93,7 +94,7 @@ export async function updateChartData(): Promise<void> {
       content += " ";
     }
     content = content.trimEnd();
-    resultAnnotation.push({
+    resultAnnotations().push({
       display: true,
       id: "funbox-label",
       type: "line",
@@ -130,10 +131,10 @@ export async function updateChartData(): Promise<void> {
 
   getResultChartDataset("burst").data = chartData3;
 
-  getResultChartDataset("error").data = result.chartData.err;
-  getResultChartScale("error").max = Math.max(...result.chartData.err);
+  getResultChartDataset("error").data = chartData.err;
+  getResultChartScale("error").max = Math.max(...chartData.err);
 
-  if (useFakeChartData) {
+  if (chartOptions.fakeChartData) {
     applyFakeChartData();
   }
 }

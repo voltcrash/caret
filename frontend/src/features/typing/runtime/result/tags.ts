@@ -1,6 +1,6 @@
 import { captureTypingPresentation } from "../../scope";
 import { resultCanGetPb } from "./crown";
-import { result, resultAnnotation } from "./context";
+import { currentResult, resultAnnotations } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as Numbers from "@caret/util/numbers";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
@@ -38,7 +38,7 @@ export async function updateTags(dontSave: boolean): Promise<void> {
     const tpb = getLocalTagPB(
       tag._id,
       getMutableConfig().mode,
-      result.mode2,
+      currentResult().mode2,
       getMutableConfig().punctuation,
       getMutableConfig().numbers,
       getMutableConfig().language,
@@ -60,28 +60,28 @@ export async function updateTags(dontSave: boolean): Promise<void> {
       !dontSave &&
       (await resultCanGetPb()).value
     ) {
-      if (tpb < result.wpm) {
+      if (tpb < currentResult().wpm) {
         //new pb for that tag
         saveLocalTagPB(
           tag._id,
           getMutableConfig().mode,
-          result.mode2,
+          currentResult().mode2,
           getMutableConfig().punctuation,
           getMutableConfig().numbers,
           getMutableConfig().language,
           getMutableConfig().difficulty,
           getMutableConfig().lazyMode,
-          result.wpm,
-          result.acc,
-          result.rawWpm,
-          result.consistency,
+          currentResult().wpm,
+          currentResult().acc,
+          currentResult().rawWpm,
+          currentResult().consistency,
         );
         item.pb = true;
-        item.ariaLabel = `+${Numbers.roundTo2(result.wpm - tpb)}`;
+        item.ariaLabel = `+${Numbers.roundTo2(currentResult().wpm - tpb)}`;
         // console.log("new pb for tag " + tag.display);
       } else {
         const themecolors = getTheme();
-        resultAnnotation.push({
+        resultAnnotations().push({
           display: true,
           type: "line",
           id: "tpb",

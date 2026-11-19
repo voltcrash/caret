@@ -1,5 +1,5 @@
 import { captureTypingPresentation } from "../../scope";
-import { result, resultAnnotation } from "./context";
+import { currentResult, resultAnnotations } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
 import * as Numbers from "@caret/util/numbers";
@@ -13,14 +13,14 @@ export async function updateChartPBLine(): Promise<void> {
   if (!lease.isCurrent()) return;
   const themecolors = getTheme();
   const localPb = DB.getLocalPB(
-    result.mode,
-    result.mode2,
-    result.punctuation ?? false,
-    result.numbers ?? false,
-    result.language,
-    result.difficulty,
-    result.lazyMode ?? false,
-    getFunbox(result.funbox),
+    currentResult().mode,
+    currentResult().mode2,
+    currentResult().punctuation ?? false,
+    currentResult().numbers ?? false,
+    currentResult().language,
+    currentResult().difficulty,
+    currentResult().lazyMode ?? false,
+    getFunbox(currentResult().funbox),
   );
   const localPbWpm = localPb?.wpm ?? 0;
   if (localPbWpm === 0) return;
@@ -30,7 +30,7 @@ export async function updateChartPBLine(): Promise<void> {
   const chartlpb = Numbers.roundTo2(
     typingSpeedUnit.fromWpm(localPbWpm),
   ).toFixed(2);
-  resultAnnotation.push({
+  resultAnnotations().push({
     display: true,
     type: "line",
     id: "lpb",

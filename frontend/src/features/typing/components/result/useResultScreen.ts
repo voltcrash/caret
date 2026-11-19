@@ -1,3 +1,4 @@
+import { createBinding } from "../../../../app/binding";
 import { captureTypingPresentation } from "../../scope";
 import { Accessor, createEffect, onCleanup, onMount } from "solid-js";
 
@@ -5,10 +6,10 @@ import { animateAsync } from "../../../../ts/anim";
 import { getIsScreenshotting } from "../../../../ts/states/core";
 import { updateClassNames } from "../../../../ts/utils/cn";
 
-let show: ((duration: number) => Promise<void>) | undefined;
+const show = createBinding<(duration: number) => Promise<void>>();
 
 export async function showResultScreen(duration: number): Promise<void> {
-  await show?.(duration);
+  await show.get()?.(duration);
 }
 
 export function useResultScreen(
@@ -30,7 +31,7 @@ export function useResultScreen(
       // users can Tab to Next test and activate it without losing the action.
       result?.focus({ preventScroll: true });
     };
-    show = showScreen;
+    const release = show.bind(showScreen);
     createEffect(() => {
       const result = element();
       const screenshotting = getIsScreenshotting();
@@ -42,8 +43,6 @@ export function useResultScreen(
         );
       }
     });
-    onCleanup(() => {
-      if (show === showScreen) show = undefined;
-    });
+    onCleanup(release);
   });
 }

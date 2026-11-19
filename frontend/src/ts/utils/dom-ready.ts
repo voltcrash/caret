@@ -1,8 +1,10 @@
 /**
  * list of deferred callbacks to be executed once we reached ready state
  */
+/* oxlint-disable caret-rules/no-module-let -- DOM readiness belongs to the document, not an app mount. */
 let readyList: (() => void)[] | undefined;
 let isReady = false;
+/* oxlint-enable caret-rules/no-module-let */
 
 /**
  * Execute a callback function when the DOM is fully loaded.

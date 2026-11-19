@@ -7,7 +7,11 @@ import {
   applyMinMaxChartValues,
 } from "./chart-bounds";
 import { getEventLogAccuracy } from "./accuracy";
-import { result, resultAnnotation, resetResultAnnotations } from "./context";
+import {
+  currentResult,
+  resultAnnotations,
+  resetResultAnnotations,
+} from "./context";
 import type { PluginChartOptions } from "chart.js";
 import { configEvent } from "../../../../ts/events/config";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
@@ -29,7 +33,7 @@ export function subscribeResultConfigChanges(): void {
         (stats) =>
           stats && {
             ...stats,
-            ...buildSpeedStats(result, getEventLogAccuracy()),
+            ...buildSpeedStats(currentResult(), getEventLogAccuracy()),
           },
       );
       await updateChartData();
@@ -42,7 +46,7 @@ export function subscribeResultConfigChanges(): void {
 
       ((getResultChart().options as PluginChartOptions<"line" | "scatter">)
         .plugins.annotation.annotations as AnnotationOptions<"line">[]) =
-        resultAnnotation;
+        resultAnnotations();
       getResultChart().update();
       getResultChart().resize();
     }

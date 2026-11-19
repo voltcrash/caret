@@ -1,13 +1,13 @@
 import { createSignal, JSXElement, onCleanup, onMount } from "solid-js";
 
+import { createBinding } from "../../../app/binding";
 import { useRef } from "../../hooks/useRef";
 
 type DownloadOptions = { filename: string; data: Blob };
-let triggerDownload: ((options: DownloadOptions) => void) | undefined;
+const triggerDownload = createBinding<(options: DownloadOptions) => void>();
 
 export function download(options: DownloadOptions): void {
-  if (!triggerDownload) throw new Error("Download is not mounted");
-  triggerDownload(options);
+  triggerDownload.require("Download is not mounted")(options);
 }
 
 export function Download(): JSXElement {
@@ -20,10 +20,7 @@ export function Download(): JSXElement {
     setTarget({ url: "", filename: "" });
     URL.revokeObjectURL(url);
   };
-  onMount(() => (triggerDownload = trigger));
-  onCleanup(() => {
-    if (triggerDownload === trigger) triggerDownload = undefined;
-  });
+  onMount(() => onCleanup(triggerDownload.bind(trigger)));
   return (
     <a
       ref={linkRef}

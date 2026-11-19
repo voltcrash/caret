@@ -316,9 +316,9 @@ describe("Words rendering", () => {
       input: "hxlloz",
       compositionData: "",
     });
-    expect(ui.pendingWordData.get(0)).toBe("hxlloz");
+    expect(ui.getPendingWordData(0)).toBe("hxlloz");
     await flushFrames();
-    expect(ui.pendingWordData.has(0)).toBe(false);
+    expect(ui.getPendingWordData(0)).toBeUndefined();
     const letters = [...word(0).querySelectorAll("letter")];
     expect(
       letters.map((letter) => [letter.textContent, letter.className.trim()]),
@@ -344,7 +344,7 @@ describe("Words rendering", () => {
     expect(frames.size).toBe(2);
     cleanup();
     expect(frames.size).toBe(0);
-    expect(ui.pendingWordData.size).toBe(0);
+    expect(ui.getPendingWordData(1)).toBeUndefined();
   });
 });
 
@@ -595,8 +595,8 @@ describe("Words layout", () => {
     await flushFrames();
     expect(word(0)).toBeNull();
     expect(word(2)).toHaveClass("active");
-    expect(ui.activeWordTop).toBe(50);
-    expect(ui.activeWordHeight).toBe(20);
+    expect(ui.lineState.activeWordTop).toBe(50);
+    expect(ui.lineState.activeWordHeight).toBe(20);
     expect(mocks.caret.handleLineJump).toHaveBeenCalledWith({
       newMarginTop: -20,
       duration: 0,

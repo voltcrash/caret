@@ -1,9 +1,6 @@
 // Logic callers retain their API; Words owns the imperative rendering lifecycle.
 export { updateHintsPositionDebounced } from "../components/words/hints";
-export {
-  activeWordTop,
-  activeWordHeight,
-} from "../components/words/line-state";
+export { lineState } from "../components/words/line-state";
 export {
   focusWords,
   keepWordsInputInTheCenter,
@@ -18,7 +15,7 @@ export {
   addWord,
   clearWords,
   clearWordsBlur,
-  pendingWordData,
+  getPendingWordData,
   updateWordLetters,
   highlightBadWord,
   highlightAllLettersAsCorrect,

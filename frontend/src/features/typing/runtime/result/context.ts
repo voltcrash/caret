@@ -1,12 +1,33 @@
 import type { CompletedEvent } from "@caret/schemas/results";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
 
-export let result: CompletedEvent;
-export let resultAnnotation: AnnotationOptions<"line">[] = [];
+import { createAppOwned } from "../../../../app/application";
+
+type ResultContext = {
+  result: CompletedEvent | undefined;
+  annotations: AnnotationOptions<"line">[];
+};
+
+const context = createAppOwned<ResultContext>(() => ({
+  result: undefined,
+  annotations: [],
+}));
+
+/** The result on screen; set before any result rendering runs. */
+export function currentResult(): CompletedEvent {
+  const { result } = context();
+  if (result === undefined) throw new Error("No result is shown");
+  return result;
+}
+
+export function resultAnnotations(): AnnotationOptions<"line">[] {
+  return context().annotations;
+}
 
 export function setCurrentResult(value: CompletedEvent): void {
-  result = value;
+  context().result = value;
 }
+
 export function resetResultAnnotations(): void {
-  resultAnnotation = [];
+  context().annotations = [];
 }
