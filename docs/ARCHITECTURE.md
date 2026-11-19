@@ -60,7 +60,10 @@ test.
 Data: first-party reads/mutations are server functions; Query owns remote data,
 DB collections own browser history. App state lives under one mounted
 application owner (`app/application.ts`); account-scoped state resets on actor
-change. Never keep module-level mutable state.
+change. Never keep module-level mutable state: use `createAppOwned`,
+`createAppSignal`/`createAppStore`, or `createBinding` (`app/binding.ts`) for a
+handle a mounted component publishes. `caret-rules/no-module-let` rejects
+top-level `let`; document-scoped exceptions carry a suppression reason.
 
 Tailwind CSS supplies utilities and theme colors; compatibility CSS keeps
 theme/funbox selectors. Icons use `Fa`. `AnimatedModal` uses `hidden open:flex`:
