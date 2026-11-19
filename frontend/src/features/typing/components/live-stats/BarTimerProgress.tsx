@@ -47,9 +47,11 @@ export function BarTimerProgress() {
     barEl.style.scale = to;
     if (wasShown && !visible) hiddenAt = performance.now();
     wasShown = visible;
-    const fading = performance.now() - hiddenAt < FADE_MS;
-    const duration =
-      visible || fading ? applyReducedMotion(target.duration) : 0;
+    // A hidden bar only animates for what is left of its fade.
+    const fadeLeft = Math.max(0, FADE_MS - (performance.now() - hiddenAt));
+    const duration = applyReducedMotion(
+      visible ? target.duration : Math.min(target.duration, fadeLeft),
+    );
     if (duration > 0 && from !== to) {
       animation = barEl.animate(
         { scale: [from, to] },

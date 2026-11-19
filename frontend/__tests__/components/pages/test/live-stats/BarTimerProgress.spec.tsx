@@ -58,6 +58,17 @@ describe("BarTimerProgress", () => {
     expect(bar.getAnimations()).toHaveLength(1);
   });
 
+  it("ends a hidden bar's animation with its fade", () => {
+    const bar = mount("bar");
+    live.setShown(true);
+    live.setTarget({ width: "90vw", duration: 1000, ease: "linear" });
+    live.setShown(false);
+    const [animation] = bar.getAnimations();
+    const duration = Number(animation?.effect?.getTiming().duration);
+    expect(duration).toBeGreaterThan(0);
+    expect(duration).toBeLessThanOrEqual(125);
+  });
+
   it("stops animating once a hidden bar has faded out", () => {
     const bar = mount("bar");
     live.setShown(true);
