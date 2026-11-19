@@ -375,7 +375,12 @@ describe("production anticheat with PostgreSQL", () => {
       { samples: { captureFlagged: true, randomRate: 0 } },
       async () => {
         const user = await account();
+        using output = vi.spyOn(console, "info");
         expect((await submit(user, uniformBot())).status).toBe(200);
+        expect(output).toHaveBeenCalledWith(
+          JSON.stringify({ event: "anticheat_sample", uid: user.uid }),
+        );
+        expect(JSON.stringify(output.mock.calls)).not.toContain("keySpacing");
         const [sample] = await auditLogs(user.uid, "anticheat_sample");
         expect(sample?.message["keySpacing"]).toHaveLength(599);
         expect(sample?.message["keyDuration"]).toHaveLength(600);
