@@ -5,7 +5,7 @@ import { Button } from "../../../ts/components/common/Button";
 import { getTestInitError } from "../../../ts/states/test";
 import { cn } from "../../../ts/utils/cn";
 import { getBrowserEngine } from "../engine.client";
-import { getTypingLifecycle } from "../lifecycle-controller";
+import { getTypingLifecycle } from "../lifecycle/controller";
 import { retryCompletion } from "../runtime/completion";
 import * as TestLogic from "../runtime/test-logic";
 

@@ -28,7 +28,7 @@ export {
   isResultLoading,
   getResultVisible,
   getTestInitError,
-} from "../../features/typing/lifecycle-controller";
+} from "../../features/typing/lifecycle/controller";
 
 export const [wordsHaveNewline, setWordsHaveNewline] = createAppSignal(false);
 export const [wordsHaveTab, setWordsHaveTab] = createAppSignal(false);

@@ -1,7 +1,7 @@
 import { resetTypingLifecycle } from "../../__harness__/typing-lifecycle";
 import { isResultCalculating } from "../../../src/ts/states/test";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
-import { getTypingLifecycle } from "../../../src/features/typing/lifecycle-controller";
+import { getTypingLifecycle } from "../../../src/features/typing/lifecycle/controller";
 
 const mocks = vi.hoisted(() => ({
   current: true,
@@ -20,7 +20,7 @@ vi.mock("../../../src/features/typing/scope", () => ({
 }));
 vi.mock("../../../src/ts/anim", () => ({ animateAsync: mocks.fade }));
 vi.mock("../../../src/ts/states/test", async () => ({
-  ...(await import("../../../src/features/typing/lifecycle-controller"))
+  ...(await import("../../../src/features/typing/lifecycle/controller"))
     .lifecycleSelectors,
   getBailedOut: () => false,
 }));

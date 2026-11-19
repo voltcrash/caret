@@ -30,6 +30,6 @@ export const ssrSafeLegacyFiles = [
 export const clientOnlyFeatureFiles = [
   "src/features/typing/components/**",
   "src/features/typing/runtime/**",
-  "src/features/typing/lifecycle.ts",
+  "src/features/typing/lifecycle/route.ts",
   "src/features/typing/scope.ts",
 ];

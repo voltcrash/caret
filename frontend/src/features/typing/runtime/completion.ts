@@ -1,5 +1,5 @@
 import { captureTypingRoute } from "../scope";
-import { getTypingLifecycle } from "../lifecycle-controller";
+import { getTypingLifecycle } from "../lifecycle/controller";
 import { animateAsync } from "../../../ts/anim";
 import { updateClassNames } from "../../../ts/utils/cn";
 import { applyReducedMotion } from "../../../ts/utils/misc";

@@ -1,5 +1,5 @@
 import { captureTypingPresentation } from "../scope";
-import { getTypingLifecycle } from "../lifecycle-controller";
+import { getTypingLifecycle } from "../lifecycle/controller";
 import { updateTags } from "./result/tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./result/tags";
 import { updateResultChartDataVisibility } from "./result/chart-visibility";

@@ -63,7 +63,7 @@ import { isTypingReady, setTypingReady } from "../../../src/app/startup";
 import {
   enterTypingRoute,
   exitTypingRoute,
-} from "../../../src/features/typing/lifecycle";
+} from "../../../src/features/typing/lifecycle/route";
 import {
   isTypingRouteActive,
   mountTypingScope,

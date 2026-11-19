@@ -56,7 +56,7 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
 }));
 
 vi.mock("../../../src/ts/states/test", async () => ({
-  ...(await import("../../../src/features/typing/lifecycle-controller"))
+  ...(await import("../../../src/features/typing/lifecycle/controller"))
     .lifecycleSelectors,
   isRepeated: () => false,
   setIsRepeated: vi.fn(),

@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, type Accessor } from "solid-js";
-import { createAppOwned } from "../../app/application";
+import { createAppOwned } from "../../../app/application";
 import {
   initialLifecycle,
   isCompleting,
@@ -11,7 +11,7 @@ import {
   type LifecycleEvent,
   type LifecycleToken,
   type LifecycleState,
-} from "./lifecycle-machine";
+} from "./machine";
 
 export type LifecycleOperation = {
   token: LifecycleToken;

@@ -1,33 +1,33 @@
-import { setIsScreenshotting } from "../../ts/states/core";
-import { setScreenshotWatermark } from "../../ts/states/result";
-import { preferencesReadiness } from "../../app/readiness";
-import { setTypingReady } from "../../app/startup";
-import { setFocusCursorHidden } from "../../ts/states/app";
-import { hideLoaderBar } from "../../ts/states/loader-bar";
-import { resetModifierState } from "../../ts/states/modifiers";
+import { setIsScreenshotting } from "../../../ts/states/core";
+import { setScreenshotWatermark } from "../../../ts/states/result";
+import { preferencesReadiness } from "../../../app/readiness";
+import { setTypingReady } from "../../../app/startup";
+import { setFocusCursorHidden } from "../../../ts/states/app";
+import { hideLoaderBar } from "../../../ts/states/loader-bar";
+import { resetModifierState } from "../../../ts/states/modifiers";
 import {
   resetIncompleteTests,
   setFocus,
   setCompositionText,
   setTestFocusState,
-} from "../../ts/states/test";
-import * as Composition from "../../ts/states/composition";
+} from "../../../ts/states/test";
+import * as Composition from "../../../ts/states/composition";
 import {
   cancelPendingAnimationFrame,
   cancelPendingAnimationFramesStartingWith,
-} from "../../ts/utils/debounced-animation-frame";
-import { captureTypingMount } from "./scope";
-import { getTestSession } from "./runtime/events/data";
-import { getBrowserEngine } from "./engine.client";
-import * as Funbox from "./runtime/funbox/funbox";
-import { getActiveFunboxesWithFunction } from "./runtime/funbox/list";
-import * as Layoutfluid from "./runtime/funbox/layoutfluid-funbox-timer";
-import * as PaceCaret from "./runtime/pace-caret";
-import * as Replay from "./runtime/replay";
-import * as Timer from "./runtime/test-timer";
-import { restart } from "./runtime/test-logic";
-import { resetAltGrState } from "./runtime/layout-emulator";
-import { getTypingLifecycle } from "./lifecycle-controller";
+} from "../../../ts/utils/debounced-animation-frame";
+import { captureTypingMount } from "../scope";
+import { getTestSession } from "../runtime/events/data";
+import { getBrowserEngine } from "../engine.client";
+import * as Funbox from "../runtime/funbox/funbox";
+import { getActiveFunboxesWithFunction } from "../runtime/funbox/list";
+import * as Layoutfluid from "../runtime/funbox/layoutfluid-funbox-timer";
+import * as PaceCaret from "../runtime/pace-caret";
+import * as Replay from "../runtime/replay";
+import * as Timer from "../runtime/test-timer";
+import { restart } from "../runtime/test-logic";
+import { resetAltGrState } from "../runtime/layout-emulator";
+import { getTypingLifecycle } from "./controller";
 
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {
