@@ -1,7 +1,7 @@
 import type { ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
 import MonkeyError from "../../../utils/error";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import * as Dates from "date-fns";
 import { UTCDateMini } from "@date-fns/utc";
 import { CountByYearAndDay, TestActivity } from "@caret/schemas/users";
@@ -17,7 +17,7 @@ import type { ServiceContext, OperationInput } from "../../context";
 export async function setStreakHourOffset(
   context: ServiceContext,
   input: OperationInput<ClientQuery, SetStreakHourOffsetRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { hourOffset } = input.body;
 
@@ -39,7 +39,7 @@ export async function setStreakHourOffset(
 
   await addImportantLog("user_streak_hour_offset_set", { hourOffset }, uid);
 
-  return new MonkeyResponse("Streak hour offset set", null);
+  return new ApiResponse("Streak hour offset set", null);
 }
 export function generateCurrentTestActivity(
   testActivity: CountByYearAndDay | undefined,
@@ -99,7 +99,7 @@ export async function getTestActivity(
     throw new MonkeyError(503, "User does not have premium");
   }
 
-  return new MonkeyResponse(
+  return new ApiResponse(
     "Test activity data retrieved",
     user.testActivity ?? null,
   );
@@ -117,10 +117,7 @@ export async function getCurrentTestActivity(
     input.query?.client,
   );
   const data = generateCurrentTestActivity(user.testActivity);
-  return new MonkeyResponse(
-    "Current test activity data retrieved",
-    data ?? null,
-  );
+  return new ApiResponse("Current test activity data retrieved", data ?? null);
 }
 export async function getStreak(
   context: ServiceContext,
@@ -135,5 +132,5 @@ export async function getStreak(
     input.query?.client,
   );
 
-  return new MonkeyResponse("Streak data retrieved", user.streak ?? null);
+  return new ApiResponse("Streak data retrieved", user.streak ?? null);
 }

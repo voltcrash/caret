@@ -5,7 +5,7 @@ import {
   GetPresetResponse,
 } from "@caret/contracts/presets";
 import * as PresetDAL from "../../dal/preset";
-import { MonkeyResponse } from "../../utils/monkey-response";
+import { ApiResponse } from "../../utils/api-response";
 import { EditPresetRequest } from "@caret/schemas/presets";
 import type { ServiceContext, OperationInput } from "../context";
 
@@ -20,7 +20,7 @@ export async function getPresets(
     uid: undefined,
   }));
 
-  return new MonkeyResponse("Presets retrieved", data);
+  return new ApiResponse("Presets retrieved", data);
 }
 
 export async function addPreset(
@@ -31,28 +31,28 @@ export async function addPreset(
 
   const data = await PresetDAL.addPreset(uid, input.body);
 
-  return new MonkeyResponse("Preset created", data);
+  return new ApiResponse("Preset created", data);
 }
 
 export async function editPreset(
   context: ServiceContext,
   input: OperationInput<undefined, EditPresetRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   await PresetDAL.editPreset(uid, input.body);
 
-  return new MonkeyResponse("Preset updated", null);
+  return new ApiResponse("Preset updated", null);
 }
 
 export async function removePreset(
   context: ServiceContext,
   input: OperationInput<undefined, undefined, DeletePresetsParams>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { presetId } = input.params;
   const { uid } = context.actor;
 
   await PresetDAL.removePreset(uid, presetId);
 
-  return new MonkeyResponse("Preset deleted", null);
+  return new ApiResponse("Preset deleted", null);
 }

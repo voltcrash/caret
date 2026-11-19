@@ -4,7 +4,7 @@ import { UidSchema } from "@caret/schemas/util";
 import {
   CommonResponses,
   meta,
-  MonkeyResponseSchema,
+  ApiResponseSchema,
   responseWithData,
 } from "./util/api";
 
@@ -151,7 +151,7 @@ export const adminContract = c.router(
       method: "GET",
       path: "",
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
     },
     toggleBan: {
@@ -171,7 +171,7 @@ export const adminContract = c.router(
       path: "/clearStreakHourOffset",
       body: ClearStreakHourOffsetRequestSchema,
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
     },
     deleteUser: {
@@ -182,7 +182,7 @@ export const adminContract = c.router(
       path: "/deleteUser",
       body: DeleteUserRequestSchema,
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
     },
     acceptReports: {
@@ -192,7 +192,7 @@ export const adminContract = c.router(
       path: "/report/accept",
       body: AcceptReportsRequestSchema,
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
     },
     rejectReports: {
@@ -202,7 +202,7 @@ export const adminContract = c.router(
       path: "/report/reject",
       body: RejectReportsRequestSchema,
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
     },
     clearSuspicious: {
@@ -213,7 +213,7 @@ export const adminContract = c.router(
       path: "/clearSuspicious",
       body: ClearSuspiciousRequestSchema,
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
     },
     getAnticheatAudits: {

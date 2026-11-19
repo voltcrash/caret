@@ -2,7 +2,7 @@ import { generateCurrentTestActivity } from "./activity";
 import { getAllTimeLbs } from "./leaderboards";
 import type { ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import { buildAgentLog, omit } from "../../../utils/misc";
 import { ResultFilters, User } from "@caret/schemas/users";
 import { addLog } from "../../../dal/logs";
@@ -108,7 +108,7 @@ export async function getUser(
     testActivity,
   };
 
-  return new MonkeyResponse("User data retrieved", userData);
+  return new ApiResponse("User data retrieved", userData);
 }
 export async function getPersonalBests(
   context: ServiceContext,
@@ -120,7 +120,7 @@ export async function getPersonalBests(
   const data =
     (await UserDAL.getPersonalBests(uid, mode, mode2, input.query.client)) ??
     null;
-  return new MonkeyResponse("Personal bests retrieved", data);
+  return new ApiResponse("Personal bests retrieved", data);
 }
 export async function getStats(
   context: ServiceContext,
@@ -129,5 +129,5 @@ export async function getStats(
   const { uid } = context.actor;
 
   const data = (await UserDAL.getStats(uid, input.query?.client)) ?? null;
-  return new MonkeyResponse("Personal stats retrieved", data);
+  return new ApiResponse("Personal stats retrieved", data);
 }

@@ -19,7 +19,7 @@ import { applyProgression } from "./progression";
 import { getBySubmissionHash } from "../../../dal/result";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { omit } from "../../../utils/misc";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 type RankRead = {
   query: PreparedQuery;
   /** Apply the batched read's row. */
@@ -145,7 +145,7 @@ async function addResultAtomic(
     );
     const saved = await getBySubmissionHash(context.actor.uid, hash);
     if (saved !== undefined) {
-      return new MonkeyResponse("Result already saved", {
+      return new ApiResponse("Result already saved", {
         verification: saved.verification,
         insertedId: saved._id,
         isPb: saved.isPb ?? false,

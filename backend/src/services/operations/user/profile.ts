@@ -2,7 +2,7 @@ import { generateCurrentTestActivity } from "./activity";
 import { getAllTimeLbs } from "./leaderboards";
 import * as UserDAL from "../../../dal/user";
 import MonkeyError from "../../../utils/error";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import { sanitizeString } from "../../../utils/misc";
 import { UserProfile, UserProfileDetails } from "@caret/schemas/users";
 import {
@@ -94,7 +94,7 @@ export async function getProfile(
   };
 
   if (banned) {
-    return new MonkeyResponse("Profile retrived: banned user", baseProfile);
+    return new ApiResponse("Profile retrived: banned user", baseProfile);
   }
 
   const allTimeLbs = await getAllTimeLbs(user.uid, input.query.client);
@@ -112,7 +112,7 @@ export async function getProfile(
   } else {
     delete profileData.testActivity;
   }
-  return new MonkeyResponse("Profile retrieved", profileData);
+  return new ApiResponse("Profile retrieved", profileData);
 }
 export async function updateProfile(
   context: ServiceContext,
@@ -158,5 +158,5 @@ export async function updateProfile(
 
   await UserDAL.updateProfile(uid, profileDetailsUpdates, user.inventory);
 
-  return new MonkeyResponse("Profile updated", profileDetailsUpdates);
+  return new ApiResponse("Profile updated", profileDetailsUpdates);
 }

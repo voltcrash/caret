@@ -8,7 +8,7 @@ import * as NewQuotesDAL from "../../dal/new-quotes";
 import * as QuoteRatingsDAL from "../../dal/quote-ratings";
 import MonkeyError from "../../utils/error";
 import { verify } from "../../utils/captcha";
-import { MonkeyResponse } from "../../utils/monkey-response";
+import { ApiResponse } from "../../utils/api-response";
 import { newId } from "../../utils/id";
 import { addLog } from "../../dal/logs";
 import {
@@ -52,7 +52,7 @@ export async function getQuotes(
   const quoteModLanguage = quoteMod === true ? "all" : (quoteMod as Language);
 
   const data = await NewQuotesDAL.get(quoteModLanguage);
-  return new MonkeyResponse("Quote submissions retrieved", data);
+  return new ApiResponse("Quote submissions retrieved", data);
 }
 
 export async function isSubmissionEnabled(
@@ -60,7 +60,7 @@ export async function isSubmissionEnabled(
   _input: OperationInput,
 ): Promise<IsSubmissionEnabledResponse> {
   const { submissionsEnabled } = context.configuration.quotes;
-  return new MonkeyResponse(
+  return new ApiResponse(
     `Quote submission ${submissionsEnabled ? "enabled" : "disabled"}`,
     { isEnabled: submissionsEnabled },
   );
@@ -69,7 +69,7 @@ export async function isSubmissionEnabled(
 export async function addQuote(
   context: ServiceContext,
   input: OperationInput<undefined, AddQuoteRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { text, source, language, captcha } = input.body;
 
@@ -81,7 +81,7 @@ export async function addQuote(
   await verifyCaptcha(captcha, "quote-submit");
 
   await NewQuotesDAL.add(text, source, language, uid);
-  return new MonkeyResponse("Quote submission added", null);
+  return new ApiResponse("Quote submission added", null);
 }
 
 /** Language-scoped moderators may only review submissions in their language. */
@@ -116,13 +116,13 @@ export async function approveQuote(
   const data = await NewQuotesDAL.approve(quoteId, editText, editSource, name);
   await addLog("system_quote_approved", data, uid);
 
-  return new MonkeyResponse(data.message, data.quote);
+  return new ApiResponse(data.message, data.quote);
 }
 
 export async function refuseQuote(
   context: ServiceContext,
   input: OperationInput<undefined, RejectQuoteRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { quoteId } = input.body;
   const { quoteMod } = await getPartialUser(context.actor.uid, "refuse quote", [
     "quoteMod",
@@ -130,7 +130,7 @@ export async function refuseQuote(
   await assertQuoteModScope(quoteMod, quoteId);
 
   await NewQuotesDAL.refuse(quoteId);
-  return new MonkeyResponse("Quote refused", null);
+  return new ApiResponse("Quote refused", null);
 }
 
 export async function getRating(
@@ -141,13 +141,13 @@ export async function getRating(
 
   const data = await QuoteRatingsDAL.get(quoteId, language);
 
-  return new MonkeyResponse("Rating retrieved", data);
+  return new ApiResponse("Rating retrieved", data);
 }
 
 export async function submitRating(
   context: ServiceContext,
   input: OperationInput<undefined, AddQuoteRatingRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   return await atomicUser(
     context.actor.uid,
     async () => await submitRatingAtomic(context, input),
@@ -156,7 +156,7 @@ export async function submitRating(
 async function submitRatingAtomic(
   context: ServiceContext,
   input: OperationInput<undefined, AddQuoteRatingRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { quoteId, rating, language } = input.body;
 
@@ -183,13 +183,13 @@ async function submitRatingAtomic(
   const responseMessage = `Rating ${
     shouldUpdateRating ? "updated" : "submitted"
   }`;
-  return new MonkeyResponse(responseMessage, null);
+  return new ApiResponse(responseMessage, null);
 }
 
 export async function reportQuote(
   context: ServiceContext,
   input: OperationInput<undefined, ReportQuoteRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const {
     reporting: { maxReports, contentReportLimit },
@@ -212,5 +212,5 @@ export async function reportQuote(
 
   await ReportDAL.createReport(newReport, maxReports, contentReportLimit);
 
-  return new MonkeyResponse("Quote reported", null);
+  return new ApiResponse("Quote reported", null);
 }

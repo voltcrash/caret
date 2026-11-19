@@ -1,6 +1,6 @@
 import { mutateUser } from "../../db/mutation";
 import { statement } from "../../db/client";
-import { MonkeyResponse } from "../../utils/monkey-response";
+import { ApiResponse } from "../../utils/api-response";
 import * as UserDal from "../../dal/user";
 import Logger from "../../utils/logger";
 import * as DateUtils from "date-fns";
@@ -42,7 +42,7 @@ export async function createTestData(
   await updateUser(uid);
   await updateLeaderboard();
 
-  return new MonkeyResponse("test data created", { uid, email });
+  return new ApiResponse("test data created", { uid, email });
 }
 
 async function createTestResults(

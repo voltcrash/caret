@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   CommonResponses,
   meta,
-  MonkeyResponseSchema,
+  ApiResponseSchema,
   responseWithData,
 } from "./util/api";
 import { EditPresetRequestSchema, PresetSchema } from "@caret/schemas/presets";
@@ -62,7 +62,7 @@ export const presetsContract = c.router(
       path: "",
       body: EditPresetRequestSchema.strict(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "presetsEdit",
@@ -76,7 +76,7 @@ export const presetsContract = c.router(
       pathParams: DeletePresetsParamsSchema,
       body: c.noBody(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "presetsRemove",

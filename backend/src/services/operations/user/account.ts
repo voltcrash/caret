@@ -3,7 +3,7 @@ import { atomicUser } from "../../../db/mutation";
 import { isUniqueViolation } from "../../../db/client";
 import * as UserDAL from "../../../dal/user";
 import MonkeyError from "../../../utils/error";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import { deleteUserAccount } from "../../../services/user-deletion";
 import * as AuthUtil from "../../../utils/auth";
 import * as BlocklistDal from "../../../dal/blocklist";
@@ -20,7 +20,7 @@ import type { ServiceContext, OperationInput } from "../../context";
 export async function createNewUser(
   context: ServiceContext,
   input: OperationInput<undefined, CreateUserRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { name, captcha } = input.body;
   const { email, uid } = context.actor;
 
@@ -48,24 +48,24 @@ export async function createNewUser(
   await UserDAL.addUser(name, email, uid, true);
   context.background(addImportantLog("user_created", {}, uid));
 
-  return new MonkeyResponse("User created", null);
+  return new ApiResponse("User created", null);
 }
 export async function deleteUser(
   context: ServiceContext,
   _input: OperationInput,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   await deleteUserAccount(uid, context.configuration);
 
   context.background(addImportantLog("user_deleted", {}, uid));
 
-  return new MonkeyResponse("User deleted", null);
+  return new ApiResponse("User deleted", null);
 }
 export async function resetUser(
   context: ServiceContext,
   _input: OperationInput,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   await atomicUser(uid, async () => {
@@ -82,12 +82,12 @@ export async function resetUser(
   });
   context.background(addImportantLog("user_reset", {}, uid));
 
-  return new MonkeyResponse("User reset", null);
+  return new ApiResponse("User reset", null);
 }
 export async function updateName(
   context: ServiceContext,
   input: OperationInput<undefined, UpdateUserNameRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { name } = input.body;
 
@@ -128,7 +128,7 @@ export async function updateName(
     }
     throw error;
   });
-  return new MonkeyResponse("User's name updated", null);
+  return new ApiResponse("User's name updated", null);
 }
 export async function checkName(
   context: ServiceContext,
@@ -139,16 +139,16 @@ export async function checkName(
 
   const available = await UserDAL.isNameAvailable(name, uid);
 
-  return new MonkeyResponse("Check username", {
+  return new ApiResponse("Check username", {
     available,
   });
 }
 export async function revokeAllTokens(
   context: ServiceContext,
   _input: OperationInput,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   await AuthUtil.revokeTokensByUid(uid);
   await addImportantLog("user_tokens_revoked", "", uid);
-  return new MonkeyResponse("All tokens revoked", null);
+  return new ApiResponse("All tokens revoked", null);
 }

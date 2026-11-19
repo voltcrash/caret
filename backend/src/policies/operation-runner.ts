@@ -9,7 +9,7 @@ import {
 import MonkeyError from "../utils/error";
 import Logger from "../utils/logger";
 import { isDevEnvironment } from "../utils/misc";
-import type { MonkeyResponse } from "../utils/monkey-response";
+import type { ApiResponse } from "../utils/api-response";
 import { authenticate } from "./authentication";
 import { verifyConfiguration } from "./configuration";
 import { getOperation, type OperationId } from "./operations";
@@ -65,7 +65,7 @@ export type OperationRequest<K extends OperationId> = Parameters<
   ServiceOf<K>
 >[1];
 export type OperationData<K extends OperationId> =
-  Awaited<ReturnType<ServiceOf<K>>> extends MonkeyResponse<infer T> ? T : never;
+  Awaited<ReturnType<ServiceOf<K>>> extends ApiResponse<infer T> ? T : never;
 
 export type OperationOutcome<K extends OperationId> =
   | { ok: true; message: string; data: OperationData<K> }
@@ -164,7 +164,7 @@ export async function execute<K extends OperationId>(
   const service = operationServices[id] as (
     context: ServiceContext,
     input: ValidatedInput,
-  ) => Promise<MonkeyResponse<unknown>>;
+  ) => Promise<ApiResponse<unknown>>;
   const response = await service(
     {
       ...scope,

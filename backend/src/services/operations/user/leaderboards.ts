@@ -1,6 +1,6 @@
 import type { Client, ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import * as LeaderboardsDAL from "../../../dal/leaderboards";
 import { purgeUserFromDailyLeaderboards } from "../../../utils/daily-leaderboards";
 import { purgeUserFromXpLeaderboards } from "../../../services/weekly-xp-leaderboard";
@@ -12,7 +12,7 @@ import type { ServiceContext, OperationInput } from "../../context";
 export async function clearPb(
   context: ServiceContext,
   input: OperationInput<ClientQuery>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   await UserDAL.clearPb(uid, input.query?.client);
@@ -23,12 +23,12 @@ export async function clearPb(
   );
   await addImportantLog("user_cleared_pbs", "", uid);
 
-  return new MonkeyResponse("User's PB cleared", null);
+  return new ApiResponse("User's PB cleared", null);
 }
 export async function optOutOfLeaderboards(
   context: ServiceContext,
   _input: OperationInput,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
 
   await UserDAL.optOutOfLeaderboards(uid);
@@ -42,12 +42,12 @@ export async function optOutOfLeaderboards(
   );
   await addImportantLog("user_opted_out_of_leaderboards", "", uid);
 
-  return new MonkeyResponse("User opted out of leaderboards", null);
+  return new ApiResponse("User opted out of leaderboards", null);
 }
 export async function updateLbMemory(
   context: ServiceContext,
   input: OperationInput<ClientQuery, UpdateLeaderboardMemoryRequest>,
-): Promise<MonkeyResponse> {
+): Promise<ApiResponse> {
   const { uid } = context.actor;
   const { mode, language, rank } = input.body;
   const mode2 = input.body.mode2;
@@ -60,7 +60,7 @@ export async function updateLbMemory(
     rank,
     input.query?.client,
   );
-  return new MonkeyResponse("Leaderboard memory updated", null);
+  return new ApiResponse("Leaderboard memory updated", null);
 }
 export async function getAllTimeLbs(
   uid: string,

@@ -52,18 +52,18 @@ export type RequestAuthenticationOptions = {
   isPublicOnDev?: boolean;
 };
 
-export const MonkeyResponseSchema = z.object({
+export const ApiResponseSchema = z.object({
   message: z.string(),
 });
-export type MonkeyResponseType = z.infer<typeof MonkeyResponseSchema>;
+export type ApiResponseType = z.infer<typeof ApiResponseSchema>;
 
-export const MonkeyValidationErrorSchema = MonkeyResponseSchema.extend({
+export const MonkeyValidationErrorSchema = ApiResponseSchema.extend({
   validationErrors: z.array(z.string()),
 });
 export type MonkeyValidationError = z.infer<typeof MonkeyValidationErrorSchema>;
 
 /** @alias */
-export const MonkeyClientError = MonkeyResponseSchema;
+export const MonkeyClientError = ApiResponseSchema;
 export type MonkeyClientErrorType = z.infer<typeof MonkeyClientError>;
 
 export const MonkeyServerError = MonkeyClientError.extend({
@@ -76,13 +76,13 @@ export function responseWithNullableData<T extends z.ZodType>(
   dataSchema: T,
 ): z.ZodObject<
   z.core.util.Extend<
-    typeof MonkeyResponseSchema.shape,
+    typeof ApiResponseSchema.shape,
     {
       data: z.ZodNullable<T>;
     }
   >
 > {
-  return MonkeyResponseSchema.extend({
+  return ApiResponseSchema.extend({
     data: dataSchema.nullable(),
   });
 }
@@ -91,13 +91,13 @@ export function responseWithData<T extends z.ZodType>(
   dataSchema: T,
 ): z.ZodObject<
   z.core.util.Extend<
-    typeof MonkeyResponseSchema.shape,
+    typeof ApiResponseSchema.shape,
     {
       data: T;
     }
   >
 > {
-  return MonkeyResponseSchema.extend({
+  return ApiResponseSchema.extend({
     data: dataSchema,
   });
 }

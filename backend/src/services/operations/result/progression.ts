@@ -2,7 +2,7 @@ import * as ResultDAL from "../../../dal/result";
 import * as PublicDAL from "../../../dal/public";
 import { isDevEnvironment } from "../../../utils/misc";
 
-import { MonkeyResponse } from "../../../utils/monkey-response";
+import { ApiResponse } from "../../../utils/api-response";
 import MonkeyError from "../../../utils/error";
 
 import { getDailyLeaderboard } from "../../../utils/daily-leaderboards";
@@ -279,5 +279,5 @@ export async function applyProgression(
     data.weeklyXpLeaderboardRank = 0;
   }
 
-  return new MonkeyResponse("Result saved", data);
+  return new ApiResponse("Result saved", data);
 }

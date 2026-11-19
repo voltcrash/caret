@@ -8,7 +8,7 @@ import {
 import {
   CommonResponses,
   meta,
-  MonkeyResponseSchema,
+  ApiResponseSchema,
   responseWithData,
 } from "./util/api";
 
@@ -64,7 +64,7 @@ export const configurationContract = c.router(
       path: "",
       body: PatchConfigurationRequestSchema,
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         authenticationOptions: {

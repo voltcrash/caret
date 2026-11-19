@@ -5,7 +5,7 @@ import { z } from "zod";
 import {
   CommonResponses,
   meta,
-  MonkeyResponseSchema,
+  ApiResponseSchema,
   responseWithData,
   responseWithNullableData,
 } from "./util/api";
@@ -125,7 +125,7 @@ export const quotesContract = c.router(
       path: "",
       body: AddQuoteRequestSchema.strict(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "newQuotesAdd",
@@ -157,7 +157,7 @@ export const quotesContract = c.router(
       path: "/reject",
       body: RejectQuoteRequestSchema.strict(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "newQuotesAction",
@@ -184,7 +184,7 @@ export const quotesContract = c.router(
       path: "/rating",
       body: AddQuoteRatingRequestSchema.strict(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "quoteRatingsSubmit",
@@ -197,7 +197,7 @@ export const quotesContract = c.router(
       path: "/report",
       body: ReportQuoteRequestSchema.strict(),
       responses: {
-        200: MonkeyResponseSchema,
+        200: ApiResponseSchema,
       },
       metadata: meta({
         rateLimit: "quoteReportSubmit",
