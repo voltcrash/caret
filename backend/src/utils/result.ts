@@ -9,6 +9,7 @@ import { newId } from "./id";
 import { FunboxName } from "@caret/schemas/configs";
 
 export type DBResult = Result<Mode> & {
+  stopOnLetter?: boolean;
   //legacy values
   correctChars?: number;
   incorrectChars?: number;
@@ -56,6 +57,7 @@ export function buildDbResult(
 
   //compress object by omitting default values. Frontend will add them back after reading
   //reduces object size on the database and on the rest api
+  if (ce.stopOnLetter) res.stopOnLetter = true;
   if (!ce.bailedOut) delete res.bailedOut;
   if (!ce.blindMode) delete res.blindMode;
   if (!ce.lazyMode) delete res.lazyMode;
