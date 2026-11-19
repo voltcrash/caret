@@ -2,7 +2,7 @@ import { UserProfile as UserProfileType } from "@caret/schemas/users";
 
 import preview from "#.storybook/preview";
 
-import { UserProfile } from "../../src/ts/components/pages/profile/UserProfile";
+import { UserProfile } from "../../src/features/profile/components/UserProfile";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
 import { setSnapshot } from "../../src/ts/db";
 

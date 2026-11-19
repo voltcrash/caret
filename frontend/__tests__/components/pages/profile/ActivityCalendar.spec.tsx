@@ -27,7 +27,7 @@ vi.mock("../../../../src/ts/components/ui/Select", () => ({
     return null;
   },
 }));
-import { ActivityCalendar } from "../../../../src/ts/components/pages/profile/ActivityCalendar";
+import { ActivityCalendar } from "../../../../src/features/profile/components/ActivityCalendar";
 import { TestActivityCalendar } from "../../../../src/ts/elements/test-activity-calendar";
 import { getFirstDayOfTheWeek } from "../../../../src/ts/utils/date-and-time";
 afterEach(() => {

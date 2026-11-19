@@ -1,7 +1,7 @@
 import { JSXElement, Show } from "solid-js";
 
+import { UserProfile } from "../../../../features/profile/components/UserProfile";
 import { getSnapshot } from "../../../states/snapshot";
-import { UserProfile } from "../profile/UserProfile";
 
 export function MyProfile(): JSXElement {
   return (

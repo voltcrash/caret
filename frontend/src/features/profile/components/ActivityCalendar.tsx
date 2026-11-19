@@ -9,14 +9,14 @@ import {
   Show,
 } from "solid-js";
 
-import { getSnapshot, getTestActivityCalendar } from "../../../db";
-import { TestActivityCalendar } from "../../../elements/test-activity-calendar";
-import { get as getSeverConfiguration } from "../../../states/server-configuration";
-import { cn } from "../../../utils/cn";
-import { getFirstDayOfTheWeek } from "../../../utils/date-and-time";
-import { createErrorMessage } from "../../../utils/error";
-import { Balloon } from "../../common/Balloon";
-import Select, { SelectProps } from "../../ui/Select";
+import { Balloon } from "../../../ts/components/common/Balloon";
+import Select, { SelectProps } from "../../../ts/components/ui/Select";
+import { getSnapshot, getTestActivityCalendar } from "../../../ts/db";
+import { TestActivityCalendar } from "../../../ts/elements/test-activity-calendar";
+import { get as getSeverConfiguration } from "../../../ts/states/server-configuration";
+import { cn } from "../../../ts/utils/cn";
+import { getFirstDayOfTheWeek } from "../../../ts/utils/date-and-time";
+import { createErrorMessage } from "../../../ts/utils/error";
 
 const firstDayOfTheWeek = getFirstDayOfTheWeek();
 
