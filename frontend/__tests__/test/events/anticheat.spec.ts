@@ -83,7 +83,7 @@ function eventLog(
     context: {
       targetWords: [text],
       mode: options.mode ?? "time",
-      mode2: "30",
+      mode2: options.mode === "zen" ? "zen" : "30",
       bailedOut: options.bailout ?? false,
       koreanStatus: false,
     },
