@@ -43,6 +43,8 @@ test("result commands restart the test from the palette", async ({ page }) => {
   await page.locator("#words .word").first().click();
   await page.keyboard.type(words.join(" "), { delay: 40 });
   await expect(page.locator("#result")).toHaveCSS("opacity", "1");
+  // Restarts are ignored until the result has settled.
+  await expect(page.locator("#result .loginTip")).toBeVisible();
 
   const palette = await openPalette(page);
   await palette.locator("input").fill("next test");
