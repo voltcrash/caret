@@ -7,7 +7,7 @@ import {
   type QueryKey,
 } from "@tanstack/solid-query";
 import { openDB, type IDBPDatabase } from "idb";
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup, untrack } from "solid-js";
 
 import {
   ModifiableTestActivityCalendar,
@@ -103,11 +103,13 @@ export function createActorQueryCache(options: {
   maxAge?: number;
 }): ActorQueryCache {
   const { queryClient, account, storage, buster } = options;
-  const [ready, setReady] = createSignal(false);
-  let pending: Promise<void> | undefined;
-  let unsubscribe: (() => void) | undefined;
+  type CacheState =
+    | { phase: "idle" | "disposed" }
+    | { phase: "restoring"; task: Promise<void> }
+    | { phase: "ready"; unsubscribe: () => void };
+  const [state, setState] = createSignal<CacheState>({ phase: "idle" });
+  const ready = (): boolean => state().phase === "ready";
   let timer: ReturnType<typeof setTimeout> | undefined;
-  let disposed = false;
   let revision = 0;
   let dataRevision = 0;
   let savedRevision = -1;
@@ -118,16 +120,17 @@ export function createActorQueryCache(options: {
     queue = task.catch(() => undefined);
     return queue;
   };
-  const stop = (): void => {
+  const stop = (dispose = false): void => {
     revision++;
     dataRevision = 0;
     savedRevision = -1;
-    unsubscribe?.();
-    unsubscribe = undefined;
+    const current = untrack(state);
+    if (current.phase === "ready") current.unsubscribe();
     clearTimeout(timer);
     timer = undefined;
-    pending = undefined;
-    setReady(false);
+    if (current.phase !== "disposed") {
+      setState({ phase: dispose ? "disposed" : "idle" });
+    }
   };
   const clear = async (): Promise<void> => {
     stop();
@@ -145,11 +148,11 @@ export function createActorQueryCache(options: {
     clearTimeout(timer);
     timer = undefined;
     const lease = account.capture();
-    if (disposed || !ready() || lease.actor === null) return queue;
+    if (!ready() || lease.actor === null) return queue;
     const actor = lease.actor;
     const started = revision;
     return enqueue(async () => {
-      if (disposed || !lease.isCurrent() || started !== revision) return;
+      if (!lease.isCurrent() || started !== revision) return;
       if (savedRevision === dataRevision) return;
       const savingRevision = dataRevision;
       const client = dehydrate(queryClient, {
@@ -178,7 +181,7 @@ export function createActorQueryCache(options: {
         };
       });
       await storage.write({ actor, buster, timestamp: Date.now(), client });
-      if (!disposed && lease.isCurrent() && started === revision) {
+      if (lease.isCurrent() && started === revision) {
         savedRevision = savingRevision;
       }
     });
@@ -190,14 +193,16 @@ export function createActorQueryCache(options: {
     }, 100);
   };
   const restore = async (): Promise<void> => {
-    if (pending !== undefined) return pending;
+    const current = untrack(state);
+    if (current.phase === "restoring") return current.task;
+    if (current.phase !== "idle") return;
     const lease = account.capture();
-    if (lease.actor === null || disposed) return Promise.resolve();
+    if (lease.actor === null) return Promise.resolve();
     const actor = lease.actor;
     const started = revision;
-    pending = enqueue(async () => {
+    const task = enqueue(async () => {
       const stored = await storage.read();
-      if (disposed || !lease.isCurrent() || started !== revision) return;
+      if (!lease.isCurrent() || started !== revision) return;
       if (stored === undefined) return;
       const age = Date.now() - stored.timestamp;
       const maxAge = options.maxAge ?? defaultMaxAge;
@@ -248,8 +253,8 @@ export function createActorQueryCache(options: {
         });
       hydrate(queryClient, { mutations: [], queries });
     }).then(() => {
-      if (disposed || !lease.isCurrent() || started !== revision) return;
-      unsubscribe = queryClient.getQueryCache().subscribe((event) => {
+      if (!lease.isCurrent() || started !== revision) return;
+      const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
         if (
           (event.type === "removed" ||
             (event.type === "updated" &&
@@ -260,11 +265,12 @@ export function createActorQueryCache(options: {
           scheduleSave();
         }
       });
-      setReady(true);
+      setState({ phase: "ready", unsubscribe });
       scheduleSave();
       return undefined;
     });
-    return pending;
+    setState({ phase: "restoring", task });
+    return task;
   };
   return {
     ready,
@@ -272,8 +278,7 @@ export function createActorQueryCache(options: {
     clear,
     save,
     dispose: () => {
-      disposed = true;
-      stop();
+      stop(true);
       release();
     },
   };
