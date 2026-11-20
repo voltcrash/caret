@@ -12,41 +12,45 @@ export function createAudioSample(
   src: string,
   signal: AbortSignal,
 ): AudioSample {
-  type Voice = { source?: AudioBufferSourceNode; ended: boolean };
-  const voices: Voice[] = [{ ended: true }];
-  let buffer: AudioBuffer | undefined;
+  type Playback =
+    | { phase: "ended" | "paused" }
+    | { phase: "playing"; source: AudioBufferSourceNode };
+  type Voice = { playback: Playback };
+  const voices: Voice[] = [{ playback: { phase: "ended" } }];
+  type SampleState =
+    | { phase: "loading"; queued?: () => void }
+    | { phase: "ready"; buffer: AudioBuffer }
+    | { phase: "failed" | "disposed" };
+  let sample: SampleState = { phase: "loading" };
   const loading = new AbortController();
-  let disposed = false;
-  let failed = false;
-  let queued: (() => void) | undefined;
   const run = (action: () => void): void => {
-    if (disposed || failed || signal.aborted) return;
-    if (buffer === undefined) queued = action;
-    else action();
+    if (signal.aborted) return;
+    if (sample.phase === "loading") sample.queued = action;
+    else if (sample.phase === "ready") action();
   };
   const stopVoice = (voice: Voice): void => {
-    if (voice.source !== undefined) {
-      voice.source.onended = null;
-      voice.source.stop();
-      voice.source.disconnect();
-      voice.source = undefined;
+    if (voice.playback.phase === "playing") {
+      voice.playback.source.onended = null;
+      voice.playback.source.stop();
+      voice.playback.source.disconnect();
     }
-    voice.ended = true;
+    voice.playback = { phase: "ended" };
   };
   const startVoice = (voice: Voice): void => {
-    if (buffer === undefined) return;
+    if (sample.phase !== "ready") return;
     const source = context.createBufferSource();
-    source.buffer = buffer;
+    source.buffer = sample.buffer;
     source.connect(destination);
     source.onended = () => {
       source.disconnect();
-      if (voice.source === source) {
-        voice.source = undefined;
-        voice.ended = true;
+      if (
+        voice.playback.phase === "playing" &&
+        voice.playback.source === source
+      ) {
+        voice.playback = { phase: "ended" };
       }
     };
-    voice.source = source;
-    voice.ended = false;
+    voice.playback = { phase: "playing", source };
     source.start();
     if (context.state !== "running" && context.state !== "closed") {
       void context.resume().catch(() => undefined);
@@ -58,28 +62,27 @@ export function createAudioSample(
         throw new Error(`Sound load failed: ${response.status}`);
       }
       const bytes = await response.arrayBuffer();
-      if (disposed || signal.aborted) return;
+      if (loading.signal.aborted || signal.aborted) return;
       const decoded = await context.decodeAudioData(bytes);
-      if (disposed || signal.aborted) return;
-      buffer = decoded;
-      const action = queued;
-      queued = undefined;
+      if (loading.signal.aborted || signal.aborted) return;
+      if (sample.phase !== "loading") return;
+      const action = sample.queued;
+      sample = { phase: "ready", buffer: decoded };
       action?.();
     })
     .catch(() => {
       // Like an unhandled Howl loaderror, unavailable samples stay silent.
-      failed = true;
-      queued = undefined;
+      if (sample.phase !== "disposed") sample = { phase: "failed" };
     });
   return {
     seek: () => {
-      if (buffer === undefined) return;
+      if (sample.phase !== "ready") return;
       run(() => {
         const voice = voices[0];
         if (voice === undefined) return;
-        const playing = voice.source !== undefined;
+        const playing = voice.playback.phase === "playing";
         stopVoice(voice);
-        voice.ended = false;
+        voice.playback = { phase: "paused" };
         if (playing) startVoice(voice);
       });
     },
@@ -88,36 +91,38 @@ export function createAudioSample(
         // Preserve seek(0); play(): rewind the first active voice, then overlap
         // with another. A stopped/ended first voice is reused instead.
         const paused = voices.filter(
-          (voice) => !voice.ended && voice.source === undefined,
+          (voice) => voice.playback.phase === "paused",
         );
         if (paused.length !== 1) {
           // Drain surplus ended voices from the tail before recycling one.
-          let idle = voices.filter((voice) => voice.ended).length;
+          let idle = voices.filter(
+            (voice) => voice.playback.phase === "ended",
+          ).length;
           for (let i = voices.length - 1; i >= 0 && idle > 5; i--) {
-            if (voices[i]?.ended) {
+            if (voices[i]?.playback.phase === "ended") {
               voices.splice(i, 1);
               idle--;
             }
           }
         }
         let voice =
-          paused.length === 1 ? paused[0] : voices.find((voice) => voice.ended);
+          paused.length === 1
+            ? paused[0]
+            : voices.find((voice) => voice.playback.phase === "ended");
         if (voice === undefined) {
-          voice = { ended: true };
+          voice = { playback: { phase: "ended" } };
           voices.push(voice);
         }
         startVoice(voice);
       }),
     stop: () => {
-      queued = undefined;
+      if (sample.phase === "loading") delete sample.queued;
       voices.forEach(stopVoice);
     },
     unload: () => {
-      disposed = true;
+      sample = { phase: "disposed" };
       loading.abort();
-      queued = undefined;
       voices.forEach(stopVoice);
-      buffer = undefined;
     },
   };
 }

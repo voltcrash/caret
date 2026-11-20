@@ -36,7 +36,7 @@ export async function addPreset(
     ),
   ]);
   const inserted =
-    committed?.[1]?.rowCount ??
+    committed.results?.[1]?.rowCount ??
     ((await statement("SELECT id FROM presets WHERE id=?", id).first()) === null
       ? 0
       : 1);

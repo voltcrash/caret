@@ -98,7 +98,7 @@ export async function atomicUserWithReads<T>(
     const reads = readsFor(result);
     const guard = newId();
     try {
-      const results = await commitBatch([
+      const commit = await commitBatch([
         statement(
           "INSERT INTO mutation_guards(id,valid) VALUES (?,(SELECT count(*) FROM (SELECT uid FROM users WHERE uid=? AND version=? FOR UPDATE) AS current_user_version))",
           guard,
@@ -113,9 +113,9 @@ export async function atomicUserWithReads<T>(
       return {
         result,
         reads:
-          results === undefined || reads.length === 0
+          commit.status === "recovered" || reads.length === 0
             ? undefined
-            : results.slice(results.length - reads.length),
+            : commit.results.slice(-reads.length),
       };
     } catch (error) {
       const pg = postgresError(error);

@@ -27,12 +27,13 @@ export function registerServiceWorker(options: {
 }): ServiceWorkerUpdates {
   const { container } = options;
   let registration: ServiceWorkerRegistration | undefined;
-  let reloadRequested = false;
-  let disposed = false;
+  let phase: "watching" | "reloadOnTakeover" | "disposed" = "watching";
   const watched = new Set<ServiceWorker>();
   const requests = new Set<() => void>();
   const report = (): void => {
-    if (!disposed) options.onWaiting((registration?.waiting ?? null) !== null);
+    if (phase !== "disposed") {
+      options.onWaiting((registration?.waiting ?? null) !== null);
+    }
   };
   const watch = (worker: ServiceWorker | null): void => {
     if (worker !== null) watched.add(worker);
@@ -41,12 +42,12 @@ export function registerServiceWorker(options: {
   const onUpdateFound = (): void => watch(registration?.installing ?? null);
   const onControllerChange = (): void => {
     report();
-    if (reloadRequested && !disposed) options.reload();
+    if (phase === "reloadOnTakeover") options.reload();
   };
   container.addEventListener("controllerchange", onControllerChange);
   const onMessage = (event: MessageEvent): void => {
     if (event.data === updateSafetyRequest) {
-      const safe = !disposed && options.isSafe();
+      const safe = phase !== "disposed" && options.isSafe();
       if (safe) reserveUpdate();
       event.ports[0]?.postMessage(safe);
     }
@@ -56,7 +57,7 @@ export function registerServiceWorker(options: {
     .register("/sw.js", { scope: "/", updateViaCache: "none" })
     .then((registered) => {
       registration = registered;
-      if (disposed) return;
+      if (phase === "disposed") return;
       registered.addEventListener("updatefound", onUpdateFound);
       watch(registered.installing);
       report();
@@ -67,7 +68,7 @@ export function registerServiceWorker(options: {
   return {
     waitingBuild: async () => {
       const waiting = registration?.waiting;
-      if (disposed || !waiting) return undefined;
+      if (phase === "disposed" || !waiting) return undefined;
       return await new Promise<string | undefined>((resolve) => {
         const channel = new MessageChannel();
         const finish = (build?: string): void => {
@@ -75,7 +76,9 @@ export function registerServiceWorker(options: {
           channel.port1.close();
           requests.delete(cancel);
           resolve(
-            !disposed && registration?.waiting === waiting ? build : undefined,
+            phase !== "disposed" && registration?.waiting === waiting
+              ? build
+              : undefined,
           );
         };
         const cancel = (): void => finish();
@@ -88,16 +91,17 @@ export function registerServiceWorker(options: {
     },
     activateWaiting: (reload) => {
       const waiting = registration?.waiting ?? null;
-      if (waiting === null) return false;
-      reloadRequested ||= reload;
+      if (phase === "disposed" || waiting === null) return false;
+      if (reload) phase = "reloadOnTakeover";
       waiting.postMessage(skipWaitingMessage);
       return true;
     },
     check: () => {
+      if (phase === "disposed") return;
       void registration?.update().catch(() => undefined);
     },
     dispose: () => {
-      disposed = true;
+      phase = "disposed";
       for (const cancel of requests) cancel();
       container.removeEventListener("controllerchange", onControllerChange);
       container.removeEventListener("message", onMessage);

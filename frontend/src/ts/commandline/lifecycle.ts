@@ -19,7 +19,7 @@ export function hide(clearModalChain = false): void {
   const commandlineState = getCommandlineState();
   clearFontPreview();
   void ThemeController.clearPreview();
-  commandlineState.isAnimating = true;
+  if (commandlineState.phase === "open") commandlineState.phase = "closing";
   if (clearModalChain) {
     storeClearChain(MODAL_STORE_ID);
   } else {
@@ -34,9 +34,8 @@ export function afterHideCommandline(): void {
   if (!isTypingRouteActive()) {
     (document.activeElement as HTMLElement | undefined)?.blur();
   }
-  commandlineState.isAnimating = false;
   commandlineState.subgroupOverride = null;
-  commandlineState.open = false;
+  commandlineState.phase = "closed";
   setCommandlineSubgroup(null);
 }
 
@@ -46,7 +45,7 @@ export function onCommandlineBeforeHide(): void {
   const commandlineState = getCommandlineState();
   clearFontPreview();
   void ThemeController.clearPreview();
-  commandlineState.isAnimating = true;
+  if (commandlineState.phase === "open") commandlineState.phase = "closing";
 }
 
 export function onCommandlineBackdropClick(): void {

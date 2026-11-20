@@ -45,9 +45,15 @@ export function TooltipBubble(props: {
       value ? token : current === token ? undefined : current,
     );
   };
-  let closeTimer: ReturnType<typeof setTimeout> | undefined;
-  let focused = false;
-  const cancelClose = (): void => clearTimeout(closeTimer);
+  type Interaction =
+    | { phase: "pointer" | "focused" }
+    | { phase: "closing"; timer: ReturnType<typeof setTimeout> };
+  let interaction: Interaction = { phase: "pointer" };
+  const cancelClose = (): void => {
+    if (interaction.phase !== "closing") return;
+    clearTimeout(interaction.timer);
+    interaction = { phase: "pointer" };
+  };
   const close = (): void => {
     cancelClose();
     setOpen(false);
@@ -55,7 +61,9 @@ export function TooltipBubble(props: {
   onCleanup(close);
   const scheduleClose = (): void => {
     cancelClose();
-    if (!focused) closeTimer = setTimeout(close, 150);
+    if (interaction.phase !== "focused") {
+      interaction = { phase: "closing", timer: setTimeout(close, 150) };
+    }
   };
 
   createEffect(() => {
@@ -75,11 +83,13 @@ export function TooltipBubble(props: {
       ) {
         return;
       }
-      focused = true;
+      cancelClose();
+      interaction = { phase: "focused" };
       setOpen(true);
     };
     const blur = (): void => {
-      focused = false;
+      cancelClose();
+      interaction = { phase: "pointer" };
       close();
     };
     trigger.addEventListener("pointerenter", enter);
@@ -138,11 +148,10 @@ function Bubble(props: {
   onClose: () => void;
 }) {
   let element!: HTMLDivElement;
-  const [coordinates, setCoordinates] = createSignal({
-    x: 0,
-    y: 0,
-    ready: false,
-  });
+  const [coordinates, setCoordinates] = createSignal<{
+    x: number;
+    y: number;
+  }>();
   onMount(() => {
     // A manual popover escapes clipping, including scrollable native dialogs.
     element.showPopover();
@@ -179,7 +188,7 @@ function Bubble(props: {
       );
       if (disposed || current !== revision) return;
       if (middlewareData.hide?.referenceHidden) props.onClose();
-      else setCoordinates({ x, y, ready: true });
+      else setCoordinates({ x, y });
     };
     const stop = autoUpdate(reference, element, () => void update());
     onCleanup(() => {
@@ -203,9 +212,9 @@ function Bubble(props: {
         props.length === "xlarge" && "w-[23.75rem]",
       )}
       style={{
-        left: `${coordinates().x}px`,
-        top: `${coordinates().y}px`,
-        visibility: coordinates().ready ? "visible" : "hidden",
+        left: `${coordinates()?.x ?? 0}px`,
+        top: `${coordinates()?.y ?? 0}px`,
+        visibility: coordinates() !== undefined ? "visible" : "hidden",
       }}
       onPointerEnter={() => props.onEnter()}
       onPointerLeave={() => props.onLeave()}

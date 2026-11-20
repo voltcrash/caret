@@ -93,9 +93,17 @@ export const getEngineSession = createAppOwned(() => {
   let lastTick = 0;
   let running = false;
   let monitorRenderDrift = true;
-  let finishNotified = false;
-  let reason: string | undefined;
-  let finishClock: { now: number; date: number } | undefined;
+  type Completion =
+    | { phase: "open" }
+    | {
+        phase: "pending";
+        reason?: string;
+        clock?: { now: number; date: number };
+      }
+    | { phase: "ended"; reason?: string };
+  let completion: Completion = { phase: "open" };
+  const finishReason = (): string | undefined =>
+    completion.phase === "open" ? undefined : completion.reason;
   let pace: PaceUpdate = { position: null, stepEnd: 0, lastWpm: 0 };
   let failure: EngineFailure | undefined;
   const live = (): BrowserSession => {
@@ -121,9 +129,7 @@ export const getEngineSession = createAppOwned(() => {
       inputs.clear();
       lastTick = 0;
       running = false;
-      finishNotified = false;
-      reason = undefined;
-      finishClock = undefined;
+      completion = { phase: "open" };
     }
     for (const event of events) {
       if (event.type === "input") {
@@ -154,21 +160,21 @@ export const getEngineSession = createAppOwned(() => {
         });
       }
     }
-    if (update.finish !== undefined && !finishNotified) {
-      finishNotified = true;
-      finishClock =
+    if (update.finish !== undefined && completion.phase === "open") {
+      const clock =
         command.op === "advance" ||
         command.op === "finish" ||
         command.op === "bailout"
           ? { now: command.now, date: command.date }
           : undefined;
-      reason = update.finish.reason ?? undefined;
+      const reason = update.finish.reason ?? undefined;
+      completion = { phase: "pending", reason, clock };
       running = false;
       emit("finish", { reason });
     }
     if (state.ended) {
       running = false;
-      reason = state.reason ?? reason;
+      completion = { phase: "ended", reason: state.reason ?? finishReason() };
     }
     return update;
   };
@@ -270,9 +276,7 @@ export const getEngineSession = createAppOwned(() => {
       inputs.clear();
       lastTick = 0;
       running = false;
-      finishNotified = false;
-      reason = undefined;
-      finishClock = undefined;
+      completion = { phase: "open" };
       configuration = projectEngineConfig(getMutableConfig());
       limitConfiguration = CustomText.getLimit();
       paceCommand({ op: "reset", wpm: null });
@@ -309,7 +313,7 @@ export const getEngineSession = createAppOwned(() => {
     getCurrentInput: (): string =>
       state === undefined ? "" : decodeText(state.inputValue),
     getInputForWord: (index: number): string => inputs.get(index) ?? "",
-    getFinishReason: (): string | undefined => reason,
+    getFinishReason: finishReason,
     buildEventLog: (): WebLog => toWebLog(live().log()),
     analyze: <Q extends Query>(log: WebLog, query: Q) =>
       owner.api().analyze(toEngineLog(log), query),
@@ -348,13 +352,12 @@ export const getEngineSession = createAppOwned(() => {
     },
     end: (now: number): void => {
       owner.invalidateSession();
-      const clock = finishClock ?? { now, date: Date.now() };
-      if (finishNotified && !state?.ended) {
+      if (completion.phase === "pending") {
+        const clock = completion.clock ?? { now, date: Date.now() };
         command({ op: "acknowledgeFinish", ...clock });
       } else {
-        command({ op: "end", ...clock });
+        command({ op: "end", now, date: Date.now() });
       }
-      finishClock = undefined;
     },
     finalize: (now = performance.now()): void => {
       command({ op: "finalize", now });

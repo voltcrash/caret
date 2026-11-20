@@ -19,25 +19,30 @@ export function createResultOutbox(storage: OutboxStorage): {
   clear: () => Promise<void>;
 } {
   const [entries, setEntries] = createSignal<PendingResult[]>([]);
-  let initialized = false;
-  let loading: Promise<void> | undefined;
+  type Hydration =
+    | { phase: "idle" | "ready" }
+    | { phase: "loading"; task: Promise<void> };
+  let hydration: Hydration = { phase: "idle" };
   let writes = Promise.resolve();
   const load = async (): Promise<void> => {
-    if (initialized) return;
-    loading ??= storage
+    if (hydration.phase === "ready") return;
+    if (hydration.phase === "loading") return hydration.task;
+    const task = storage
       .read()
       .then((stored) => {
         const merged = new Map(
           [...stored, ...entries()].map((entry) => [entry.result.hash, entry]),
         );
         setEntries([...merged.values()]);
-        initialized = true;
+        hydration = { phase: "ready" };
         return undefined;
       })
-      .finally(() => {
-        loading = undefined;
+      .catch((error: unknown) => {
+        hydration = { phase: "idle" };
+        throw error;
       });
-    await loading;
+    hydration = { phase: "loading", task };
+    return task;
   };
   const persist = async (): Promise<void> => {
     const snapshot = structuredClone(entries());

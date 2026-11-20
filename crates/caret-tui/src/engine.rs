@@ -13,8 +13,7 @@ pub struct EngineHost {
     pub words: Vec<Text>,
     pub inputs: Vec<Text>,
     pub visual_input: Option<Text>,
-    pub result: Option<Summary>,
-    pub result_error: Option<String>,
+    completion: Option<std::result::Result<Summary, String>>,
     pub seed: u32,
     pub content_identity: String,
     pub repeated: bool,
@@ -62,8 +61,7 @@ impl EngineHost {
             words: vec![],
             inputs: vec![],
             visual_input: None,
-            result: None,
-            result_error: None,
+            completion: None,
         };
         host.content_identity = crate::storage::hash(&(
             &host.language.words,
@@ -72,6 +70,12 @@ impl EngineHost {
         ))?;
         host.restart(false, 0.0, 0.0)?;
         Ok(host)
+    }
+    pub fn result(&self) -> Option<&Summary> {
+        self.completion.as_ref()?.as_ref().ok()
+    }
+    pub fn result_error(&self) -> Option<&str> {
+        self.completion.as_ref()?.as_ref().err().map(String::as_str)
     }
     pub fn session(&self) -> &Session {
         self.session.as_ref().expect("Prepared terminal session")
@@ -130,8 +134,7 @@ impl EngineHost {
         }
         self.inputs.clear();
         self.visual_input = None;
-        self.result = None;
-        self.result_error = None;
+        self.completion = None;
         self.session = Some(session);
         Ok(())
     }
@@ -162,11 +165,9 @@ impl EngineHost {
                 *next = Text::default();
             }
         }
-        if update.state.ended && self.result.is_none() && self.result_error.is_none() {
-            match stats::typed_summary(&self.log()?) {
-                Ok(summary) => self.result = Some(summary),
-                Err(error) => self.result_error = Some(error.to_string()),
-            }
+        if update.state.ended && self.completion.is_none() {
+            self.completion =
+                Some(stats::typed_summary(&self.log()?).map_err(|error| error.to_string()));
         }
         Ok(())
     }
@@ -210,7 +211,7 @@ pub fn smoke() -> Result<()> {
             1_000_100.0 + index as f64 * 1000.0,
         )?;
     }
-    if !host.state().ended || host.result.is_none() {
+    if !host.state().ended || host.result().is_none() {
         return Err("Native smoke session did not complete".into());
     }
     let log = host.log()?;
@@ -266,7 +267,7 @@ pub fn smoke() -> Result<()> {
                 host.insert(&word, 100.0 + i as f64 * 1000.0, 1000.0 + i as f64 * 1000.0)?;
             }
         }
-        if !host.state().ended || host.result.is_none() {
+        if !host.state().ended || host.result().is_none() {
             return Err(format!("Bundled offline {mode} smoke did not complete").into());
         }
     }

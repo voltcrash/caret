@@ -3,7 +3,8 @@ import { createSignal, onCleanup } from "solid-js";
 import { createAppOwned } from "./application";
 
 type ReadinessState =
-  | { status: "idle" | "loading" | "ready" | "disposed" }
+  | { status: "idle" | "ready" | "disposed" }
+  | { status: "loading"; task: Promise<void> }
   | { status: "error"; error: unknown };
 
 /** Explicit startup state, scoped to one owner; never a module startup promise. */
@@ -19,7 +20,6 @@ export function createReadiness(): Readiness {
     resolve: () => void;
     reject: (error: unknown) => void;
   }>();
-  let running: Promise<void> | undefined;
   const disposedError = new Error("Application disposed");
   onCleanup(() => {
     setState({ status: "disposed" });
@@ -36,10 +36,11 @@ export function createReadiness(): Readiness {
       return new Promise((resolve, reject) => waiters.add({ resolve, reject }));
     },
     async start(task: () => Promise<void>): Promise<void> {
-      if (state().status === "disposed") return Promise.reject(disposedError);
-      if (running !== undefined) return running;
-      setState({ status: "loading" });
-      running = (async () => {
+      const current = state();
+      if (current.status === "disposed") return Promise.reject(disposedError);
+      if (current.status === "ready") return;
+      if (current.status === "loading") return current.task;
+      const running = (async () => {
         try {
           await Promise.resolve();
           await task();
@@ -52,10 +53,10 @@ export function createReadiness(): Readiness {
           setState({ status: "error", error });
           for (const waiter of waiters) waiter.reject(error);
           waiters.clear();
-          running = undefined;
           throw error;
         }
       })();
+      setState({ status: "loading", task: running });
       return running;
     },
   };

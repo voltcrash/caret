@@ -13,17 +13,16 @@ import { getAuthenticatedUser, setUserState } from "./state.client";
 export function AuthRuntime() {
   const router = useRouter();
   const session = useQuery(() => sessionOptions());
-  let initialized = false;
-  let previous: UiSession | null = null;
+  let previous: UiSession | null | undefined;
   createEffect(() => {
     if (!session.isSuccess || session.isFetching) return;
     const user = session.data.user;
     const changed =
-      previous?.uid !== user?.uid || previous?.email !== user?.email;
+      previous !== undefined &&
+      (previous?.uid !== user?.uid || previous?.email !== user?.email);
     setUserState(user);
     previous = user;
-    if (initialized && changed) void router.invalidate();
-    initialized = true;
+    if (changed) void router.invalidate();
   });
   onMount(() => {
     const unsubscribe = getAuthClient().useSession.subscribe((state) => {

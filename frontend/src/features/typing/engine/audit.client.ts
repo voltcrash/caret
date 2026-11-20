@@ -1,4 +1,4 @@
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup, untrack } from "solid-js";
 import { createAppOwned } from "../../../app/application";
 import type { Audit } from "@caret/typing-engine/audit";
 
@@ -8,24 +8,41 @@ import type { Audit } from "@caret/typing-engine/audit";
  */
 export const getBrowserAudit = createAppOwned(() => {
   const controller = new AbortController();
-  const [current, setCurrent] = createSignal<Audit>();
-  let pending: Promise<Audit> | undefined;
-  onCleanup(() =>
-    controller.abort(new DOMException("Application disposed", "AbortError")),
-  );
+  type State =
+    | { phase: "idle" }
+    | { phase: "disposed"; error: DOMException }
+    | { phase: "loading"; task: Promise<Audit> }
+    | { phase: "ready"; audit: Audit; task: Promise<Audit> };
+  const [state, setState] = createSignal<State>({ phase: "idle" });
+  const current = (): Audit | undefined => {
+    const value = state();
+    return value.phase === "ready" ? value.audit : undefined;
+  };
+  onCleanup(() => {
+    const error = new DOMException("Application disposed", "AbortError");
+    setState({ phase: "disposed", error });
+    controller.abort(error);
+  });
   // oxlint-disable-next-line typescript/promise-function-async -- Share the exact in-flight initialization promise.
-  const load = (): Promise<Audit> =>
-    (pending ??= import("@caret/typing-engine/audit.client")
+  const load = (): Promise<Audit> => {
+    const value = untrack(state);
+    if (value.phase === "disposed") return Promise.reject(value.error);
+    if (value.phase !== "idle") return value.task;
+    const task = import("@caret/typing-engine/audit.client")
       .then(async ({ loadAudit }) => loadAudit(controller.signal))
       .then((audit) => {
-        setCurrent(audit);
+        controller.signal.throwIfAborted();
+        setState({ phase: "ready", task, audit });
         return audit;
       })
       .catch((error: unknown) => {
         // allow a retry after a failed download
-        pending = undefined;
+        if (!controller.signal.aborted) setState({ phase: "idle" });
         throw error;
-      }));
+      });
+    setState({ phase: "loading", task });
+    return task;
+  };
   return { load, current };
 });
 

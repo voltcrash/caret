@@ -197,7 +197,7 @@ export function Commandline(): JSXElement {
       (themes) => {
         if (
           themes !== undefined &&
-          commandlineState.open &&
+          commandlineState.phase !== "closed" &&
           commandlineState.mode === "search"
         ) {
           void refreshCommandlineSuggestions();

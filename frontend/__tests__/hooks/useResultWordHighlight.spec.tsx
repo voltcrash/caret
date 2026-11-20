@@ -107,6 +107,17 @@ describe("useResultWordHighlight", () => {
     expect(highlightEls(container)[0]).toHaveClass("highlight-hidden");
   });
 
+  it("ignores a measurement invalidated while the history is sliding", async () => {
+    const { container } = render(() => <Harness />);
+    resultWordHighlightEvent.dispatch({ type: "hoverChart", hovering: true });
+    const pending = highlight(0, 0);
+    destroyHighlight();
+    await pending;
+    expect(container.querySelector(".highlightContainer")).toBeNull();
+    await highlight(0, 1);
+    expect(highlightEls(container)[0]).not.toHaveClass("highlight-hidden");
+  });
+
   it("is destroyed on demand, on resize and with a new result", async () => {
     const { container } = render(() => <Harness />);
     resultWordHighlightEvent.dispatch({ type: "hoverChart", hovering: true });

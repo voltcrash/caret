@@ -44,8 +44,8 @@ export async function addUser(
       ),
     ]);
     if (
-      committed?.[1]?.rowCount === 0 ||
-      (committed === undefined && !(await exists(uid)))
+      committed.results?.[1]?.rowCount === 0 ||
+      (committed.status === "recovered" && !(await exists(uid)))
     ) {
       throw new ApiError(401, "Sign up was cancelled; sign in again");
     }
@@ -74,7 +74,8 @@ export async function cancelRegistration(uid: string): Promise<void> {
     ),
   ]);
   if (
-    (committed === undefined || committed[1]?.rowCount === 0) &&
+    (committed.status === "recovered" ||
+      committed.results[1]?.rowCount === 0) &&
     (await exists(uid))
   ) {
     throw new ApiError(409, "Account registration is already complete");

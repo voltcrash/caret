@@ -77,7 +77,7 @@ export async function add(
     ),
   ]);
   const inserted =
-    committed?.[1]?.rowCount ??
+    committed.results?.[1]?.rowCount ??
     ((await statement(
       "SELECT id FROM quote_submissions WHERE id=?",
       id,

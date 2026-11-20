@@ -55,7 +55,7 @@ fn bundled_modes_run_without_files_or_network() {
             }
         }
         assert!(host.state().ended, "{mode}");
-        assert!(host.result.is_some(), "{mode}: {:?}", host.result_error);
+        assert!(host.result().is_some(), "{mode}: {:?}", host.result_error());
         let log = host.log().unwrap();
         assert!(
             log.events
@@ -63,7 +63,7 @@ fn bundled_modes_run_without_files_or_network() {
                 .all(|e| !["keydown", "keyup"].contains(&e.kind.as_str()))
         );
         assert_eq!(
-            serde_json::to_value(host.result.unwrap()).unwrap(),
+            serde_json::to_value(host.result().unwrap()).unwrap(),
             serde_json::to_value(typing_engine::stats::typed_summary(&log).unwrap()).unwrap()
         );
     }
@@ -175,7 +175,7 @@ fn custom_crlf_newline_tab_and_non_bmp_text_remain_typable() {
     assert_eq!(host.state().word_index, 1);
     host.insert("\t界😀", 2100.0, 3000.0).unwrap();
     assert!(host.state().ended);
-    assert_eq!(host.result.unwrap().acc, 100.0);
+    assert_eq!(host.result().unwrap().acc, 100.0);
 }
 
 #[test]
@@ -223,5 +223,5 @@ fn plain_text_separators_and_bom_do_not_truncate_non_bmp_units() {
             .unwrap();
     }
     assert!(host.state().ended);
-    assert_eq!(host.result.unwrap().acc, 100.0);
+    assert_eq!(host.result().unwrap().acc, 100.0);
 }

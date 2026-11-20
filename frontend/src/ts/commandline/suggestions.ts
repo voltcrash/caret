@@ -141,7 +141,7 @@ export async function showCommands(): Promise<void> {
 
 export async function updateActiveCommand(): Promise<void> {
   const commandlineState = getCommandlineState();
-  if (commandlineState.isAnimating) return;
+  if (commandlineState.phase === "closing") return;
 
   const command = commandlineState.suggestions[commandlineState.activeIndex];
   commandlineState.activeCommand = command ?? null;

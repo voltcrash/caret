@@ -26,21 +26,22 @@ export function ImportSettingsModal(): JSXElement {
   const [json, setJson] = createSignal("");
   const [filename, setFilename] = createSignal<string>();
   const [error, setError] = createSignal<string>();
-  const [isReading, setIsReading] = createSignal(false);
-  const [isImporting, setIsImporting] = createSignal(false);
+  const [phase, setPhase] = createSignal<"idle" | "reading" | "importing">(
+    "idle",
+  );
   const [isDragging, setIsDragging] = createSignal(false);
   const [fileRef, fileInput] = useRef<HTMLInputElement>();
   const [editorRef, editor] = useRef<HTMLTextAreaElement>();
   let fileRequest = 0;
   let dragDepth = 0;
-  const isBusy = (): boolean => isReading() || isImporting();
+  const isBusy = (): boolean => phase() !== "idle";
 
   onCleanup(() => fileRequest++);
 
   const loadFile = async (file: File): Promise<void> => {
     if (isBusy()) return;
     const request = ++fileRequest;
-    setIsReading(true);
+    setPhase("reading");
     setFilename(file.name);
     setError(undefined);
     try {
@@ -57,7 +58,7 @@ export function ImportSettingsModal(): JSXElement {
         setError("Couldn't read this file. Choose it again or paste the JSON.");
       }
     } finally {
-      if (request === fileRequest) setIsReading(false);
+      if (request === fileRequest) setPhase("idle");
     }
   };
 
@@ -70,9 +71,12 @@ export function ImportSettingsModal(): JSXElement {
       setError(e instanceof Error ? e.message : "Invalid settings JSON.");
       return;
     }
-    setIsImporting(true);
+    const request = fileRequest;
+    setPhase("importing");
     try {
-      if (await applyConfigFromJson(json())) {
+      const applied = await applyConfigFromJson(json());
+      if (request !== fileRequest) return;
+      if (applied) {
         hideModalAndClearChain("ImportSettings");
       } else {
         setError(
@@ -80,7 +84,7 @@ export function ImportSettingsModal(): JSXElement {
         );
       }
     } finally {
-      setIsImporting(false);
+      if (request === fileRequest) setPhase("idle");
     }
   };
 
@@ -96,8 +100,7 @@ export function ImportSettingsModal(): JSXElement {
         setJson("");
         setFilename(undefined);
         setError(undefined);
-        setIsReading(false);
-        setIsImporting(false);
+        setPhase("idle");
         setIsDragging(false);
       }}
       beforeHide={() => {
@@ -169,7 +172,7 @@ export function ImportSettingsModal(): JSXElement {
             fa={{ icon: "fa-folder-open" }}
             onClick={() => fileInput()?.click()}
           >
-            {isReading() ? "reading file..." : "choose file"}
+            {phase() === "reading" ? "reading file..." : "choose file"}
           </Button>
           <input
             ref={fileRef}
@@ -232,7 +235,7 @@ export function ImportSettingsModal(): JSXElement {
             cancel
           </Button>
           <Button type="submit" disabled={isBusy() || json().trim() === ""}>
-            {isImporting() ? "importing..." : "import settings"}
+            {phase() === "importing" ? "importing..." : "import settings"}
           </Button>
         </div>
       </form>

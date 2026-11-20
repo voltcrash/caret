@@ -22,12 +22,12 @@ import {
   setLoadedChallenge,
 } from "../states/test";
 
-const challengeState = createAppOwned(() => ({ loading: false, sequence: 0 }));
+const challengeState = createAppOwned((): { request?: symbol } => ({}));
 
 function clearActive(): void {
   if (
     getLoadedChallenge() !== null &&
-    !challengeState().loading &&
+    challengeState().request === undefined &&
     !isTestRestarting()
   ) {
     showNoticeNotification("Challenge cleared");
@@ -76,17 +76,14 @@ export async function verify(
 export async function setup(challengeName: ChallengeName): Promise<boolean> {
   const lease = captureTypingMount();
   const state = challengeState();
-  const sequence = ++state.sequence;
+  const request = Symbol(challengeName);
+  state.request = request;
   const isCurrent = (): boolean =>
-    lease.isCurrent() && state.sequence === sequence;
-  state.loading = true;
+    lease.isCurrent() && state.request === request;
 
   try {
     const { getChallenge } = await import("@caret/challenges");
-    if (!isCurrent()) {
-      if (state.sequence === sequence) state.loading = false;
-      return false;
-    }
+    if (!isCurrent()) return false;
     const challenge = getChallenge(challengeName);
     const settings = challenge?.settings;
     // fetch the rules module now so verifying the result never waits on it;
@@ -247,8 +244,8 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
     }
     return false;
   } finally {
-    if (state.sequence === sequence) {
-      state.loading = false;
+    if (state.request === request) {
+      delete state.request;
       hideLoaderBar();
     }
   }

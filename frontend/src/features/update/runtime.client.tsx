@@ -3,6 +3,7 @@ import {
   createSignal,
   onCleanup,
   onMount,
+  untrack,
   type JSXElement,
 } from "solid-js";
 
@@ -68,16 +69,25 @@ const bannerText = {
  */
 export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
   const [waiting, setWaiting] = createSignal(false);
-  const [refreshRequested, setRefreshRequested] = createSignal(false);
+  type Refresh =
+    | { phase: "idle" | "requested" | "disposed" }
+    | { phase: "awaitingTakeover"; timer: ReturnType<typeof setTimeout> };
+  const [refresh, setRefresh] = createSignal<Refresh>({ phase: "idle" });
   let updates: ServiceWorkerUpdates | undefined;
   let lastCheck = Date.now();
-  let disposed = false;
-  let fallback: ReturnType<typeof setTimeout> | undefined;
+  const cancelTakeoverTimer = (): void => {
+    const current = untrack(refresh);
+    if (current.phase === "awaitingTakeover") clearTimeout(current.timer);
+  };
 
   const checkDeployment = async (reason: "deployed" | "chunk") => {
     lastCheck = Date.now();
     const deployed = await deployedBuild();
-    if (disposed || deployed === undefined || deployed === clientBuildId) {
+    if (
+      untrack(refresh).phase === "disposed" ||
+      deployed === undefined ||
+      deployed === clientBuildId
+    ) {
       return deployed;
     }
     reportStaleClient(reason);
@@ -85,10 +95,11 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
   };
 
   const reload = (): void => {
-    setRefreshRequested(true);
+    cancelTakeoverTimer();
+    setRefresh({ phase: "requested" });
   };
   createEffect(() => {
-    if (!refreshRequested() || !isUpdateSafe()) return;
+    if (refresh().phase !== "requested" || !isUpdateSafe()) return;
     if (props.reload === undefined) window.location.reload();
     else props.reload();
   });
@@ -103,17 +114,22 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
     }
     if (updates?.activateWaiting(true) === true) {
       // Posting a request is not activation: another tab may refuse takeover.
-      fallback ??= setTimeout(() => {
-        fallback = undefined;
+      if (untrack(refresh).phase !== "idle") return;
+      const timer = setTimeout(() => {
+        setRefresh({ phase: "idle" });
         showNoticeNotification(
           "Update is waiting for other tabs. Finish their tests, then retry.",
         );
       }, 3000);
+      setRefresh({ phase: "awaitingTakeover", timer });
       return;
     }
     reload();
   };
-  onCleanup(() => clearTimeout(fallback));
+  onCleanup(() => {
+    cancelTakeoverTimer();
+    setRefresh({ phase: "disposed" });
+  });
 
   onMount(() => {
     if (!("serviceWorker" in navigator)) return;
@@ -140,7 +156,7 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
         }
         // Classify the waiting build before anything activates.
         void registered.waitingBuild().then((build) => {
-          if (disposed) return;
+          if (untrack(refresh).phase === "disposed") return;
           setWaiting(build === clientBuildId);
           if (build !== undefined && build !== clientBuildId) {
             reportStaleClient("deployed");
@@ -181,7 +197,6 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
     window.addEventListener("vite:preloadError", onChunkFailure);
     window.addEventListener("unhandledrejection", onRejection);
     onCleanup(() => {
-      disposed = true;
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("vite:preloadError", onChunkFailure);
       window.removeEventListener("unhandledrejection", onRejection);
