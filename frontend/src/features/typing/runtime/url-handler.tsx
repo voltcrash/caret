@@ -21,15 +21,16 @@ import { tryCatchSync } from "@caret/util/trycatch";
 import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
-import { setConfig } from "../../../ts/config/setters";
-import { peekConfig } from "../../../ts/config/store";
+import { setConfig } from "#shared/config/setters.ts";
+import { peekConfig } from "#shared/config/store.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { setSelectedQuoteId } from "../../../ts/states/test";
-import * as Misc from "../../../ts/utils/misc";
+} from "#shared/states/notifications.ts";
+import { setSelectedQuoteId } from "#shared/states/test.ts";
+import * as Misc from "#shared/utils/misc.ts";
+
 import * as ChallengeController from "./challenge-controller";
 import * as CustomText from "./content/custom-text";
 import { restart as restartTest } from "./test/logic";

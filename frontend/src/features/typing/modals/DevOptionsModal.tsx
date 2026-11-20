@@ -2,25 +2,27 @@ import { UserNameSchema } from "@caret/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 
-import { operation } from "../../../data/operations";
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { addXp } from "../../../ts/db";
-import { getInputElement } from "../../../ts/input/input-element";
-import { hideModal, showModal } from "../../../ts/states/modals";
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { addXp } from "#shared/db.ts";
+import { getInputElement } from "#shared/input/input-element.ts";
+import { hideModal, showModal } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { showSimpleModal } from "../../../ts/states/simple-modal";
-import { FaSolidIcon } from "../../../ts/types/font-awesome";
-import { setMediaQueryDebugLevel } from "../../../ts/ui";
+} from "#shared/states/notifications.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { setMediaQueryDebugLevel } from "#shared/ui.ts";
 import {
   isProfilerMode,
   setProfilerMode,
-} from "../../../ts/utils/profiler-mode";
-import { remoteValidation } from "../../../ts/utils/remote-validation";
+} from "#shared/utils/profiler-mode.ts";
+import { remoteValidation } from "#shared/utils/remote-validation.ts";
+
+import { operation } from "../../../data/operations";
 import { toggleCaretDebug } from "../components/words/caret-controller";
 import { toggleUserFakeChartData } from "../runtime/result/screen";
 import { disableSlowTimerFail } from "../runtime/test/timer";

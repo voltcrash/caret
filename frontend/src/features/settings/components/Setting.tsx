@@ -8,22 +8,23 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
-import { replaceUrl } from "../../../app/navigate";
-import { serialize } from "../../../app/url-search-params";
-import { Button } from "../../../ts/components/common/Button";
-import { FaProps } from "../../../ts/components/common/Fa";
-import { H3 } from "../../../ts/components/common/Headers";
-import { useRef } from "../../../ts/hooks/useRef";
+import { replaceUrl } from "#app/navigate.ts";
+import { serialize } from "#app/url-search-params.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { FaProps } from "#shared/components/common/Fa.tsx";
+import { H3 } from "#shared/components/common/Headers.tsx";
+import { useRef } from "#shared/hooks/useRef.ts";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 import {
   getHighlightedSetting,
   setHighlightedSetting,
   registerSettingHighlight,
-} from "../../../ts/states/settings-highlight";
-import { cn } from "../../../ts/utils/cn";
+} from "#shared/states/settings-highlight.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import { SettingsSectionContext } from "./settings-section-context";
 
 export type SettingProps = {

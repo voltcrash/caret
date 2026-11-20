@@ -1,16 +1,17 @@
 import { CustomPolyglot as CustomPolyglotType } from "@caret/schemas/configs";
 import { JSXElement } from "solid-js";
 
-import Select, { SelectOptionGroup } from "../../../../ts/components/ui/Select";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
+import Select, { SelectOptionGroup } from "#shared/components/ui/Select.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
 import {
   LanguageGroupNames,
   LanguageGroups,
-} from "../../../../ts/constants/languages";
-import { areUnsortedArraysEqual } from "../../../../ts/utils/arrays";
-import { getLanguageDisplayString } from "../../../../ts/utils/strings";
+} from "#shared/constants/languages.ts";
+import { areUnsortedArraysEqual } from "#shared/utils/arrays.ts";
+import { getLanguageDisplayString } from "#shared/utils/strings.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 
 export function CustomPolyglot(): JSXElement {

@@ -1,26 +1,26 @@
-import { createAppOwned } from "../../../app/application";
-import { getBrowserAudit } from "../../../ts/engine/audit.client";
+import { createAppOwned } from "#app/application.ts";
+import { getBrowserAudit } from "#shared/engine/audit.client.ts";
 import { captureTypingMount } from "../scope";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 import * as CustomText from "./content/custom-text";
 import * as Funbox from "./funbox/funbox";
 
-import { setConfig } from "../../../ts/config/setters";
-import { peekConfig } from "../../../ts/config/store";
-import { configEvent } from "../../../ts/events/config";
+import { setConfig } from "#shared/config/setters.ts";
+import { peekConfig } from "#shared/config/store.ts";
+import { configEvent } from "#shared/events/config.ts";
 
 import { ChallengeName } from "@caret/schemas/challenges";
 import { CompletedEvent } from "@caret/schemas/results";
-import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
 import {
   isTestRestarting,
   getLoadedChallenge,
   setLoadedChallenge,
-} from "../../../ts/states/test";
+} from "#shared/states/test.ts";
 
 const challengeState = createAppOwned((): { request?: symbol } => ({}));
 

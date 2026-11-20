@@ -1,5 +1,5 @@
 import { operation } from "../../../data/operations";
-import { navigate } from "../../../app/navigate";
+import { navigate } from "#app/navigate.ts";
 import { isAuthenticated } from "../../states/core";
 import { Command, withValidation } from "../types";
 import { remoteValidation } from "../../utils/remote-validation";

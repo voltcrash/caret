@@ -1,11 +1,12 @@
 import { createMemo } from "solid-js";
 
-import { getConfig } from "../../../../ts/config/store";
-import { getLocalPB } from "../../../../ts/db";
-import { getFormatting, isAuthenticated } from "../../../../ts/states/core";
-import { getSnapshot } from "../../../../ts/states/snapshot";
-import { getCurrentQuote } from "../../../../ts/states/test";
-import { getMode2 } from "../../../../ts/utils/misc";
+import { getConfig } from "#shared/config/store.ts";
+import { getLocalPB } from "#shared/db.ts";
+import { getFormatting, isAuthenticated } from "#shared/states/core.ts";
+import { getSnapshot } from "#shared/states/snapshot.ts";
+import { getCurrentQuote } from "#shared/states/test.ts";
+import { getMode2 } from "#shared/utils/misc.ts";
+
 import { getActiveFunboxes } from "../../runtime/funbox/list";
 import { Notice } from "./Notice";
 

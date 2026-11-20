@@ -1,15 +1,16 @@
 import { createHotkeyRecorder, HotkeyChord } from "@tanstack/solid-hotkeys";
 import { createSignal, For, JSXElement, Show } from "solid-js";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { formatHotkey } from "../../../../ts/components/common/Kbd";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
+import { Button } from "#shared/components/common/Button.tsx";
+import { formatHotkey } from "#shared/components/common/Kbd.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
 import {
   DEFAULT_COMMAND_PALETTE_HOTKEY,
   getCommandPaletteHotkeyError,
-} from "../../../../ts/input/hotkeys/command-palette-hotkey";
+} from "#shared/input/hotkeys/command-palette-hotkey.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 
 const PRESETS: HotkeyChord[] = [

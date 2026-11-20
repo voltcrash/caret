@@ -11,10 +11,11 @@ import {
 import { format as dateFormat } from "date-fns/format";
 import { createMemo, JSXElement, Show } from "solid-js";
 
-import { Balloon } from "../../../ts/components/common/Balloon";
-import { Button } from "../../../ts/components/common/Button";
-import { H2 } from "../../../ts/components/common/Headers";
-import { capitalizeFirstLetter } from "../../../ts/utils/strings";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { H2 } from "#shared/components/common/Headers.tsx";
+import { capitalizeFirstLetter } from "#shared/utils/strings.ts";
+
 import { Selection } from "../selection-state";
 
 export function Title(props: {

@@ -1,7 +1,7 @@
 import { onCleanup } from "solid-js";
 
 import { centerWordsInputEvent } from "../../state/words-layout";
-import { isCoarsePointer } from "../../../../ts/utils/pointer";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
 
 // Band (fractions of the visible viewport) the active line should stay in while typing on touch.
 const LINE_BAND_MIN = 0.2;

@@ -1,5 +1,5 @@
-import { getConfig } from "../../../../ts/config/store";
-import { cn } from "../../../../ts/utils/cn";
+import { getConfig } from "#shared/config/store.ts";
+import { cn } from "#shared/utils/cn.ts";
 
 export const liveStatsTextColor = (): Record<string, boolean> => ({
   "text-main": getConfig.timerColor === "main",

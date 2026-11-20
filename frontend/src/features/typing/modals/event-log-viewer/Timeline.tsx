@@ -2,7 +2,8 @@ import type { TestEventType } from "@caret/web-shared/events/types";
 
 import { For, JSXElement, Show } from "solid-js";
 
-import { cn } from "../../../../ts/utils/cn";
+import { cn } from "#shared/utils/cn.ts";
+
 import { getTimelineZoom, setTimelineZoom } from "../../state/event-log-viewer";
 import {
   getNextTimelineZoom,

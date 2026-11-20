@@ -7,11 +7,11 @@ import {
   onCleanup,
 } from "solid-js";
 
-import { useRef } from "../../../ts/hooks/useRef";
+import { useRef } from "#shared/hooks/useRef.ts";
 import {
   getHeaderBottom,
   getPageScroller,
-} from "../../../ts/states/page-layout";
+} from "#shared/states/page-layout.ts";
 import { isSettingsSearchActive, setSettingsSearch } from "../search-state";
 import { SettingsSection, SettingsSectionHost } from "../sections-state";
 

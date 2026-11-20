@@ -10,26 +10,26 @@ import { focusWords } from "./focus";
 import { scrollToCenterOrTop } from "./dimensions";
 import { setClass } from "./elements";
 import * as Numbers from "@caret/util/numbers";
-import { animateAsync } from "../../../../ts/anim";
-import { peekConfig } from "../../../../ts/config/store";
-import * as SoundController from "../../../../ts/controllers/sound-controller";
-import * as ThemeController from "../../../../ts/controllers/theme-controller";
-import { highlight } from "../../../../ts/states/keymap";
-import { isTouchKeyboardFocused } from "../../../../ts/input/input-element";
-import * as CompositionState from "../../../../ts/states/composition";
-import * as ConnectionState from "../../../../ts/states/connection";
-import { skipBreakdownEvent } from "../../../../ts/states/header";
+import { animateAsync } from "#shared/anim.ts";
+import { peekConfig } from "#shared/config/store.ts";
+import * as SoundController from "#shared/controllers/sound-controller.ts";
+import * as ThemeController from "#shared/controllers/theme-controller.ts";
+import { highlight } from "#shared/states/keymap.ts";
+import { isTouchKeyboardFocused } from "#shared/input/input-element.ts";
+import * as CompositionState from "#shared/states/composition.ts";
+import * as ConnectionState from "#shared/states/connection.ts";
+import { skipBreakdownEvent } from "#shared/states/header.ts";
 import { getResultElement } from "../../state/result";
 import {
   getActiveWordIndex,
   setCompositionText,
   setCurrentLiveStats,
   setTestFocusState,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import {
   getWordsElement as getWordsEl,
   getTypingTestElement,
-} from "../../../../ts/states/test-dom";
+} from "#shared/states/test-dom.ts";
 import { setWordsInputStyle } from "../../state/words-layout";
 import * as Caret from "../../runtime/caret";
 import { getCurrentInput } from "../../runtime/events/data";
@@ -37,9 +37,9 @@ import { getLiveCachedAccuracy } from "../../runtime/events/live-cache";
 import * as Focus from "../../runtime/focus";
 import * as LayoutfluidFunboxTimer from "../../runtime/funbox/layoutfluid-funbox-timer";
 import * as TestWords from "../../runtime/test/words";
-import { cancelPendingAnimationFramesStartingWith } from "../../../../ts/utils/debounced-animation-frame";
-import * as Misc from "../../../../ts/utils/misc";
-import { isCoarsePointer } from "../../../../ts/utils/pointer";
+import { cancelPendingAnimationFramesStartingWith } from "#shared/utils/debounced-animation-frame.ts";
+import * as Misc from "#shared/utils/misc.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
 import * as MonkeyPower from "../MonkeyPower";
 
 // this means input, delete or composition

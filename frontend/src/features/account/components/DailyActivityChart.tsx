@@ -3,17 +3,18 @@ import { TooltipItem } from "chart.js";
 import { format as dateFormat } from "date-fns/format";
 import { Accessor, JSXElement } from "solid-js";
 
+import AsyncContent from "#shared/components/common/AsyncContent.tsx";
+import { ChartJs } from "#shared/components/common/ChartJs.tsx";
+import { getTheme } from "#shared/states/theme.ts";
+import { secondsToString } from "#shared/utils/date-and-time.ts";
+import { Formatting } from "#shared/utils/format.ts";
+import { fitLine } from "#shared/utils/numbers.ts";
+import { TypingSpeedUnitSettings } from "#shared/utils/typing-speed-units.ts";
+
 import {
   ResultsQueryState,
   useResultStatsLiveQuery,
 } from "../../../data/collections/results";
-import AsyncContent from "../../../ts/components/common/AsyncContent";
-import { ChartJs } from "../../../ts/components/common/ChartJs";
-import { getTheme } from "../../../ts/states/theme";
-import { secondsToString } from "../../../ts/utils/date-and-time";
-import { Formatting } from "../../../ts/utils/format";
-import { fitLine } from "../../../ts/utils/numbers";
-import { TypingSpeedUnitSettings } from "../../../ts/utils/typing-speed-units";
 
 function trendline(
   days: { dayTimestamp: unknown; timeTyping: number }[],

@@ -1,11 +1,12 @@
 import { type AnnotationOptions } from "chartjs-plugin-annotation";
 import { createMemo, JSXElement, Show } from "solid-js";
 
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { ChartJs } from "#shared/components/common/ChartJs.tsx";
+import { getTheme } from "#shared/states/theme.ts";
+
 import type { ScatterPoint } from "./scatter-points";
 
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { ChartJs } from "../../../../ts/components/common/ChartJs";
-import { getTheme } from "../../../../ts/states/theme";
 import "./chart-setup";
 
 const SCATTER_HEIGHT = 170;

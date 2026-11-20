@@ -1,13 +1,13 @@
-import { peekConfig } from "../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import QuotesController, { Quote } from "../runtime/quotes-controller";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { isAuthenticated } from "../../../ts/states/core";
-import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
-import { Command } from "../../../ts/commandline/types";
-import { getCurrentQuote } from "../../../ts/states/test";
+} from "#shared/states/notifications.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
+import { showLoaderBar, hideLoaderBar } from "#shared/states/loader-bar.ts";
+import { Command } from "#shared/commandline/types.ts";
+import { getCurrentQuote } from "#shared/states/test.ts";
 
 const commands: Command[] = [
   {

@@ -5,10 +5,11 @@ import type {
 
 import { createEffect, For, JSXElement } from "solid-js";
 
+import { Button } from "#shared/components/common/Button.tsx";
+import { cn } from "#shared/utils/cn.ts";
+
 import type { VideoSync } from "./createVideoSync";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { cn } from "../../../../ts/utils/cn";
 import {
   EVENT_TYPES,
   getCurrentMs,

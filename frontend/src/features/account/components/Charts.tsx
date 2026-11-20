@@ -3,20 +3,21 @@ import type { Mode } from "@caret/schemas/shared";
 import { ResultFilters, ResultFiltersKeys } from "@caret/schemas/users";
 import { Accessor, createMemo, JSXElement } from "solid-js";
 
-import type { SnapshotResult } from "../../../ts/constants/default-snapshot";
+import type { SnapshotResult } from "#shared/constants/default-snapshot.ts";
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
-import { ResultsQueryState } from "../../../data/collections/results";
-import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
-import { Balloon } from "../../../ts/components/common/Balloon";
-import { Fa } from "../../../ts/components/common/Fa";
-import { getConfig } from "../../../ts/config/store";
-import { getFormatting } from "../../../ts/states/core";
-import { FaSolidIcon } from "../../../ts/types/font-awesome";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { getFormatting } from "#shared/states/core.ts";
 import {
   capitalizeFirstLetter,
   replaceUnderscoresWithSpaces,
-} from "../../../ts/utils/strings";
-import { get as getTypingSpeedUnit } from "../../../ts/utils/typing-speed-units";
+} from "#shared/utils/strings.ts";
+import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
+
+import { ResultsQueryState } from "../../../data/collections/results";
+import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
 import { DailyActivityChart } from "./DailyActivityChart";
 import { HistogramChart } from "./HistogramChart";
 import { HistoryChart } from "./HistoryChart";

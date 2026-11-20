@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/solid-query";
 import { createMemo, For, Show } from "solid-js";
 
-import { isStartupFinished } from "../../../app/startup";
-import { getConfig } from "../../../ts/config/store";
-import { sessionOptions } from "../../../ts/session/session";
-import { getFormatting, isAuthenticated } from "../../../ts/states/core";
-import { isTestActive } from "../../../ts/states/test";
+import { isStartupFinished } from "#app/startup.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { sessionOptions } from "#shared/session/session.ts";
+import { getFormatting, isAuthenticated } from "#shared/states/core.ts";
+import { isTestActive } from "#shared/states/test.ts";
+
 import { getGuestScores } from "../history/guest-scores.client";
 
 export function GuestScores() {

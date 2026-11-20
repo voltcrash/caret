@@ -1,8 +1,8 @@
 import { onCleanup } from "solid-js";
 import { createTypingOwned, captureTypingRoute } from "../scope";
-import { peekConfig } from "../../../ts/config/store";
-import * as JSONData from "../../../ts/utils/json-data";
-import { configEvent } from "../../../ts/events/config";
+import { peekConfig } from "#shared/config/store.ts";
+import * as JSONData from "#shared/utils/json-data.ts";
+import { configEvent } from "#shared/events/config.ts";
 import { ttsEvent } from "./events/tts";
 function createSpeech(): {
   useTtsEvents: typeof useTtsEvents;

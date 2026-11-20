@@ -1,9 +1,10 @@
 import { createEffect, onCleanup } from "solid-js";
 
-import { Anime } from "../../../../ts/components/common/anime";
-import { getConfig } from "../../../../ts/config/store";
-import { cn } from "../../../../ts/utils/cn";
-import { applyReducedMotion } from "../../../../ts/utils/misc";
+import { Anime } from "#shared/components/common/anime/index.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
+
 import { getBarTarget, showLiveStats } from "./state";
 import { liveStatsBgColor } from "./styles";
 

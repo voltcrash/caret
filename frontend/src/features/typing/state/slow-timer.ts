@@ -1,4 +1,4 @@
-import { createAppSignal } from "../../../app/state";
+import { createAppSignal } from "#app/state.ts";
 
 const [getSlowTimer, setSlowTimer] = createAppSignal(false);
 

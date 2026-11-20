@@ -1,6 +1,7 @@
 import { createSignal, For, JSXElement, onCleanup, onMount } from "solid-js";
 
-import { createBinding } from "../../../app/binding";
+import { createBinding } from "#app/binding.ts";
+
 import { useRef } from "../../hooks/useRef";
 
 type PickRequest = {

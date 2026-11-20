@@ -9,8 +9,9 @@ import {
   untrack,
 } from "solid-js";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { getInspection } from "../../../../ts/engine/analysis.client";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getInspection } from "#shared/engine/analysis.client.ts";
+
 import { getCurrentMs, getVisibleTypes } from "../../state/event-log-viewer";
 import { createPlayback } from "./createPlayback";
 import { createVideoSync } from "./createVideoSync";

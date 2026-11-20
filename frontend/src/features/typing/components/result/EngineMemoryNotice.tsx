@@ -1,12 +1,10 @@
 import { createMemo, Show, type JSXElement } from "solid-js";
 
-import { pendingResultSaves } from "../../../../app/update-safety";
-import { Button } from "../../../../ts/components/common/Button";
-import { getBrowserEngine } from "../../../../ts/engine/owner.client";
-import {
-  getResultVisible,
-  isResultCalculating,
-} from "../../../../ts/states/test";
+import { pendingResultSaves } from "#app/update-safety.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
+import { getResultVisible, isResultCalculating } from "#shared/states/test.ts";
+
 import { resultOutbox } from "../../history/outbox.client";
 
 /** A new document safely releases Wasm's high-water memory and every handle. */

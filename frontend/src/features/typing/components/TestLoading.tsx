@@ -1,7 +1,7 @@
 import { JSXElement, Show } from "solid-js";
 
-import { Fa } from "../../../ts/components/common/Fa";
-import { isResultLoading } from "../../../ts/states/test";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { isResultLoading } from "#shared/states/test.ts";
 
 export function TestLoading(): JSXElement {
   // delayed fade so fast result calculations never flash the spinner

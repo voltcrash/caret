@@ -1,12 +1,12 @@
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import * as TestLogic from "../../runtime/test/logic";
 import { getCharFromEvent } from "../../runtime/layout-emulator";
 import { emulateInsertText } from "./insert-text";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../../../ts/states/notifications";
-import * as KeyConverter from "../../../../ts/utils/key-converter";
+} from "#shared/states/notifications.ts";
+import * as KeyConverter from "#shared/utils/key-converter.ts";
 import * as ShiftTracker from "../../runtime/shift-tracker";
 import { canQuickRestart } from "../../runtime/quick-restart";
 import * as CustomText from "../../runtime/content/custom-text";
@@ -16,14 +16,14 @@ import {
   setLastBailoutAttempt,
 } from "../state";
 import { getActiveFunboxesWithFunction } from "../../runtime/funbox/list";
-import { Keycode } from "../../../../ts/constants/keys";
+import { Keycode } from "#shared/constants/keys.ts";
 import {
   setBailedOut,
   waitForKeymapLayout,
   wordsHaveTab,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 
-import { getCustomTextIndicator } from "../../../../ts/states/core";
+import { getCustomTextIndicator } from "#shared/states/core.ts";
 import { logTestEvent } from "../../runtime/events/data";
 import { getTestEventCode } from "../../runtime/events/helpers";
 

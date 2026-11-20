@@ -1,5 +1,5 @@
 import { captureTypingPresentation } from "../../scope";
-import { getTypingLifecycle } from "../../../../ts/states/test-lifecycle/controller";
+import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
 import { updateTags } from "./tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./tags";
 import { updateResultChartDataVisibility } from "./chart-visibility";
@@ -32,21 +32,21 @@ import { clearWords, clearWordsBlur } from "../test/ui";
 import { showResultScreen } from "../../components/result/useResultScreen";
 import type { PluginChartOptions } from "chart.js";
 
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 
 import { Quote } from "../quotes-controller";
 
-import { showNoticeNotification } from "../../../../ts/states/notifications";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
 import {
   getCustomTextIndicator,
   isAuthenticated,
-} from "../../../../ts/states/core";
+} from "#shared/states/core.ts";
 
 import * as GlarsesMode from "../../state/glarses-mode";
 
-import * as Misc from "../../../../ts/utils/misc";
+import * as Misc from "#shared/utils/misc.ts";
 
-import * as Arrays from "../../../../ts/utils/arrays";
+import * as Arrays from "#shared/utils/arrays.ts";
 
 import * as TodayTracker from "../today-tracker";
 
@@ -58,10 +58,10 @@ import { CompletedEvent } from "@caret/schemas/results";
 
 import { canQuickRestart as canQuickRestartFn } from "../quick-restart";
 
-import { blurInputElement } from "../../../../ts/input/input-element";
-import * as ConnectionState from "../../../../ts/states/connection";
+import { blurInputElement } from "#shared/input/input-element.ts";
+import * as ConnectionState from "#shared/states/connection.ts";
 
-import { getCurrentQuote, isTestInvalid } from "../../../../ts/states/test";
+import { getCurrentQuote, isTestInvalid } from "#shared/states/test.ts";
 
 import {
   getResultChart,

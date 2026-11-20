@@ -1,12 +1,12 @@
 import { Show } from "solid-js";
 
-import { Fa } from "../../../ts/components/common/Fa";
+import { Fa } from "#shared/components/common/Fa.tsx";
 import {
   outOfFocusMaxHeight,
   showOutOfFocusWarning,
   testFocusState,
-} from "../../../ts/states/test";
-import { isCoarsePointer } from "../../../ts/utils/pointer";
+} from "#shared/states/test.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
 
 export function OutOfFocusWarning() {
   const message = () => {

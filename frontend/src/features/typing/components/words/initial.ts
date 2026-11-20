@@ -1,4 +1,4 @@
-import { splitIntoCharacters } from "../../../../ts/utils/strings";
+import { splitIntoCharacters } from "#shared/utils/strings.ts";
 import {
   createNewlineSpacers,
   createUntypedLetter,

@@ -1,15 +1,16 @@
 import { Accessor, JSXElement, Show } from "solid-js";
 
+import AsyncContent from "#shared/components/common/AsyncContent.tsx";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { getFormatting } from "#shared/states/core.ts";
+import { secondsToString } from "#shared/utils/date-and-time.ts";
+
 import {
   ResultsQueryState,
   ResultStats,
   useResultStatsLiveQuery,
 } from "../../../data/collections/results";
-import AsyncContent from "../../../ts/components/common/AsyncContent";
-import { Balloon } from "../../../ts/components/common/Balloon";
-import { Fa } from "../../../ts/components/common/Fa";
-import { getFormatting } from "../../../ts/states/core";
-import { secondsToString } from "../../../ts/utils/date-and-time";
 
 export function TestStats(props: {
   queryState: Accessor<ResultsQueryState | undefined>;

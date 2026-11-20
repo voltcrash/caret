@@ -2,16 +2,16 @@ import { batch, createEffect, createSignal, onCleanup } from "solid-js";
 import type { ContentRequest } from "@caret/typing-engine/browser.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { decodeText } from "@caret/typing-engine/text";
-import { getBrowserEngine } from "../../../ts/engine/owner.client";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { captureTypingRoute } from "../scope";
 import { getEngineSession } from "./session.client";
 import { getContentHost } from "./content/host.client";
 import * as TestUI from "./test/ui";
 import * as TestWords from "./test/words";
 import * as TestLogic from "./test/logic";
-import * as Composition from "../../../ts/states/composition";
+import * as Composition from "#shared/states/composition.ts";
 import * as SlowTimer from "../state/slow-timer";
-import { peekConfig } from "../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import {
   getActiveWordIndex,
   setActiveWordIndex,
@@ -19,8 +19,8 @@ import {
   setWordsHaveNewline,
   isTestActive,
   isTestRestarting,
-} from "../../../ts/states/test";
-import { setInputElementValue } from "../../../ts/input/input-element";
+} from "#shared/states/test.ts";
+import { setInputElementValue } from "#shared/input/input-element.ts";
 import {
   setAwaitingNextWord,
   incrementIncorrectShiftsInARow,
@@ -31,15 +31,15 @@ import {
   beginLoaderBar,
   showLoaderBar,
   hideLoaderBar,
-} from "../../../ts/states/loader-bar";
+} from "#shared/states/loader-bar.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
-} from "../../../ts/states/notifications";
-import { flash } from "../../../ts/states/keymap";
+} from "#shared/states/notifications.ts";
+import { flash } from "#shared/states/keymap.ts";
 import { getActiveFunboxesWithFunction } from "./funbox/list";
 import * as Funbox from "./funbox/funbox";
-import { setLowFpsMode } from "../../../ts/anim";
+import { setLowFpsMode } from "#shared/anim.ts";
 import { applyEngineRecovery } from "./recovery.client";
 
 /** Subscriptions and imperative rendering belong to the mounted typing component. */

@@ -1,16 +1,16 @@
 import { CompletedEvent } from "@caret/schemas/results";
 import * as Numbers from "@caret/util/numbers";
-import { peekConfig } from "../../../../ts/config/store";
-import type { Theme } from "../../../../ts/constants/themes";
-import Format from "../../../../ts/singletons/format";
+import { peekConfig } from "#shared/config/store.ts";
+import type { Theme } from "#shared/constants/themes.ts";
+import Format from "#shared/singletons/format.ts";
 import type {
   ResultCrownType,
   ResultSpeedStats,
   ResultStats,
 } from "../../state/result";
-import { blendTwoHexColors } from "../../../../ts/utils/colors";
-import * as DateTime from "../../../../ts/utils/date-and-time";
-import * as Strings from "../../../../ts/utils/strings";
+import { blendTwoHexColors } from "#shared/utils/colors.ts";
+import * as DateTime from "#shared/utils/date-and-time.ts";
+import * as Strings from "#shared/utils/strings.ts";
 import { isFunboxActiveWithProperty } from "../funbox/list";
 
 type ResultForStats = Pick<

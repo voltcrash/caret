@@ -1,6 +1,6 @@
 import { openDB } from "idb";
 import { createSignal } from "solid-js";
-import { createAccountOwned, captureAccount } from "../../../app/account-scope";
+import { createAccountOwned, captureAccount } from "#app/account-scope.ts";
 import type { CompletedEvent } from "@caret/schemas/results";
 import type { WebLog } from "@caret/typing-engine/text";
 

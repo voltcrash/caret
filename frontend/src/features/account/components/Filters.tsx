@@ -9,30 +9,32 @@ import { createMemo, createSignal, For, JSXElement, Show } from "solid-js";
 import { SetStoreFunction, unwrap } from "solid-js/store";
 import { z } from "zod";
 
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
+import { AnimeShow } from "#shared/components/common/anime/index.ts";
+import AsyncContent from "#shared/components/common/AsyncContent.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { H3 } from "#shared/components/common/Headers.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import Select from "#shared/components/ui/Select.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import defaultResultFilters from "#shared/constants/default-result-filters.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { createErrorMessage } from "#shared/utils/error.ts";
+import { verifyResultFiltersStructure } from "#shared/utils/result-filters.ts";
+import {
+  getLanguageDisplayString,
+  normalizeName,
+  replaceUnderscoresWithSpaces,
+} from "#shared/utils/strings.ts";
+
 import {
   deleteResultFilterPreset,
   insertResultFilterPreset,
   useResultFilterPresetsLiveQuery,
 } from "../../../data/collections/result-filter-presets";
 import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
-import { AnimeShow } from "../../../ts/components/common/anime";
-import AsyncContent from "../../../ts/components/common/AsyncContent";
-import { Button } from "../../../ts/components/common/Button";
-import { H3 } from "../../../ts/components/common/Headers";
-import { Separator } from "../../../ts/components/common/Separator";
-import Select from "../../../ts/components/ui/Select";
-import { getConfig } from "../../../ts/config/store";
-import defaultResultFilters from "../../../ts/constants/default-result-filters";
-import { showSimpleModal } from "../../../ts/states/simple-modal";
-import { FaSolidIcon } from "../../../ts/types/font-awesome";
-import { cn } from "../../../ts/utils/cn";
-import { createErrorMessage } from "../../../ts/utils/error";
-import { verifyResultFiltersStructure } from "../../../ts/utils/result-filters";
-import {
-  getLanguageDisplayString,
-  normalizeName,
-  replaceUnderscoresWithSpaces,
-} from "../../../ts/utils/strings";
 
 export function Filters(props: {
   filters: ResultFilters;

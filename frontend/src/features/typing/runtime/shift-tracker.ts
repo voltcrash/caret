@@ -1,7 +1,7 @@
-import { peekConfig } from "../../../ts/config/store";
-import { Keycode } from "../../../ts/constants/keys";
+import { peekConfig } from "#shared/config/store.ts";
+import { Keycode } from "#shared/constants/keys.ts";
 import { getModifierState } from "../state/modifiers";
-import * as KeyConverter from "../../../ts/utils/key-converter";
+import * as KeyConverter from "#shared/utils/key-converter.ts";
 
 export function isUsingOppositeShift(keycode: Keycode): boolean {
   const { leftShift, rightShift } = getModifierState();

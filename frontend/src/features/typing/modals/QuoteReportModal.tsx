@@ -2,27 +2,28 @@ import { QuoteReportReason } from "@caret/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement, createSignal } from "solid-js";
 
-import { operation } from "../../../data/operations";
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Separator } from "../../../ts/components/common/Separator";
-import { Captcha } from "../../../ts/components/ui/form/Captcha";
-import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
-import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
-import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { Captcha } from "#shared/components/ui/form/Captcha.tsx";
+import { LabeledField } from "#shared/components/ui/form/LabeledField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { TextareaField } from "#shared/components/ui/form/TextareaField.tsx";
 import {
   allFieldsMandatory,
   fieldMandatory,
-} from "../../../ts/components/ui/form/utils";
-import Select from "../../../ts/components/ui/Select";
-import { peekConfig } from "../../../ts/config/store";
-import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
-import { hideModalAndClearChain } from "../../../ts/states/modals";
+} from "#shared/components/ui/form/utils.ts";
+import Select from "#shared/components/ui/Select.tsx";
+import { peekConfig } from "#shared/config/store.ts";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
+import { hideModalAndClearChain } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { removeLanguageSize } from "../../../ts/utils/strings";
+} from "#shared/states/notifications.ts";
+import { removeLanguageSize } from "#shared/utils/strings.ts";
+
+import { operation } from "../../../data/operations";
 import QuotesController from "../runtime/quotes-controller";
 import { quoteId } from "../state/quote-report";
 

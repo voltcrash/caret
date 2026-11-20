@@ -2,28 +2,29 @@ import { CompletedEvent } from "@caret/schemas/results";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { createMemo, JSX } from "solid-js";
 
-import type { SavedResult } from "../../../ts/constants/default-snapshot";
+import type { SavedResult } from "#shared/constants/default-snapshot.ts";
 
-import { trackResultSave } from "../../../app/update-safety";
-import { operation } from "../../../data/operations";
-import { getAuthenticatedUser } from "../../../ts/auth-client";
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { Separator } from "../../../ts/components/common/Separator";
-import { getConfig } from "../../../ts/config/store";
-import { saveLocalResult, SaveLocalResultData } from "../../../ts/db";
-import { hideModal } from "../../../ts/states/modals";
+import { trackResultSave } from "#app/update-safety.ts";
+import { getAuthenticatedUser } from "#shared/auth-client.ts";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { saveLocalResult, SaveLocalResultData } from "#shared/db.ts";
+import { hideModal } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 import {
   getLastSignedOutResult,
   setLastSignedOutResult,
-} from "../../../ts/states/test";
-import { cn } from "../../../ts/utils/cn";
-import { Formatting } from "../../../ts/utils/format";
+} from "#shared/states/test.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { Formatting } from "#shared/utils/format.ts";
+
+import { operation } from "../../../data/operations";
 
 const modalId = "LastSignedOutResult";
 

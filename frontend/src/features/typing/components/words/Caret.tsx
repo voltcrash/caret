@@ -1,9 +1,10 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { peekConfig } from "../../../../ts/config/store";
-import { configEvent } from "../../../../ts/events/config";
-import { areTestElementsMounted } from "../../../../ts/states/test-dom";
-import { cn } from "../../../../ts/utils/cn";
+import { peekConfig } from "#shared/config/store.ts";
+import { configEvent } from "#shared/events/config.ts";
+import { areTestElementsMounted } from "#shared/states/test-dom.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import {
   setCaret as setMainCaret,
   updatePosition as updateMainCaretPosition,

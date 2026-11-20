@@ -10,9 +10,10 @@ import {
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { isServer, Portal } from "solid-js/web";
 
+import { createAppOwned } from "#app/application.ts";
+
 import type { BalloonPosition } from "./Balloon";
 
-import { createAppOwned } from "../../../app/application";
 import { cn } from "../../utils/cn";
 
 const placements: Record<BalloonPosition, Placement> = {

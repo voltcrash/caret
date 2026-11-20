@@ -1,4 +1,4 @@
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import { logTestEvent } from "../../runtime/events/data";
 import { getTestEventCode } from "../../runtime/events/helpers";
 

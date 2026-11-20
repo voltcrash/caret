@@ -1,15 +1,16 @@
 import { getAllFunboxes } from "@caret/funbox";
 import { For, JSXElement, type JSX } from "solid-js";
 
-import { Button } from "../../../../ts/components/common/Button";
-// import { canSetFunboxWithConfig } from "../../../../ts/config/funbox-validation";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { toggleFunbox } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
+import { Button } from "#shared/components/common/Button.tsx";
+// import { canSetFunboxWithConfig } from "#shared/config/funbox-validation.ts";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { toggleFunbox } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
 import {
   checkCompatibility,
   enginePolicyReady,
-} from "../../../../ts/engine/policy.client";
+} from "#shared/engine/policy.client.ts";
+
 import { getActiveFunboxNames } from "../../../typing/runtime/funbox/list";
 import { SearchableSetting } from "../SearchableSetting";
 

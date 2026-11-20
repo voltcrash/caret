@@ -1,6 +1,6 @@
 import { onCleanup } from "solid-js";
 
-import { registerCommands } from "../../../ts/commandline/registry";
+import { registerCommands } from "#shared/commandline/registry.ts";
 import ResultScreenCommands from "./result-screen";
 import FunboxCommands from "./funbox";
 import LoadChallengeCommands from "./load-challenge";

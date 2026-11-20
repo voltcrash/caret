@@ -3,17 +3,17 @@ import { updateWordLetters } from "./rendering";
 import { updateWordWrapperClasses } from "./wrapper-classes";
 import { updateWordJoining } from "./joining";
 import { updateHintsPositionDebounced } from "./hints";
-import { configEvent } from "../../../../ts/events/config";
-import * as CompositionState from "../../../../ts/states/composition";
+import { configEvent } from "#shared/events/config.ts";
+import * as CompositionState from "#shared/states/composition.ts";
 import {
   getActiveWordIndex,
   setCompositionText,
   setTestFocusState,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import {
   areTestElementsMounted,
   getWordsElement as getWordsEl,
-} from "../../../../ts/states/test-dom";
+} from "#shared/states/test-dom.ts";
 import { getCurrentInput } from "../../runtime/events/data";
 
 export function onWordsConfigChange({

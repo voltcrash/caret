@@ -1,5 +1,5 @@
-import { createAccountOwned } from "../../../app/account-scope";
-import { appObject } from "../../../app/state";
+import { createAccountOwned } from "#app/account-scope.ts";
+import { appObject } from "#app/state.ts";
 import { peekConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";

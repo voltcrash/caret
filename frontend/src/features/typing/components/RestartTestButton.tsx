@@ -1,15 +1,16 @@
 import { JSXElement } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { getConfig } from "../../../ts/config/store";
-import { focusInputElement } from "../../../ts/input/input-element";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { focusInputElement } from "#shared/input/input-element.ts";
 import {
   getFocus,
   isResultCalculating,
   isTestActive,
-} from "../../../ts/states/test";
-import { cn } from "../../../ts/utils/cn";
-import { isCoarsePointer } from "../../../ts/utils/pointer";
+} from "#shared/states/test.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
+
 import * as TestLogic from "../runtime/test/logic";
 
 export function RestartTestButton(): JSXElement {

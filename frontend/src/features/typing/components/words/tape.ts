@@ -1,20 +1,20 @@
 import { isTypingRouteActive } from "../../scope";
-import { applyReducedMotion } from "../../../../ts/utils/misc";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
 import { lineState } from "./line-state";
 import { outerWidth } from "./dimensions";
 import { getActiveWordElement } from "./elements";
-import { hasClassName } from "../../../../ts/utils/cn";
+import { hasClassName } from "#shared/utils/cn.ts";
 import { animate } from "animejs";
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
   getResultVisible,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,
-} from "../../../../ts/states/test-dom";
+} from "#shared/states/test-dom.ts";
 import * as Caret from "../../runtime/caret";
 import { getCurrentInput } from "../../runtime/events/data";
 import * as PaceCaret from "../../runtime/pace-caret";

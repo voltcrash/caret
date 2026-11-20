@@ -1,9 +1,9 @@
 import { captureTypingPresentation } from "../../scope";
 import { resultCanGetPb } from "./crown";
 import { currentResult, resultAnnotations } from "./context";
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import * as Numbers from "@caret/util/numbers";
-import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
+import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 import type { LabelPosition } from "chartjs-plugin-annotation";
 import {
   getActiveTags,
@@ -13,7 +13,7 @@ import {
   saveLocalTagPB,
   type TagItem,
 } from "../../../../data/collections/tags";
-import { getTheme } from "../../../../ts/states/theme";
+import { getTheme } from "#shared/states/theme.ts";
 import {
   resultState,
   setResultState,

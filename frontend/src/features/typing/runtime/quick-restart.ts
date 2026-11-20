@@ -3,7 +3,7 @@ import { projectEngineConfig } from "@caret/typing-engine/config";
 import {
   enginePolicy,
   enginePolicyReady,
-} from "../../../ts/engine/policy.client";
+} from "#shared/engine/policy.client.ts";
 
 /** Undefined until native policies load; loading UI must not infer a restriction. */
 export function canQuickRestart(

@@ -1,13 +1,14 @@
 import { ThemeName } from "@caret/schemas/configs";
 import { JSXElement, Show } from "solid-js";
 
-import { Button } from "../../../../ts/components/common/Button";
-import Select from "../../../../ts/components/ui/Select";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
-import { ThemesList } from "../../../../ts/constants/themes";
-import { cn } from "../../../../ts/utils/cn";
+import { Button } from "#shared/components/common/Button.tsx";
+import Select from "#shared/components/ui/Select.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { ThemesList } from "#shared/constants/themes.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 
 export function AutoSwitchTheme(): JSXElement {

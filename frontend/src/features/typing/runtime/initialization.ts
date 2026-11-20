@@ -1,28 +1,28 @@
-import { applyPendingLocalConfig } from "../../../ts/config/lifecycle";
+import { applyPendingLocalConfig } from "#shared/config/lifecycle.ts";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
-import { getBrowserEngine } from "../../../ts/engine/owner.client";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { getContentHost } from "./content/host.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import {
   applyEngineRecovery,
   generationFailureIsNotice,
 } from "./recovery.client";
-import { updateClassNames } from "../../../ts/utils/cn";
+import { updateClassNames } from "#shared/utils/cn.ts";
 
 import * as TestUI from "./test/ui";
 
-import * as Misc from "../../../ts/utils/misc";
-import * as JSONData from "../../../ts/utils/json-data";
+import * as Misc from "#shared/utils/misc.ts";
+import * as JSONData from "#shared/utils/json-data.ts";
 
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 import * as CustomText from "./content/custom-text";
 
 import * as Funbox from "./funbox/funbox";
 
-import { isAuthenticated } from "../../../ts/states/core";
+import { isAuthenticated } from "#shared/states/core.ts";
 import {
   setIsDirectionReversed,
   setIsLanguageRightToLeft,
@@ -32,11 +32,11 @@ import {
   setWordsHaveNewline,
   setWordsHaveNumbers,
   setWordsHaveTab,
-} from "../../../ts/states/test";
+} from "#shared/states/test.ts";
 
 import * as TestWords from "./test/words";
 
-import { highlight } from "../../../ts/states/keymap";
+import { highlight } from "#shared/states/keymap.ts";
 import * as LazyModeState from "./remember-lazy-mode";
 
 import {
@@ -45,15 +45,15 @@ import {
 } from "./funbox/list";
 
 import { tryCatch } from "@caret/util/trycatch";
-import * as Sentry from "../../../ts/sentry";
-import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
+import * as Sentry from "#shared/sentry.ts";
+import { showLoaderBar, hideLoaderBar } from "#shared/states/loader-bar.ts";
 
-import { getTypingTestElement } from "../../../ts/states/test-dom";
+import { getTypingTestElement } from "#shared/states/test-dom.ts";
 
-import { peekConfig } from "../../../ts/config/store";
-import { setQuoteLengthAll, setConfig } from "../../../ts/config/setters";
+import { peekConfig } from "#shared/config/store.ts";
+import { setQuoteLengthAll, setConfig } from "#shared/config/setters.ts";
 
-import { nthElementFromArray } from "../../../ts/utils/arrays";
+import { nthElementFromArray } from "#shared/utils/arrays.ts";
 import { hasKoreanCharacters } from "@caret/web-shared/strings";
 
 import { testLogicState } from "./test/logic-state";

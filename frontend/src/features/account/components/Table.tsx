@@ -3,23 +3,24 @@ import { Mode } from "@caret/schemas/shared";
 import { format as dateFormat } from "date-fns/format";
 import { Accessor, createMemo, createSignal, JSXElement, Show } from "solid-js";
 
-import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
-import { Balloon } from "../../../ts/components/common/Balloon";
-import { Button } from "../../../ts/components/common/Button";
-import { Fa, FaProps } from "../../../ts/components/common/Fa";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa, FaProps } from "#shared/components/common/Fa.tsx";
 import {
   DataTable,
   DataTableColumnDef,
-} from "../../../ts/components/ui/table/DataTable";
-import { createDataTableColumnHelper as createColumnHelper } from "../../../ts/components/ui/table/features";
-import { SnapshotResult } from "../../../ts/constants/default-snapshot";
-import { getFormatting } from "../../../ts/states/core";
-import { showEditResultTagsModal } from "../../../ts/states/edit-result-tags";
-import { showModal } from "../../../ts/states/modals";
-import { showNoticeNotification } from "../../../ts/states/notifications";
-import { cn } from "../../../ts/utils/cn";
-import { Formatting } from "../../../ts/utils/format";
-import { replaceUnderscoresWithSpaces } from "../../../ts/utils/strings";
+} from "#shared/components/ui/table/DataTable.tsx";
+import { createDataTableColumnHelper as createColumnHelper } from "#shared/components/ui/table/features.ts";
+import { SnapshotResult } from "#shared/constants/default-snapshot.ts";
+import { getFormatting } from "#shared/states/core.ts";
+import { showEditResultTagsModal } from "#shared/states/edit-result-tags.ts";
+import { showModal } from "#shared/states/modals.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { Formatting } from "#shared/utils/format.ts";
+import { replaceUnderscoresWithSpaces } from "#shared/utils/strings.ts";
+
+import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
 import { MiniResultChart } from "./MiniResultChart";
 
 type Sorting = {

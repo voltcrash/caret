@@ -3,10 +3,10 @@ import {
   applyMinMaxChartValues,
 } from "./chart-bounds";
 import { resultAnnotations } from "./context";
-import { peekConfig } from "../../../../ts/config/store";
-import { setConfig } from "../../../../ts/config/setters";
-import { isAuthenticated } from "../../../../ts/states/core";
-import { LocalStorageWithSchema } from "../../../../ts/utils/local-storage-with-schema";
+import { peekConfig } from "#shared/config/store.ts";
+import { setConfig } from "#shared/config/setters.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
+import { LocalStorageWithSchema } from "#shared/utils/local-storage-with-schema.ts";
 import { z } from "zod";
 import {
   getResultChart,

@@ -1,11 +1,12 @@
 import { For, JSXElement } from "solid-js";
 
+import { Button } from "#shared/components/common/Button.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { showModal } from "#shared/states/modals.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import type { CustomTextController } from "./createCustomTextController";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { Separator } from "../../../../ts/components/common/Separator";
-import { showModal } from "../../../../ts/states/modals";
-import { cn } from "../../../../ts/utils/cn";
 import { modeOptions, delimiterOptions } from "./options";
 import { SettingsGroup } from "./SettingsGroup";
 

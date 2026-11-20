@@ -1,10 +1,11 @@
 import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { peekConfig } from "../../../ts/config/store";
-import { getCaretElement } from "../../../ts/states/test-dom";
-import { getTheme } from "../../../ts/states/theme";
-import { requestDebouncedAnimationFrame } from "../../../ts/utils/debounced-animation-frame";
+import { peekConfig } from "#shared/config/store.ts";
+import { getCaretElement } from "#shared/states/test-dom.ts";
+import { getTheme } from "#shared/states/theme.ts";
+import { requestDebouncedAnimationFrame } from "#shared/utils/debounced-animation-frame.ts";
+
 import * as SlowTimer from "../state/slow-timer";
 
 type Particle = {

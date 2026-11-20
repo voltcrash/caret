@@ -3,7 +3,7 @@ import { Client, Difficulty, Mode, Mode2 } from "@caret/schemas/shared";
 import {
   SnapshotResult,
   SavedResult,
-} from "../../../ts/constants/default-snapshot";
+} from "#shared/constants/default-snapshot.ts";
 
 export type ResultsQueryState = {
   client?: Client;

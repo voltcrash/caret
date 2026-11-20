@@ -1,17 +1,14 @@
-import { createAppOwned } from "../../../../app/application";
-import { appObject } from "../../../../app/state";
-import { applyReducedMotion } from "../../../../ts/utils/misc";
-import { hasClassName, updateClassNames } from "../../../../ts/utils/cn";
+import { createAppOwned } from "#app/application.ts";
+import { appObject } from "#app/state.ts";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
+import { hasClassName, updateClassNames } from "#shared/utils/cn.ts";
 import { CaretStyle } from "@caret/schemas/configs";
-import { peekConfig } from "../../../../ts/config/store";
-import {
-  countCodePoints,
-  isWordRightToLeft,
-} from "../../../../ts/utils/strings";
+import { peekConfig } from "#shared/config/store.ts";
+import { countCodePoints, isWordRightToLeft } from "#shared/utils/strings.ts";
 import {
   cancelPendingAnimationFrame,
   requestDebouncedAnimationFrame,
-} from "../../../../ts/utils/debounced-animation-frame";
+} from "#shared/utils/debounced-animation-frame.ts";
 import { animate, EasingParam, JSAnimation } from "animejs";
 import { caretGlideEasing, linearEasing } from "./caret-easing";
 import { CaretGlide } from "./caret-glide";
@@ -19,7 +16,7 @@ import { CaretGlide } from "./caret-glide";
 import {
   getWordsElement as getWordsCache,
   getWordsWrapperElement as getWordsWrapperCache,
-} from "../../../../ts/states/test-dom";
+} from "#shared/states/test-dom.ts";
 import * as TestWords from "../../runtime/test/words";
 import { getWordElement } from "./elements";
 

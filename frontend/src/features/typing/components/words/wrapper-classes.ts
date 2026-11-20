@@ -7,13 +7,13 @@ import {
 } from "./sizing";
 import { updateHintsPositionDebounced } from "./hints";
 import { setClass } from "./elements";
-import { peekConfig } from "../../../../ts/config/store";
-import { isInputElementFocused } from "../../../../ts/input/input-element";
+import { peekConfig } from "#shared/config/store.ts";
+import { isInputElementFocused } from "#shared/input/input-element.ts";
 import { setResultState } from "../../state/result";
 import {
   isLanguageRightToLeft,
   setTestFocusState,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,
@@ -21,7 +21,7 @@ import {
   getCaretElement,
   getPaceCaretElement,
   getTypingTestElement,
-} from "../../../../ts/states/test-dom";
+} from "#shared/states/test-dom.ts";
 import * as Caret from "../../runtime/caret";
 import { getWordsFontSize } from "./font";
 

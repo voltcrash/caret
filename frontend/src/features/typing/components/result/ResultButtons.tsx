@@ -8,21 +8,23 @@ import {
   Show,
 } from "solid-js";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { getConfig } from "../../../../ts/config/store";
-import { holdKeyboardForRestart } from "../../../../ts/input/input-element";
-import { getIsScreenshotting } from "../../../../ts/states/core";
-import { showModal } from "../../../../ts/states/modals";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
+import type { FaObject } from "#shared/types/font-awesome.d.ts";
+
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { holdKeyboardForRestart } from "#shared/input/input-element.ts";
+import { getIsScreenshotting } from "#shared/states/core.ts";
+import { showModal } from "#shared/states/modals.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
 import {
   getResultVisible,
   isResultCalculating,
   isTestRestarting,
-} from "../../../../ts/states/test";
-import { FaObject } from "../../../../ts/types/font-awesome";
-import { cn } from "../../../../ts/utils/cn";
-import { isCoarsePointer } from "../../../../ts/utils/pointer";
+} from "#shared/states/test.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
+
 import * as PractiseWords from "../../runtime/content/practise-words";
 import { toggleReplayDisplay } from "../../runtime/replay";
 import { toggleResultWords } from "../../runtime/result/screen";

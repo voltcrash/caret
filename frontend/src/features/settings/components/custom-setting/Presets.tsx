@@ -1,14 +1,15 @@
 import { JSXElement, For } from "solid-js";
 
+import { Button } from "#shared/components/common/Button.tsx";
+import { apply } from "#shared/controllers/preset-controller.ts";
+import { showEditPresetModal } from "#shared/states/edit-preset-modal.ts";
+import { showModal } from "#shared/states/modals.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+
 import {
   deletePreset,
   usePresetsLiveQuery,
 } from "../../../../data/collections/presets";
-import { Button } from "../../../../ts/components/common/Button";
-import { apply } from "../../../../ts/controllers/preset-controller";
-import { showEditPresetModal } from "../../../../ts/states/edit-preset-modal";
-import { showModal } from "../../../../ts/states/modals";
-import { showSimpleModal } from "../../../../ts/states/simple-modal";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function Presets(): JSXElement {

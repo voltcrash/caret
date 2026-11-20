@@ -9,32 +9,34 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
-import type { WordLetter, WordsHistoryItem } from "../../runtime/word-markup";
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
 import {
   getInputHistory,
   getMissedWords,
   getWordBurstHistory,
-} from "../../../../ts/engine/analysis.client";
-import { useRef } from "../../../../ts/hooks/useRef";
-import { useSlideAnimation } from "../../../../ts/hooks/useSlideAnimation";
-import Format from "../../../../ts/singletons/format";
-import { getBackground } from "../../../../ts/states/background";
-import { getIsScreenshotting } from "../../../../ts/states/core";
+} from "#shared/engine/analysis.client.ts";
+import { useRef } from "#shared/hooks/useRef.ts";
+import { useSlideAnimation } from "#shared/hooks/useSlideAnimation.ts";
+import Format from "#shared/singletons/format.ts";
+import { getBackground } from "#shared/states/background.ts";
+import { getIsScreenshotting } from "#shared/states/core.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
-} from "../../../../ts/states/notifications";
-import { showSimpleModal } from "../../../../ts/states/simple-modal";
-import { getLastEventLog, getResultVisible } from "../../../../ts/states/test";
-import { getTheme } from "../../../../ts/states/theme";
-import { FaSolidIcon } from "../../../../ts/types/font-awesome";
-import { cn, updateClassNames } from "../../../../ts/utils/cn";
-import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
+} from "#shared/states/notifications.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { getLastEventLog, getResultVisible } from "#shared/states/test.ts";
+import { getTheme } from "#shared/states/theme.ts";
+import { cn, updateClassNames } from "#shared/utils/cn.ts";
+import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
+
+import type { WordLetter, WordsHistoryItem } from "../../runtime/word-markup";
+
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,

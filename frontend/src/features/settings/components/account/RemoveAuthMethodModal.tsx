@@ -5,10 +5,10 @@ import {
   getAuthMethodDisplay,
   hasAdditionalAuthMethods,
   removeAuthProvider,
-} from "../../../../ts/auth";
-import { isAuthenticated } from "../../../../ts/states/core";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
-import { showSimpleModal } from "../../../../ts/states/simple-modal";
+} from "#shared/auth.tsx";
+import { isAuthenticated } from "#shared/states/core.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
 
 export function showRemoveAuthMethodModal(options: {
   authMethod: AuthMethod;

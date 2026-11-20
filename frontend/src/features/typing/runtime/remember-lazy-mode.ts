@@ -1,7 +1,7 @@
-import { createAppOwned } from "../../../app/application";
+import { createAppOwned } from "#app/application.ts";
 import { createSignal } from "solid-js";
 import { z } from "zod";
-import { LocalStorageWithSchema } from "../../../ts/utils/local-storage-with-schema";
+import { LocalStorageWithSchema } from "#shared/utils/local-storage-with-schema.ts";
 
 const rememberLazyModeLS = new LocalStorageWithSchema({
   key: "rememberLazyMode",

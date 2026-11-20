@@ -2,16 +2,16 @@ import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 import { z } from "zod";
 
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
-import { fromSchema } from "../../../ts/components/ui/form/utils";
-import { setConfig } from "../../../ts/config/setters";
-import { getConfig } from "../../../ts/config/store";
-import { hideModalAndClearChain } from "../../../ts/states/modals";
-import { showNoticeNotification } from "../../../ts/states/notifications";
-import { restartTest } from "../../../ts/typing-host";
-import { getBailOutHint } from "../../../ts/utils/bail-out";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { hideModalAndClearChain } from "#shared/states/modals.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
+import { restartTest } from "#shared/typing-host.ts";
+import { getBailOutHint } from "#shared/utils/bail-out.ts";
 
 export function CustomWordAmountModal(): JSXElement {
   const form = createForm(() => ({

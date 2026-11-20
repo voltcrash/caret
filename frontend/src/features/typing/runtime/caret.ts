@@ -1,14 +1,14 @@
-import { createBinding } from "../../../app/binding";
-import { peekConfig } from "../../../ts/config/store";
+import { createBinding } from "#app/binding.ts";
+import { peekConfig } from "#shared/config/store.ts";
 import { getCurrentInput } from "./events/data";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
   getActiveWordIndex,
-} from "../../../ts/states/test";
+} from "#shared/states/test.ts";
 import { CaretController } from "../components/words/caret-controller";
-import * as CompositionState from "../../../ts/states/composition";
-import { getCaretElement } from "../../../ts/states/test-dom";
+import * as CompositionState from "#shared/states/composition.ts";
+import { getCaretElement } from "#shared/states/test-dom.ts";
 
 export function stopAnimation(): void {
   getCaret().stopBlinking();

@@ -2,14 +2,14 @@ import { lineState, updateActiveWordGeometry } from "./line-state";
 import { updateWordsWrapperHeight } from "./sizing";
 import { outerHeight } from "./dimensions";
 import { getWordElement, getActiveWordElement } from "./elements";
-import { animateAsync } from "../../../../ts/anim";
-import { peekConfig } from "../../../../ts/config/store";
-import { getActiveWordIndex } from "../../../../ts/states/test";
-import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
+import { animateAsync } from "#shared/anim.ts";
+import { peekConfig } from "#shared/config/store.ts";
+import { getActiveWordIndex } from "#shared/states/test.ts";
+import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
 import * as Caret from "../../runtime/caret";
 import * as PaceCaret from "../../runtime/pace-caret";
-import * as Misc from "../../../../ts/utils/misc";
-import { hasClassName } from "../../../../ts/utils/cn";
+import * as Misc from "#shared/utils/misc.ts";
+import { hasClassName } from "#shared/utils/cn.ts";
 
 export async function centerActiveLine(): Promise<void> {
   if (peekConfig().showAllLines) {

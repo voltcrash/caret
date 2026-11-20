@@ -1,10 +1,11 @@
 import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { cn } from "../../../../ts/utils/cn";
-import { applyReducedMotion } from "../../../../ts/utils/misc";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { cn } from "#shared/utils/cn.ts";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
+
 import { resultState, type ResultCrownType } from "../../state/result";
 
 // --main = crown background, --alt = icon color

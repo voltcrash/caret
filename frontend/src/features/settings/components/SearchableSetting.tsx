@@ -1,8 +1,9 @@
 import { ConfigKey, ConfigKeySchema } from "@caret/schemas/configs";
 import { untrack, createMemo, JSXElement, useContext } from "solid-js";
 
-import { cn } from "../../../ts/utils/cn";
-import { createSettingSearchIndex } from "../../../ts/utils/settings-search";
+import { cn } from "#shared/utils/cn.ts";
+import { createSettingSearchIndex } from "#shared/utils/settings-search.ts";
+
 import { registerSearchable, settingMatchesSearch } from "../search-state";
 import { SettingsSectionHostContext } from "../sections-state";
 import { ResetSetting } from "./ResetSetting";

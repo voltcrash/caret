@@ -1,10 +1,10 @@
 import { captureTypingRoute } from "../../scope";
-import { getTypingLifecycle } from "../../../../ts/states/test-lifecycle/controller";
-import { animateAsync } from "../../../../ts/anim";
-import { updateClassNames } from "../../../../ts/utils/cn";
-import { applyReducedMotion } from "../../../../ts/utils/misc";
-import { getTypingTestElement } from "../../../../ts/states/test-dom";
-import { getBailedOut, isTestActive } from "../../../../ts/states/test";
+import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
+import { animateAsync } from "#shared/anim.ts";
+import { updateClassNames } from "#shared/utils/cn.ts";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
+import { getTypingTestElement } from "#shared/states/test-dom.ts";
+import { getBailedOut, isTestActive } from "#shared/states/test.ts";
 import {
   getTestSession,
   forceReleaseAllKeys,

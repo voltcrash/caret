@@ -1,4 +1,4 @@
-import { createAppSignal } from "../../../../app/state";
+import { createAppSignal } from "#app/state.ts";
 
 // "instant" hides without the fade (layoutfluid on test restart).
 export type FunboxTimerVisibility = "shown" | "hidden" | "instant";

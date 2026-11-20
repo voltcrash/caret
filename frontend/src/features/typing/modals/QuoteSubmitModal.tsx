@@ -3,29 +3,30 @@ import { QuoteTextSchema } from "@caret/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 
-import { operation } from "../../../data/operations";
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Captcha } from "../../../ts/components/ui/form/Captcha";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
-import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
-import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Captcha } from "#shared/components/ui/form/Captcha.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { LabeledField } from "#shared/components/ui/form/LabeledField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { TextareaField } from "#shared/components/ui/form/TextareaField.tsx";
 import {
   allFieldsMandatory,
   fieldMandatory,
   fromSchema,
-} from "../../../ts/components/ui/form/utils";
-import Select from "../../../ts/components/ui/Select";
-import { peekConfig } from "../../../ts/config/store";
-import { LanguageGroupNames } from "../../../ts/constants/languages";
-import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
-import { hideModalAndClearChain } from "../../../ts/states/modals";
+} from "#shared/components/ui/form/utils.ts";
+import Select from "#shared/components/ui/Select.tsx";
+import { peekConfig } from "#shared/config/store.ts";
+import { LanguageGroupNames } from "#shared/constants/languages.ts";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
+import { hideModalAndClearChain } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { removeLanguageSize } from "../../../ts/utils/strings";
+} from "#shared/states/notifications.ts";
+import { removeLanguageSize } from "#shared/utils/strings.ts";
+
+import { operation } from "../../../data/operations";
 
 export function QuoteSubmitModal(): JSXElement {
   const languageOptions = LanguageGroupNames.filter(

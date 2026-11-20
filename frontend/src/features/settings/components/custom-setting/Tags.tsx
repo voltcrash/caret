@@ -2,6 +2,11 @@ import { TagNameSchema } from "@caret/schemas/users";
 import { For, JSXElement } from "solid-js";
 import { z } from "zod";
 
+import { Button } from "#shared/components/common/Button.tsx";
+import { showAddTagModal } from "#shared/components/modals/AddTagModal.tsx";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { normalizeName } from "#shared/utils/strings.ts";
+
 import { deleteLocalTag } from "../../../../data/collections/results";
 import {
   clearTagPBs,
@@ -10,10 +15,6 @@ import {
   updateTagName,
   useTagsLiveQuery,
 } from "../../../../data/collections/tags";
-import { Button } from "../../../../ts/components/common/Button";
-import { showAddTagModal } from "../../../../ts/components/modals/AddTagModal";
-import { showSimpleModal } from "../../../../ts/states/simple-modal";
-import { normalizeName } from "../../../../ts/utils/strings";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function Tags(): JSXElement {

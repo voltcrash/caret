@@ -6,11 +6,11 @@ import {
   setConfig,
   setQuoteLengthAll,
   toggleFunbox,
-} from "../../../ts/config/setters";
+} from "#shared/config/setters.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
-} from "../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 
 /** Execute ordered engine recovery with the existing platform setters/notices. */
 export function applyEngineRecovery(

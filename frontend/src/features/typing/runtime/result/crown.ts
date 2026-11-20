@@ -1,7 +1,7 @@
 import { captureTypingPresentation } from "../../scope";
 import { currentResult } from "./context";
-import { peekConfig } from "../../../../ts/config/store";
-import * as DB from "../../../../ts/db";
+import { peekConfig } from "#shared/config/store.ts";
+import * as DB from "#shared/db.ts";
 import { getActiveFunboxes } from "../funbox/list";
 import { getFunbox } from "@caret/funbox";
 import {

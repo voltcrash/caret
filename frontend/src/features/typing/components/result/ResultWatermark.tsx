@@ -1,7 +1,8 @@
 import { JSXElement, Show } from "solid-js";
 
-import { UserFlags } from "../../../../ts/components/common/UserFlags";
-import { getIsScreenshotting } from "../../../../ts/states/core";
+import { UserFlags } from "#shared/components/common/UserFlags.tsx";
+import { getIsScreenshotting } from "#shared/states/core.ts";
+
 import { getScreenshotWatermark } from "../../state/result";
 
 export function ResultWatermark(): JSXElement {

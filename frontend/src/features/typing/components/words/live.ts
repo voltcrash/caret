@@ -1,5 +1,5 @@
 import type { Config } from "@caret/schemas/configs";
-import { splitIntoCharacters } from "../../../../ts/utils/strings";
+import { splitIntoCharacters } from "#shared/utils/strings.ts";
 import { createLetter, displayTypedChar, WordNodeRenderer } from "./letters";
 
 type LiveWordOptions = {

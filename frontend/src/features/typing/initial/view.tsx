@@ -1,11 +1,12 @@
 import { For, Show, type JSXElement } from "solid-js";
 
-import type { InitialTypingSnapshot } from "../../../ts/config/typing-preview";
-import type { FaSolidIcon } from "../../../ts/types/font-awesome";
+import type { InitialTypingSnapshot } from "#shared/config/typing-preview.ts";
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
-import { Button } from "../../../ts/components/common/Button";
-import { Fa } from "../../../ts/components/common/Fa";
-import { cn } from "../../../ts/utils/cn";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { cn } from "#shared/utils/cn.ts";
+
 import { variables, buttonClass, cardClass } from "../config-layout";
 import { PersonalNotices } from "../personal-notices";
 import { InitialKeymap } from "./keymap";

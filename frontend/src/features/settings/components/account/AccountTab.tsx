@@ -1,7 +1,8 @@
-import { Fa } from "../../../../ts/components/common/Fa";
-import { showUpdateNameModal } from "../../../../ts/components/modals/account-settings/UpdateNameModal";
-import { showModal } from "../../../../ts/states/modals";
-import { getSnapshot } from "../../../../ts/states/snapshot";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { showUpdateNameModal } from "#shared/components/modals/account-settings/UpdateNameModal.tsx";
+import { showModal } from "#shared/states/modals.ts";
+import { getSnapshot } from "#shared/states/snapshot.ts";
+
 import {
   showOptOutOfLeaderboardsModal,
   showResetPersonalBestsModal,

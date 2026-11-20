@@ -1,8 +1,9 @@
 import { For, Show, createMemo } from "solid-js";
 
-import type { InitialTypingSnapshot } from "../../../ts/config/typing-preview";
+import type { InitialTypingSnapshot } from "#shared/config/typing-preview.ts";
 
-import { cn } from "../../../ts/utils/cn";
+import { cn } from "#shared/utils/cn.ts";
+
 import { convertLayoutToKeymap } from "../keymap/converter";
 
 /** Static counterpart of Keymap; uses the same geometry and saved layout. */

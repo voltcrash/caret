@@ -1,9 +1,9 @@
 import { batch } from "solid-js";
 
 import * as Caret from "./caret";
-import { setFocusCursorHidden } from "../../../ts/states/app";
-import { requestDebouncedAnimationFrame } from "../../../ts/utils/debounced-animation-frame";
-import { getFocus, setFocus } from "../../../ts/states/test";
+import { setFocusCursorHidden } from "#shared/states/app.ts";
+import { requestDebouncedAnimationFrame } from "#shared/utils/debounced-animation-frame.ts";
+import { getFocus, setFocus } from "#shared/states/test.ts";
 
 // withCursor is used on initial load to keep the pointer visible.
 export function set(value: boolean, withCursor = false): void {

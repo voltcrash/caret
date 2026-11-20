@@ -2,8 +2,8 @@ import {
   getLocalMidnight,
   TypingTimeTracker,
 } from "@caret/web-shared/typing-time";
-import { captureAccount, createAccountOwned } from "../../../app/account-scope";
-import * as DateTime from "../../../ts/utils/date-and-time";
+import { captureAccount, createAccountOwned } from "#app/account-scope.ts";
+import * as DateTime from "#shared/utils/date-and-time.ts";
 
 const getTracker = createAccountOwned(() => new TypingTimeTracker());
 

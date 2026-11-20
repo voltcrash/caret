@@ -1,15 +1,16 @@
 import { createSignal, JSXElement } from "solid-js";
 import { z } from "zod";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { download } from "../../../../ts/components/common/Download";
-import { exportConfigToJson } from "../../../../ts/config/utils";
-import { showModal } from "../../../../ts/states/modals";
+import { Button } from "#shared/components/common/Button.tsx";
+import { download } from "#shared/components/common/Download.tsx";
+import { exportConfigToJson } from "#shared/config/utils.ts";
+import { showModal } from "#shared/states/modals.ts";
 import {
   showNoticeNotification,
   showSuccessNotification,
-} from "../../../../ts/states/notifications";
-import { showSimpleModal } from "../../../../ts/states/simple-modal";
+} from "#shared/states/notifications.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 
 export function ImportExport(): JSXElement {

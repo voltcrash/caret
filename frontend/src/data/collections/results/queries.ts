@@ -16,8 +16,8 @@ import {
 } from "@tanstack/solid-db";
 import { queryOptions } from "@tanstack/solid-query";
 import { Accessor } from "solid-js";
-import { SnapshotResult } from "../../../ts/constants/default-snapshot";
-import { isAuthenticated } from "../../../ts/states/core";
+import { SnapshotResult } from "#shared/constants/default-snapshot.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
 
 export async function getResultsQueryOnce(options: {
   queryState: Accessor<ResultsQueryState | undefined>;

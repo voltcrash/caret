@@ -22,6 +22,12 @@ function sharedFeatureImports(): string[] {
 }
 
 describe("shared code and features", () => {
+  it("resolves package imports before checking their boundaries", () => {
+    expect(target(import.meta.filename, "#features/typing/page.tsx")).toBe(
+      resolve(features, "typing/page.tsx"),
+    );
+  });
+
   it("keeps shared modules independent of features", () => {
     expect(sharedFeatureImports()).toEqual([]);
   });

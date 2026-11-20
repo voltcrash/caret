@@ -1,7 +1,7 @@
-import { createAppOwned } from "../../../../app/application";
-import { getActiveWordIndex } from "../../../../ts/states/test";
-import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
-import { hasClassName, updateClassNames } from "../../../../ts/utils/cn";
+import { createAppOwned } from "#app/application.ts";
+import { getActiveWordIndex } from "#shared/states/test.ts";
+import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
+import { hasClassName, updateClassNames } from "#shared/utils/cn.ts";
 
 // Main/pace carets and input handlers repeatedly read the same few words.
 // Bound retention even during infinite tests that remove completed lines.

@@ -1,14 +1,8 @@
-import {
-  captureAccount,
-  createAccountOwned,
-} from "../../../../app/account-scope";
-import { appObject } from "../../../../app/state";
+import { captureAccount, createAccountOwned } from "#app/account-scope.ts";
+import { appObject } from "#app/state.ts";
 import { captureTypingResult } from "../../scope";
 import { operation } from "../../../../data/operations";
-import {
-  pendingResultSaves,
-  trackResultSave,
-} from "../../../../app/update-safety";
+import { pendingResultSaves, trackResultSave } from "#app/update-safety.ts";
 import { resultOutbox } from "../../history/outbox.client";
 import type { OperationResponse } from "../../../../data/operation-types";
 import type { OperationResult } from "../../../../data/operation-result";
@@ -17,11 +11,11 @@ import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 
-import * as DB from "../../../../ts/db";
+import * as DB from "#shared/db.ts";
 
-import { getResultVisible } from "../../../../ts/states/test";
+import { getResultVisible } from "#shared/states/test.ts";
 
 import { hashResult } from "./hash";
 
@@ -29,10 +23,10 @@ import { CompletedEvent } from "@caret/schemas/results";
 import type { WebLog } from "@caret/typing-engine/text";
 import { encodeEventLog } from "../event-log-transport";
 
-import { SavedResult } from "../../../../ts/constants/default-snapshot";
+import { SavedResult } from "#shared/constants/default-snapshot.ts";
 
-import { trackAccountWork } from "../../../../ts/states/header";
-import { peekConfig } from "../../../../ts/config/store";
+import { trackAccountWork } from "#shared/states/header.ts";
+import { peekConfig } from "#shared/config/store.ts";
 
 const getRetrySavingState = createAccountOwned<RetrySaving>(() => ({
   completedEvent: null,

@@ -1,7 +1,8 @@
 import { splitProps } from "solid-js";
 
-import { Button, ButtonProps } from "../../../../ts/components/common/Button";
-import { cn } from "../../../../ts/utils/cn";
+import { Button, ButtonProps } from "#shared/components/common/Button.tsx";
+import { cn } from "#shared/utils/cn.ts";
+
 import {
   SearchableSetting,
   SearchableSettingProps,

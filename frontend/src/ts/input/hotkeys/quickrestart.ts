@@ -1,6 +1,6 @@
 import { isAnyPopupVisible } from "../../states/overlay-visibility";
 
-import { navigate } from "../../../app/navigate";
+import { navigate } from "#app/navigate.ts";
 import { isTypingRouteActive, restartTest } from "../../typing-host";
 import { hotkeys, quickRestartHotkeyMap } from "../../states/hotkeys";
 import { createHotkey } from "./utils";

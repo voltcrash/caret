@@ -4,11 +4,11 @@ import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 import * as CustomText from "../content/custom-text";
 
 import * as PaceCaret from "../pace-caret";
-import * as DB from "../../../../ts/db";
+import * as DB from "#shared/db.ts";
 
 import * as TodayTracker from "../today-tracker";
 import * as ChallengeContoller from "../challenge-controller";
@@ -21,9 +21,9 @@ import {
   setIsTestInvalid,
   setLastResult,
   setLastSignedOutResult,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 
-import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
+import * as AnalyticsController from "#shared/controllers/analytics-controller.ts";
 
 import {
   CompletedEvent,
@@ -36,7 +36,7 @@ import {
   getAnalysis,
   getMissedWords,
   getWordBurstHistory,
-} from "../../../../ts/engine/analysis.client";
+} from "#shared/engine/analysis.client.ts";
 import * as PractiseWords from "../content/practise-words";
 import { recordGuestScore } from "../../history/guest-scores.client";
 import { practiceHistory } from "../../history/practice.client";

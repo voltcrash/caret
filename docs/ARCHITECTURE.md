@@ -44,6 +44,10 @@ for the operation inventory, remaining compatibility rules and archived evidence
 | `frontend/src/sw/` | Service worker generated per build |
 | `backend/src/` | Services, policies, DAL, Drizzle/Neon PostgreSQL, Better Auth, jobs (server-only package) |
 
+Within the frontend package, `#app/*`, `#shared/*` and `#features/*` resolve
+to `src/app`, `src/ts` and `src/features`. Use the full filename for these
+imports (for example, `#app/application.ts`). Nearby modules can use relative imports.
+
 Code used by one feature lives in that feature. Shared code in `src/ts` and
 `src/data` must not import features; `__tests__/architecture/feature-boundaries.spec.ts` enforces this boundary. Code outside typing may only import the typing
 modules in `typing-public-surface.json`, which also only shrinks. Shared code

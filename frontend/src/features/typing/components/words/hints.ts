@@ -1,14 +1,14 @@
 import { isTypingRouteActive } from "../../scope";
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
   getResultVisible,
-} from "../../../../ts/states/test";
-import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
+} from "#shared/states/test.ts";
+import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
 import * as TestWords from "../../runtime/test/words";
-import * as Misc from "../../../../ts/utils/misc";
-import * as Strings from "../../../../ts/utils/strings";
+import * as Misc from "#shared/utils/misc.ts";
+import * as Strings from "#shared/utils/strings.ts";
 
 export const updateHintsPositionDebounced = Misc.debounceUntilResolved(
   updateHintsPosition,

@@ -1,6 +1,6 @@
-import { createAppOwned } from "../../../../app/application";
-import { appObject } from "../../../../app/state";
-import { getActiveWordIndex } from "../../../../ts/states/test";
+import { createAppOwned } from "#app/application.ts";
+import { appObject } from "#app/state.ts";
+import { getActiveWordIndex } from "#shared/states/test.ts";
 
 type CommitChar = " " | "\n" | "";
 

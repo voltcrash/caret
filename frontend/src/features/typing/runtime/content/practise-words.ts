@@ -1,18 +1,18 @@
-import { createAppOwned } from "../../../../app/application";
-import { appObject, createAccountSignal } from "../../../../app/state";
+import { createAppOwned } from "#app/application.ts";
+import { appObject, createAccountSignal } from "#app/state.ts";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "../session.client";
 import * as TestWords from "../test/words";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
 
-import { getConfig, peekConfig } from "../../../../ts/config/store";
-import { setConfig } from "../../../../ts/config/setters";
+import { getConfig, peekConfig } from "#shared/config/store.ts";
+import { setConfig } from "#shared/config/setters.ts";
 import * as CustomText from "./custom-text";
-import { configEvent } from "../../../../ts/events/config";
+import { configEvent } from "#shared/events/config.ts";
 import { Mode } from "@caret/schemas/shared";
 import { CustomTextSettings } from "@caret/schemas/results";
-import { setCustomTextIndicator } from "../../../../ts/states/core";
-import { getLastEventLog } from "../../../../ts/states/test";
+import { setCustomTextIndicator } from "#shared/states/core.ts";
+import { getLastEventLog } from "#shared/states/test.ts";
 import {
   practiceHistory,
   type PracticeWord,

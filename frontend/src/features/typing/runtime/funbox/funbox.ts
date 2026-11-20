@@ -4,18 +4,18 @@ import {
   setFunboxStylesheets,
   setFunboxReducedMotionIgnored,
   setWordsWrapperVisible,
-} from "../../../../ts/states/funbox";
+} from "#shared/states/funbox.ts";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../../../ts/states/notifications";
-import * as JSONData from "../../../../ts/utils/json-data";
-import * as Strings from "../../../../ts/utils/strings";
-import { peekConfig, setConfigStore } from "../../../../ts/config/store";
+} from "#shared/states/notifications.ts";
+import * as JSONData from "#shared/utils/json-data.ts";
+import * as Strings from "#shared/utils/strings.ts";
+import { peekConfig, setConfigStore } from "#shared/config/store.ts";
 import {
   toggleFunbox as configToggleFunbox,
   setConfig,
-} from "../../../../ts/config/setters";
+} from "#shared/config/setters.ts";
 import * as MemoryTimer from "./memory-funbox-timer";
 import * as FunboxMemory from "./funbox-memory";
 import { HighlightMode, FunboxName } from "@caret/schemas/configs";
@@ -23,7 +23,7 @@ import { Mode } from "@caret/schemas/shared";
 import {
   checkCompatibility,
   checkForcedConfig,
-} from "../../../../ts/engine/policy.client";
+} from "#shared/engine/policy.client.ts";
 import {
   getAllFunboxes,
   getActiveFunboxNames,
@@ -32,7 +32,7 @@ import {
   getActiveFunboxesWithProperty,
 } from "./list";
 import { tryCatch } from "@caret/util/trycatch";
-import { configEvent } from "../../../../ts/events/config";
+import { configEvent } from "#shared/events/config.ts";
 
 export function toggleScript(...params: string[]): void {
   if (peekConfig().funbox.length === 0) return;

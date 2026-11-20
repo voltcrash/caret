@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createSignal } from "solid-js";
-import { createAccountOwned, captureAccount } from "../../../app/account-scope";
-import { LocalStorageWithSchema } from "../../../ts/utils/local-storage-with-schema";
+import { createAccountOwned, captureAccount } from "#app/account-scope.ts";
+import { LocalStorageWithSchema } from "#shared/utils/local-storage-with-schema.ts";
 
 const cleanAttemptsToRetire = 3;
 const priorCleanAttempts = 4;

@@ -1,16 +1,16 @@
 import { createForm } from "@tanstack/solid-form";
 import { createSignal, JSXElement, Setter } from "solid-js";
 
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { Separator } from "../../../ts/components/common/Separator";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
-import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
-import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
-import Select from "../../../ts/components/ui/Select";
-import { hideModal } from "../../../ts/states/modals";
-import { showNoticeNotification } from "../../../ts/states/notifications";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { LabeledField } from "#shared/components/ui/form/LabeledField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { TextareaField } from "#shared/components/ui/form/TextareaField.tsx";
+import Select from "#shared/components/ui/Select.tsx";
+import { hideModal } from "#shared/states/modals.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
 
 type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (

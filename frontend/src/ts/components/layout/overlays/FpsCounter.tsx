@@ -1,7 +1,7 @@
 import { roundTo2 } from "@caret/util/numbers";
 import { JSX, createSignal, createEffect, onCleanup, Show } from "solid-js";
 
-import { createAppSignal } from "../../../../app/state";
+import { createAppSignal } from "#app/state.ts";
 
 const [isVisible, setVisible] = createAppSignal(false);
 

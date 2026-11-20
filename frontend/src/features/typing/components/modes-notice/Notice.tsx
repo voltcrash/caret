@@ -1,12 +1,13 @@
 import { ParentProps, Show } from "solid-js";
 
-import { CommandlineSubgroupKey } from "../../../../ts/commandline/types";
-import { Button } from "../../../../ts/components/common/Button";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { showCommandLineForConfig } from "../../../../ts/states/core";
-import { FaSolidIcon } from "../../../../ts/types/font-awesome";
-import { cn } from "../../../../ts/utils/cn";
-import { OneOf } from "../../../../ts/utils/types";
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
+import { CommandlineSubgroupKey } from "#shared/commandline/types.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { showCommandLineForConfig } from "#shared/states/core.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { OneOf } from "#shared/utils/types.ts";
 export function Notice(
   props: {
     when: boolean | undefined;

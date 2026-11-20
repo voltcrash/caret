@@ -1,19 +1,16 @@
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { decodeText, encodeText } from "@caret/typing-engine/text";
-import { getBrowserEngine } from "../../../../ts/engine/owner.client";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { getEngineSession } from "../../runtime/session.client";
 import { getContentHost } from "../../runtime/content/host.client";
-import { peekConfig } from "../../../../ts/config/store";
-import {
-  isTestRestarting,
-  isResultCalculating,
-} from "../../../../ts/states/test";
+import { peekConfig } from "#shared/config/store.ts";
+import { isTestRestarting, isResultCalculating } from "#shared/states/test.ts";
 import { isCorrectShiftUsed } from "../state";
 import {
   getInputElementValue,
   setInputElementValue,
   appendToInputElementValue,
-} from "../../../../ts/input/input-element";
+} from "#shared/input/input-element.ts";
 import {
   insertionLayout,
   observeInputView,

@@ -2,18 +2,19 @@ import { Config, ConfigKey, ConfigSchema } from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { For, JSXElement } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { fromSchema } from "../../../ts/components/ui/form/utils";
+import { Button } from "#shared/components/common/Button.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
 import {
   configMetadata,
   getOptionLabel,
   getOptionSearchKeywords,
   getVisibleOptions,
-} from "../../../ts/config/metadata";
-import { setConfig } from "../../../ts/config/setters";
-import { getConfig } from "../../../ts/config/store";
-import { cn } from "../../../ts/utils/cn";
+} from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import { useSavedIndicator } from "../hooks/useSavedIndicator";
 import { SearchableSetting } from "./SearchableSetting";
 import { SettingsSearchMatch } from "./SettingsSearchMatch";

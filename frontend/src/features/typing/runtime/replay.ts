@@ -1,6 +1,6 @@
 import { onCleanup } from "solid-js";
 import { createTypingOwned } from "../scope";
-import { getBrowserEngine } from "../../../ts/engine/owner.client";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { decodeText, toEngineLog } from "@caret/typing-engine/text";
 import type {
   BrowserReplay,
@@ -8,9 +8,9 @@ import type {
   PlaybackSnapshot,
 } from "@caret/typing-engine/browser.client";
 import type { ReplayWord } from "../replay-view";
-import { getWpmHistory } from "../../../ts/engine/analysis.client";
-import * as Sound from "../../../ts/controllers/sound-controller";
-import { peekConfig } from "../../../ts/config/store";
+import { getWpmHistory } from "#shared/engine/analysis.client.ts";
+import * as Sound from "#shared/controllers/sound-controller.ts";
+import { peekConfig } from "#shared/config/store.ts";
 import { buildEventLog, getTestSession } from "./events/data";
 import { resultState, setResultState } from "../state/result";
 

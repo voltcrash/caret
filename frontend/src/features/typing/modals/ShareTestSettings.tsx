@@ -6,16 +6,17 @@ import { createForm } from "@tanstack/solid-form";
 import { compressToURI } from "lz-ts";
 import { JSXElement, Show } from "solid-js";
 
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { Fa } from "../../../ts/components/common/Fa";
-import { Checkbox } from "../../../ts/components/ui/form/Checkbox";
-import { getConfig } from "../../../ts/config/store";
-import { showSuccessNotification } from "../../../ts/states/notifications";
-import { getCurrentQuote } from "../../../ts/states/test";
-import { cn } from "../../../ts/utils/cn";
-import { getMode2 } from "../../../ts/utils/misc";
-import { capitalizeFirstLetter } from "../../../ts/utils/strings";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { Checkbox } from "#shared/components/ui/form/Checkbox.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { showSuccessNotification } from "#shared/states/notifications.ts";
+import { getCurrentQuote } from "#shared/states/test.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { getMode2 } from "#shared/utils/misc.ts";
+import { capitalizeFirstLetter } from "#shared/utils/strings.ts";
+
 import * as CustomText from "../runtime/content/custom-text";
 
 type SharedTestSettings = [

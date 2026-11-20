@@ -1,9 +1,9 @@
-import { peekConfig } from "../../../ts/config/store";
-import { getCustomTextIndicator } from "../../../ts/states/core";
+import { peekConfig } from "#shared/config/store.ts";
+import { getCustomTextIndicator } from "#shared/states/core.ts";
 import * as CustomText from "../runtime/content/custom-text";
-import { setBailedOut } from "../../../ts/states/test";
+import { setBailedOut } from "#shared/states/test.ts";
 import * as TestLogic from "../runtime/test/logic";
-import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
+import { Command, CommandsSubgroup } from "#shared/commandline/types.ts";
 
 function canBailOut(): boolean {
   return (

@@ -1,20 +1,20 @@
-import { createAppOwned } from "../../../../app/application";
-import { appObject } from "../../../../app/state";
+import { createAppOwned } from "#app/application.ts";
+import { appObject } from "#app/state.ts";
 import { captureTypingPresentation } from "../../scope";
 import { applyFakeChartData } from "./fake-chart";
 import { currentResult, resultAnnotations } from "./context";
-import { peekConfig } from "../../../../ts/config/store";
-import { showSuccessNotification } from "../../../../ts/states/notifications";
+import { peekConfig } from "#shared/config/store.ts";
+import { showSuccessNotification } from "#shared/states/notifications.ts";
 import * as Numbers from "@caret/util/numbers";
-import * as Arrays from "../../../../ts/utils/arrays";
-import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
+import * as Arrays from "#shared/utils/arrays.ts";
+import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 import { getActiveFunboxes } from "../funbox/list";
-import { getTheme } from "../../../../ts/states/theme";
-import { getLastEventLog, getResultVisible } from "../../../../ts/states/test";
+import { getTheme } from "#shared/states/theme.ts";
+import { getLastEventLog, getResultVisible } from "#shared/states/test.ts";
 import {
   getRawHistory,
   getTimerBoundaryLabels,
-} from "../../../../ts/engine/analysis.client";
+} from "#shared/engine/analysis.client.ts";
 import {
   getResultChart,
   getResultChartDataset,

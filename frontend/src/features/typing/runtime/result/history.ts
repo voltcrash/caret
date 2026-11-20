@@ -1,15 +1,15 @@
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import * as CustomText from "../content/custom-text";
 import {
   getLastEventLog,
   getKoreanStatus,
   getResultVisible,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import {
   getCorrectedWordsHistory,
   getInputHistory,
   getWordBurstHistory,
-} from "../../../../ts/engine/analysis.client";
+} from "#shared/engine/analysis.client.ts";
 import * as TestWords from "../test/words";
 import { buildWordsHistory } from "../word-markup";
 import { resultState, setResultState } from "../../state/result";

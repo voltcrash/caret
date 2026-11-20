@@ -1,10 +1,10 @@
 import { LayoutObject } from "@caret/schemas/layouts";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 
-import { Anime } from "../../../ts/components/common/anime";
-import { Button } from "../../../ts/components/common/Button";
-import { getConfig } from "../../../ts/config/store";
-import { showCommandLineForConfig } from "../../../ts/states/core";
+import { Anime } from "#shared/components/common/anime/index.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { showCommandLineForConfig } from "#shared/states/core.ts";
 import {
   FlashEntry,
   getKeymapFlashState,
@@ -13,10 +13,11 @@ import {
   keymapLayoutObject,
   setKeymapFlashState,
   wordsHaveNumbers,
-} from "../../../ts/states/test";
-import { getTheme } from "../../../ts/states/theme";
-import { cn } from "../../../ts/utils/cn";
-import { isMacLike } from "../../../ts/utils/misc";
+} from "#shared/states/test.ts";
+import { getTheme } from "#shared/states/theme.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { isMacLike } from "#shared/utils/misc.ts";
+
 import { convertLayoutToKeymap } from "../keymap/converter";
 import { KeyboardDefinition, KeyDefinition } from "../keymap/layouts";
 import { getModifierState, isCapsLockOn } from "../state/modifiers";

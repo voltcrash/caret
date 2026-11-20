@@ -1,10 +1,10 @@
 import { Mode } from "@caret/schemas/shared";
 import { createMemo, JSXElement } from "solid-js";
 
-import { ChartJs } from "../../../ts/components/common/ChartJs";
-import { SnapshotResult } from "../../../ts/constants/default-snapshot";
-import { getTheme } from "../../../ts/states/theme";
-import { TypingSpeedUnitSettings } from "../../../ts/utils/typing-speed-units";
+import { ChartJs } from "#shared/components/common/ChartJs.tsx";
+import { SnapshotResult } from "#shared/constants/default-snapshot.ts";
+import { getTheme } from "#shared/states/theme.ts";
+import { TypingSpeedUnitSettings } from "#shared/utils/typing-speed-units.ts";
 
 export function HistogramChart(props: {
   results: SnapshotResult<Mode>[];
