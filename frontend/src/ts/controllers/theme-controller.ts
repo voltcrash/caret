@@ -32,10 +32,8 @@ export {
 const themeState = createAppOwned(() => {
   const value = {
     randomTheme: null as ThemeIdentifier | null,
-    isPreviewingTheme: false,
     randomThemeIndex: 0,
-    previewState: null as PreviewState,
-    previewFrame: undefined as number | undefined,
+    preview: { phase: "idle" } as PreviewState,
     themesList: [] as string[],
     ignoreConfigEvent: false,
     backgroundRevision: 0,
@@ -43,8 +41,8 @@ const themeState = createAppOwned(() => {
   };
   onCleanup(() => {
     value.disposed = true;
-    if (value.previewFrame !== undefined) {
-      cancelAnimationFrame(value.previewFrame);
+    if (value.preview.phase === "queued") {
+      cancelAnimationFrame(value.preview.frame);
     }
   });
   return value;
@@ -110,24 +108,40 @@ function updateThemeIndicator(nameOverride?: string): void {
   setThemeIndicator({ text: str, isFavorite });
 }
 
-type PreviewState = {
-  theme: ThemeIdentifier;
-  colors?: CustomThemeColors;
-} | null;
+type PreviewState =
+  | { phase: "idle" | "applied" }
+  | {
+      phase: "queued";
+      frame: number;
+      restore: boolean;
+      theme: ThemeIdentifier;
+      colors?: CustomThemeColors;
+    };
 
 export function preview(
-  themeIdentifier: ThemeIdentifier,
-  customColorsOverride?: CustomThemeColors,
+  theme: ThemeIdentifier,
+  colors?: CustomThemeColors,
 ): void {
-  state.previewState = { theme: themeIdentifier, colors: customColorsOverride };
   const current = themeState();
-  if (current.previewFrame !== undefined) return;
-  current.previewFrame = requestAnimationFrame(() => {
-    current.previewFrame = undefined;
-    if (current.disposed || !current.previewState) return;
-    current.isPreviewingTheme = true;
-    void apply(current.previewState.theme, current.previewState.colors, true);
+  const previous = current.preview;
+  if (previous.phase === "queued") {
+    previous.theme = theme;
+    previous.colors = colors;
+    return;
+  }
+  const frame = requestAnimationFrame(() => {
+    const queued = current.preview;
+    if (current.disposed || queued.phase !== "queued") return;
+    current.preview = { phase: "applied" };
+    void apply(queued.theme, queued.colors, true);
   });
+  current.preview = {
+    phase: "queued",
+    frame,
+    theme,
+    colors,
+    restore: previous.phase === "applied",
+  };
 }
 
 async function set(
@@ -147,22 +161,20 @@ async function set(
 }
 
 export async function clearPreview(applyTheme = true): Promise<void> {
-  state.previewState = null;
-  if (state.previewFrame !== undefined) {
-    cancelAnimationFrame(state.previewFrame);
-    state.previewFrame = undefined;
-  }
-
-  if (state.isPreviewingTheme) {
-    state.isPreviewingTheme = false;
-    if (applyTheme) {
-      if (state.randomTheme !== null) {
-        await apply(state.randomTheme);
-      } else if (getMutableConfig().customTheme) {
-        await apply("custom");
-      } else {
-        await apply(getMutableConfig().theme);
-      }
+  const previous = state.preview;
+  if (previous.phase === "queued") cancelAnimationFrame(previous.frame);
+  state.preview = { phase: "idle" };
+  if (
+    applyTheme &&
+    (previous.phase === "applied" ||
+      (previous.phase === "queued" && previous.restore))
+  ) {
+    if (state.randomTheme !== null) {
+      await apply(state.randomTheme);
+    } else if (getMutableConfig().customTheme) {
+      await apply("custom");
+    } else {
+      await apply(getMutableConfig().theme);
     }
   }
 }
