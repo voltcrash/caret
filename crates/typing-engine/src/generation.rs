@@ -1022,18 +1022,27 @@ pub struct Prepare {
     #[serde(default)]
     pub sections: Vec<crate::content::Source>,
 }
+#[derive(Default)]
+enum Preparation {
+    #[default]
+    New,
+    Released,
+    Prepared {
+        generator: Box<Generator>,
+        output: Option<(bool, Generated)>,
+    },
+}
+
 /// Retains only explicitly owned content-selection state across restarts.
 #[derive(Default)]
 pub struct Content {
-    prepared: Option<(bool, Generated)>,
+    preparation: Preparation,
     assets: Assets,
-    generator: Option<Generator>,
     weak_spot: crate::weak_spot::WeakSpot,
     last_pace_wpm: f64,
     previous: Vec<NextWord>,
     previous_quote: Option<crate::quotes::Quote>,
     generation: u32,
-    has_prepared: bool,
 }
 impl Content {
     /// Consume the prior session before preparing its replacement. Only learning
@@ -1045,9 +1054,7 @@ impl Content {
         self.previous = memory.previous;
         self.previous_quote = memory.quote;
         self.generation = self.generation.max(memory.generation);
-        self.has_prepared = true;
-        self.generator = None;
-        self.prepared = None;
+        self.preparation = Preparation::Released;
     }
     pub fn quote_catalog(
         &mut self,
@@ -1101,21 +1108,19 @@ impl Content {
         if repeating && input.config.mode == "quote" && self.previous_quote.is_none() {
             return Err("Missing previous quote".into());
         }
-        if self.has_prepared {
+        if !matches!(self.preparation, Preparation::New) {
             self.generation = self
                 .generation
                 .checked_add(1)
                 .ok_or("Content generation exhausted")?;
         }
-        self.has_prepared = true;
-        self.generator = None;
-        self.prepared = None;
+        self.preparation = Preparation::Released;
         self.assets.quote_asset = input.quotes;
         self.assets.polyglot = input.polyglot;
         self.assets.selected_quote_id = input.selected_quote_id;
         self.assets.favorite_quote_ids = input.favorite_quote_ids;
         self.assets.sections = input.sections;
-        self.generator = Some(Generator::with_repeated_quote(
+        let mut generator = Generator::with_repeated_quote(
             input.config,
             input.language,
             input.custom,
@@ -1126,48 +1131,70 @@ impl Content {
             } else {
                 None
             },
-        )?);
-        self.generator.as_mut().unwrap().weak_spot = self.weak_spot.clone();
-        self.generator.as_mut().unwrap().previous = self.previous.clone();
-        let generator = self.generator.as_mut().unwrap();
+        )?;
+        generator.weak_spot = self.weak_spot.clone();
+        generator.previous = self.previous.clone();
         generator.prepared_generation = self.generation;
         if let Some(queue) = &mut generator.section_queue {
             queue.set_generation(self.generation);
         }
+        self.preparation = Preparation::Prepared {
+            generator: Box::new(generator),
+            output: None,
+        };
         Ok(())
     }
     pub fn start_session(
         &mut self,
         repeating: bool,
     ) -> Result<crate::Session, crate::error::EngineError> {
-        let generated = match self.prepared.take() {
-            Some((prepared_repeat, generated)) if prepared_repeat == repeating => generated,
-            _ => self.generator()?.generate(repeating)?,
+        let Preparation::Prepared { generator, output } = &mut self.preparation else {
+            return Err("Content not prepared".into());
         };
-        let generator = self.generator.take().ok_or("Content not prepared")?;
-        let mut session = crate::Session::from_generated(generator, generated)?;
+        let generated = match output.take() {
+            Some((prepared_repeat, generated)) if prepared_repeat == repeating => generated,
+            _ => generator.generate(repeating)?,
+        };
+        let Preparation::Prepared { generator, .. } =
+            std::mem::replace(&mut self.preparation, Preparation::Released)
+        else {
+            unreachable!()
+        };
+        let mut session = crate::Session::from_generated(*generator, generated)?;
         session.pace.remember(self.last_pace_wpm, false);
         Ok(session)
     }
     /// Inspect prepared output without restarting generation or consuming RNG/source content.
     pub fn generate(&mut self, repeating: bool) -> Result<Generated, EngineError> {
-        let generated = self.generator()?.generate(repeating)?;
-        self.prepared = Some((repeating, generated.clone()));
+        let Preparation::Prepared { generator, output } = &mut self.preparation else {
+            return Err("Content not prepared".into());
+        };
+        *output = None;
+        let generated = generator.generate(repeating)?;
+        *output = Some((repeating, generated.clone()));
         Ok(generated)
     }
     pub fn prepared_generator(&self) -> Result<&Generator, EngineError> {
-        self.generator.as_ref().ok_or("Content not prepared".into())
+        match &self.preparation {
+            Preparation::Prepared { generator, .. } => Ok(generator),
+            _ => Err("Content not prepared".into()),
+        }
     }
     /// Unlike mutable generator access, preview sampling preserves prepared output.
     pub fn preview(&mut self, seed: u32) -> Result<Vec<Text>, EngineError> {
-        self.generator
-            .as_mut()
-            .ok_or("Content not prepared")?
-            .preview(seed)
+        match &mut self.preparation {
+            Preparation::Prepared { generator, .. } => generator.preview(seed),
+            _ => Err("Content not prepared".into()),
+        }
     }
     /// Mutable generator access invalidates any prior presentation snapshot.
     pub fn generator(&mut self) -> Result<&mut Generator, EngineError> {
-        self.prepared = None;
-        self.generator.as_mut().ok_or("Content not prepared".into())
+        match &mut self.preparation {
+            Preparation::Prepared { generator, output } => {
+                *output = None;
+                Ok(generator)
+            }
+            _ => Err("Content not prepared".into()),
+        }
     }
 }
