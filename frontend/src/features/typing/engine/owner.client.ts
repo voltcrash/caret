@@ -1,4 +1,4 @@
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup, untrack } from "solid-js";
 import { createAppOwned } from "../../../app/application";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import type {
@@ -11,22 +11,22 @@ type Loader = ReturnType<
   typeof import("@caret/typing-engine/browser.client").createEngineLoader
 >;
 type EngineStatus =
-  | { state: "idle" | "loading" | "ready" | "disposed" }
+  | { state: "idle" | "disposed" }
+  | { state: "loading"; task: Promise<Engine> }
+  | { state: "ready"; engine: Engine }
   | { state: "failed"; error: unknown };
 
 /** One browser engine/content owner per app; every test has a separate session. */
 export const getBrowserEngine = createAppOwned(() => {
   const [status, setStatus] = createSignal<EngineStatus>({ state: "idle" });
   let loader: Loader | undefined;
-  let engine: Engine | undefined;
   let content: BrowserContent | undefined;
   let session: BrowserSession | undefined;
-  let pending: Promise<Engine> | undefined;
   let generation = 0;
   let sessionAbort = new AbortController();
-  let disposed = false;
+  const disposed = (): boolean => untrack(status).state === "disposed";
   const assertLive = (): void => {
-    if (disposed) {
+    if (disposed()) {
       throw new EngineFailure({
         code: "disposed",
         message: "Browser engine owner disposed",
@@ -52,7 +52,7 @@ export const getBrowserEngine = createAppOwned(() => {
     ) {
       return Promise.reject(current.error);
     }
-    if (disposed) {
+    if (disposed()) {
       return Promise.reject(
         new EngineFailure({
           code: "disposed",
@@ -61,10 +61,9 @@ export const getBrowserEngine = createAppOwned(() => {
         }),
       );
     }
-    if (engine !== undefined) return Promise.resolve(engine);
-    if (pending !== undefined) return pending;
-    setStatus({ state: "loading" });
-    pending = import("@caret/typing-engine/browser.client")
+    if (current.state === "ready") return Promise.resolve(current.engine);
+    if (current.state === "loading") return current.task;
+    const task = import("@caret/typing-engine/browser.client")
       .then(async (module) => {
         assertLive();
         loader ??= module.createEngineLoader();
@@ -72,25 +71,31 @@ export const getBrowserEngine = createAppOwned(() => {
       })
       .then((loaded) => {
         assertLive();
-        engine = loaded;
-        setStatus({ state: "ready" });
+        setStatus({ state: "ready", engine: loaded });
         return loaded;
       })
       .catch((error: unknown) => {
-        pending = undefined;
-        if (!disposed) setStatus({ state: "failed", error });
+        if (!disposed()) setStatus({ state: "failed", error });
         throw error;
       });
-    return pending;
+    setStatus({ state: "loading", task });
+    return task;
+  };
+  const api = (): Engine => {
+    assertLive();
+    const current = status();
+    if (current.state !== "ready") {
+      throw new Error("Typing engine is not ready");
+    }
+    return current.engine;
   };
   const preparedContent = (): BrowserContent => {
-    assertLive();
-    if (engine === undefined) throw new Error("Typing engine is not ready");
+    const engine = api();
     return (content ??= engine.createContent());
   };
   const invalidateSession = (): void => {
     sessionAbort.abort();
-    if (!disposed) sessionAbort = new AbortController();
+    if (!disposed()) sessionAbort = new AbortController();
     generation++;
   };
   const releaseSession = (retainLearning = true): void => {
@@ -105,26 +110,20 @@ export const getBrowserEngine = createAppOwned(() => {
     }
   };
   const dispose = (): void => {
-    if (disposed) return;
-    disposed = true;
+    if (disposed()) return;
+    setStatus({ state: "disposed" });
     releaseSession(false);
     content?.dispose();
     content = undefined;
-    engine = undefined;
     loader?.dispose();
     loader = undefined;
-    pending = undefined;
-    setStatus({ state: "disposed" });
   };
   onCleanup(dispose);
   return {
-    api: (): Engine => {
-      assertLive();
-      if (engine === undefined) throw new Error("Typing engine is not ready");
-      return engine;
-    },
+    api,
     status,
     fail: (error: unknown): void => {
+      if (disposed()) return;
       invalidateSession();
       setStatus({ state: "failed", error });
     },
@@ -136,7 +135,7 @@ export const getBrowserEngine = createAppOwned(() => {
       const captured = generation;
       return {
         signal: sessionAbort.signal,
-        isCurrent: () => !disposed && captured === generation,
+        isCurrent: () => !disposed() && captured === generation,
       };
     },
     session: () => {
