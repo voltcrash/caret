@@ -52,7 +52,7 @@ export async function prepareCommandline(): Promise<void> {
   const commandlineState = getCommandlineState();
   const lease = captureAccount();
   const settings = takePendingSettings();
-  commandlineState.open = true;
+  commandlineState.phase = "open";
   commandlineState.mouseMode = false;
   commandlineState.inputValue = "";
   commandlineState.activeIndex = 0;
@@ -157,7 +157,7 @@ export async function refreshCommandlineSuggestions(): Promise<void> {
 const getFilterInput = createAccountOwned(() => {
   const commandlineState = getCommandlineState();
   const filter = debounce(50, async (value: string) => {
-    if (commandlineState.isAnimating) return;
+    if (commandlineState.phase === "closing") return;
     commandlineState.inputValue = value;
     if (commandlineState.subgroupOverride === null) {
       commandlineState.usingSingleList =
@@ -184,7 +184,7 @@ export function onCommandlineInput(e: Event): void {
 
 export async function onCommandlineKeyDown(e: KeyboardEvent): Promise<void> {
   const commandlineState = getCommandlineState();
-  if (commandlineState.isAnimating) {
+  if (commandlineState.phase === "closing") {
     e.preventDefault();
     return;
   }

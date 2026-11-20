@@ -17,7 +17,7 @@ export type InputModeParams = {
 export type CommandlineSuggestion = Command & { isActive: boolean };
 
 type CommandlineState = {
-  open: boolean;
+  phase: "closed" | "open" | "closing";
   inputValue: string;
   mode: CommandlineMode;
   subgroupStack: CommandsSubgroup[];
@@ -29,7 +29,6 @@ type CommandlineState = {
   mouseMode: boolean;
   inputModeParams: InputModeParams;
   subgroupOverride: CommandsSubgroup | null;
-  isAnimating: boolean;
   lastSingleListModeInputValue: string;
   suggestions: CommandlineSuggestion[];
   inputPlaceholder: string;
@@ -42,7 +41,7 @@ type CommandlineState = {
 
 export const getCommandlineState = createAccountOwned(() =>
   createMutable<CommandlineState>({
-    open: false,
+    phase: "closed",
     inputValue: "",
     mode: "search",
     subgroupStack: [],
@@ -59,7 +58,6 @@ export const getCommandlineState = createAccountOwned(() =>
       icon: "",
     },
     subgroupOverride: null,
-    isAnimating: false,
     lastSingleListModeInputValue: "",
     suggestions: [],
     inputPlaceholder: "Search...",

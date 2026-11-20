@@ -70,7 +70,7 @@ export function createValidationHandler(command: Command): void {
         const current = getCommandlineState();
         if (
           lease.isCurrent() &&
-          current.open &&
+          current.phase !== "closed" &&
           current.inputModeParams.command?.id === command.id
         ) {
           updateValidationResult(result);

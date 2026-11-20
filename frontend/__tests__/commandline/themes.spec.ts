@@ -52,7 +52,7 @@ describe("theme picker selection", () => {
       theme: "aether",
       favThemes: ["matrix"],
     });
-    commandlineState.isAnimating = false;
+    commandlineState.phase = "closed";
     setCommandlineSubgroup("themes");
     setConfig("randomTheme", "fav", { nosave: true });
     await ThemeController.randomizeTheme();

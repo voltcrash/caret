@@ -58,7 +58,7 @@ const shake = createAccountOwned(() => {
 
 export function handleInputSubmit(): void {
   const commandlineState = getCommandlineState();
-  if (commandlineState.isAnimating) return;
+  if (commandlineState.phase === "closing") return;
   if (commandlineState.inputModeParams.command === null) {
     throw new Error("Can't handle input submit - command is null");
   }
@@ -98,7 +98,7 @@ export function handleInputSubmit(): void {
 
 export async function runActiveCommand(): Promise<void> {
   const commandlineState = getCommandlineState();
-  if (commandlineState.isAnimating) return;
+  if (commandlineState.phase === "closing") return;
   if (commandlineState.activeCommand === null) return;
   const command = commandlineState.activeCommand;
   if (command.input) {

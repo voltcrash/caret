@@ -115,7 +115,7 @@ describe("theme picker lifecycle", () => {
   beforeEach(() => {
     hideModalAndClearChain("Commandline");
     setCommandlineSubgroup(null);
-    commandlineState.isAnimating = false;
+    commandlineState.phase = "closed";
     commandlineState.noBackground = false;
     getMutableConfig().customTheme = false;
     command.id = "changeThemeAether";
@@ -219,9 +219,8 @@ describe("theme picker lifecycle", () => {
         } else {
           fireEvent.mouseDown(dialog);
         }
-        await waitFor(() => expect(commandlineState.open).toBe(false));
+        await waitFor(() => expect(commandlineState.phase).toBe("closed"));
         expect(dialog.open).toBe(false);
-        expect(commandlineState.isAnimating).toBe(false);
         expect(getComputedStyle(dialog).display).toBe("none");
         expect(isAnyPopupVisible()).toBe(false);
         expect(command.exec).toHaveBeenCalledTimes(
@@ -281,7 +280,7 @@ describe("theme picker lifecycle", () => {
       fireEvent.click(
         view.getByText("Roboto Mono").closest(".command") as HTMLElement,
       );
-      await waitFor(() => expect(commandlineState.open).toBe(false));
+      await waitFor(() => expect(commandlineState.phase).toBe("closed"));
 
       expect(dialog.open).toBe(false);
       expect(isAnyPopupVisible()).toBe(false);
@@ -302,7 +301,7 @@ describe("theme picker lifecycle", () => {
       ctrlKey: detectPlatform() !== "mac",
       metaKey: detectPlatform() === "mac",
     });
-    await waitFor(() => expect(commandlineState.open).toBe(false));
+    await waitFor(() => expect(commandlineState.phase).toBe("closed"));
     expect(command.exec).not.toHaveBeenCalled();
   });
 });
