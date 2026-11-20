@@ -45,11 +45,9 @@ export function useResultWordHighlight(
   // last time the words history was toggled
   let lastToggleWordsHistoryTime = new Date();
 
-  let isInitialized = false;
+  let measurement: "idle" | "measuring" | "ready" = "idle";
+  let revision = 0;
   let isHoveringChart = false;
-  let isFirstHighlightSinceInit = true;
-  let isFirstHighlightSinceClear = true;
-  let isInitInProgress = false;
 
   // Highlights .word elements in range [firstWordIndex, lastWordIndex]
   async function highlightWordsInRange(
@@ -67,10 +65,11 @@ export function useResultWordHighlight(
       return false;
     }
 
-    if (!isInitialized) {
+    const generation = revision;
+    if (measurement !== "ready") {
       // awaiting also lets the new highlight elements render
       const initResponse = await init();
-      if (!initResponse) {
+      if (!initResponse || generation !== revision || !isHoveringChart) {
         return false;
       }
     }
@@ -104,24 +103,22 @@ export function useResultWordHighlight(
     batch(() => {
       setHidden(false);
       // make highlight appear instantly for first highlight
-      setAnimate(!isFirstHighlightSinceInit && !isFirstHighlightSinceClear);
+      setAnimate(highlightRange.length > 0);
       setPositions(newPositions);
     });
 
-    isFirstHighlightSinceInit = false;
-    isFirstHighlightSinceClear = false;
     highlightRange = [firstWordIndex, lastWordIndex];
     return true;
   }
 
   function clear(): void {
     setHidden(true);
-    isFirstHighlightSinceClear = true;
     highlightRange = [];
   }
 
   function destroy(): void {
-    if (!isInitialized) return;
+    revision++;
+    measurement = "idle";
 
     batch(() => {
       setLines([]);
@@ -134,18 +131,16 @@ export function useResultWordHighlight(
     wordIndexToLineIndexDict = {};
     inputWordsContainerEls = [];
     inputWordEls = [];
-    isInitialized = false;
-    isFirstHighlightSinceInit = true;
-    isFirstHighlightSinceClear = true;
     highlightRange = [];
   }
 
   async function init(): Promise<boolean> {
-    if (isInitialized || isInitInProgress) {
+    if (measurement !== "idle") {
       return false;
     }
 
-    isInitInProgress = true;
+    measurement = "measuring";
+    const generation = revision;
 
     // wait for the words history to finish sliding before measuring
     const TIME_DIFF_SINCE_LAST_TOGGLE =
@@ -159,22 +154,22 @@ export function useResultWordHighlight(
       );
     }
 
+    if (generation !== revision) return false;
     const RWH_el = wordsHistoryElement();
     if (RWH_el === undefined) {
-      isInitInProgress = false;
+      measurement = "idle";
       return false;
     }
     const measured = measureWordLines(RWH_el, isLanguageRightToLeft());
     if (measured === undefined) {
-      isInitInProgress = false;
+      measurement = "idle";
       return false;
     }
     wordEls = measured.wordEls;
     wordIndexToLineIndexDict = measured.wordIndexToLineIndexDict;
     setLines(measured.lines);
 
-    isInitialized = true;
-    isInitInProgress = false;
+    measurement = "ready";
     return true;
   }
 
@@ -204,6 +199,7 @@ export function useResultWordHighlight(
     addEventListener("resize", destroy);
   });
   onCleanup(() => {
+    revision++;
     removeEventListener("resize", destroy);
   });
 
