@@ -1,7 +1,6 @@
 import { createAccountOwned } from "../../app/account-scope";
 import { setFixingSkillIssue } from "../states/skill-issue";
 import MinBurstCommands from "./lists/min-burst";
-import BailOutCommands from "./lists/bail-out";
 import QuoteFavoriteCommands from "./lists/quote-favorites";
 import NavigationCommands from "./lists/navigation";
 import CustomBackgroundCommands from "./lists/custom-background";
@@ -74,7 +73,6 @@ const getCoreCommands = createAccountOwned<
       shouldFocusTestUI: false,
     },
     ...QuoteFavoriteCommands,
-    ...BailOutCommands,
   ],
   accountAndBehavior: [
     {

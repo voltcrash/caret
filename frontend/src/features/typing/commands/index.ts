@@ -7,6 +7,7 @@ import * as PaceCaret from "../runtime/pace-caret";
 import * as TestLogic from "../runtime/test/logic";
 import { isTypingRouteActive } from "../scope";
 import ResultScreenCommands from "./result-screen";
+import BailOutCommands from "./bail-out";
 
 /** Publishes typing commands and actions for the mounted palette. */
 export function useTypingCommands(): void {
@@ -20,7 +21,7 @@ export function useTypingCommands(): void {
   );
   onCleanup(
     registerCommands({
-      commands: { result: ResultScreenCommands },
+      commands: { result: ResultScreenCommands, test: BailOutCommands },
     }),
   );
 }

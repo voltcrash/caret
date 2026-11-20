@@ -4,8 +4,6 @@
   "src/ts/auth-client.ts -> src/features/auth/result",
   "src/ts/auth-client.ts -> src/features/auth/session",
   "src/ts/auth-client.ts -> src/features/auth/state.client",
-  "src/ts/commandline/lists/bail-out.ts -> src/features/typing/runtime/content/custom-text",
-  "src/ts/commandline/lists/bail-out.ts -> src/features/typing/runtime/test/logic",
   "src/ts/commandline/lists/funbox.ts -> src/features/typing/engine/policy.client",
   "src/ts/commandline/lists/funbox.ts -> src/features/typing/runtime/funbox/funbox",
   "src/ts/commandline/lists/funbox.ts -> src/features/typing/runtime/funbox/list",
