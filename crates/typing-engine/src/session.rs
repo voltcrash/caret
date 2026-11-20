@@ -905,25 +905,19 @@ impl Session {
         Ok(())
     }
     pub fn phase(&self) -> SessionPhase {
-        if self.run.ended() {
-            SessionPhase::Ended
-        } else if self.run.pending_finish().is_some() {
-            SessionPhase::FinishPending
-        } else if matches!(self.content_state, ContentState::Recovery) {
-            SessionPhase::AwaitingRecovery
-        } else if matches!(self.content_state, ContentState::Waiting(_)) {
-            SessionPhase::AwaitingContent
-        } else if self.run.active() {
-            SessionPhase::Running
-        } else {
-            SessionPhase::Ready
+        match (&self.run, &self.content_state) {
+            (RunState::Ended { .. }, _) => SessionPhase::Ended,
+            (RunState::FinishPending { .. }, _) => SessionPhase::FinishPending,
+            (_, ContentState::Recovery) => SessionPhase::AwaitingRecovery,
+            (_, ContentState::Waiting(_)) => SessionPhase::AwaitingContent,
+            (RunState::Running { .. }, ContentState::Available) => SessionPhase::Running,
+            (RunState::Ready, ContentState::Available) => SessionPhase::Ready,
         }
     }
     pub fn state(&self) -> State {
         debug_assert!(
             !self.run.ended()
-                || (self.run.pending_finish().is_none()
-                    && !matches!(self.content_state, ContentState::Waiting(_))
+                || (!matches!(self.content_state, ContentState::Waiting(_))
                     && self.deferred_input.is_none())
         );
         State {
@@ -1011,7 +1005,11 @@ impl Session {
         if let Some(generator) = &mut self.generator {
             generator.reset_requests(self.generation);
         }
-        self.record("timer", now, json!({"event":"end", "timer":((now-self.run.start_time().unwrap_or(now))/1000.0).floor(), "date":date}));
+        self.record(
+            "timer",
+            now,
+            json!({"event":"end", "timer":((now-start)/1000.0).floor(), "date":date}),
+        );
     }
 
     pub fn apply(&mut self, command: Command) -> Result<Update, crate::error::EngineError> {
