@@ -2,7 +2,7 @@ import { getMutableConfig } from "../config/store";
 import { applyConfig } from "../config/lifecycle";
 import * as DB from "../db";
 import { showSuccessNotification } from "../states/notifications";
-import * as TestLogic from "../../features/typing/runtime/test/logic";
+import { restartTest } from "../typing-host";
 import {
   clearActiveTags,
   setTagActive,
@@ -49,7 +49,7 @@ export async function apply(_id: string): Promise<void> {
       saveActiveToLocalStorage();
     }
   }
-  void TestLogic.restart();
+  restartTest();
   showSuccessNotification("Preset applied", { durationMs: 2000 });
   saveFullConfigToLocalStorage();
 }

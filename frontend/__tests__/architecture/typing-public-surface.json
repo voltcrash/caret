@@ -26,7 +26,6 @@
   "runtime/funbox/list",
   "runtime/result/saving",
   "runtime/session.client",
-  "runtime/test/logic",
   "runtime/today-tracker",
   "state/glarses-mode",
   "state/modifiers"
