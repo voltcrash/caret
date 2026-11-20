@@ -14,15 +14,16 @@ export function createAudioSample(
 ): AudioSample {
   type Voice = { source?: AudioBufferSourceNode; ended: boolean };
   const voices: Voice[] = [{ ended: true }];
-  let buffer: AudioBuffer | undefined;
+  type SampleState =
+    | { phase: "loading"; queued?: () => void }
+    | { phase: "ready"; buffer: AudioBuffer }
+    | { phase: "failed" | "disposed" };
+  let sample: SampleState = { phase: "loading" };
   const loading = new AbortController();
-  let disposed = false;
-  let failed = false;
-  let queued: (() => void) | undefined;
   const run = (action: () => void): void => {
-    if (disposed || failed || signal.aborted) return;
-    if (buffer === undefined) queued = action;
-    else action();
+    if (signal.aborted) return;
+    if (sample.phase === "loading") sample.queued = action;
+    else if (sample.phase === "ready") action();
   };
   const stopVoice = (voice: Voice): void => {
     if (voice.source !== undefined) {
@@ -34,9 +35,9 @@ export function createAudioSample(
     voice.ended = true;
   };
   const startVoice = (voice: Voice): void => {
-    if (buffer === undefined) return;
+    if (sample.phase !== "ready") return;
     const source = context.createBufferSource();
-    source.buffer = buffer;
+    source.buffer = sample.buffer;
     source.connect(destination);
     source.onended = () => {
       source.disconnect();
@@ -58,22 +59,21 @@ export function createAudioSample(
         throw new Error(`Sound load failed: ${response.status}`);
       }
       const bytes = await response.arrayBuffer();
-      if (disposed || signal.aborted) return;
+      if (loading.signal.aborted || signal.aborted) return;
       const decoded = await context.decodeAudioData(bytes);
-      if (disposed || signal.aborted) return;
-      buffer = decoded;
-      const action = queued;
-      queued = undefined;
+      if (loading.signal.aborted || signal.aborted) return;
+      if (sample.phase !== "loading") return;
+      const action = sample.queued;
+      sample = { phase: "ready", buffer: decoded };
       action?.();
     })
     .catch(() => {
       // Like an unhandled Howl loaderror, unavailable samples stay silent.
-      failed = true;
-      queued = undefined;
+      if (sample.phase !== "disposed") sample = { phase: "failed" };
     });
   return {
     seek: () => {
-      if (buffer === undefined) return;
+      if (sample.phase !== "ready") return;
       run(() => {
         const voice = voices[0];
         if (voice === undefined) return;
@@ -109,15 +109,13 @@ export function createAudioSample(
         startVoice(voice);
       }),
     stop: () => {
-      queued = undefined;
+      if (sample.phase === "loading") delete sample.queued;
       voices.forEach(stopVoice);
     },
     unload: () => {
-      disposed = true;
+      sample = { phase: "disposed" };
       loading.abort();
-      queued = undefined;
       voices.forEach(stopVoice);
-      buffer = undefined;
     },
   };
 }
