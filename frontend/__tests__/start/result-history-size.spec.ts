@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, expect, it } from "vite-plus/test";
+import { gzipSync } from "node:zlib";
 import { fromCrossJSON, toJSONAsync, type SerovalNode } from "seroval";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { z } from "zod";
@@ -85,7 +86,7 @@ function headers(token: string): Record<string, string> {
   };
 }
 
-it("serves the account page at most 1,000 results", async () => {
+it("serves the account page at most 1,000 results in under 62 KB of gzip", async () => {
   const session = await seedHistory(1099);
   const payload = JSON.stringify(
     await toJSONAsync({ data: { query: { client: "web" } } }),
@@ -103,4 +104,6 @@ it("serves the account page at most 1,000 results", async () => {
     })
     .parse(fromCrossJSON(JSON.parse(body) as SerovalNode, { refs: new Map() }));
   expect(result.data).toHaveLength(1000);
+  // Default gzip level; Cloudflare's edge compression differs slightly.
+  expect(gzipSync(body).length).toBeLessThan(62_000);
 });
