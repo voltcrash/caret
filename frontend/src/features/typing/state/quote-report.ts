@@ -1,6 +1,6 @@
-import { createAppSignal } from "../../app/state";
+import { createAppSignal } from "../../../app/state";
 
-import { showModal } from "./modals";
+import { showModal } from "../../../ts/states/modals";
 
 const [quoteId, setQuoteId] = createAppSignal(0);
 

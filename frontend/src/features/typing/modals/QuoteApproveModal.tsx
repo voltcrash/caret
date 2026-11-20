@@ -7,16 +7,16 @@ import { JSXElement, createSignal, For, Show } from "solid-js";
 import { operation } from "../../../data/operations";
 import { getQueryClient } from "../../../data/queries";
 import { getQuoteSubmissionsQueryOptions } from "../../../data/queries/quotes";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa } from "../../../ts/components/common/Fa";
+import { InputField } from "../../../ts/components/ui/form/InputField";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { cn } from "../../utils/cn";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { Fa } from "../common/Fa";
-import { InputField } from "../ui/form/InputField";
+} from "../../../ts/states/notifications";
+import { cn } from "../../../ts/utils/cn";
 
 function QuoteApproveItem(props: {
   quote: Quote;

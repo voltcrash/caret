@@ -2,27 +2,27 @@ import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, createSignal, For } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import { updateQuoteRating } from "../../../features/typing/runtime/result/screen";
-import * as DB from "../../db";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
-import { hideModalAndClearChain } from "../../states/modals";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa } from "../../../ts/components/common/Fa";
+import { Separator } from "../../../ts/components/common/Separator";
+import * as DB from "../../../ts/db";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { hideModalAndClearChain } from "../../../ts/states/modals";
 import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
+} from "../../../ts/states/notifications";
+import { cn } from "../../../ts/utils/cn";
+import { updateQuoteRating } from "../runtime/result/screen";
 import {
   selectedQuote,
   quoteStats,
   getQuoteStats,
   updateQuoteStats,
   getRatingAverage,
-} from "../../states/quote-rate";
-import { cn } from "../../utils/cn";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { Fa } from "../common/Fa";
-import { Separator } from "../common/Separator";
+} from "../state/quote-rate";
 
 export function QuoteRateModal(): JSXElement {
   const [rating, setRating] = createSignal(0);

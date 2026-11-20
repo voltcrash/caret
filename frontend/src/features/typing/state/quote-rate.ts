@@ -1,16 +1,16 @@
 import { createEffect, createSignal, onCleanup } from "solid-js";
 import { QueryObserver } from "@tanstack/solid-query";
-import { createAccountOwned } from "../../app/account-scope";
-import { getQueryClient } from "../../data/queries";
+import { createAccountOwned } from "../../../app/account-scope";
+import { getQueryClient } from "../../../data/queries";
 import {
   getQuoteRatingQueryOptions,
   type QuoteStats,
-} from "../../data/queries/quotes";
-import { createAppSignal } from "../../app/state";
+} from "../../../data/queries/quotes";
+import { createAppSignal } from "../../../app/state";
 
-import { Quote } from "../controllers/quotes-controller";
-import { showErrorNotification } from "./notifications";
-import { showModal } from "./modals";
+import { Quote } from "../../../ts/controllers/quotes-controller";
+import { showErrorNotification } from "../../../ts/states/notifications";
+import { showModal } from "../../../ts/states/modals";
 import { isSafeNumber } from "@caret/util/numbers";
 
 const [selectedQuote, setSelectedQuote] = createAppSignal<Quote | null>(null);

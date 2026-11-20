@@ -3,56 +3,58 @@ import { onMount, ParentProps } from "solid-js";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 const { getQuotes } = vi.hoisted(() => ({ getQuotes: vi.fn() }));
-vi.mock("../../../src/ts/controllers/quotes-controller", () => ({
+vi.mock("../../../../src/ts/controllers/quotes-controller", () => ({
   default: { getQuotes, isQuoteFavorite: () => false },
 }));
-vi.mock("../../../src/ts/components/common/AnimatedModal", () => ({
+vi.mock("../../../../src/ts/components/common/AnimatedModal", () => ({
   AnimatedModal: (props: ParentProps<{ afterShow?: () => Promise<void> }>) => {
     onMount(() => void props.afterShow?.());
     return <div>{props.children}</div>;
   },
 }));
-vi.mock("../../../src/ts/components/modals/QuoteSubmitModal", () => ({
+vi.mock("../../../../src/features/typing/modals/QuoteSubmitModal", () => ({
   QuoteSubmitModal: () => null,
 }));
-vi.mock("../../../src/ts/components/modals/QuoteApproveModal", () => ({
+vi.mock("../../../../src/features/typing/modals/QuoteApproveModal", () => ({
   QuoteApproveModal: () => null,
 }));
-vi.mock("../../../src/ts/components/ui/Select", () => ({
+vi.mock("../../../../src/ts/components/ui/Select", () => ({
   default: () => null,
 }));
-vi.mock("../../../src/ts/utils/json-data", () => ({
+vi.mock("../../../../src/ts/utils/json-data", () => ({
   getLanguage: async () => ({ rightToLeft: false }),
 }));
-vi.mock("../../../src/ts/config/store", () => ({
+vi.mock("../../../../src/ts/config/store", () => ({
   getMutableConfig: (() => {
     const storedConfig = { language: "english" };
     return () => storedConfig;
   })(),
 }));
-vi.mock("../../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
-vi.mock("../../../src/ts/db", () => ({ getSnapshot: () => undefined }));
+vi.mock("../../../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
+vi.mock("../../../../src/ts/db", () => ({ getSnapshot: () => undefined }));
 
-vi.mock("../../../src/ts/states/core", () => ({
+vi.mock("../../../../src/ts/states/core", () => ({
   isAuthenticated: () => false,
 }));
-vi.mock("../../../src/ts/states/modals", () => ({
+vi.mock("../../../../src/ts/states/modals", () => ({
   isModalOpen: () => true,
   showModal: vi.fn(),
   hideModalAndClearChain: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/test", () => ({ setSelectedQuoteId: vi.fn() }));
-vi.mock("../../../src/ts/states/quote-report", () => ({
+vi.mock("../../../../src/ts/states/test", () => ({
+  setSelectedQuoteId: vi.fn(),
+}));
+vi.mock("../../../../src/features/typing/state/quote-report", () => ({
   showQuoteReportModal: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/simple-modal", () => ({
+vi.mock("../../../../src/ts/states/simple-modal", () => ({
   showSimpleModal: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/test/logic", () => ({
+vi.mock("../../../../src/features/typing/runtime/test/logic", () => ({
   restart: vi.fn(),
 }));
 
-import { QuoteSearchModal } from "../../../src/ts/components/modals/QuoteSearchModal";
+import { QuoteSearchModal } from "../../../../src/features/typing/modals/QuoteSearchModal";
 
 afterEach(cleanup);
 

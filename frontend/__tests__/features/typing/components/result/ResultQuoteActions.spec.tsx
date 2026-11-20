@@ -23,10 +23,10 @@ const mocks = vi.hoisted(() => ({
     | undefined,
 }));
 
-vi.mock("../../../../../src/ts/states/quote-rate", () => ({
+vi.mock("../../../../../src/features/typing/state/quote-rate", () => ({
   showQuoteRateModal: mocks.showQuoteRateModal,
 }));
-vi.mock("../../../../../src/ts/states/quote-report", () => ({
+vi.mock("../../../../../src/features/typing/state/quote-report", () => ({
   showQuoteReportModal: mocks.showQuoteReportModal,
 }));
 vi.mock("../../../../../src/ts/states/notifications", () => ({

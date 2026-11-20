@@ -39,7 +39,7 @@ const offlineTypingModules = [
   "src/features/typing/modals/CustomTextModal.tsx",
   "src/ts/components/modals/CustomTestDurationModal.tsx",
   "src/ts/components/modals/CustomWordAmountModal.tsx",
-  "src/ts/components/modals/QuoteSearchModal.tsx",
+  "src/features/typing/modals/QuoteSearchModal.tsx",
   "src/ts/components/modals/CookiesModal.tsx",
 ];
 

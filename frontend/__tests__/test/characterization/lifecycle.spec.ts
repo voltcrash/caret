@@ -216,7 +216,7 @@ vi.mock("../../../src/ts/controllers/analytics-controller", () => ({
 vi.mock("../../../src/ts/controllers/sound-controller", () => ({
   playTimeWarning: mocks.timeWarning,
 }));
-vi.mock("../../../src/ts/states/quote-rate", () => ({
+vi.mock("../../../src/features/typing/state/quote-rate", () => ({
   clearQuoteStats: vi.fn(),
 }));
 vi.mock("../../../src/ts/states/loader-bar", () => ({

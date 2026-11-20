@@ -3,25 +3,28 @@ import { createForm } from "@tanstack/solid-form";
 import { JSXElement, createSignal } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import { getMutableConfig } from "../../config/store";
-import QuotesController from "../../controllers/quotes-controller";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
-import { hideModalAndClearChain } from "../../states/modals";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Separator } from "../../../ts/components/common/Separator";
+import { Captcha } from "../../../ts/components/ui/form/Captcha";
+import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
+import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
+import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
+import {
+  allFieldsMandatory,
+  fieldMandatory,
+} from "../../../ts/components/ui/form/utils";
+import Select from "../../../ts/components/ui/Select";
+import { getMutableConfig } from "../../../ts/config/store";
+import QuotesController from "../../../ts/controllers/quotes-controller";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { hideModalAndClearChain } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { quoteId } from "../../states/quote-report";
-import { removeLanguageSize } from "../../utils/strings";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Separator } from "../common/Separator";
-import { Captcha } from "../ui/form/Captcha";
-import { LabeledField } from "../ui/form/LabeledField";
-import { SubmitButton } from "../ui/form/SubmitButton";
-import { TextareaField } from "../ui/form/TextareaField";
-import { allFieldsMandatory, fieldMandatory } from "../ui/form/utils";
-import Select from "../ui/Select";
+} from "../../../ts/states/notifications";
+import { removeLanguageSize } from "../../../ts/utils/strings";
+import { quoteId } from "../state/quote-report";
 
 export function QuoteReportModal(): JSXElement {
   const [quoteText, setQuoteText] = createSignal("");

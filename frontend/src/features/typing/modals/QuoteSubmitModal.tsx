@@ -4,28 +4,28 @@ import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import { getMutableConfig } from "../../config/store";
-import { LanguageGroupNames } from "../../constants/languages";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
-import { hideModalAndClearChain } from "../../states/modals";
-import {
-  showErrorNotification,
-  showNoticeNotification,
-  showSuccessNotification,
-} from "../../states/notifications";
-import { removeLanguageSize } from "../../utils/strings";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Captcha } from "../ui/form/Captcha";
-import { InputField } from "../ui/form/InputField";
-import { LabeledField } from "../ui/form/LabeledField";
-import { SubmitButton } from "../ui/form/SubmitButton";
-import { TextareaField } from "../ui/form/TextareaField";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Captcha } from "../../../ts/components/ui/form/Captcha";
+import { InputField } from "../../../ts/components/ui/form/InputField";
+import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
+import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
+import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
 import {
   allFieldsMandatory,
   fieldMandatory,
   fromSchema,
-} from "../ui/form/utils";
-import Select from "../ui/Select";
+} from "../../../ts/components/ui/form/utils";
+import Select from "../../../ts/components/ui/Select";
+import { getMutableConfig } from "../../../ts/config/store";
+import { LanguageGroupNames } from "../../../ts/constants/languages";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { hideModalAndClearChain } from "../../../ts/states/modals";
+import {
+  showErrorNotification,
+  showNoticeNotification,
+  showSuccessNotification,
+} from "../../../ts/states/notifications";
+import { removeLanguageSize } from "../../../ts/utils/strings";
 
 export function QuoteSubmitModal(): JSXElement {
   const languageOptions = LanguageGroupNames.filter(

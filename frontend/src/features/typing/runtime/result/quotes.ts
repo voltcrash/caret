@@ -4,7 +4,7 @@ import QuotesController, {
 } from "../../../../ts/controllers/quotes-controller";
 import * as DB from "../../../../ts/db";
 import { isAuthenticated } from "../../../../ts/states/core";
-import { getQuoteStats } from "../../../../ts/states/quote-rate";
+import { getQuoteStats } from "../../state/quote-rate";
 import * as Numbers from "@caret/util/numbers";
 import { setResultState } from "../../state/result";
 

@@ -9,10 +9,10 @@ import {
   addNotificationWithLevel,
   showErrorNotification,
 } from "../../../../ts/states/notifications";
-import { showQuoteRateModal } from "../../../../ts/states/quote-rate";
-import { showQuoteReportModal } from "../../../../ts/states/quote-report";
 import { getCurrentQuote } from "../../../../ts/states/test";
 import { cn } from "../../../../ts/utils/cn";
+import { showQuoteRateModal } from "../../state/quote-rate";
+import { showQuoteReportModal } from "../../state/quote-report";
 import { resultState, setResultState } from "../../state/result";
 
 async function toggleFavorite(): Promise<void> {

@@ -33,17 +33,17 @@ const lazyModals = [
     ),
   ),
   lazyModal("QuoteRate", async () =>
-    import("../ts/components/modals/QuoteRateModal").then(
+    import("../features/typing/modals/QuoteRateModal").then(
       (m) => m.QuoteRateModal,
     ),
   ),
   lazyModal("QuoteReport", async () =>
-    import("../ts/components/modals/QuoteReportModal").then(
+    import("../features/typing/modals/QuoteReportModal").then(
       (m) => m.QuoteReportModal,
     ),
   ),
   lazyModal("QuoteSearch", async () =>
-    import("../ts/components/modals/QuoteSearchModal").then(
+    import("../features/typing/modals/QuoteSearchModal").then(
       (m) => m.QuoteSearchModal,
     ),
   ),

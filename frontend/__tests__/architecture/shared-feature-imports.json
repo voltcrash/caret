@@ -32,8 +32,6 @@
   "src/ts/components/modals/PractiseWordsModal.tsx -> src/features/typing/history/practice.client",
   "src/ts/components/modals/PractiseWordsModal.tsx -> src/features/typing/runtime/content/practise-words",
   "src/ts/components/modals/PractiseWordsModal.tsx -> src/features/typing/runtime/test/logic",
-  "src/ts/components/modals/QuoteRateModal.tsx -> src/features/typing/runtime/result/screen",
-  "src/ts/components/modals/QuoteSearchModal.tsx -> src/features/typing/runtime/test/logic",
   "src/ts/components/modals/ShareTestSettings.tsx -> src/features/typing/runtime/content/custom-text",
   "src/ts/components/standalone/OAuthCallback.tsx -> src/features/auth/callback",
   "src/ts/config/funbox-validation.ts -> src/features/typing/engine/policy.client",

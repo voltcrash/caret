@@ -18,7 +18,7 @@ import * as TestTimer from "./timer";
 
 import * as Replay from "../replay";
 
-import { clearQuoteStats } from "../../../../ts/states/quote-rate";
+import { clearQuoteStats } from "../../state/quote-rate";
 
 import {
   getCustomTextIndicator,

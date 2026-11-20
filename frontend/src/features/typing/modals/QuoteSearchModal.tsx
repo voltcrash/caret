@@ -12,39 +12,41 @@ import { z } from "zod";
 
 import { getQueryClient } from "../../../data/queries";
 import { getQuoteSubmissionEnabledQueryOptions } from "../../../data/queries/quotes";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
-import { setConfig } from "../../config/setters";
-import { getMutableConfig } from "../../config/store";
-import QuotesController, { Quote } from "../../controllers/quotes-controller";
-import * as DB from "../../db";
-import { createDebouncedEffectOn } from "../../hooks/effects";
-import { isAuthenticated } from "../../states/core";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { HighlightedText } from "../../../ts/components/common/HighlightedText";
+import { InputField } from "../../../ts/components/ui/form/InputField";
+import Select from "../../../ts/components/ui/Select";
+import { setConfig } from "../../../ts/config/setters";
+import { getMutableConfig } from "../../../ts/config/store";
+import QuotesController, {
+  Quote,
+} from "../../../ts/controllers/quotes-controller";
+import * as DB from "../../../ts/db";
+import { createDebouncedEffectOn } from "../../../ts/hooks/effects";
+import { isAuthenticated } from "../../../ts/states/core";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
 import {
   hideModalAndClearChain,
   isModalOpen,
   showModal,
-} from "../../states/modals";
+} from "../../../ts/states/modals";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../states/notifications";
-import { showQuoteReportModal } from "../../states/quote-report";
-import { showSimpleModal } from "../../states/simple-modal";
-import { setSelectedQuoteId } from "../../states/test";
-import { cn } from "../../utils/cn";
-import { getLanguage } from "../../utils/json-data";
-import * as Misc from "../../utils/misc";
+} from "../../../ts/states/notifications";
+import { showSimpleModal } from "../../../ts/states/simple-modal";
+import { setSelectedQuoteId } from "../../../ts/states/test";
+import { cn } from "../../../ts/utils/cn";
+import { getLanguage } from "../../../ts/utils/json-data";
+import * as Misc from "../../../ts/utils/misc";
 import {
   buildSearchService,
   SearchService,
   TextExtractor,
-} from "../../utils/search-service";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { HighlightedText } from "../common/HighlightedText";
-import { InputField } from "../ui/form/InputField";
-import Select from "../ui/Select";
+} from "../../../ts/utils/search-service";
+import * as TestLogic from "../runtime/test/logic";
+import { showQuoteReportModal } from "../state/quote-report";
 import { QuoteApproveModal } from "./QuoteApproveModal";
 import { QuoteSubmitModal } from "./QuoteSubmitModal";
 
