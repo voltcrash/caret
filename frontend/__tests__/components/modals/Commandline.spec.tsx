@@ -120,6 +120,7 @@ describe("theme picker lifecycle", () => {
       restart: vi.fn(),
       blur: vi.fn(),
       reloadPaceCaret: vi.fn(),
+      updateHints: vi.fn(),
     });
     hideModalAndClearChain("Commandline");
     setCommandlineSubgroup(null);

@@ -76,6 +76,7 @@ beforeEach(() => {
     restart: vi.fn(),
     blur: vi.fn(),
     reloadPaceCaret: vi.fn(),
+    updateHints: vi.fn(),
   });
   mocks.popup = false;
   setConfigStore("quickRestart", "tab");

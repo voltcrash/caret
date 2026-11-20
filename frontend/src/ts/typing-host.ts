@@ -11,6 +11,7 @@ type TypingHost = {
   restart: () => void;
   blur: () => void;
   reloadPaceCaret: () => Promise<void>;
+  updateHints: () => void;
 };
 
 // Reactive so derived state (hotkeys, palette behavior) follows mounts.
@@ -38,4 +39,8 @@ export function blurTest(): void {
 
 export async function reloadPaceCaret(): Promise<void> {
   await untrack(getHost)?.reloadPaceCaret();
+}
+
+export function updateTestHints(): void {
+  untrack(getHost)?.updateHints();
 }

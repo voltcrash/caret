@@ -27,7 +27,6 @@
   "runtime/result/saving",
   "runtime/session.client",
   "runtime/test/logic",
-  "runtime/test/ui",
   "runtime/today-tracker",
   "state/glarses-mode",
   "state/modifiers"

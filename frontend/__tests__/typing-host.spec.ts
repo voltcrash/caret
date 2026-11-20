@@ -7,6 +7,7 @@ import {
   isTypingRouteActive,
   reloadPaceCaret,
   restartTest,
+  updateTestHints,
 } from "../src/ts/typing-host";
 
 function host(): Parameters<typeof bindTypingHost>[0] {
@@ -15,6 +16,7 @@ function host(): Parameters<typeof bindTypingHost>[0] {
     restart: vi.fn(),
     blur: vi.fn(),
     reloadPaceCaret: vi.fn(async () => undefined),
+    updateHints: vi.fn(),
   };
 }
 
@@ -23,6 +25,7 @@ describe("typing host", () => {
     expect(isTypingRouteActive()).toBe(false);
     expect(() => restartTest()).not.toThrow();
     expect(() => blurTest()).not.toThrow();
+    expect(() => updateTestHints()).not.toThrow();
     await expect(reloadPaceCaret()).resolves.toBeUndefined();
   });
 
@@ -33,8 +36,10 @@ describe("typing host", () => {
     restartTest();
     blurTest();
     await reloadPaceCaret();
+    updateTestHints();
 
     expect(isTypingRouteActive()).toBe(true);
+    expect(bound.updateHints).toHaveBeenCalledOnce();
     expect(bound.restart).toHaveBeenCalledOnce();
     expect(bound.blur).toHaveBeenCalledOnce();
     expect(bound.reloadPaceCaret).toHaveBeenCalledOnce();

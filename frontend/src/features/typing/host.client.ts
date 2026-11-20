@@ -1,4 +1,5 @@
 import { bindTypingHost } from "../../ts/typing-host";
+import { updateHintsPositionDebounced } from "./components/words/hints";
 import * as Focus from "./runtime/focus";
 import * as PaceCaret from "./runtime/pace-caret";
 import * as TestLogic from "./runtime/test/logic";
@@ -11,5 +12,6 @@ export function bindTypingRouteHost(): () => void {
     restart: () => void TestLogic.restart(),
     blur: () => Focus.set(false),
     reloadPaceCaret: async () => PaceCaret.init(),
+    updateHints: () => void updateHintsPositionDebounced(),
   });
 }
