@@ -102,7 +102,7 @@ never add `hidden` imperatively, or a closed dialog can intercept clicks.
 | --- | --- |
 | Rust typing session | Ready → running → finish pending → ended. Immediate completion skips the acknowledgement. Reset returns to ready. The start time, finish request and failure reason belong to their respective states. |
 | Session content | Available, waiting for a checkpoint, or awaiting recovery. A matching source reply resumes the checkpoint. Failure discards it. Content and timing can wait independently. |
-| Content preparation | New, released, or prepared. Preparing owns a generator and optional generated preview. Starting a session transfers the generator. Recycling retains learning for the next generation. |
+| Content preparation | New, released, or prepared. Preparing owns a generator and optional generated preview. Starting a session transfers the generator. Recycling retains learning for the next generation. Batch generation can suspend for content or fail until reset. |
 | Arrow funbox | Left and right feet alternate after each generated step. The first arrow chooses the starting foot. |
 | Web typing route | The route machine owns preparation, running, completion, result and error phases. A mounted page accepts URL settings after entry. A pending browser completion owns its acknowledgement clock. The initial preview seed is consumed once. |
 | Browser engine and audit | The loading state owns the shared initialization promise. Success publishes the API. Failed downloads can retry. Engine disposal aborts session leases. |
@@ -114,7 +114,7 @@ never add `hidden` imperatively, or a closed dialog can intercept clicks.
 | Settings and challenges | The importer accepts one file read or one import at a time. A new modal opening invalidates earlier work. Challenge setup owns a request identity so only the current setup can clear its loading state. |
 | Connection and updates | An offline banner is eligible, visible or dismissed until reconnection. Service worker takeover may be silent or request a reload. A requested update owns its fallback timer until takeover, timeout or disposal. |
 | Audio | A loading sample can queue playback. A ready sample owns the decoded buffer. Failed and disposed samples stay silent. Only a playing voice owns a buffer source. |
-| Result and overlay views | Word highlighting measures before painting and invalidates old measurements on history changes. XP breakdowns progress through display, skip or hold, and hide. Timeline playback and the FPS counter own frames only while running. Tooltip focus cancels pending pointer dismissal. |
+| Result and overlay views | Word highlighting measures before painting and invalidates old measurements on history changes. XP breakdowns progress through display, skip or hold, and hide. Timeline playback and the FPS counter own frames only while running. Tooltip focus cancels pending pointer dismissal. Theme previews coalesce on a frame and remember whether dismissal must restore an applied preview. |
 
 ## Backend and data
 
