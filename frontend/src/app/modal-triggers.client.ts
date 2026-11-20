@@ -1,8 +1,8 @@
-import { authEvent } from "../../events/auth";
-import { googleSignUpEvent } from "../../events/google-sign-up";
-import { setPendingGoogleSignUpUser } from "../../states/google-sign-up";
-import { showModal } from "../../states/modals";
-import { getLastSignedOutResult } from "../../states/test";
+import { authEvent } from "../ts/events/auth";
+import { googleSignUpEvent } from "../ts/events/google-sign-up";
+import { setPendingGoogleSignUpUser } from "../ts/states/google-sign-up";
+import { showModal } from "../ts/states/modals";
+import { getLastSignedOutResult } from "../ts/states/test";
 
 // Lives outside the lazily loaded modal modules so events fired before a
 // modal chunk loads still open it.

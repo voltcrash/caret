@@ -11,7 +11,7 @@ const { loads } = vi.hoisted(() => ({
 }));
 
 vi.mock("virtual:env-config", () => ({ envConfig: { devTools: false } }));
-vi.mock("../../../src/ts/components/dev/TanstackDevtools", () => {
+vi.mock("../../src/app/tanstack-devtools.client", () => {
   loads.tanstack();
   return { TanStackDevtools: () => null };
 });
@@ -19,20 +19,17 @@ vi.mock("@solid-devtools/overlay", () => {
   loads.solid();
   return { attachDevtoolsOverlay: vi.fn() };
 });
-vi.mock("../../../src/ts/components/modals/DevOptionsModal", () => {
+vi.mock("../../src/ts/components/modals/DevOptionsModal", () => {
   loads.options();
   return { DevOptionsModal: () => <div data-testid="dev-options" /> };
 });
-vi.mock("../../../src/ts/components/modals/EventLogViewerModal", () => {
+vi.mock("../../src/ts/components/modals/EventLogViewerModal", () => {
   loads.events();
   return { EventLogViewerModal: () => <div data-testid="event-log" /> };
 });
 
-import { DevTools } from "../../../src/ts/components/dev/DevTools";
-import {
-  hideModalAndClearChain,
-  showModal,
-} from "../../../src/ts/states/modals";
+import { DevTools } from "../../src/app/dev-tools.client";
+import { hideModalAndClearChain, showModal } from "../../src/ts/states/modals";
 
 afterEach(() => {
   cleanup();

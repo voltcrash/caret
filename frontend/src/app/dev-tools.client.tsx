@@ -1,24 +1,24 @@
 import { JSXElement, lazy, onMount, Show, Suspense } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
-import { getModalVisibility } from "../../states/modals";
+import { getModalVisibility } from "../ts/states/modals";
 
 // oxlint-disable-next-line caret-rules/no-module-let -- Assigned once at module load in development builds.
 let DevComponents: (() => JSXElement) | undefined;
 
 if (import.meta.env.DEV) {
   const LazyTanstackDevtools = lazy(async () =>
-    import("./TanstackDevtools").then((m) => ({
+    import("./tanstack-devtools.client").then((m) => ({
       default: m.TanStackDevtools,
     })),
   );
   const LazyDevOptionsModal = lazy(async () =>
-    import("../modals/DevOptionsModal").then((m) => ({
+    import("../ts/components/modals/DevOptionsModal").then((m) => ({
       default: m.DevOptionsModal,
     })),
   );
   const LazyEventLogViewerModal = lazy(async () =>
-    import("../modals/EventLogViewerModal").then((m) => ({
+    import("../ts/components/modals/EventLogViewerModal").then((m) => ({
       default: m.EventLogViewerModal,
     })),
   );

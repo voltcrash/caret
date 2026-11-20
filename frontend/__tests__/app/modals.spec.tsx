@@ -4,24 +4,24 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 const { simpleMounts } = vi.hoisted(() => ({
   simpleMounts: vi.fn(),
 }));
-vi.mock("../../../src/ts/components/modals/modal-triggers", () => ({
+vi.mock("../../src/app/modal-triggers.client", () => ({
   useModalTriggers: () => undefined,
 }));
-vi.mock("../../../src/ts/components/modals/Commandline", () => ({
+vi.mock("../../src/ts/components/modals/Commandline", () => ({
   Commandline: () => <div data-testid="commandline" />,
 }));
-vi.mock("../../../src/ts/components/modals/CookiesModal", () => ({
+vi.mock("../../src/ts/components/modals/CookiesModal", () => ({
   CookiesModal: () => <div data-testid="cookies" />,
 }));
-vi.mock("../../../src/ts/components/modals/SimpleModal", () => ({
+vi.mock("../../src/ts/components/modals/SimpleModal", () => ({
   SimpleModal: () => {
     simpleMounts();
     return <div data-testid="simple" />;
   },
 }));
 
-import { Modals } from "../../../src/ts/components/modals/Modals";
-import { hideModal, showModal } from "../../../src/ts/states/modals";
+import { Modals } from "../../src/app/modals.client";
+import { hideModal, showModal } from "../../src/ts/states/modals";
 
 describe("Modals", () => {
   afterEach(() => {
