@@ -1,6 +1,5 @@
 [
   "src/ts/components/layout/header/Nav.tsx -> src/features/account/settled.client",
-  "src/ts/components/standalone/OAuthCallback.tsx -> src/features/auth/callback",
   "src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client",
   "src/ts/states/result-filters.ts -> src/features/account/components/utils",
   "src/ts/states/settings-sections.ts -> src/features/settings/tabs",
