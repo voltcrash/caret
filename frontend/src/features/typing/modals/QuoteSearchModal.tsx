@@ -18,7 +18,7 @@ import { HighlightedText } from "../../../ts/components/common/HighlightedText";
 import { InputField } from "../../../ts/components/ui/form/InputField";
 import Select from "../../../ts/components/ui/Select";
 import { setConfig } from "../../../ts/config/setters";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import * as DB from "../../../ts/db";
 import { createDebouncedEffectOn } from "../../../ts/hooks/effects";
 import { isAuthenticated } from "../../../ts/states/core";
@@ -266,7 +266,7 @@ export function QuoteSearchModal(): JSXElement {
     }
 
     const quoteSearchService = getSearchService(
-      getMutableConfig().language,
+      peekConfig().language,
       allQuotes,
       (quote: Quote) => `${quote.text} ${quote.id} ${quote.source}`,
     );
@@ -382,10 +382,10 @@ export function QuoteSearchModal(): JSXElement {
   };
 
   const handleAfterShow = async (): Promise<void> => {
-    const quotesLanguage = await getLanguage(getMutableConfig().language);
+    const quotesLanguage = await getLanguage(peekConfig().language);
     setIsRtl(quotesLanguage?.rightToLeft ?? false);
     const { quotes: fetchedQuotes } = await QuotesController.getQuotes(
-      getMutableConfig().language,
+      peekConfig().language,
     );
     setQuotes(fetchedQuotes);
     performSearch(form.state.values.searchText);

@@ -1,5 +1,5 @@
 import { captureApplication } from "./application";
-import { getMutableConfig } from "../ts/config/store";
+import { peekConfig } from "../ts/config/store";
 import { setFontFace, setFontFamily } from "../ts/states/app";
 import fileStorage from "../ts/utils/file-storage";
 import { getLanguage } from "../ts/utils/json-data";
@@ -7,7 +7,7 @@ import { replaceUnderscoresWithSpaces } from "../ts/utils/strings";
 
 export async function applyFontFamily(): Promise<void> {
   const lease = captureApplication();
-  const config = getMutableConfig();
+  const config = peekConfig();
   const selectedFont = config.fontFamily;
   const language = config.language;
   let font = replaceUnderscoresWithSpaces(selectedFont);

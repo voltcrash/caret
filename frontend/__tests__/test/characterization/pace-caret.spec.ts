@@ -84,7 +84,7 @@ vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
 import { nativeSession } from "../../__harness__/native-engine";
 import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
 import { encodeText } from "@caret/typing-engine/text";
-import { getMutableConfig } from "../../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import * as PaceCaret from "../../../src/features/typing/runtime/pace-caret";
 import * as TestWords from "../../../src/features/typing/runtime/test/words";
@@ -128,7 +128,7 @@ beforeEach(() => {
     goTo: [],
     localPb: undefined,
   });
-  Object.assign(getMutableConfig(), getDefaultConfig(), {
+  Object.assign(peekConfig(), getDefaultConfig(), {
     mode: "words",
     words: 3,
     paceCaret: "custom",
@@ -139,7 +139,7 @@ beforeEach(() => {
   TestWords.words.push("hi ", 0);
   TestWords.words.push("you ", 0);
   TestWords.words.push("all", 0);
-  mocks.session = nativeSession(getMutableConfig(), ["hi ", "you ", "all"]);
+  mocks.session = nativeSession(peekConfig(), ["hi ", "you ", "all"]);
   getEngineSession().attach();
   getEngineSession().start(performance.now());
 });
@@ -198,7 +198,7 @@ describe("pace caret", () => {
   });
 
   it("ignores corrections in blind mode", async () => {
-    getMutableConfig().blindMode = true;
+    setConfigStore("blindMode", true);
     await PaceCaret.init();
     PaceCaret.start();
     commit("x ");
@@ -240,7 +240,7 @@ describe("pace caret", () => {
   });
 
   it("disables itself for speeds below one", async () => {
-    getMutableConfig().paceCaretCustomSpeed = 0.5;
+    setConfigStore("paceCaretCustomSpeed", 0.5);
     await PaceCaret.init();
     expect(mocks.paceWpm).toBeUndefined();
     PaceCaret.start();
@@ -248,14 +248,14 @@ describe("pace caret", () => {
   });
 
   it("uses the local personal best", async () => {
-    getMutableConfig().paceCaret = "pb";
+    setConfigStore("paceCaret", "pb");
     mocks.localPb = { wpm: 120 };
     await PaceCaret.init();
     expect(mocks.paceWpm).toBe(120);
   });
 
   it("keeps the last test speed, or the fastest one while repeating", async () => {
-    getMutableConfig().paceCaret = "last";
+    setConfigStore("paceCaret", "last");
     PaceCaret.setLastTestWpm(70);
     await PaceCaret.init();
     expect(mocks.paceWpm).toBe(70);

@@ -4,7 +4,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 import "../../../__harness__/mock-static";
 import { ImportExport } from "../../../../src/features/settings/components/custom-setting/ImportExport";
 import { Download } from "../../../../src/ts/components/common/Download";
-import { getMutableConfig } from "../../../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../../src/ts/constants/default-config";
 import {
   hideModalAndClearChain,
@@ -21,7 +21,7 @@ const writeText = vi.fn<(text: string) => Promise<void>>();
 const createObjectURL = vi.fn((_data: Blob) => "blob:settings");
 
 beforeEach(() => {
-  Object.assign(getMutableConfig(), getDefaultConfig());
+  Object.assign(peekConfig(), getDefaultConfig());
   writeText.mockReset().mockResolvedValue();
   createObjectURL.mockClear();
   vi.spyOn(navigator.clipboard, "writeText").mockImplementation(writeText);
@@ -70,7 +70,7 @@ async function readBlob(blob: Blob): Promise<string> {
 }
 
 it("copies clean JSON, then downloads that same snapshot as settings.json", async () => {
-  Object.assign(getMutableConfig(), {
+  Object.assign(peekConfig(), {
     theme: "miami_nights",
     ads: "result",
     monkey: true,
@@ -97,7 +97,7 @@ it("copies clean JSON, then downloads that same snapshot as settings.json", asyn
   expect(copied).toContain('"customLayoutfluid": [\n    "qwerty",');
   expect(copied).not.toContain('"ads":');
   expect(copied).not.toContain('"monkey":');
-  getMutableConfig().theme = "nord";
+  setConfigStore("theme", "nord");
 
   fireEvent.click(view.getByRole("button", { name: "download" }));
   const blob = createObjectURL.mock.calls[0]?.[0];

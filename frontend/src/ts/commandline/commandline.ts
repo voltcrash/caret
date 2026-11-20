@@ -4,7 +4,7 @@ import { onCleanup } from "solid-js";
 import { blurTest } from "../typing-host";
 import * as CommandlineLists from "./lists";
 
-import { getMutableConfig } from "../config/store";
+import { peekConfig } from "../config/store";
 
 import { showNoticeNotification } from "../states/notifications";
 import { getCommandlineSubgroup } from "../states/core";
@@ -81,7 +81,7 @@ export async function prepareCommandline(): Promise<void> {
       } else {
         commandlineState.subgroupOverride = null;
         commandlineState.usingSingleList =
-          getMutableConfig().singleListCommandLine === "on";
+          peekConfig().singleListCommandLine === "on";
         showNoticeNotification(
           `Command list ${overrideStringOrGroup} not found`,
         );
@@ -93,8 +93,7 @@ export async function prepareCommandline(): Promise<void> {
   } else {
     commandlineState.subgroupOverride = null;
     commandlineState.usingSingleList =
-      getMutableConfig().singleListCommandLine === "on" &&
-      !isBrowsingOnTouch("");
+      peekConfig().singleListCommandLine === "on" && !isBrowsingOnTouch("");
   }
 
   let showInputCommand: Command | undefined = undefined;
@@ -161,7 +160,7 @@ const getFilterInput = createAccountOwned(() => {
     commandlineState.inputValue = value;
     if (commandlineState.subgroupOverride === null) {
       commandlineState.usingSingleList =
-        (getMutableConfig().singleListCommandLine === "on" ||
+        (peekConfig().singleListCommandLine === "on" ||
           value.startsWith(">")) &&
         !isBrowsingOnTouch(value);
     }
@@ -204,7 +203,7 @@ export async function onCommandlineKeyDown(e: KeyboardEvent): Promise<void> {
     (e.ctrlKey && (e.key.toLowerCase() === "k" || e.key.toLowerCase() === "p"))
   ) {
     if (
-      getMutableConfig().singleListCommandLine === "on" &&
+      peekConfig().singleListCommandLine === "on" &&
       commandlineState.subgroupOverride === null &&
       commandlineState.inputValue === "" &&
       commandlineState.lastSingleListModeInputValue !== ""

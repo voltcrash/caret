@@ -2,7 +2,7 @@ import type { Config as ConfigSchema } from "@caret/schemas/configs";
 import { configMetadata } from "./metadata";
 import { getDefaultConfig } from "../constants/default-config";
 import { resetPendingConfigSync } from "./persistence";
-import { getMutableConfig, setFullConfigStore } from "./store";
+import { peekConfig, setFullConfigStore } from "./store";
 
 export const __testing = {
   configMetadata,
@@ -10,5 +10,5 @@ export const __testing = {
     setFullConfigStore({ ...getDefaultConfig(), ...setConfig });
     resetPendingConfigSync({});
   },
-  getConfig: () => getMutableConfig(),
+  getConfig: () => peekConfig(),
 };

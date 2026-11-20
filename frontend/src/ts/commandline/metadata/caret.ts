@@ -1,6 +1,6 @@
 import { CommandlineConfigMetadataObject } from "./types";
 import { restartTest } from "../../typing-host";
-import { getMutableConfig } from "../../config/store";
+import { peekConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 
 export const caretMetadata = {
@@ -27,9 +27,7 @@ export const caretMetadata = {
       configValue: "custom",
       inputValueConvert: (value) => {
         let newVal = Number(value);
-        newVal = getTypingSpeedUnit(getMutableConfig().typingSpeedUnit).toWpm(
-          newVal,
-        );
+        newVal = getTypingSpeedUnit(peekConfig().typingSpeedUnit).toWpm(newVal);
         return newVal;
       },
       afterExec: () => {

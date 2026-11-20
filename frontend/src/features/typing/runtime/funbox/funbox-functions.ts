@@ -5,7 +5,7 @@ import {
   setWordsVisible,
   setWordsWrapperVisible,
 } from "../../../../ts/states/funbox";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { setConfig, toggleFunbox } from "../../../../ts/config/setters";
 import { save } from "./funbox-memory";
 import { ttsEvent } from "../events/tts";
@@ -57,7 +57,7 @@ async function readAheadHandleKeydown(event: KeyboardEvent): Promise<void> {
     (currentInput !== "" ||
       getInputForWord(getActiveWordIndex() - 1) !==
         TestWords.words.get(getActiveWordIndex() - 1)?.textWithCommit ||
-      getMutableConfig().freedomMode)
+      peekConfig().freedomMode)
   ) {
     setReadAheadDisabled(true);
   } else if (event.key === " ") {
@@ -68,7 +68,7 @@ async function readAheadHandleKeydown(event: KeyboardEvent): Promise<void> {
 const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   "58008": {
     rememberSettings(): void {
-      save("numbers", getMutableConfig().numbers);
+      save("numbers", peekConfig().numbers);
     },
     getEmulatedChar(event: KeyboardEvent): string | null {
       if (event.key === "Enter") {
@@ -84,7 +84,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", getMutableConfig().keymapMode);
+      save("keymapMode", peekConfig().keymapMode);
     },
   },
   tts: {
@@ -94,7 +94,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", getMutableConfig().keymapMode);
+      save("keymapMode", peekConfig().keymapMode);
     },
     toggleScript(params: string[]): void {
       if (window.speechSynthesis === undefined) {
@@ -106,7 +106,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   },
   arrows: {
     rememberSettings(): void {
-      save("highlightMode", getMutableConfig().highlightMode);
+      save("highlightMode", peekConfig().highlightMode);
     },
     getEmulatedChar(event: KeyboardEvent): string | null {
       const ekey = event.key;
@@ -139,8 +139,8 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   capitals: {},
   layout_mirror: {
     applyConfig(): void {
-      let layout = getMutableConfig().layout;
-      if (getMutableConfig().layout === "default") {
+      let layout = peekConfig().layout;
+      if (peekConfig().layout === "default") {
         layout = "qwerty";
       }
       setConfig("layout", layout, {
@@ -151,13 +151,13 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", getMutableConfig().keymapMode);
-      save("layout", getMutableConfig().layout);
+      save("keymapMode", peekConfig().keymapMode);
+      save("layout", peekConfig().layout);
     },
   },
   layoutfluid: {
     applyConfig(): void {
-      const layout = getMutableConfig().customLayoutfluid[0] ?? "qwerty";
+      const layout = peekConfig().customLayoutfluid[0] ?? "qwerty";
 
       setConfig("layout", layout as Layout, {
         nosave: true,
@@ -167,13 +167,13 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", getMutableConfig().keymapMode);
-      save("layout", getMutableConfig().layout);
-      save("keymapLayout", getMutableConfig().keymapLayout);
+      save("keymapMode", peekConfig().keymapMode);
+      save("layout", peekConfig().layout);
+      save("keymapLayout", peekConfig().keymapLayout);
     },
     handleSpace(): void {
-      if (getMutableConfig().mode !== "time") {
-        const layouts = getMutableConfig().customLayoutfluid;
+      if (peekConfig().mode !== "time") {
+        const layouts = peekConfig().customLayoutfluid;
         const outOf: number = TestWords.words.length;
         const wordsPerLayout = Math.floor(outOf / layouts.length);
         const index = Math.floor((getActiveWordIndex() + 1) / wordsPerLayout);
@@ -210,7 +210,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       }
     },
     getResultContent(): string {
-      return getMutableConfig().customLayoutfluid.join(" ");
+      return peekConfig().customLayoutfluid.join(" ");
     },
   },
   gibberish: {},
@@ -218,7 +218,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   specials: {},
   read_ahead_easy: {
     rememberSettings(): void {
-      save("highlightMode", getMutableConfig().highlightMode);
+      save("highlightMode", peekConfig().highlightMode);
     },
     async handleKeydown(event): Promise<void> {
       await readAheadHandleKeydown(event);
@@ -226,7 +226,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   },
   read_ahead: {
     rememberSettings(): void {
-      save("highlightMode", getMutableConfig().highlightMode);
+      save("highlightMode", peekConfig().highlightMode);
     },
     async handleKeydown(event): Promise<void> {
       await readAheadHandleKeydown(event);
@@ -234,7 +234,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   },
   read_ahead_hard: {
     rememberSettings(): void {
-      save("highlightMode", getMutableConfig().highlightMode);
+      save("highlightMode", peekConfig().highlightMode);
     },
     async handleKeydown(event): Promise<void> {
       await readAheadHandleKeydown(event);
@@ -246,17 +246,17 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       setConfig("showAllLines", true, {
         nosave: true,
       });
-      if (getMutableConfig().keymapMode === "next") {
+      if (peekConfig().keymapMode === "next") {
         setConfig("keymapMode", "react", {
           nosave: true,
         });
       }
     },
     rememberSettings(): void {
-      save("mode", getMutableConfig().mode);
-      save("showAllLines", getMutableConfig().showAllLines);
-      if (getMutableConfig().keymapMode === "next") {
-        save("keymapMode", getMutableConfig().keymapMode);
+      save("mode", peekConfig().mode);
+      save("showAllLines", peekConfig().showAllLines);
+      if (peekConfig().keymapMode === "next") {
+        save("keymapMode", peekConfig().keymapMode);
       }
     },
     start(): void {
@@ -266,14 +266,14 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
     restart(): void {
       MemoryTimer.start(Math.round(Math.pow(TestWords.words.length, 1.2)));
       setWordsVisible(true);
-      if (getMutableConfig().keymapMode === "next") {
+      if (peekConfig().keymapMode === "next") {
         setConfig("keymapMode", "react");
       }
     },
   },
   nospace: {
     rememberSettings(): void {
-      save("highlightMode", getMutableConfig().highlightMode);
+      save("highlightMode", peekConfig().highlightMode);
     },
   },
   poetry: {},
@@ -282,18 +282,18 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   pseudolang: {},
   IPv4: {
     rememberSettings(): void {
-      save("numbers", getMutableConfig().numbers);
+      save("numbers", peekConfig().numbers);
     },
   },
   IPv6: {
     rememberSettings(): void {
-      save("numbers", getMutableConfig().numbers);
+      save("numbers", peekConfig().numbers);
     },
   },
   binary: {},
   hexadecimal: {
     rememberSettings(): void {
-      save("punctuation", getMutableConfig().punctuation);
+      save("punctuation", peekConfig().punctuation);
     },
   },
   zipf: {},

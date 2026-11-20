@@ -8,7 +8,7 @@ import type {
   PlaySoundOnClick,
   PlaySoundOnError,
 } from "@caret/schemas/configs";
-import { getMutableConfig } from "../config/store";
+import { peekConfig } from "../config/store";
 import { configEvent } from "../events/config";
 
 type Audio = typeof import("../../app/audio.client");
@@ -47,7 +47,7 @@ const audio = createAppOwned(() => {
 export function useSoundEvents(): void {
   const current = audio();
   const preload = (): void => {
-    if (getMutableConfig().playSoundOnClick !== "off") void current.load();
+    if (peekConfig().playSoundOnClick !== "off") void current.load();
   };
   configEvent.useListener(({ key }) => {
     if (key === "playSoundOnClick") preload();
@@ -88,19 +88,19 @@ export async function previewError(value: PlaySoundOnError): Promise<void> {
   }
 }
 export async function playClick(codeOverride?: string): Promise<void> {
-  if (getMutableConfig().playSoundOnClick !== "off") {
+  if (peekConfig().playSoundOnClick !== "off") {
     await withAudio(async (implementation) =>
       implementation.playClick(codeOverride),
     );
   }
 }
 export async function playError(): Promise<void> {
-  if (getMutableConfig().playSoundOnError !== "off") {
+  if (peekConfig().playSoundOnError !== "off") {
     await withAudio(async (implementation) => implementation.playError());
   }
 }
 export async function playTimeWarning(): Promise<void> {
-  if (getMutableConfig().playTimeWarning !== "off") {
+  if (peekConfig().playTimeWarning !== "off") {
     await withAudio(async (implementation) => implementation.playTimeWarning());
   }
 }

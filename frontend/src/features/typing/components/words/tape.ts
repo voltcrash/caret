@@ -5,7 +5,7 @@ import { outerWidth } from "./dimensions";
 import { getActiveWordElement } from "./elements";
 import { hasClassName } from "../../../../ts/utils/cn";
 import { animate } from "animejs";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
@@ -197,7 +197,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   /* calculate current word width to add to #words margin */
   let currentWordWidth = 0;
   const inputLength = getCurrentInput().length;
-  if (getMutableConfig().tapeMode === "letter" && inputLength > 0) {
+  if (peekConfig().tapeMode === "letter" && inputLength > 0) {
     const letters = Array.from(
       activeWordEl.querySelectorAll<HTMLElement>("letter"),
     );
@@ -205,7 +205,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
     for (let i = 0; i < inputLength; i++) {
       const letter = letters[i];
       if (
-        (getMutableConfig().blindMode || getMutableConfig().hideExtraLetters) &&
+        (peekConfig().blindMode || peekConfig().hideExtraLetters) &&
         letter !== undefined &&
         hasClassName(letter.className, "extra")
       ) {
@@ -222,8 +222,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   }
 
   /* change to new #words & .afterNewline margins */
-  const tapeMarginPx =
-    wordsWrapperWidth * (getMutableConfig().tapeMargin / 100);
+  const tapeMarginPx = wordsWrapperWidth * (peekConfig().tapeMargin / 100);
   let newMarginOffset = wordsWidthBeforeActive + currentWordWidth;
   let newMargin = tapeMarginPx - newMarginOffset;
   if (isTestRightToLeft) {
@@ -236,14 +235,14 @@ export async function scrollTape(noAnimation = false): Promise<void> {
 
   const caretScrollOptions = {
     newValue: newMarginOffset * -1,
-    duration: getMutableConfig().smoothLineScroll ? duration : 0,
+    duration: peekConfig().smoothLineScroll ? duration : 0,
     ease,
   };
 
   Caret.getCaret().handleTapeScroll(caretScrollOptions);
   PaceCaret.getCaret().handleTapeScroll(caretScrollOptions);
 
-  if (getMutableConfig().smoothLineScroll) {
+  if (peekConfig().smoothLineScroll) {
     animate(getWordsEl(), {
       marginLeft: newMargin,
       duration,

@@ -6,7 +6,7 @@ import { applyEngineSettings } from "../ts/anim";
 import { Theme } from "../ts/components/core/Theme";
 import { ThemeEvents } from "../ts/components/core/ThemeEvents";
 import { loadFromLocalStorage } from "../ts/config/lifecycle";
-import { getMutableConfig } from "../ts/config/store";
+import { peekConfig } from "../ts/config/store";
 import { deactivateAnalytics } from "../ts/controllers/analytics-controller";
 import { useThemeEvents } from "../ts/controllers/theme-controller";
 import { activateWhatsAccepted, getAcceptedCookies } from "../ts/cookies";
@@ -32,7 +32,7 @@ export default function BrowserRuntime(): JSXElement {
     onCleanup(installLogger());
     onCleanup(
       addToGlobal({
-        config: getMutableConfig(),
+        config: peekConfig(),
         glarsesMode,
         toggleDebugLogs,
         toggleSentryDebug,

@@ -1,6 +1,6 @@
 import { onCleanup } from "solid-js";
 import { captureApplication, createAppOwned } from "./application";
-import { getMutableConfig } from "../ts/config/store";
+import { peekConfig } from "../ts/config/store";
 import { configEvent } from "../ts/events/config";
 import { randomElementFromArray } from "../ts/utils/arrays";
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
@@ -69,7 +69,7 @@ function createAudio(): {
       ],
     };
     if (lifetime.signal.aborted) return;
-    setVolume(getMutableConfig().soundVolume);
+    setVolume(peekConfig().soundVolume);
   }
   async function init(): Promise<void> {
     //preload error sounds
@@ -77,7 +77,7 @@ function createAudio(): {
     if (lifetime.signal.aborted) return;
 
     //preload sounds
-    const clickId = getMutableConfig().playSoundOnClick;
+    const clickId = peekConfig().playSoundOnClick;
     if (clickId === "off") return;
 
     if (!loadedBundles.has(clickId)) {
@@ -216,7 +216,7 @@ function createAudio(): {
     try {
       audioCtx = new AudioContext();
       sampleGain = audioCtx.createGain();
-      sampleGain.gain.value = getMutableConfig().soundVolume;
+      sampleGain.gain.value = peekConfig().soundVolume;
       sampleGain.connect(audioCtx.destination);
       for (const event of unlockEvents) {
         document.addEventListener(event, resumeAudioContext, true);
@@ -290,7 +290,7 @@ function createAudio(): {
     const gainNode = audioCtx.createGain();
 
     oscillatorNode.type = "sine";
-    gainNode.gain.value = getMutableConfig().soundVolume / 10;
+    gainNode.gain.value = peekConfig().soundVolume / 10;
     oscillatorNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     oscillatorNode.frequency.value = currentFrequency;
@@ -341,7 +341,7 @@ function createAudio(): {
     const gainNode = audioCtx.createGain();
 
     oscillatorNode.type = options.oscillatorType;
-    gainNode.gain.value = getMutableConfig().soundVolume / 10;
+    gainNode.gain.value = peekConfig().soundVolume / 10;
 
     oscillatorNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
@@ -352,7 +352,7 @@ function createAudio(): {
     oscillatorNode.stop(audioCtx.currentTime + 0.5);
   }
   async function playClick(codeOverride?: string): Promise<void> {
-    const val = getMutableConfig().playSoundOnClick;
+    const val = peekConfig().playSoundOnClick;
     if (val === "off") return;
 
     const config = soundsConfig[val];
@@ -383,7 +383,7 @@ function createAudio(): {
     soundToPlay.play();
   }
   async function playError(): Promise<void> {
-    const sound = getMutableConfig().playSoundOnError;
+    const sound = peekConfig().playSoundOnError;
     if (sound === "off") return;
     if (errorSounds === null) await initErrorSound();
     if (lifetime.signal.aborted) return;
@@ -438,7 +438,7 @@ function createAudio(): {
     });
   };
   function useSoundEvents(): void {
-    if (getMutableConfig().playSoundOnClick !== "off") preload();
+    if (peekConfig().playSoundOnClick !== "off") preload();
     configEvent.useListener(({ key, newValue }) => {
       if (key === "playSoundOnClick" && newValue !== "off") preload();
       if (key === "soundVolume") {

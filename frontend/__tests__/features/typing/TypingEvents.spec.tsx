@@ -33,7 +33,7 @@ const { state, ui, popupVisible } = vi.hoisted(() => ({
   popupVisible: vi.fn(),
 }));
 vi.mock("../../../src/ts/config/store", () => ({
-  getMutableConfig: (() => {
+  peekConfig: (() => {
     const storedConfig = {
       mode: "words",
       words: 10,

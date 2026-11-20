@@ -1,9 +1,9 @@
 import { scrollTape } from "./tape";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
 
 export function updateWordsMargin(): void {
-  if (getMutableConfig().tapeMode !== "off") {
+  if (peekConfig().tapeMode !== "off") {
     Object.assign(getWordsEl().style, { marginLeft: "0" });
     void scrollTape(true);
   } else {

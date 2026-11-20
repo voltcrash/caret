@@ -5,7 +5,7 @@ import type {
 } from "@caret/web-shared/events/types";
 import { getEngineSession } from "../session.client";
 import { getActiveWordIndex } from "../../../../ts/states/test";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 
 /** Legacy string transport is a mechanical view of the owned native session. */
 export const getTestSession = getEngineSession;
@@ -32,7 +32,7 @@ export const getAllTestEvents = (): EventLog["events"] =>
 export const resetTestEvents = (): void => getEngineSession().reset();
 export function buildEventLog(): EventLog {
   const log = getEngineSession().buildEventLog();
-  if (getMutableConfig().funbox.length === 0) {
+  if (peekConfig().funbox.length === 0) {
     delete log.context.isFunboxWithNospacePropertyActive;
   }
   // Native validation/wire fixtures check the discriminants and optional flags;

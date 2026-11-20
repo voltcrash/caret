@@ -35,7 +35,7 @@ import type {
   InsertionLayout,
   RestartOptions,
 } from "@caret/typing-engine/browser.client";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import * as CustomText from "./content/custom-text";
 import type { CompletedEvent } from "@caret/schemas/results";
 
@@ -179,7 +179,7 @@ export const getEngineSession = createAppOwned(() => {
     return update;
   };
   const synchronize = (now: number): void => {
-    const mutable = getMutableConfig();
+    const mutable = peekConfig();
     if (
       configuration === undefined ||
       !engineConfigMatches(configuration, mutable)
@@ -277,7 +277,7 @@ export const getEngineSession = createAppOwned(() => {
       lastTick = 0;
       running = false;
       completion = { phase: "open" };
-      configuration = projectEngineConfig(getMutableConfig());
+      configuration = projectEngineConfig(peekConfig());
       limitConfiguration = CustomText.getLimit();
       paceCommand({ op: "reset", wpm: null });
       command({
@@ -413,7 +413,7 @@ export const getEngineSession = createAppOwned(() => {
     getReplay: (): { words: string[]; steps: ReplayStep[] } => {
       const replay = owner.api().analyze(live().log(), {
         op: "replay",
-        zen: getMutableConfig().mode === "zen",
+        zen: peekConfig().mode === "zen",
       });
       return {
         words: replay.words.map(decodeText),

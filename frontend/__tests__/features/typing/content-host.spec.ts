@@ -56,7 +56,7 @@ vi.mock("../../../src/ts/utils/json-data", async (original) => ({
 }));
 vi.mock("../../../src/ts/db", () => ({ getSnapshot: () => null }));
 import { mountApplication } from "../../../src/app/application";
-import { getMutableConfig } from "../../../src/ts/config/store";
+import { peekConfig } from "../../../src/ts/config/store";
 import { getContentHost } from "../../../src/features/typing/runtime/content/host.client";
 import {
   initialContentKey,
@@ -103,7 +103,7 @@ beforeEach(() => {
     release();
     app.dispose();
   };
-  Object.assign(getMutableConfig(), {
+  Object.assign(peekConfig(), {
     mode: "words",
     words: 1,
     language: "english",
@@ -117,7 +117,7 @@ afterEach(() => {
 });
 
 it("uses fresh randomness for legacy previews even when their configuration matches", async () => {
-  const config = getMutableConfig();
+  const config = peekConfig();
   Object.assign(config, { funbox: [] });
   const engineHash = "b".repeat(64);
   const preview = {
@@ -145,7 +145,7 @@ it("uses fresh randomness for legacy previews even when their configuration matc
 });
 
 it("reproduces a prepared preview once, then keeps later tests fresh after remount", async () => {
-  const config = getMutableConfig();
+  const config = peekConfig();
   Object.assign(config, { funbox: [] });
   const engineHash = "b".repeat(64);
   const key = await initialContentKey(config, "", engineHash);
@@ -181,7 +181,7 @@ it("reproduces a prepared preview once, then keeps later tests fresh after remou
 });
 
 it("starts the current test even if preparing the next reload fails", async () => {
-  const config = getMutableConfig();
+  const config = peekConfig();
   Object.assign(config, { funbox: [] });
   initialTypingState().initialize({
     version: 2,
@@ -314,7 +314,7 @@ it("cancels source loading when preparation expires before the engine session", 
 });
 
 it("refreshes quote lengths after failed selection and retains the raw cached-language asset", async () => {
-  Object.assign(getMutableConfig(), { mode: "quote", funbox: [] });
+  Object.assign(peekConfig(), { mode: "quote", funbox: [] });
   mocks.prepare.mockImplementationOnce(() => {
     throw new EngineFailure({
       code: "noQuoteLength",
@@ -378,7 +378,7 @@ it("shares one source fetch and one supply command for repeated observations of 
 });
 
 it("shares raw quote assets with catalog readers and projects native group indices without another fetch", async () => {
-  Object.assign(getMutableConfig(), { mode: "quote", funbox: [] });
+  Object.assign(peekConfig(), { mode: "quote", funbox: [] });
   mocks.quoteCatalog.mockReturnValue({
     language: "english",
     length: 1,

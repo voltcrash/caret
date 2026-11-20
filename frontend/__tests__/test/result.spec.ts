@@ -115,7 +115,7 @@ import {
   type ResultStats,
 } from "../../src/features/typing/state/result";
 import { __testing } from "../../src/ts/config/testing";
-import { getMutableConfig } from "../../src/ts/config/store";
+import { peekConfig } from "../../src/ts/config/store";
 import type { CompletedEvent } from "@caret/schemas/results";
 import type { Config as ConfigType } from "@caret/schemas/configs";
 import type { Quote } from "../../src/features/typing/runtime/quotes-controller";
@@ -622,7 +622,7 @@ describe("result update", () => {
     it("toggles start graphs at zero with scale", () => {
       config({ startGraphsAtZero: true });
       toggleResultChartLegend("scale");
-      expect(getMutableConfig().startGraphsAtZero).toBe(false);
+      expect(peekConfig().startGraphsAtZero).toBe(false);
     });
   });
 

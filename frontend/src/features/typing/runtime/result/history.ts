@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as CustomText from "../content/custom-text";
 import {
   getLastEventLog,
@@ -30,13 +30,12 @@ function loadWordsHistory(): boolean {
       correctedHistory: getCorrectedWordsHistory(eventLog),
       burstHistory: getWordBurstHistory(eventLog),
       getTargetWord: (i) => TestWords.words.get(i)?.textWithCommit ?? "",
-      zen: getMutableConfig().mode === "zen",
+      zen: peekConfig().mode === "zen",
       timed:
-        getMutableConfig().mode === "time" ||
-        (getMutableConfig().mode === "custom" &&
+        peekConfig().mode === "time" ||
+        (peekConfig().mode === "custom" &&
           CustomText.getLimitMode() === "time") ||
-        (getMutableConfig().mode === "custom" &&
-          CustomText.getLimitValue() === 0),
+        (peekConfig().mode === "custom" && CustomText.getLimitValue() === 0),
       korean: getKoreanStatus(),
     }),
   );

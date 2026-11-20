@@ -1,14 +1,12 @@
 import { setClass } from "./elements";
 import { hasClassName } from "../../../../ts/utils/cn";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { setResultState } from "../../state/result";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
 
 export function setJoiningClass(isEnabled: boolean): void {
   const joiningScript =
-    isEnabled ||
-    getMutableConfig().mode === "custom" ||
-    getMutableConfig().mode === "zen";
+    isEnabled || peekConfig().mode === "custom" || peekConfig().mode === "zen";
   if (joiningScript) {
     setClass(getWordsEl(), "joiningScript", true);
   } else {
@@ -18,7 +16,7 @@ export function setJoiningClass(isEnabled: boolean): void {
 }
 
 function canBreak(wordEl: HTMLElement): boolean {
-  if (getMutableConfig().typedEffect !== "dots") return false;
+  if (peekConfig().typedEffect !== "dots") return false;
   if (hasClassName(wordEl.className, "broken-joining")) return false;
 
   const parent = wordEl.parentElement;
@@ -64,7 +62,7 @@ export function updateWordJoining(key: string, wordsEl: HTMLElement): void {
 
   const shouldReset =
     !hasClassName(wordsEl.className, "joiningScript") ||
-    getMutableConfig().typedEffect !== "dots" ||
+    peekConfig().typedEffect !== "dots" ||
     key === "fontFamily" ||
     key === "fontSize";
 

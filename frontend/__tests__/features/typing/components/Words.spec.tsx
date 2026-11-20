@@ -139,7 +139,7 @@ import {
   getWordsInputStyle,
   getWordsWrapperHeight,
 } from "../../../../src/features/typing/state/words-layout";
-import { getMutableConfig } from "../../../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
 import { setCurrentLiveStats } from "../../../../src/ts/states/test";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
@@ -190,7 +190,7 @@ beforeEach(() => {
     input: "",
     accuracy: 97.456,
   });
-  Object.assign(getMutableConfig(), {
+  Object.assign(peekConfig(), {
     mode: "words",
     words: 15,
     fontSize: 1,
@@ -386,14 +386,14 @@ describe("Words layout", () => {
 
   it("respects tape margin and right-to-left narrow words", async () => {
     await layout();
-    getMutableConfig().tapeMode = "word";
-    getMutableConfig().tapeMargin = 25;
+    setConfigStore("tapeMode", "word");
+    setConfigStore("tapeMargin", 25);
     ui.updateWordsInputPosition();
     expect(getWordsInputStyle()).toMatchObject({
       left: "100px",
       "max-width": "75%",
     });
-    getMutableConfig().tapeMode = "off";
+    setConfigStore("tapeMode", "off");
     mocks.rtl = true;
     size(word(0), { offsetWidth: 4 });
     ui.updateWordsInputPosition();
@@ -419,15 +419,15 @@ describe("Words layout", () => {
     await layout();
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("60px");
-    getMutableConfig().showAllLines = true;
+    setConfigStore("showAllLines", true);
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("");
-    getMutableConfig().showAllLines = false;
-    getMutableConfig().mode = "zen";
+    setConfigStore("showAllLines", false);
+    setConfigStore("mode", "zen");
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("40px");
-    getMutableConfig().tapeMode = "word";
-    getMutableConfig().mode = "words";
+    setConfigStore("tapeMode", "word");
+    setConfigStore("mode", "words");
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("20px");
   });
@@ -449,7 +449,7 @@ describe("Words layout", () => {
     size(word(1), { offsetTop: 0, offsetHeight: 0 });
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("60px");
-    getMutableConfig().mode = "zen";
+    setConfigStore("mode", "zen");
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("60px");
   });
@@ -465,8 +465,8 @@ describe("Words layout", () => {
 
   it("scrolls tape and both carets by the configured margin", async () => {
     await layout();
-    getMutableConfig().tapeMode = "word";
-    getMutableConfig().tapeMargin = 25;
+    setConfigStore("tapeMode", "word");
+    setConfigStore("tapeMargin", 25);
     mocks.activeIndex = 1;
     await ui.scrollTape(true);
     expect(element.style.marginLeft).toBe("0px");
@@ -483,8 +483,8 @@ describe("Words layout", () => {
 
   it("scrolls tape by typed letter widths", async () => {
     await layout();
-    getMutableConfig().tapeMode = "letter";
-    getMutableConfig().tapeMargin = 25;
+    setConfigStore("tapeMode", "letter");
+    setConfigStore("tapeMargin", 25);
     mocks.input = "he";
     for (const letter of word(0).querySelectorAll<HTMLElement>("letter")) {
       size(letter, { offsetWidth: 10 });
@@ -502,8 +502,8 @@ describe("Words layout", () => {
     for (const spacer of [before, newline, after]) {
       size(spacer as HTMLElement, { offsetTop: 10, offsetWidth: 0 });
     }
-    getMutableConfig().tapeMode = "word";
-    getMutableConfig().tapeMargin = 25;
+    setConfigStore("tapeMode", "word");
+    setConfigStore("tapeMargin", 25);
     mocks.activeIndex = 2;
     await ui.scrollTape(true);
     expect(after?.style.marginLeft).toBe("100px");
@@ -519,8 +519,8 @@ describe("Words layout", () => {
     words.push("third", 0);
     await layout();
     size(word(0), { offsetLeft: -250 });
-    getMutableConfig().tapeMode = "word";
-    getMutableConfig().tapeMargin = 25;
+    setConfigStore("tapeMode", "word");
+    setConfigStore("tapeMargin", 25);
     mocks.activeIndex = 2;
     await ui.scrollTape(true);
     expect(word(0)).toBeNull();
@@ -550,8 +550,8 @@ describe("Words layout", () => {
     )) {
       size(spacer, { offsetTop: 10, offsetWidth: 0 });
     }
-    getMutableConfig().tapeMode = "word";
-    getMutableConfig().tapeMargin = 25;
+    setConfigStore("tapeMode", "word");
+    setConfigStore("tapeMargin", 25);
     mocks.activeIndex = 1;
     await ui.scrollTape(true);
     expect(leading.isConnected).toBe(false);
@@ -620,7 +620,7 @@ describe("Words layout", () => {
 
 describe("Words zen backtracking", () => {
   it("removes everything after the active zen word when going back", async () => {
-    getMutableConfig().mode = "zen";
+    setConfigStore("mode", "zen");
     ui.onTestRestart("testPage");
     await flushFrames();
     ui.appendEmptyWordElement(1);
@@ -641,7 +641,7 @@ describe("Words hints and joining", () => {
     "shows typo hints in %s mode",
     async (mode) => {
       await layout();
-      getMutableConfig().indicateTypos = mode;
+      setConfigStore("indicateTypos", mode);
       await ui.updateWordLetters({
         wordIndex: 0,
         input: "hxllo",
@@ -661,7 +661,7 @@ describe("Words hints and joining", () => {
 
   it("breaks typed joining words for dots and restores them on backtracking", async () => {
     await layout();
-    getMutableConfig().typedEffect = "dots";
+    setConfigStore("typedEffect", "dots");
     ui.setJoiningClass(true);
     vi.spyOn(word(0), "getBoundingClientRect").mockReturnValue({
       width: 100,
@@ -680,7 +680,7 @@ describe("Words hints and joining", () => {
 
   it("marks wrapped joining words and resets when the font changes", async () => {
     await layout();
-    getMutableConfig().typedEffect = "dots";
+    setConfigStore("typedEffect", "dots");
     ui.setJoiningClass(true);
     const letters = word(0).querySelectorAll<HTMLElement>("letter");
     size(letters[1] as HTMLElement, { offsetTop: 20 });
@@ -688,7 +688,7 @@ describe("Words hints and joining", () => {
     ui.updateActiveElement({ direction: "forward" });
     await flushFrames();
     expect(word(0)).toHaveClass("needs-wrap", "broken-joining");
-    getMutableConfig().typedEffect = "keep";
+    setConfigStore("typedEffect", "keep");
     configEvent.dispatch({ key: "fontSize", newValue: 1, previousValue: 1 });
     expect(word(0)).not.toHaveClass("needs-wrap", "broken-joining");
   });
@@ -697,7 +697,7 @@ describe("Words hints and joining", () => {
 describe("Words lifecycle", () => {
   it("updates accuracy, sound and the next key after text input", async () => {
     await layout();
-    getMutableConfig().keymapMode = "next";
+    setConfigStore("keymapMode", "next");
     mocks.input = "h";
     ui.afterTestTextInput(true);
     expect(mocks.power).toHaveBeenCalledWith(true);

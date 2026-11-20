@@ -1,7 +1,7 @@
 import { createAppOwned } from "../../../../app/application";
 import { appObject } from "../../../../app/state";
 import { resultAnnotations } from "./context";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
 import { getResultChartDataset, getResultChartScale } from "../../state/result";
 
@@ -42,9 +42,7 @@ export function updateMinMaxChartValues(): void {
   }
 
   if (maxAnnotation !== null) {
-    const typingSpeedUnit = getTypingSpeedUnit(
-      getMutableConfig().typingSpeedUnit,
-    );
+    const typingSpeedUnit = getTypingSpeedUnit(peekConfig().typingSpeedUnit);
     const lpbRange = typingSpeedUnit.fromWpm(20);
     if (
       bounds.max >= maxAnnotation - lpbRange &&
@@ -58,7 +56,7 @@ export function updateMinMaxChartValues(): void {
 
   bounds.min = 0;
 
-  if (!getMutableConfig().startGraphsAtZero) {
+  if (!peekConfig().startGraphsAtZero) {
     bounds.min = Math.min(...values);
 
     // Round down to nearest multiple of 10

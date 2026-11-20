@@ -1,7 +1,7 @@
 import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { getCaretElement } from "../../../ts/states/test-dom";
 import { getTheme } from "../../../ts/states/theme";
 import { requestDebouncedAnimationFrame } from "../../../ts/utils/debounced-animation-frame";
@@ -164,19 +164,16 @@ function randomColor(): string {
  * @param {boolean} good Good power or not?
  */
 export async function addPower(good = true, extra = false): Promise<void> {
-  if (getMutableConfig().monkeyPowerLevel === "off" || SlowTimer.get()) return;
+  if (peekConfig().monkeyPowerLevel === "off" || SlowTimer.get()) return;
 
   requestDebouncedAnimationFrame("monkey-power.addPower", async () => {
-    if (
-      ctx.canvas === undefined ||
-      getMutableConfig().monkeyPowerLevel === "off"
-    ) {
+    if (ctx.canvas === undefined || peekConfig().monkeyPowerLevel === "off") {
       return;
     }
-    if (getMutableConfig().blindMode) good = true;
+    if (peekConfig().blindMode) good = true;
 
     // Shake
-    if (["3", "4"].includes(getMutableConfig().monkeyPowerLevel)) {
+    if (["3", "4"].includes(peekConfig().monkeyPowerLevel)) {
       document.documentElement.style.overflow = "hidden";
       const shake = [
         Math.round(shakeAmount - Math.random() * shakeAmount),
@@ -203,7 +200,7 @@ export async function addPower(good = true, extra = false): Promise<void> {
       i--
     ) {
       const { caret, error } = getTheme();
-      const color = ["2", "4"].includes(getMutableConfig().monkeyPowerLevel)
+      const color = ["2", "4"].includes(peekConfig().monkeyPowerLevel)
         ? randomColor()
         : good
           ? caret

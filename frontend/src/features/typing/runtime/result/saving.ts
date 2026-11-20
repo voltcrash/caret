@@ -32,7 +32,7 @@ import { encodeEventLog } from "../event-log-transport";
 import { SavedResult } from "../../../../ts/constants/default-snapshot";
 
 import { trackAccountWork } from "../../../../ts/states/header";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 
 const getRetrySavingState = createAccountOwned<RetrySaving>(() => ({
   completedEvent: null,
@@ -156,7 +156,7 @@ async function saveResultInternal(
       ? captureTypingResult()
       : { isCurrent: () => false };
   const queue = resultOutbox();
-  if (!getMutableConfig().resultSaving) {
+  if (!peekConfig().resultSaving) {
     showErrorNotification("Result not saved: disabled by user", {
       durationMs: 3000,
       customTitle: "Notice",

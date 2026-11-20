@@ -3,7 +3,7 @@ import { createAccountOwned } from "../../app/account-scope";
 import { onCleanup } from "solid-js";
 import * as CommandlineLists from "./lists";
 
-import { getMutableConfig } from "../config/store";
+import { peekConfig } from "../config/store";
 import * as AnalyticsController from "../controllers/analytics-controller";
 
 import { CommandWithValidation } from "./types";
@@ -122,7 +122,7 @@ export async function runActiveCommand(): Promise<void> {
     await updateActiveCommand();
   } else {
     command.exec?.({});
-    if (getMutableConfig().singleListCommandLine === "on") {
+    if (peekConfig().singleListCommandLine === "on") {
       commandlineState.lastSingleListModeInputValue =
         commandlineState.inputValue;
     }

@@ -11,7 +11,7 @@ import { scrollToCenterOrTop } from "./dimensions";
 import { setClass } from "./elements";
 import * as Numbers from "@caret/util/numbers";
 import { animateAsync } from "../../../../ts/anim";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as SoundController from "../../../../ts/controllers/sound-controller";
 import * as ThemeController from "../../../../ts/controllers/theme-controller";
 import { highlight } from "../../../../ts/events/keymap";
@@ -50,8 +50,8 @@ function afterAnyTestInput(
   if (type === "textInput" || type === "compositionUpdate") {
     if (
       correctInput === true ||
-      getMutableConfig().playSoundOnError === "off" ||
-      getMutableConfig().blindMode
+      peekConfig().playSoundOnError === "off" ||
+      peekConfig().blindMode
     ) {
       void SoundController.playClick();
     } else {
@@ -66,7 +66,7 @@ function afterAnyTestInput(
     setCurrentLiveStats({ acc });
   }
 
-  if (getMutableConfig().keymapMode === "next") {
+  if (peekConfig().keymapMode === "next") {
     const keyToHighlight =
       TestWords.words.getCurrent()?.textWithCommit[getCurrentInput().length];
     if (keyToHighlight !== undefined) {
@@ -139,7 +139,7 @@ export function beforeTestWordChange(
   }
 
   if (direction === "forward") {
-    if (getMutableConfig().blindMode) {
+    if (peekConfig().blindMode) {
       highlightAllLettersAsCorrect(getActiveWordIndex());
     } else if (correct === false) {
       highlightBadWord(getActiveWordIndex());
@@ -162,7 +162,7 @@ export async function afterTestWordChange(
     setCurrentLiveStats({ burst: Math.round(lastBurst) });
   }
 
-  if (getMutableConfig().keymapMode === "next") {
+  if (peekConfig().keymapMode === "next") {
     const keyToHighlight =
       TestWords.words.getCurrent()?.textWithCommit[getCurrentInput().length];
     if (keyToHighlight !== undefined) {
@@ -173,7 +173,7 @@ export async function afterTestWordChange(
   if (direction === "forward") {
     //
   } else if (direction === "back") {
-    if (getMutableConfig().mode === "zen") {
+    if (peekConfig().mode === "zen") {
       // because we need to delete newline, beforenewline and afternewline elements which dont have wordindex attributes
       // we need to do this loop thingy and delete all elements after the active word
       const activeIndex = getActiveWordIndex();
@@ -260,14 +260,14 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
   }
 
   if (source === "resultPage") {
-    if (getMutableConfig().randomTheme !== "off") {
+    if (peekConfig().randomTheme !== "off") {
       void ThemeController.randomizeTheme();
     }
     skipBreakdownEvent.dispatch();
   }
 
   lineState.currentTestLine = 0;
-  if (getMutableConfig().compositionDisplay === "below") {
+  if (peekConfig().compositionDisplay === "below") {
     setCompositionText(" ");
   }
   void SoundController.clearAllSounds();
@@ -278,7 +278,7 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
 export function onTestFinish(): void {
   Caret.hide();
   setTestFocusState("focused");
-  if (getMutableConfig().playSoundOnClick === "16") {
+  if (peekConfig().playSoundOnClick === "16") {
     void SoundController.playFartReverb();
   }
 }

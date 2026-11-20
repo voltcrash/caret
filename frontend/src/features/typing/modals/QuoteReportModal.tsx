@@ -14,7 +14,7 @@ import {
   fieldMandatory,
 } from "../../../ts/components/ui/form/utils";
 import Select from "../../../ts/components/ui/Select";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
 import { hideModalAndClearChain } from "../../../ts/states/modals";
 import {
@@ -37,7 +37,7 @@ export function QuoteReportModal(): JSXElement {
     },
     onSubmit: async ({ value }) => {
       const id = quoteId().toString();
-      const quoteLanguage = removeLanguageSize(getMutableConfig().language);
+      const quoteLanguage = removeLanguageSize(peekConfig().language);
 
       if (value.captcha === "") {
         showNoticeNotification("Please complete the captcha");
@@ -101,9 +101,9 @@ export function QuoteReportModal(): JSXElement {
     form.reset();
 
     const language =
-      getMutableConfig().language === "swiss_german"
+      peekConfig().language === "swiss_german"
         ? "german"
-        : getMutableConfig().language;
+        : peekConfig().language;
     const { quotes } = await QuotesController.getQuotes(language);
     const quote = quotes.find((q) => q.id === quoteId());
     setQuoteText(quote?.text ?? "");

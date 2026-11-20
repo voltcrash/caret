@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import QuotesController, { Quote } from "../quotes-controller";
 import * as DB from "../../../../ts/db";
 import { isAuthenticated } from "../../../../ts/states/core";
@@ -11,7 +11,7 @@ export function updateQuoteRating(rating: string): void {
 }
 
 export function updateRateQuote(randomQuote: Quote | null): void {
-  if (getMutableConfig().mode === "quote") {
+  if (peekConfig().mode === "quote") {
     if (randomQuote === null) {
       console.error(
         "Failed to update quote rating button: randomQuote is null",
@@ -40,7 +40,7 @@ export function updateRateQuote(randomQuote: Quote | null): void {
 }
 
 export function updateQuoteFavorite(randomQuote: Quote | null): void {
-  if (getMutableConfig().mode !== "quote" || !isAuthenticated()) {
+  if (peekConfig().mode !== "quote" || !isAuthenticated()) {
     setResultState("quote", "favoriteVisible", false);
     return;
   }

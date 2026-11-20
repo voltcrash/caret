@@ -5,7 +5,7 @@ import { buildCommandForConfigKey } from "../util";
 import FileStorage from "../../utils/file-storage";
 
 import { showNoticeNotification } from "../../states/notifications";
-import { getMutableConfig } from "../../config/store";
+import { peekConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { applyFontFamily } from "../../ui";
 
@@ -30,7 +30,7 @@ if (fromMeta.subgroup) {
             schema: FontNameSchema,
           },
           defaultValue: (): string => {
-            return getMutableConfig().fontFamily.replace(/_/g, " ");
+            return peekConfig().fontFamily.replace(/_/g, " ");
           },
           exec: ({ input }): void => {
             if (input === undefined || input === "") return;

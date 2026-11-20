@@ -2,7 +2,7 @@ import { getCommandlineState } from "../states/commandline";
 import { captureAccount, createAccountOwned } from "../../app/account-scope";
 import * as CommandlineLists from "./lists";
 import { matchCommands } from "./matching";
-import { getMutableConfig } from "../config/store";
+import { peekConfig } from "../config/store";
 
 import * as ThemeController from "../controllers/theme-controller";
 import { clearFontPreview } from "../ui";
@@ -21,7 +21,7 @@ import { isCoarsePointer } from "../utils/pointer";
 function removeCommandlineBackground(): void {
   const commandlineState = getCommandlineState();
   commandlineState.noBackground = true;
-  if (getMutableConfig().showOutOfFocusWarning) {
+  if (peekConfig().showOutOfFocusWarning) {
     setTestFocusState("focused");
   }
 }
@@ -113,18 +113,18 @@ export async function showCommands(): Promise<void> {
             if (Array.isArray(command.configValue)) {
               isActive = areUnsortedArraysEqual(
                 intersect(
-                  getMutableConfig()[configKey] as unknown[],
+                  peekConfig()[configKey] as unknown[],
                   command.configValue,
                 ),
                 command.configValue,
               );
             } else {
-              isActive = (getMutableConfig()[configKey] as unknown[]).includes(
+              isActive = (peekConfig()[configKey] as unknown[]).includes(
                 command.configValue,
               );
             }
           } else {
-            isActive = getMutableConfig()[configKey] === command.configValue;
+            isActive = peekConfig()[configKey] === command.configValue;
           }
         }
       }

@@ -14,7 +14,7 @@ import {
   saveFullConfigToLocalStorage,
   resetPendingConfigSync,
 } from "./persistence";
-import { getMutableConfig, setConfigStore } from "./store";
+import { peekConfig, setConfigStore } from "./store";
 import { getDefaultConfig } from "../constants/default-config";
 import { configEvent } from "../events/config";
 import { migrateConfig } from "./utils";
@@ -105,7 +105,7 @@ export async function applyConfig(
 
   // Publish one settled configuration to reactive UI subscribers.
   batch(() => {
-    const previous = structuredClone(getMutableConfig());
+    const previous = structuredClone(peekConfig());
     configEvent.dispatch({ key: "fullConfigChange" });
     try {
       const defaultConfig = getDefaultConfig();

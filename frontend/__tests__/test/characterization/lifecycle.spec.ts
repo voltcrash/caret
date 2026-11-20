@@ -115,7 +115,7 @@ vi.mock("../../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({
     prepare: async () => {
       mocks.session?.dispose();
-      mocks.session = nativeSession(getMutableConfig(), mocks.generatedWords);
+      mocks.session = nativeSession(peekConfig(), mocks.generatedWords);
       const session = getEngineSession();
       session.attach();
       return {
@@ -189,13 +189,10 @@ vi.mock("../../../src/features/typing/runtime/remember-lazy-mode", () => ({
   setArabicPref: vi.fn(),
 }));
 vi.mock("../../../src/ts/config/setters", async () => {
-  const { getMutableConfig } = await import("../../../src/ts/config/store");
+  const { peekConfig } = await import("../../../src/ts/config/store");
   return {
-    setConfig: (
-      key: keyof ReturnType<typeof getMutableConfig>,
-      value: unknown,
-    ) => {
-      Object.assign(getMutableConfig(), { [key]: value });
+    setConfig: (key: keyof ReturnType<typeof peekConfig>, value: unknown) => {
+      Object.assign(peekConfig(), { [key]: value });
     },
     setQuoteLengthAll: vi.fn(),
     toggleFunbox: vi.fn(),
@@ -238,7 +235,7 @@ vi.mock("../../../src/features/typing/runtime/result/hash", () => ({
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { getMutableConfig } from "../../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   getAllTestEvents,
@@ -340,7 +337,7 @@ beforeEach(async () => {
     generatedWords: ["hello ", "world ", "hello ", "world ", "last"],
   });
   mocks.resultUpdate.mockResolvedValue(undefined);
-  Object.assign(getMutableConfig(), getDefaultConfig(), {
+  Object.assign(peekConfig(), getDefaultConfig(), {
     mode: "time",
     time: 3,
     language: "english",
@@ -391,8 +388,8 @@ describe("timing", () => {
   });
 
   it("plays the time warning on the configured second", () => {
-    getMutableConfig().time = 15;
-    getMutableConfig().playTimeWarning = "5";
+    setConfigStore("time", 15);
+    setConfigStore("playTimeWarning", "5");
     startTest(performance.now());
     vi.advanceTimersByTime(9000);
     expect(mocks.timeWarning).not.toHaveBeenCalled();
@@ -402,7 +399,7 @@ describe("timing", () => {
 
   it("catches up stalled seconds without recomputing live stats for each", () => {
     // Long tests skip the slow timer guard.
-    getMutableConfig().time = 200;
+    setConfigStore("time", 200);
     const start = performance.now();
     startTest(start);
     const now = vi.spyOn(performance, "now").mockReturnValue(start + 3200);
@@ -462,7 +459,7 @@ describe("completion", () => {
     async ({ data, bailout, progress, remaining }) => {
       mocks.customIndicator = { name: "fixture_book", isLong: true };
       mocks.generatedWords = ["alpha ", "beta ", "gamma"];
-      getMutableConfig().mode = "custom";
+      setConfigStore("mode", "custom");
       CustomText.setCustomText(
         "fixture_book",
         ["old", "alpha", "beta", "gamma"],
@@ -489,7 +486,7 @@ describe("completion", () => {
   );
 
   it("counts custom time limits", async () => {
-    getMutableConfig().mode = "custom";
+    setConfigStore("mode", "custom");
     CustomText.setLimitMode("time");
     CustomText.setLimitValue(2);
     startTest(performance.now());
@@ -499,8 +496,8 @@ describe("completion", () => {
   });
 
   it("keeps running without a time limit", () => {
-    getMutableConfig().mode = "words";
-    getMutableConfig().words = 10;
+    setConfigStore("mode", "words");
+    setConfigStore("words", 10);
     startTest(performance.now());
     vi.advanceTimersByTime(30_000);
     expect(mocks.resultUpdate).not.toHaveBeenCalled();
@@ -519,8 +516,8 @@ describe("completion", () => {
 
 describe("failure", () => {
   it("fails on minimum accuracy at the next second", async () => {
-    getMutableConfig().minAcc = "custom";
-    getMutableConfig().minAccCustom = 90;
+    setConfigStore("minAcc", "custom");
+    setConfigStore("minAccCustom", 90);
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "h");
@@ -535,16 +532,16 @@ describe("failure", () => {
   });
 
   it("does not fail minimum accuracy before any input", () => {
-    getMutableConfig().minAcc = "custom";
-    getMutableConfig().minAccCustom = 90;
+    setConfigStore("minAcc", "custom");
+    setConfigStore("minAccCustom", 90);
     startTest(performance.now());
     vi.advanceTimersByTime(2000);
     expect(mocks.resultUpdate).not.toHaveBeenCalled();
   });
 
   it("fails on minimum speed only after the fourth word", async () => {
-    getMutableConfig().minWpm = "custom";
-    getMutableConfig().minWpmCustomSpeed = 100;
+    setConfigStore("minWpm", "custom");
+    setConfigStore("minWpmCustomSpeed", 100);
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "h");
@@ -576,7 +573,7 @@ describe("failure", () => {
   });
 
   it("fails a slow timer and flags slow steps", async () => {
-    getMutableConfig().time = 10;
+    setConfigStore("time", 10);
     const start = performance.now();
     startTest(start);
     const now = vi.spyOn(performance, "now").mockReturnValue(start + 1150);
@@ -605,7 +602,7 @@ describe("failure", () => {
 
 describe("restart", () => {
   it("records an abandoned test with its accuracy and active seconds", async () => {
-    getMutableConfig().time = 30;
+    setConfigStore("time", 30);
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "h");
@@ -621,7 +618,7 @@ describe("restart", () => {
   });
 
   it("does not record an abandoned test when result saving is off", async () => {
-    getMutableConfig().resultSaving = false;
+    setConfigStore("resultSaving", false);
     startTest(performance.now());
     vi.advanceTimersByTime(1500);
     await restart();
@@ -629,7 +626,7 @@ describe("restart", () => {
   });
 
   it("starts the next test from a fresh clock", async () => {
-    getMutableConfig().time = 30;
+    setConfigStore("time", 30);
     startTest(performance.now());
     vi.advanceTimersByTime(2500);
     await restart();
@@ -641,15 +638,15 @@ describe("restart", () => {
   });
 
   it("resets the pace caret and clears the failure reason", async () => {
-    getMutableConfig().minAcc = "custom";
-    getMutableConfig().minAccCustom = 90;
+    setConfigStore("minAcc", "custom");
+    setConfigStore("minAccCustom", 90);
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "x", false);
     vi.advanceTimersByTime(1000);
     await vi.waitFor(() => expect(failReason()).toBe("min accuracy"));
 
-    getMutableConfig().minAcc = "off";
+    setConfigStore("minAcc", "off");
     await restart();
     expect(mocks.paceReset).toHaveBeenCalled();
     expect(mocks.paceInit).toHaveBeenCalled();

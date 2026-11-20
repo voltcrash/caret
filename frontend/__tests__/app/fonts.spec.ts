@@ -9,12 +9,12 @@ vi.mock("../../src/ts/utils/json-data", () => ({
 }));
 
 import { applyFontFamily } from "../../src/app/fonts.client";
-import { getMutableConfig } from "../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../src/ts/config/store";
 import { getFontFace, getFontFamily } from "../../src/ts/states/app";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  Object.assign(getMutableConfig(), {
+  Object.assign(peekConfig(), {
     fontFamily: "Roboto_Mono",
     language: "english",
   });
@@ -39,7 +39,7 @@ it("ignores an obsolete language/font selection after IO completes", async () =>
   mocks.language.mockResolvedValue({});
   const previous = getFontFamily();
   const applied = applyFontFamily();
-  getMutableConfig().fontFamily = "Fira_Code";
+  setConfigStore("fontFamily", "Fira_Code");
   file.resolve("data:font/woff2;base64,fixture");
   await applied;
   expect(getFontFamily()).toBe(previous);

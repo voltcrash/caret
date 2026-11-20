@@ -32,7 +32,7 @@ import { clearWords, clearWordsBlur } from "../test/ui";
 import { showResultScreen } from "../../components/result/useResultScreen";
 import type { PluginChartOptions } from "chart.js";
 
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 
 import { Quote } from "../quotes-controller";
 
@@ -208,18 +208,14 @@ export async function update(
   Focus.set(false);
 
   const canQuickRestart = canQuickRestartFn(
-    getMutableConfig().mode,
-    getMutableConfig().words,
-    getMutableConfig().time,
+    peekConfig().mode,
+    peekConfig().words,
+    peekConfig().time,
     CustomText.getData(),
     getCustomTextIndicator()?.isLong ?? false,
   );
 
-  if (
-    getMutableConfig().alwaysShowWordsHistory &&
-    canQuickRestart &&
-    !noStress
-  ) {
+  if (peekConfig().alwaysShowWordsHistory && canQuickRestart && !noStress) {
     toggleResultWords(true);
   }
   void Funbox.clear();

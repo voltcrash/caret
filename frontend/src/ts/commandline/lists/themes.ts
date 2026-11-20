@@ -1,6 +1,6 @@
 import { createAccountOwned } from "../../../app/account-scope";
 import { appObject } from "../../../app/state";
-import { getMutableConfig } from "../../config/store";
+import { peekConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";
 import * as ThemeController from "../../controllers/theme-controller";
@@ -11,7 +11,7 @@ import { configEvent } from "../../events/config";
 import * as getErrorMessage from "../../utils/error";
 
 const isFavorite = (theme: ThemeWithName): boolean =>
-  getMutableConfig().favThemes.includes(theme.name);
+  peekConfig().favThemes.includes(theme.name);
 
 /**
  * creates a theme command object for the given theme
@@ -24,8 +24,7 @@ const createThemeCommand = (theme: ThemeWithName): Command => {
     display: theme.name.replace(/_/g, " "),
     configValue: theme.name,
     active: (): boolean =>
-      (ThemeController.getRandomTheme() ?? getMutableConfig().theme) ===
-      theme.name,
+      (ThemeController.getRandomTheme() ?? peekConfig().theme) === theme.name,
     // customStyle: `color:${theme.main};background:${theme.bg};`,
     customData: {
       main: theme.main,

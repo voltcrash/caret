@@ -1,7 +1,7 @@
 import { JSXElement } from "solid-js";
 
 import { setConfig } from "../../../config/setters";
-import { getMutableConfig } from "../../../config/store";
+import { peekConfig } from "../../../config/store";
 import {
   getThemeIndicator,
   isAuthenticated,
@@ -16,7 +16,7 @@ import { Button } from "../../common/Button";
 /** Opens the theme picker; shift-click toggles the custom theme instead. */
 function openThemePicker(e: MouseEvent): void {
   if (e.shiftKey) {
-    if (getMutableConfig().customTheme) {
+    if (peekConfig().customTheme) {
       setConfig("customTheme", false);
       return;
     }
@@ -28,9 +28,7 @@ function openThemePicker(e: MouseEvent): void {
     setConfig("customTheme", true);
     return;
   }
-  setCommandlineSubgroup(
-    getMutableConfig().customTheme ? "customTheme" : "themes",
-  );
+  setCommandlineSubgroup(peekConfig().customTheme ? "customTheme" : "themes");
   showModal("Commandline");
 }
 

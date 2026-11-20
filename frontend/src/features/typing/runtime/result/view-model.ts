@@ -1,6 +1,6 @@
 import { CompletedEvent } from "@caret/schemas/results";
 import * as Numbers from "@caret/util/numbers";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import type { Theme } from "../../../../ts/constants/themes";
 import Format from "../../../../ts/singletons/format";
 import type {
@@ -47,7 +47,7 @@ export function buildSpeedStats(
   result: ResultForStats,
   accuracy: Accuracy | null,
 ): ResultSpeedStats {
-  const unit = getMutableConfig().typingSpeedUnit;
+  const unit = peekConfig().typingSpeedUnit;
   const stats: ResultSpeedStats = {
     typingSpeedUnit: unit,
     wpm: {
@@ -62,7 +62,7 @@ export function buildSpeedStats(
 
   if (accuracy === null) return stats;
 
-  if (getMutableConfig().alwaysShowDecimalPlaces) {
+  if (peekConfig().alwaysShowDecimalPlaces) {
     if (unit !== "wpm") {
       stats.wpm.ariaLabel = `${result.wpm.toFixed(2)} wpm`;
       stats.raw.ariaLabel = `${result.rawWpm.toFixed(2)} wpm`;
@@ -100,7 +100,7 @@ function buildTime(result: ResultForStats): ResultStats["time"] {
   );
   const afk = afkSecondsPercent > 0 ? `${afkSecondsPercent}% afk` : "";
 
-  if (getMutableConfig().alwaysShowDecimalPlaces) {
+  if (peekConfig().alwaysShowDecimalPlaces) {
     let text = `${Numbers.roundTo2(result.testDuration).toFixed(2)}s`;
     if (result.testDuration > 61) {
       text = DateTime.secondsToString(Numbers.roundTo2(result.testDuration));
@@ -129,12 +129,12 @@ function buildTestType(
   result: ResultForStats,
   quote: ResultStatsOptions["quote"],
 ): string[] {
-  let first: string = getMutableConfig().mode;
-  if (getMutableConfig().mode === "time") {
-    first += ` ${getMutableConfig().time}`;
-  } else if (getMutableConfig().mode === "words") {
-    first += ` ${getMutableConfig().words}`;
-  } else if (getMutableConfig().mode === "quote") {
+  let first: string = peekConfig().mode;
+  if (peekConfig().mode === "time") {
+    first += ` ${peekConfig().time}`;
+  } else if (peekConfig().mode === "words") {
+    first += ` ${peekConfig().words}`;
+  } else if (peekConfig().mode === "quote") {
     if (quote?.group !== undefined) {
       first += ` ${["short", "medium", "long", "thicc"][quote.group]}`;
     }
@@ -142,32 +142,30 @@ function buildTestType(
 
   const lines = [first];
   const ignoresLanguage = isFunboxActiveWithProperty("ignoresLanguage");
-  if (getMutableConfig().mode !== "custom" && !ignoresLanguage) {
+  if (peekConfig().mode !== "custom" && !ignoresLanguage) {
     lines.push(Strings.getLanguageDisplayString(result.language));
   }
-  if (getMutableConfig().punctuation) lines.push("punctuation");
-  if (getMutableConfig().numbers) lines.push("numbers");
-  if (getMutableConfig().blindMode) lines.push("blind");
-  if (getMutableConfig().lazyMode) lines.push("lazy");
-  if (getMutableConfig().funbox.length > 0) {
+  if (peekConfig().punctuation) lines.push("punctuation");
+  if (peekConfig().numbers) lines.push("numbers");
+  if (peekConfig().blindMode) lines.push("blind");
+  if (peekConfig().lazyMode) lines.push("lazy");
+  if (peekConfig().funbox.length > 0) {
     lines.push(
-      getMutableConfig()
+      peekConfig()
         .funbox.map((it) => it.replace(/_/g, " "))
         .join(", "),
     );
   }
-  if (getMutableConfig().difficulty === "expert") {
+  if (peekConfig().difficulty === "expert") {
     lines.push("expert");
-  } else if (getMutableConfig().difficulty === "master") {
+  } else if (peekConfig().difficulty === "master") {
     lines.push("master");
   }
-  if (getMutableConfig().stopOnError !== "off") {
-    lines.push(`stop on ${getMutableConfig().stopOnError}`);
+  if (peekConfig().stopOnError !== "off") {
+    lines.push(`stop on ${peekConfig().stopOnError}`);
   }
-  if (getMutableConfig().deleteOnError !== "off") {
-    lines.push(
-      `delete on ${getMutableConfig().deleteOnError.replace(/_/g, " ")}`,
-    );
+  if (peekConfig().deleteOnError !== "off") {
+    lines.push(`delete on ${peekConfig().deleteOnError.replace(/_/g, " ")}`);
   }
   return lines;
 }
@@ -224,7 +222,7 @@ export function buildResultStats(
     ...buildSpeedStats(result, options.accuracy),
     consistency: {
       text: Format.percentage(result.consistency),
-      ariaLabel: getMutableConfig().alwaysShowDecimalPlaces
+      ariaLabel: peekConfig().alwaysShowDecimalPlaces
         ? Format.percentage(result.keyConsistency, {
             showDecimalPlaces: true,
             suffix: " key",
@@ -236,7 +234,7 @@ export function buildResultStats(
     testType: buildTestType(result, options.quote),
     other: buildOther(result, options),
     source:
-      getMutableConfig().mode === "quote"
+      peekConfig().mode === "quote"
         ? (options.quote?.source ?? "Error: Source unknown")
         : undefined,
   };

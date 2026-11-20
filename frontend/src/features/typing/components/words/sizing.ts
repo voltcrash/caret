@@ -1,7 +1,7 @@
 import { isTypingRouteActive } from "../../scope";
 import { keepWordsInputInTheCenter } from "./focus";
 import { getActiveWordElement, setClass } from "./elements";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { getInputElement } from "../../../../ts/input/input-element";
 import { setWordsWrapperVisible } from "../../../../ts/states/funbox";
 import {
@@ -46,14 +46,14 @@ export function updateWordsInputPosition(): void {
   }
 
   const letterHeight =
-    convertRemToPixels(getMutableConfig().fontSize) * getWordsFontScale();
+    convertRemToPixels(peekConfig().fontSize) * getWordsFontScale();
   const targetTop =
     activeWord.offsetTop + letterHeight / 2 - el.offsetHeight / 2 + 1; //+1 for half of border
 
   const wordWidth = activeWord.offsetWidth;
   const left =
-    getMutableConfig().tapeMode !== "off"
-      ? getWordsWrapperEl().offsetWidth * (getMutableConfig().tapeMargin / 100)
+    peekConfig().tapeMode !== "off"
+      ? getWordsWrapperEl().offsetWidth * (peekConfig().tapeMargin / 100)
       : wordWidth < letterHeight && isTestRightToLeft
         ? activeWord.offsetLeft - letterHeight
         : Math.max(0, activeWord.offsetLeft);
@@ -61,8 +61,8 @@ export function updateWordsInputPosition(): void {
   // Publish one layout update so input styles settle before scrolling.
   setWordsInputStyle({
     "max-width":
-      getMutableConfig().tapeMode !== "off"
-        ? `${100 - getMutableConfig().tapeMargin}%`
+      peekConfig().tapeMode !== "off"
+        ? `${100 - peekConfig().tapeMargin}%`
         : "",
     width: `${Math.max(letterHeight, wordWidth)}px`,
     top: `${targetTop}px`,
@@ -74,7 +74,7 @@ export function updateWordsInputPosition(): void {
 
 export function updateWordsWrapperHeight(force = false): void {
   if (!isTypingRouteActive() || getResultVisible()) return;
-  if (!force && getMutableConfig().mode !== "custom") return;
+  if (!force && peekConfig().mode !== "custom") return;
   const activeWordEl = getActiveWordElement();
   if (!activeWordEl) return;
 
@@ -90,21 +90,20 @@ export function updateWordsWrapperHeight(force = false): void {
   const wordHeight = activeWordEl.offsetHeight + wordMargin;
 
   const timedTest =
-    getMutableConfig().mode === "time" ||
-    (getMutableConfig().mode === "custom" &&
-      CustomText.getLimitMode() === "time") ||
-    (getMutableConfig().mode === "custom" && CustomText.getLimitValue() === 0);
+    peekConfig().mode === "time" ||
+    (peekConfig().mode === "custom" && CustomText.getLimitMode() === "time") ||
+    (peekConfig().mode === "custom" && CustomText.getLimitValue() === 0);
 
-  const showAllLines = getMutableConfig().showAllLines && !timedTest;
+  const showAllLines = peekConfig().showAllLines && !timedTest;
 
   if (showAllLines) {
     //allow the wrapper to grow and shink with the words
     setWordsWrapperHeight("");
-  } else if (getMutableConfig().mode === "zen") {
+  } else if (peekConfig().mode === "zen") {
     //zen mode, showAllLines off
     setWordsWrapperHeight(`${wordHeight * 2}px`);
   } else {
-    if (getMutableConfig().tapeMode === "off") {
+    if (peekConfig().tapeMode === "off") {
       //tape off, showAllLines off, non-zen mode
       // Live collection: only the first lines are read, never every word.
       const wordElements = getWordsEl().getElementsByClassName(
@@ -148,18 +147,18 @@ export function updateWordsWrapperHeight(force = false): void {
 
 export function updateWordsWidth(): void {
   let css: Record<string, string> = {};
-  if (getMutableConfig().tapeMode === "off") {
-    if (getMutableConfig().maxLineWidth === 0) {
+  if (peekConfig().tapeMode === "off") {
+    if (peekConfig().maxLineWidth === 0) {
       css = {
         "max-width": "100%",
       };
     } else {
       css = {
-        "max-width": `${getMutableConfig().maxLineWidth}ch`,
+        "max-width": `${peekConfig().maxLineWidth}ch`,
       };
     }
   } else {
-    if (getMutableConfig().maxLineWidth === 0) {
+    if (peekConfig().maxLineWidth === 0) {
       css = {
         "max-width": "100%",
       };
@@ -175,7 +174,7 @@ export function updateWordsWidth(): void {
   } else {
     Object.assign(el.style, css);
   }
-  if (getMutableConfig().maxLineWidth === 0) {
+  if (peekConfig().maxLineWidth === 0) {
     setClass(el, "full-width-padding", false);
     setClass(el, "content", true);
   } else {

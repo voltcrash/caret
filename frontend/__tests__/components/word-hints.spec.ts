@@ -6,7 +6,7 @@ import {
   updateHintsPositionDebounced,
 } from "../../src/features/typing/components/words/hints";
 import * as TestWords from "../../src/features/typing/runtime/test/words";
-import { getMutableConfig } from "../../src/ts/config/store";
+import { setConfigStore } from "../../src/ts/config/store";
 import { setTestElements } from "../../src/ts/states/test-dom";
 import {
   isLanguageRightToLeft,
@@ -49,7 +49,7 @@ beforeEach(() => {
   setIsDirectionReversed(false);
   resetTypingLifecycle();
   resetActiveWordIndex();
-  getMutableConfig().indicateTypos = "below";
+  setConfigStore("indicateTypos", "below");
   TestWords.words.reset();
   TestWords.words.push("abc ", 0);
   const words = document.createElement("div");

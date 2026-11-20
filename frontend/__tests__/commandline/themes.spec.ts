@@ -18,7 +18,7 @@ import {
   onCommandlineBackdropClick,
 } from "../../src/ts/commandline/lifecycle";
 import { setConfig } from "../../src/ts/config/setters";
-import { getMutableConfig } from "../../src/ts/config/store";
+import { peekConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import * as ThemeController from "../../src/ts/controllers/theme-controller";
 import { commandlineState } from "../../src/ts/states/commandline";
@@ -47,7 +47,7 @@ describe("theme picker selection", () => {
       ThemeController.useThemeEvents();
       return disposeRoot;
     });
-    Object.assign(getMutableConfig(), getDefaultConfig(), {
+    Object.assign(peekConfig(), getDefaultConfig(), {
       theme: "aether",
       favThemes: ["matrix"],
     });
@@ -76,7 +76,7 @@ describe("theme picker selection", () => {
 
     await vi.advanceTimersByTimeAsync(17);
     expect(getTheme().name).toBe("aether");
-    expect(getMutableConfig().theme).toBe("aether");
+    expect(peekConfig().theme).toBe("aether");
     expect(ThemeController.getRandomTheme()).toBe("matrix");
   });
 
@@ -104,8 +104,8 @@ describe("theme picker selection", () => {
     expect(
       commandlineState.suggestions.filter((command) => command.isActive),
     ).toMatchObject([{ configValue: "matrix" }]);
-    expect(getMutableConfig().theme).toBe("aether");
-    expect(getMutableConfig().randomTheme).toBe("fav");
+    expect(peekConfig().theme).toBe("aether");
+    expect(peekConfig().randomTheme).toBe("fav");
   });
 
   it.each(["on", "dark", "light", "auto"] as const)(
@@ -124,8 +124,8 @@ describe("theme picker selection", () => {
       expect(
         commandlineState.suggestions.filter((command) => command.isActive),
       ).toMatchObject([{ configValue: currentTheme }]);
-      expect(getMutableConfig().theme).toBe("aether");
-      expect(getMutableConfig().randomTheme).toBe(mode);
+      expect(peekConfig().theme).toBe("aether");
+      expect(peekConfig().randomTheme).toBe(mode);
     },
   );
 
@@ -158,7 +158,7 @@ describe("theme picker selection", () => {
       );
       await vi.advanceTimersByTimeAsync(250);
       expect(getTheme().name).not.toBe("matrix");
-      expect(getMutableConfig().theme).toBe("aether");
+      expect(peekConfig().theme).toBe("aether");
 
       if (dismissal === "escape") {
         await onCommandlineKeyDown(
@@ -171,8 +171,8 @@ describe("theme picker selection", () => {
 
       expect(getTheme().name).toBe("matrix");
       expect(getThemeIndicator().text).toBe("matrix");
-      expect(getMutableConfig().theme).toBe("aether");
-      expect(getMutableConfig().randomTheme).toBe("fav");
+      expect(peekConfig().theme).toBe("aether");
+      expect(peekConfig().randomTheme).toBe("fav");
     },
   );
 
@@ -194,8 +194,8 @@ describe("theme picker selection", () => {
 
       expect(getTheme().name).toBe(theme);
       expect(getThemeIndicator().text).toBe(theme);
-      expect(getMutableConfig().theme).toBe(theme);
-      expect(getMutableConfig().randomTheme).toBe("fav");
+      expect(peekConfig().theme).toBe(theme);
+      expect(peekConfig().randomTheme).toBe("fav");
       expect(ThemeController.getRandomTheme()).toBeNull();
     },
   );
@@ -215,7 +215,7 @@ describe("theme picker selection", () => {
       expect(
         commandlineState.suggestions.filter((command) => command.isActive),
       ).toMatchObject([{ configValue: theme }]);
-      expect(getMutableConfig().theme).toBe("aether");
+      expect(peekConfig().theme).toBe("aether");
 
       onCommandlineBackdropClick();
       await vi.advanceTimersByTimeAsync(0);

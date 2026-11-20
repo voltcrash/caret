@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../config/store";
+import { peekConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { Command, CommandsSubgroup } from "../types";
 
@@ -12,11 +12,11 @@ const subgroup: CommandsSubgroup = {
       icon: "fa-image",
       input: true,
       defaultValue: (): string => {
-        return getMutableConfig().customBackgroundFilter[0].toString();
+        return peekConfig().customBackgroundFilter[0].toString();
       },
       exec: ({ input }): void => {
         if (input === undefined || input === "") return;
-        const newFilters = getMutableConfig().customBackgroundFilter;
+        const newFilters = peekConfig().customBackgroundFilter;
         newFilters[0] = parseFloat(input);
         setConfig("customBackgroundFilter", newFilters);
       },
@@ -27,11 +27,11 @@ const subgroup: CommandsSubgroup = {
       icon: "fa-image",
       input: true,
       defaultValue: (): string => {
-        return getMutableConfig().customBackgroundFilter[1].toString();
+        return peekConfig().customBackgroundFilter[1].toString();
       },
       exec: ({ input }): void => {
         if (input === undefined || input === "") return;
-        const newFilters = getMutableConfig().customBackgroundFilter;
+        const newFilters = peekConfig().customBackgroundFilter;
         newFilters[1] = parseFloat(input);
         setConfig("customBackgroundFilter", newFilters);
       },
@@ -42,11 +42,11 @@ const subgroup: CommandsSubgroup = {
       icon: "fa-image",
       input: true,
       defaultValue: (): string => {
-        return getMutableConfig().customBackgroundFilter[2].toString();
+        return peekConfig().customBackgroundFilter[2].toString();
       },
       exec: ({ input }): void => {
         if (input === undefined || input === "") return;
-        const newFilters = getMutableConfig().customBackgroundFilter;
+        const newFilters = peekConfig().customBackgroundFilter;
         newFilters[2] = parseFloat(input);
         setConfig("customBackgroundFilter", newFilters);
       },
@@ -57,11 +57,11 @@ const subgroup: CommandsSubgroup = {
       icon: "fa-image",
       input: true,
       defaultValue: (): string => {
-        return getMutableConfig().customBackgroundFilter[3].toString();
+        return peekConfig().customBackgroundFilter[3].toString();
       },
       exec: ({ input }): void => {
         if (input === undefined || input === "") return;
-        const newFilters = getMutableConfig().customBackgroundFilter;
+        const newFilters = peekConfig().customBackgroundFilter;
         newFilters[3] = parseFloat(input);
         setConfig("customBackgroundFilter", newFilters);
       },

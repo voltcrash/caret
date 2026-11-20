@@ -14,7 +14,7 @@ import {
   getActiveWordElement,
   setClass,
 } from "./elements";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as SlowTimer from "../../state/slow-timer";
 import { getActiveWordIndex } from "../../../../ts/states/test";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
@@ -66,13 +66,12 @@ export function updateActiveElement(
 
     if (previousActiveWordTop !== null) {
       const isTimedTest =
-        getMutableConfig().mode === "time" ||
-        (getMutableConfig().mode === "custom" &&
+        peekConfig().mode === "time" ||
+        (peekConfig().mode === "custom" &&
           CustomText.getLimitMode() === "time") ||
-        (getMutableConfig().mode === "custom" &&
-          CustomText.getLimitValue() === 0);
+        (peekConfig().mode === "custom" && CustomText.getLimitValue() === 0);
 
-      if (isTimedTest || !getMutableConfig().showAllLines) {
+      if (isTimedTest || !peekConfig().showAllLines) {
         const newActiveWordTop = newActiveWord.offsetTop;
         if (newActiveWordTop > previousActiveWordTop) {
           await lineJump(previousActiveWordTop);
@@ -80,7 +79,7 @@ export function updateActiveElement(
       }
     }
 
-    if (!initial && getMutableConfig().tapeMode !== "off") {
+    if (!initial && peekConfig().tapeMode !== "off") {
       await scrollTape();
     }
 
@@ -105,7 +104,7 @@ export function showWords(): void {
   clearWordElements();
   getWordsEl().replaceChildren();
 
-  if (getMutableConfig().mode === "zen") {
+  if (peekConfig().mode === "zen") {
     appendEmptyWordElement(0);
   } else {
     const words = document.createDocumentFragment();
@@ -179,7 +178,7 @@ export async function updateWordLetters({
     async () => {
       renderState().pendingWordData.delete(wordIndex);
       const currentWord = TestWords.words.get(wordIndex)?.display;
-      if (currentWord === undefined && getMutableConfig().mode !== "zen") {
+      if (currentWord === undefined && peekConfig().mode !== "zen") {
         return;
       }
       const wordAtIndex = getWordElement(wordIndex);
@@ -188,9 +187,9 @@ export async function updateWordLetters({
         currentWord,
         input,
         compositionData,
-        zen: getMutableConfig().mode === "zen",
-        indicateTypos: getMutableConfig().indicateTypos,
-        compositionDisplay: getMutableConfig().compositionDisplay,
+        zen: peekConfig().mode === "zen",
+        indicateTypos: peekConfig().indicateTypos,
+        compositionDisplay: peekConfig().compositionDisplay,
         getWordNode:
           findSingleActiveFunboxWithFunction("getWordNode")?.functions
             .getWordNode,
@@ -201,7 +200,7 @@ export async function updateWordLetters({
           wordAtIndex.querySelectorAll<HTMLElement>("letter"),
         );
         let hints;
-        if (getMutableConfig().indicateTypos === "both") {
+        if (peekConfig().indicateTypos === "both") {
           hints = createHintsNodes(
             hintIndices,
             wordAtIndexLetters,
@@ -222,15 +221,15 @@ export async function updateWordLetters({
       if (newlineafter) {
         wordAtIndex.after(createNewlineSpacers());
       }
-      if (getMutableConfig().tapeMode !== "off") {
+      if (peekConfig().tapeMode !== "off") {
         void scrollTape();
       }
-      if (getMutableConfig().mode === "zen" || SlowTimer.get()) {
+      if (peekConfig().mode === "zen" || SlowTimer.get()) {
         // because we block word jumps in before-insert-text
         // this check only needs to happen in zen mode
         // unless slow timer is on, then it needs to happen
         // because the word jump check is disabled
-        if (!getMutableConfig().showAllLines) {
+        if (!peekConfig().showAllLines) {
           const wordTopAfterUpdate = wordAtIndex.offsetTop;
           if (wordTopAfterUpdate > lineState.activeWordTop) {
             let jump = false;

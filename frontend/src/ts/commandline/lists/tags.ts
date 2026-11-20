@@ -6,7 +6,7 @@ import {
   getTags,
   toggleTagActive,
 } from "../../../data/collections/tags";
-import { getMutableConfig } from "../../config/store";
+import { peekConfig } from "../../config/store";
 import { reloadPaceCaret } from "../../typing-host";
 import { isAuthenticated } from "../../states/core";
 import { Command, CommandsSubgroup } from "../types";
@@ -48,9 +48,9 @@ function update(): void {
       exec: async (): Promise<void> => {
         await clearActiveTags();
         if (
-          getMutableConfig().paceCaret === "average" ||
-          getMutableConfig().paceCaret === "tagPb" ||
-          getMutableConfig().paceCaret === "daily"
+          peekConfig().paceCaret === "average" ||
+          peekConfig().paceCaret === "tagPb" ||
+          peekConfig().paceCaret === "daily"
         ) {
           await reloadPaceCaret();
         }
@@ -69,9 +69,9 @@ function update(): void {
           await toggleTagActive({ tagId: tag._id });
 
           if (
-            getMutableConfig().paceCaret === "average" ||
-            getMutableConfig().paceCaret === "tagPb" ||
-            getMutableConfig().paceCaret === "daily"
+            peekConfig().paceCaret === "average" ||
+            peekConfig().paceCaret === "tagPb" ||
+            peekConfig().paceCaret === "daily"
           ) {
             await reloadPaceCaret();
           }

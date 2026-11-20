@@ -5,15 +5,17 @@ import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";
 
 // One configuration per app: `getConfig` reads it reactively, and
-// `getMutableConfig` returns the same object untracked for hot paths.
+// `peekConfig` returns the same object untracked for hot paths.
 const configStore = createAppOwned(() =>
   createStore<ConfigSchema>(getDefaultConfig()),
 );
 
 export const getConfig = appObject(() => configStore()[0]);
 
-/** The store's own object: untracked reads. Write through the setters only. */
-export const getMutableConfig = createAppOwned(() => unwrap(configStore()[0]));
+/** The store's own object, read untracked. Write through the setters. */
+export const peekConfig = createAppOwned((): Readonly<ConfigSchema> =>
+  unwrap(configStore()[0]),
+);
 
 export function setFullConfigStore(newConfig: ConfigSchema): void {
   configStore()[1](reconcile(newConfig));

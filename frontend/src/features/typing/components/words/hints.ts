@@ -1,5 +1,5 @@
 import { isTypingRouteActive } from "../../scope";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
@@ -136,8 +136,8 @@ async function updateHintsPosition(): Promise<void> {
   if (
     !isTypingRouteActive() ||
     getResultVisible() ||
-    (getMutableConfig().indicateTypos !== "below" &&
-      getMutableConfig().indicateTypos !== "both")
+    (peekConfig().indicateTypos !== "below" &&
+      peekConfig().indicateTypos !== "both")
   ) {
     return;
   }
