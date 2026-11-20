@@ -1,4 +1,4 @@
-import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -73,15 +73,16 @@ function extractImports(filePath: string): string[] {
 
 const EXTENSIONS = [".ts", ".tsx", "/index.ts", "/index.tsx"];
 
-function resolveSpecifier(
-  specifier: string,
-  importerDir: string,
-): string | null {
-  if (specifier.startsWith("#")) {
-    return fileURLToPath(import.meta.resolve(specifier));
+function resolveSpecifier(specifier: string, importer: string): string | null {
+  if (/^#(?:app|shared|features)\//.test(specifier)) {
+    try {
+      return createRequire(importer).resolve(specifier);
+    } catch {
+      return null;
+    }
   }
   if (specifier.startsWith("./") || specifier.startsWith("../")) {
-    const base = path.resolve(importerDir, specifier);
+    const base = path.resolve(path.dirname(importer), specifier);
     // exact match
     if (fs.existsSync(base) && fs.statSync(base).isFile()) return base;
     for (const ext of EXTENSIONS) {
@@ -121,7 +122,6 @@ function walk(
     };
   }
 
-  const importerDir = path.dirname(filePath);
   const specifiers = extractImports(filePath);
   const directImports: string[] = [];
 
@@ -129,7 +129,7 @@ function walk(
   let maxDepth = 0;
 
   for (const spec of specifiers) {
-    const resolved = resolveSpecifier(spec, importerDir);
+    const resolved = resolveSpecifier(spec, filePath);
     if (resolved === null) continue;
     if (directImports.includes(resolved)) continue;
     directImports.push(resolved);
