@@ -383,6 +383,9 @@ jobs:
           CARET_BUILD_ID: ci-fixture
         run: vp -C frontend exec vpx ./scripts/ci-build.ts
 
+      - name: Eager JS budget
+        run: vp -C frontend exec vpx ./scripts/measure-eager-js.ts --check
+
       - name: Worker dry-run
         run: vp run --filter @caret/frontend dry-run:start
 
