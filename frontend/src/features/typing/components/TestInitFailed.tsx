@@ -4,8 +4,8 @@ import { JSXElement, Show } from "solid-js";
 import { Button } from "../../../ts/components/common/Button";
 import { getBrowserEngine } from "../../../ts/engine/owner.client";
 import { getTestInitError } from "../../../ts/states/test";
+import { getTypingLifecycle } from "../../../ts/states/test-lifecycle/controller";
 import { cn } from "../../../ts/utils/cn";
-import { getTypingLifecycle } from "../lifecycle/controller";
 import { retryCompletion } from "../runtime/completion/finish";
 import * as TestLogic from "../runtime/test/logic";
 

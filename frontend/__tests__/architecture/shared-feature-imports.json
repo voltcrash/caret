@@ -1,4 +1,1 @@
-[
-  "src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client",
-  "src/ts/states/test.ts -> src/features/typing/lifecycle/controller"
-]
+["src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client"]

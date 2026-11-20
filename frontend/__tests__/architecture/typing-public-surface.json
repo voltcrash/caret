@@ -3,7 +3,6 @@
   "initial/default",
   "initial/snapshot",
   "initial/snapshot.client",
-  "lifecycle/controller",
   "modals/CustomTestDurationModal",
   "modals/CustomTextModal",
   "modals/CustomWordAmountModal",
