@@ -476,6 +476,51 @@ pub(crate) struct Retained {
     pub quote: Option<crate::quotes::Quote>,
     pub generation: u32,
 }
+enum RunState {
+    Ready,
+    Running {
+        start: f64,
+    },
+    FinishPending {
+        start: f64,
+        at: f64,
+        request: FinishRequest,
+    },
+    Ended {
+        start: f64,
+        reason: Option<String>,
+    },
+}
+
+impl RunState {
+    fn start_time(&self) -> Option<f64> {
+        match self {
+            Self::Ready => None,
+            Self::Running { start }
+            | Self::FinishPending { start, .. }
+            | Self::Ended { start, .. } => Some(*start),
+        }
+    }
+    fn active(&self) -> bool {
+        matches!(self, Self::Running { .. } | Self::FinishPending { .. })
+    }
+    fn ended(&self) -> bool {
+        matches!(self, Self::Ended { .. })
+    }
+    fn reason(&self) -> Option<&String> {
+        match self {
+            Self::Ended { reason, .. } => reason.as_ref(),
+            _ => None,
+        }
+    }
+    fn pending_finish(&self) -> Option<&FinishRequest> {
+        match self {
+            Self::FinishPending { request, .. } => Some(request),
+            _ => None,
+        }
+    }
+}
+
 pub struct Session {
     pub pace: crate::pace::Pace,
     pub weak_spot: crate::weak_spot::WeakSpot,
@@ -483,10 +528,7 @@ pub struct Session {
     words: Vec<Text>,
     input: Vec<Text>,
     index: usize,
-    active: bool,
-    ended: bool,
-    reason: Option<String>,
-    start: Option<f64>,
+    run: RunState,
     ticks: u32,
     events: Vec<Recorded>,
     last_event_order: Option<(f64, u8)>,
@@ -517,8 +559,6 @@ pub struct Session {
     awaiting_recovery: bool,
     deferred_input: Option<DeferredInput>,
     defer_finish: bool,
-    pending_finish: Option<FinishRequest>,
-    pending_finish_at: f64,
     monitor_render_drift: bool,
     slow_timer: bool,
     slow_timer_count: u8,
@@ -531,7 +571,7 @@ impl Session {
             return Err("Invalid timestamp".into());
         }
         let chars = self.live.chars(true);
-        let duration_ms = now - self.start.unwrap_or(now);
+        let duration_ms = now - self.run.start_time().unwrap_or(now);
         let seconds = duration_ms / 1000.0;
         Ok(LiveMetrics {
             wpm: crate::js_round(crate::stats::wpm(chars.correct_word, seconds)),
@@ -547,7 +587,7 @@ impl Session {
             chars,
             seconds: seconds.floor(),
             duration_ms,
-            timer_start_ms: self.start,
+            timer_start_ms: self.run.start_time(),
             time_limit_seconds: self.time_limit(),
             ms_since_last_input: self.live.spacing(),
         })
@@ -571,7 +611,7 @@ impl Session {
         {
             return Err("Invalid live word query".into());
         }
-        let origin = self.start.unwrap_or_else(|| self.origin());
+        let origin = self.run.start_time().unwrap_or_else(|| self.origin());
         Ok(self.live.burst(index, origin, now - origin))
     }
     pub fn restart_policy(
@@ -579,8 +619,8 @@ impl Session {
         options: crate::restart::RestartOptions,
     ) -> crate::restart::RestartDecision {
         let state = crate::restart::RestartState {
-            active: self.active,
-            failed: self.reason.is_some(),
+            active: self.run.active(),
+            failed: self.run.reason().is_some(),
             repeated: self
                 .generator
                 .as_ref()
@@ -638,10 +678,7 @@ impl Session {
             input: vec![Text::default(); words.len().max(1)],
             words,
             index: 0,
-            active: false,
-            ended: false,
-            reason: None,
-            start: None,
+            run: RunState::Ready,
             ticks: 0,
             events: vec![],
             last_event_order: None,
@@ -672,8 +709,6 @@ impl Session {
             awaiting_recovery: false,
             deferred_input: None,
             defer_finish: false,
-            pending_finish: None,
-            pending_finish_at: 0.0,
             monitor_render_drift: false,
             slow_timer: false,
             slow_timer_count: 0,
@@ -742,10 +777,10 @@ impl Session {
             data: normalized.clone(),
             ..observation
         };
-        let blocked = self.ended
+        let blocked = self.run.ended()
             || self.awaiting_recovery
             || self.pending_commit.is_some()
-            || self.pending_finish.is_some()
+            || self.run.pending_finish().is_some()
             || observation.data.len() > 65536
             || crate::input::blocked(&self.config, &observation, self.has_newline);
         let display_length = target.len() - usize::from(target.0.last() == Some(&32));
@@ -783,10 +818,9 @@ impl Session {
         if data.len() > 65536 {
             return Err("Composition exceeds input bound".into());
         }
-        if !self.active
-            || self.ended
+        if !self.run.active()
             || self.awaiting_recovery
-            || self.pending_finish.is_some()
+            || self.run.pending_finish().is_some()
             || self.pending_commit.is_some()
             || !self.all_generated
             || self.index + 1 < self.words.len()
@@ -806,7 +840,7 @@ impl Session {
             has_tab: self.has_tab,
             has_newline: self.has_newline,
             current_quote: self.quote.clone(),
-            finish: self.pending_finish.clone(),
+            finish: self.run.pending_finish().cloned(),
         }
     }
     fn strip_final_separator(&mut self) {
@@ -866,35 +900,34 @@ impl Session {
         Ok(())
     }
     pub fn phase(&self) -> SessionPhase {
-        if self.ended {
+        if self.run.ended() {
             SessionPhase::Ended
-        } else if self.pending_finish.is_some() {
+        } else if self.run.pending_finish().is_some() {
             SessionPhase::FinishPending
         } else if self.awaiting_recovery {
             SessionPhase::AwaitingRecovery
         } else if self.pending_commit.is_some() {
             SessionPhase::AwaitingContent
-        } else if self.active {
+        } else if self.run.active() {
             SessionPhase::Running
         } else {
             SessionPhase::Ready
         }
     }
     pub fn state(&self) -> State {
-        debug_assert!(!(self.active && self.ended));
         debug_assert!(
-            !self.ended
-                || (self.pending_finish.is_none()
+            !self.run.ended()
+                || (self.run.pending_finish().is_none()
                     && self.pending_commit.is_none()
                     && self.deferred_input.is_none())
         );
         State {
             word_index: self.index,
             input_value: self.current(),
-            active: self.active,
-            ended: self.ended,
+            active: self.run.active(),
+            ended: self.run.ended(),
             awaiting_recovery: self.awaiting_recovery.then_some(true),
-            reason: self.reason.clone(),
+            reason: self.run.reason().cloned(),
         }
     }
     fn current(&self) -> Text {
@@ -929,13 +962,12 @@ impl Session {
         });
     }
     fn start(&mut self, now: f64, date: f64) {
-        if self.active || self.ended || self.awaiting_recovery {
+        if !matches!(self.run, RunState::Ready) || self.awaiting_recovery {
             return;
         }
-        self.active = true;
+        self.run = RunState::Running { start: now };
         self.slow_timer = false;
         self.slow_timer_count = 0;
-        self.start = Some(now);
         self.pace.start(now);
         self.record(
             "timer",
@@ -944,26 +976,27 @@ impl Session {
         );
     }
     fn finish(&mut self, now: f64, date: f64, reason: Option<String>) {
-        if !self.active || self.ended || self.pending_finish.is_some() {
+        let RunState::Running { start } = self.run else {
             return;
-        }
+        };
         if self.defer_finish {
-            self.pending_finish = Some(FinishRequest { reason });
-            self.pending_finish_at = now;
+            self.run = RunState::FinishPending {
+                start,
+                at: now,
+                request: FinishRequest { reason },
+            };
         } else {
             self.end(now, date, reason);
         }
     }
     fn end(&mut self, now: f64, date: f64, reason: Option<String>) {
-        if !self.active || self.ended {
+        let (RunState::Running { start } | RunState::FinishPending { start, .. }) = self.run else {
             return;
-        }
-        self.active = false;
-        self.ended = true;
-        self.reason = reason;
+        };
+        self.run = RunState::Ended { start, reason };
         self.slow_timer = false;
         self.slow_timer_count = 0;
-        self.pending_finish = None;
+
         self.pending_commit = None;
         self.deferred_input = None;
         self.awaiting_recovery = false;
@@ -972,7 +1005,7 @@ impl Session {
         if let Some(generator) = &mut self.generator {
             generator.reset_requests(self.generation);
         }
-        self.record("timer", now, json!({"event":"end", "timer":((now-self.start.unwrap_or(now))/1000.0).floor(), "date":date}));
+        self.record("timer", now, json!({"event":"end", "timer":((now-self.run.start_time().unwrap_or(now))/1000.0).floor(), "date":date}));
     }
 
     pub fn apply(&mut self, command: Command) -> Result<Update, crate::error::EngineError> {
@@ -1033,7 +1066,8 @@ impl Session {
         }
         if matches!(command, Command::Advance { .. })
             && self
-                .start
+                .run
+                .start_time()
                 .is_some_and(|start| (now - start) / 1000.0 - f64::from(self.ticks) > 1_000_000.0)
         {
             return Err("Timer catchup exceeds bounded work".into());
@@ -1092,7 +1126,7 @@ impl Session {
                             .and_then(|generator| generator.pending_request())
                             .cloned(),
                         awaiting_content: self.pending_commit.is_some(),
-                        finish: self.pending_finish.clone(),
+                        finish: self.run.pending_finish().cloned(),
                         slow_timer: self.slow_timer,
                         drift: None,
                     });
@@ -1143,7 +1177,7 @@ impl Session {
                     let input_date = checkpoint.date;
                     self.complete_input(checkpoint, now, date);
                     self.drain_indentation(input_now, input_date);
-                    if !self.ended
+                    if !self.run.ended()
                         && let Some(input) = self.deferred_input.take()
                     {
                         self.process_input(input);
@@ -1197,11 +1231,13 @@ impl Session {
             Command::Start { now, date } => self.start(now, date),
             Command::Finish { now, date, reason } => self.finish(now, date, reason),
             Command::AcknowledgeFinish { now, date } => {
-                if self.pending_finish.is_none() || now < self.pending_finish_at {
+                let RunState::FinishPending { request, at, .. } = &self.run else {
+                    return Err("Invalid completion acknowledgement".into());
+                };
+                if now < *at {
                     return Err("Invalid completion acknowledgement".into());
                 }
-                let finish = self.pending_finish.take().unwrap();
-                self.end(now, date, finish.reason);
+                self.end(now, date, request.reason.clone());
             }
             Command::End { now, date } | Command::Abandon { now, date } => {
                 self.end(now, date, None)
@@ -1213,13 +1249,10 @@ impl Session {
                 self.awaiting_recovery = false;
                 self.pending_commit = None;
                 self.deferred_input = None;
-                self.pending_finish = None;
+
                 self.slow_timer = false;
                 self.slow_timer_count = 0;
-                self.active = false;
-                self.ended = false;
-                self.reason = None;
-                self.start = None;
+                self.run = RunState::Ready;
                 self.ticks = 0;
                 self.indent_pending = false;
                 self.events.clear();
@@ -1264,8 +1297,8 @@ impl Session {
             }
             Command::FlushAutomatic { generation, .. } => {
                 if generation == self.generation
-                    && !self.ended
-                    && self.pending_finish.is_none()
+                    && !self.run.ended()
+                    && self.run.pending_finish().is_none()
                     && let Some((now, date)) = self.automatic.pop_front()
                 {
                     self.completion_checkpoint = !self.composing;
@@ -1298,15 +1331,15 @@ impl Session {
                 .and_then(|generator| generator.pending_request())
                 .cloned(),
             awaiting_content: self.pending_commit.is_some(),
-            finish: self.pending_finish.clone(),
+            finish: self.run.pending_finish().cloned(),
             slow_timer: self.slow_timer,
             drift: self.last_drift,
         })
     }
 
     fn process_input(&mut self, mut input: DeferredInput) {
-        while !self.ended
-            && self.pending_finish.is_none()
+        while !self.run.ended()
+            && self.run.pending_finish().is_none()
             && let Some(unit) = input.units.pop_front()
         {
             self.completion_checkpoint =
@@ -1341,7 +1374,8 @@ impl Session {
         self.drain_indentation(now, date);
     }
     fn drain_indentation(&mut self, now: f64, date: f64) {
-        if self.pending_commit.is_some() || self.ended || self.pending_finish.is_some() {
+        if self.pending_commit.is_some() || self.run.ended() || self.run.pending_finish().is_some()
+        {
             return;
         }
         if self.defer_automatic && self.indent_pending {
@@ -1350,9 +1384,9 @@ impl Session {
             return;
         }
         while self.indent_pending
-            && !self.ended
+            && !self.run.ended()
             && self.pending_commit.is_none()
-            && self.pending_finish.is_none()
+            && self.run.pending_finish().is_none()
         {
             self.indent_pending = false;
             self.insert_one(9, now, date, None, true, false);
@@ -1408,7 +1442,7 @@ impl Session {
             let replacement: Vec<_> = replacement.encode_utf16().collect();
             for (index, unit) in replacement.iter().enumerate() {
                 self.completion_checkpoint = checkpoint && index + 1 == replacement.len();
-                if !self.ended {
+                if !self.run.ended() {
                     self.insert(*unit, now, date, shift, automatic, composition);
                 }
             }
@@ -1542,7 +1576,7 @@ impl Session {
             let burst = self.live.burst(
                 committed_index,
                 self.origin(),
-                now - self.start.unwrap_or(now),
+                now - self.run.start_time().unwrap_or(now),
             );
             let length = if self.config.mode == "zen" {
                 input.len() + 1
@@ -1576,7 +1610,7 @@ impl Session {
         {
             self.finish(finish_now, finish_date, None);
         }
-        if !self.ended
+        if !self.run.ended()
             && correct
             && self.config.language.starts_with("code")
             && self.target().0.first() == Some(&9)
@@ -1644,11 +1678,10 @@ impl Session {
 
     /// Pure beforeinput guard; deletion repeats this check before mutation.
     pub fn can_delete(&self) -> bool {
-        if !self.active
-            || self.ended
+        if !self.run.active()
             || self.awaiting_recovery
             || self.pending_commit.is_some()
-            || self.pending_finish.is_some()
+            || self.run.pending_finish().is_some()
         {
             return false;
         }
@@ -1733,10 +1766,10 @@ impl Session {
     }
 
     fn advance(&mut self, now: f64, date: f64) {
-        if !self.active || self.awaiting_recovery || self.pending_finish.is_some() {
+        if !self.run.active() || self.awaiting_recovery || self.run.pending_finish().is_some() {
             return;
         }
-        let start = self.start.unwrap_or(now);
+        let start = self.run.start_time().unwrap_or(now);
         let drift = round2(now - (start + f64::from(self.ticks + 1) * 1000.0));
         if drift < 0.0 {
             return;
@@ -1760,7 +1793,7 @@ impl Session {
             }
         }
         let due = ((now - start) / 1000.0).floor() as u32;
-        while self.active && self.pending_finish.is_none() && self.ticks < due {
+        while self.run.active() && self.run.pending_finish().is_none() && self.ticks < due {
             self.ticks += 1;
             let mut data = json!({"event":"step","timer":self.ticks});
             if self.slow_timer {
@@ -1825,7 +1858,7 @@ impl Session {
         // Result loading may yield after finalization. New observations must
         // not extend a finished test's keyboard timeline. Still allow releases
         // of already-held keys, including finalize()'s estimated releases.
-        if (self.ended || self.pending_finish.is_some()) && kind != "keyup" {
+        if (self.run.ended() || self.run.pending_finish().is_some()) && kind != "keyup" {
             return Ok(());
         }
         if !data.is_object() {
