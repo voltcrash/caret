@@ -21,7 +21,6 @@
   "modals/ShareTestSettings",
   "page",
   "page.client",
-  "runtime/content/custom-text",
   "runtime/funbox/list",
   "runtime/result/saving",
   "runtime/session.client",

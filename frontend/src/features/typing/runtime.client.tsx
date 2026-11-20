@@ -4,7 +4,6 @@ import { useSoundEvents } from "../../ts/controllers/sound-controller";
 import {
   getLastEventLog,
   getActiveWordIndex,
-  initializeTypingState,
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
@@ -14,6 +13,7 @@ import { usePractiseEvents } from "./runtime/content/practise-words";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { useEngineInputProjection } from "./runtime/input-projection.client";
+import { initializeTypingState } from "./runtime/long-test";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
 import { useQuoteEvents } from "./runtime/quotes-controller";
 import { useTestLogicEvents } from "./runtime/test/logic";

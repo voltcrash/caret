@@ -1,6 +1,6 @@
 import { createAppMemo, createAppOwned } from "../../app/application";
 import { createAppStore, createAppSignal, appSignal } from "../../app/state";
-import { createEffect, onCleanup } from "solid-js";
+import { onCleanup } from "solid-js";
 import { z } from "zod";
 import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -12,13 +12,10 @@ import { CompletedEvent, IncompleteTest } from "@caret/schemas/results";
 
 import { keymapEvent } from "../events/keymap";
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
-import * as CustomText from "../../features/typing/runtime/content/custom-text";
 import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
 import { getLayout } from "../utils/json-data";
 import { mirrorLayoutKeys } from "../utils/key-converter";
-import { canQuickRestart } from "../utils/quick-restart";
 import { replaceUnderscoresWithSpaces } from "../utils/strings";
-import { getCustomTextIndicator } from "./core";
 import { useResourceWithPromise } from "../hooks/useResourceWithPromise";
 import { clearTimeouts } from "../utils/misc";
 export {
@@ -131,20 +128,6 @@ export const [currentLiveStats, setCurrentLiveStats] = createAppStore<{
   burst?: number;
   seconds?: number;
 }>({});
-
-export const initializeTypingState = createAppOwned(() =>
-  createEffect(() => {
-    setIsLongTest(
-      canQuickRestart(
-        getConfig.mode,
-        getConfig.words,
-        getConfig.time,
-        CustomText.getData(),
-        getCustomTextIndicator()?.isLong ?? false,
-      ) === false,
-    );
-  }),
-);
 
 export const getKeymapLayout = createAppMemo<{
   layout: string;
