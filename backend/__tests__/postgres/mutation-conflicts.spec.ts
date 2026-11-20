@@ -47,6 +47,27 @@ describe("PostgreSQL optimistic version guards", () => {
     });
   });
 
+  it("retries the loser when two writers commit from the same snapshot", async () => {
+    await seedUser(test.env, "race");
+    await withRuntime(test.env, async () => {
+      let attempts = 0;
+      let arrived = 0;
+      let release!: () => void;
+      const bothRead = new Promise<void>((resolve) => (release = resolve));
+      // Each writer holds its snapshot until both have read the same version.
+      const write = async (xp: number): Promise<void> =>
+        await atomicUser("race", async () => {
+          attempts++;
+          await Users.incrementXp("race", xp);
+          if (++arrived === 2) release();
+          await bothRead;
+        });
+      await Promise.all([write(10), write(20)]);
+      expect(attempts).toBe(3);
+      expect((await Users.getUser("race", "test")).xp).toBe(30);
+    });
+  });
+
   it("returns reads appended to the committing batch, after its writes", async () => {
     await seedUser(test.env, "batched-read");
     await withRuntime(test.env, async () => {
