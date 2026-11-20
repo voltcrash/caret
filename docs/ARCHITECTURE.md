@@ -96,6 +96,26 @@ Tailwind CSS supplies utilities and theme colors; compatibility CSS keeps
 theme/funbox selectors. Icons use `Fa`. `AnimatedModal` uses `hidden open:flex`:
 never add `hidden` imperatively, or a closed dialog can intercept clicks.
 
+## State transitions
+
+| Owner | States and transition rules |
+| --- | --- |
+| Rust typing session | Ready → running → finish pending → ended. Immediate completion skips the acknowledgement. Reset returns to ready. The start time, finish request and failure reason belong to their respective states. |
+| Session content | Available, waiting for a checkpoint, or awaiting recovery. A matching source reply resumes the checkpoint. Failure discards it. Content and timing can wait independently. |
+| Content preparation | New, released, or prepared. Preparing owns a generator and optional generated preview. Starting a session transfers the generator. Recycling retains learning for the next generation. |
+| Arrow funbox | Left and right feet alternate after each generated step. The first arrow chooses the starting foot. |
+| Web typing route | The route machine owns preparation, running, completion, result and error phases. A mounted page accepts URL settings after entry. A pending browser completion owns its acknowledgement clock. The initial preview seed is consumed once. |
+| Browser engine and audit | The loading state owns the shared initialization promise. Success publishes the API. Failed downloads can retry. Engine disposal aborts session leases. |
+| Terminal results | A finished session has one summary or one summary error. A captured record guards duplicate capture while the disk write queue retries independently. |
+| Startup, auth and verification | Readiness shares one startup task and releases waiters on success, error or disposal. Session observation distinguishes first load, guest and signed-in users. CAPTCHA verification can expire, fail or be consumed. |
+| Persistence | Actor caches move from idle through restoration to a subscribed ready state. Clear invalidates restoration and disposal releases the subscription. The result outbox shares its first read and returns to idle on failure. Lazy mode preferences distinguish unread and stored values. |
+| Database writes | An acknowledged batch supplies statement results. Recovery by receipt confirms the commit and callers read any missing results separately. |
+| Modal and command palette | A closing modal owns its queued successor. Only the matching close acknowledgement releases it. A mobile sheet tracks a drag, retains its release offset during dismissal, then resets. The palette accepts input until closing starts. |
+| Settings and challenges | The importer accepts one file read or one import at a time. A new modal opening invalidates earlier work. Challenge setup owns a request identity so only the current setup can clear its loading state. |
+| Connection and updates | An offline banner is eligible, visible or dismissed until reconnection. Service worker takeover may be silent or request a reload. A requested update owns its fallback timer until takeover, timeout or disposal. |
+| Audio | A loading sample can queue playback. A ready sample owns the decoded buffer. Failed and disposed samples stay silent. Only a playing voice owns a buffer source. |
+| Result and overlay views | Word highlighting measures before painting and invalidates old measurements on history changes. XP breakdowns progress through display, skip or hold, and hide. Timeline playback and the FPS counter own frames only while running. Tooltip focus cancels pending pointer dismissal. |
+
 ## Backend and data
 
 `@caret/backend` exports narrow server-only subpaths (runtime, services,
