@@ -135,7 +135,7 @@ flowchart LR
   Worker --> Auth[Better Auth]
   Auth --> Hyperdrive[Hyperdrive]
   Services --> Hyperdrive
-  Hyperdrive --> Postgres[(Neon PostgreSQL / Drizzle)]
+  Hyperdrive --> Postgres[(Neon PostgreSQL)]
   Cron[Cron] --> Worker
   Services --> Bridge[External quote automation]
 ```
