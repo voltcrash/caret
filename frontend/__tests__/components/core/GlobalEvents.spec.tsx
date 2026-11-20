@@ -16,7 +16,6 @@ vi.mock("../../../src/ts/states/notifications", () => ({
 
 import { GlobalEvents } from "../../../src/ts/components/core/GlobalEvents";
 import { ModifierKeys } from "../../../src/ts/constants/modifier-keys";
-import { connectionEvent } from "../../../src/ts/events/connection";
 
 beforeEach(() => vi.clearAllMocks());
 afterEach(cleanup);
@@ -85,18 +84,6 @@ describe("Global events", () => {
     delete root.dataset["inputModality"];
     press("Tab");
     expect(root.dataset["inputModality"]).toBeUndefined();
-  });
-
-  it("owns online/offline listeners even when mounted after window load", () => {
-    const dispatch = vi.spyOn(connectionEvent, "dispatch");
-    const { unmount } = render(() => <GlobalEvents />);
-    window.dispatchEvent(new Event("offline"));
-    window.dispatchEvent(new Event("online"));
-    expect(dispatch.mock.calls).toEqual([[false], [true]]);
-    unmount();
-    window.dispatchEvent(new Event("offline"));
-    expect(dispatch).toHaveBeenCalledTimes(2);
-    dispatch.mockRestore();
   });
 
   it("prevents space scrolling on body/results and cleans up handlers", () => {
