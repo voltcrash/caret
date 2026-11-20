@@ -12,7 +12,10 @@ const configStore = createAppOwned(() =>
 
 export const getConfig = appObject(() => configStore()[0]);
 
-/** The store's own object, read untracked. Write through the setters. */
+/**
+ * The store's own object: its fields read untracked (the accessor itself
+ * still follows the mounted app). Write through the setters.
+ */
 export const peekConfig = createAppOwned((): Readonly<ConfigSchema> =>
   unwrap(configStore()[0]),
 );
