@@ -26,7 +26,7 @@ fn native_host_preserves_input_clocks_repeat_targets_and_missing_keyboard_data()
     host.insert(&original[1].display_lossy(), 1100.0, 11_100.0)
         .unwrap();
     assert!(host.state().ended);
-    let result = host.result.as_ref().unwrap();
+    let result = host.result().unwrap();
     assert_eq!(result.wpm, 36.0);
     assert_eq!(result.acc, 100.0);
     assert_eq!(result.test_duration, 1.0);

@@ -342,8 +342,7 @@ pub fn record(
     let mode2 = log.context.mode2.clone();
     let limit = host.custom_limit();
     let invalid = host
-        .result
-        .as_ref()
+        .result()
         .map(|summary| {
             typing_engine::results::invalid_reason(
                 &log,
@@ -369,7 +368,7 @@ pub fn record(
             .map(str::to_string)
         })
         .unwrap_or_else(|| Some("unavailable metrics".into()));
-    let mut summary = serde_json::to_value(&host.result)?;
+    let mut summary = serde_json::to_value(host.result())?;
     if let Value::Object(values) = &mut summary {
         for field in [
             "keySpacing",
@@ -389,6 +388,6 @@ pub fn record(
             .iter()
             .all(|n| typing_engine::funboxes::get(n).is_some_and(|f| f.can_get_pb));
     Ok(
-        json!({ "formatVersion":1,"id":uuid::Uuid::new_v4().to_string(),"createdMs":created,"startedMs":log.events.iter().find(|e|e.kind=="timer" && e.data["event"]=="start").map(|e|e.data["date"].clone()),"endedMs":log.events.iter().find(|e|e.kind=="timer" && e.data["event"]=="end").map(|e|e.data["date"].clone()),"engineBehaviorVersion":typing_engine::BEHAVIOR_VERSION,"eventLogVersion":typing_engine::EVENT_LOG_VERSION,"buildVersion":crate::version(),"config":host.config,"mode2":mode2,"seed":host.seed,"contentIdentity":host.content_identity,"quoteId":quote.map(|q|q.id),"customLimit":limit,"capabilities":capabilities,"measurements":{"clock":"monotonic terminal event delivery","physicalKeyTiming":null},"summary":summary,"summaryError":host.result_error,"invalidReason":invalid,"personalBestEligible":pb_eligible,"personalBestGroup":hash(&(typing_engine::BEHAVIOR_VERSION,&host.config,&host.content_identity,&mode2))?,"repeated":host.repeated,"bailedOut":log.context.bailed_out,"failureReason":host.state().reason,"replayLog":if replay { Some(log) } else { None } }),
+        json!({ "formatVersion":1,"id":uuid::Uuid::new_v4().to_string(),"createdMs":created,"startedMs":log.events.iter().find(|e|e.kind=="timer" && e.data["event"]=="start").map(|e|e.data["date"].clone()),"endedMs":log.events.iter().find(|e|e.kind=="timer" && e.data["event"]=="end").map(|e|e.data["date"].clone()),"engineBehaviorVersion":typing_engine::BEHAVIOR_VERSION,"eventLogVersion":typing_engine::EVENT_LOG_VERSION,"buildVersion":crate::version(),"config":host.config,"mode2":mode2,"seed":host.seed,"contentIdentity":host.content_identity,"quoteId":quote.map(|q|q.id),"customLimit":limit,"capabilities":capabilities,"measurements":{"clock":"monotonic terminal event delivery","physicalKeyTiming":null},"summary":summary,"summaryError":host.result_error(),"invalidReason":invalid,"personalBestEligible":pb_eligible,"personalBestGroup":hash(&(typing_engine::BEHAVIOR_VERSION,&host.config,&host.content_identity,&mode2))?,"repeated":host.repeated,"bailedOut":log.context.bailed_out,"failureReason":host.state().reason,"replayLog":if replay { Some(log) } else { None } }),
     )
 }

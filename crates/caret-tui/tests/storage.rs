@@ -56,7 +56,7 @@ fn restart_persistence_idempotency_private_defaults_and_lossless_export() {
     }
     assert_eq!(
         record["summary"]["wpm"],
-        serde_json::to_value(host.result.as_ref().unwrap().wpm).unwrap()
+        serde_json::to_value(host.result().unwrap().wpm).unwrap()
     );
     assert_eq!(record["personalBestEligible"], true);
     store.save(&record).unwrap();
@@ -64,7 +64,7 @@ fn restart_persistence_idempotency_private_defaults_and_lossless_export() {
         store
             .best(record["personalBestGroup"].as_str().unwrap())
             .unwrap(),
-        host.result.as_ref().map(|s| s.wpm)
+        host.result().map(|s| s.wpm)
     );
     store.save(&record).unwrap();
     drop(store);

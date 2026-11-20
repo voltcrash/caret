@@ -549,10 +549,10 @@ fn result(frame: &mut Frame, area: Rect, host: &EngineHost, local: &Local, palet
         Constraint::Fill(1),
     ])
     .areas(area);
-    let Some(summary) = &host.result else {
+    let Some(summary) = host.result() else {
         let error = host
-            .result_error
-            .clone()
+            .result_error()
+            .map(str::to_owned)
             .unwrap_or_else(|| "Test ended".into());
         frame.render_widget(
             Paragraph::new(Span::styled(error, Palette::fg(palette.error)))
