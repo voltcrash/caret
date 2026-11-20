@@ -12,7 +12,6 @@ import CustomThemesListCommands from "./lists/custom-themes-list";
 import PresetsCommands from "./lists/presets";
 import FunboxCommands from "./lists/funbox";
 import ThemesCommands from "./lists/themes";
-import LoadChallengeCommands from "./lists/load-challenge";
 
 import { getMutableConfig } from "../config/store";
 import { setConfig } from "../config/setters";
@@ -208,7 +207,6 @@ const getCoreCommands = createAccountOwned<
     ),
 
     //other
-    ...LoadChallengeCommands,
   ],
   other: [
     ...NavigationCommands,
@@ -360,8 +358,7 @@ function getCommands(): CommandsSubgroup {
 function getLists(): Record<CommandlineListKey, CommandsSubgroup | undefined> {
   return {
     themes: ThemesCommands[0]?.subgroup,
-    loadChallenge:
-      LoadChallengeCommands[0]?.subgroup ?? contributedList("loadChallenge"),
+    loadChallenge: contributedList("loadChallenge"),
     minBurst: MinBurstCommands[0]?.subgroup,
     funbox: FunboxCommands[0]?.subgroup ?? contributedList("funbox"),
     tags: TagsCommands[0]?.subgroup,

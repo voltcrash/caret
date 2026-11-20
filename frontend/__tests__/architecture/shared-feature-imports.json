@@ -8,7 +8,6 @@
   "src/ts/commandline/lists/funbox.ts -> src/features/typing/runtime/funbox/funbox",
   "src/ts/commandline/lists/funbox.ts -> src/features/typing/runtime/funbox/list",
   "src/ts/commandline/lists/funbox.ts -> src/features/typing/runtime/test/logic",
-  "src/ts/commandline/lists/load-challenge.ts -> src/features/typing/runtime/test/logic",
   "src/ts/components/layout/header/Nav.tsx -> src/features/account/settled.client",
   "src/ts/components/layout/header/Nav.tsx -> src/features/auth/session",
   "src/ts/components/standalone/OAuthCallback.tsx -> src/features/auth/callback",
