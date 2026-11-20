@@ -1,7 +1,9 @@
 import { roundTo2 } from "@caret/util/numbers";
 import { JSX, createSignal, createEffect, onCleanup, Show } from "solid-js";
 
-const [isVisible, setVisible] = createSignal(false);
+import { createAppSignal } from "../../../../app/state";
+
+const [isVisible, setVisible] = createAppSignal(false);
 
 export function showFpsCounter(): void {
   setVisible(true);
@@ -14,42 +16,22 @@ export function hideFpsCounter(): void {
 export function FpsCounter(): JSX.Element {
   const [fps, setFps] = createSignal(0);
 
-  let stopLoop = true;
-  let frameCount = 0;
-  let startTime: number;
-  let frame: number | undefined;
-
-  const loop = (timestamp: number): void => {
-    if (stopLoop) return;
-    const elapsedTime = timestamp - startTime;
-    frameCount++;
-
-    if (elapsedTime > 500) {
-      const currentFps = roundTo2((frameCount * 1000) / elapsedTime);
-      frameCount = 0;
-      startTime = timestamp;
-      setFps(currentFps);
-    }
-
-    frame = window.requestAnimationFrame(loop);
-  };
-
   createEffect(() => {
-    if (frame !== undefined) window.cancelAnimationFrame(frame);
-    frame = undefined;
-    if (isVisible()) {
-      stopLoop = false;
-      frameCount = 0;
-      startTime = performance.now();
+    if (!isVisible()) return;
+    let frameCount = 0;
+    let startTime = performance.now();
+    const loop = (timestamp: number): void => {
+      const elapsed = timestamp - startTime;
+      frameCount++;
+      if (elapsed > 500) {
+        setFps(roundTo2((frameCount * 1000) / elapsed));
+        frameCount = 0;
+        startTime = timestamp;
+      }
       frame = window.requestAnimationFrame(loop);
-    } else {
-      stopLoop = true;
-    }
-  });
-
-  onCleanup(() => {
-    stopLoop = true;
-    if (frame !== undefined) window.cancelAnimationFrame(frame);
+    };
+    let frame = window.requestAnimationFrame(loop);
+    onCleanup(() => window.cancelAnimationFrame(frame));
   });
 
   const fpsColor = (): string =>
