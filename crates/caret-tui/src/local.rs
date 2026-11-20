@@ -16,7 +16,6 @@ pub struct Local {
     pub pending: Vec<Value>,
     pub latest_result: Option<Value>,
     pub replay: Option<crate::replay::Replay>,
-    captured: bool,
 }
 impl Local {
     pub fn new(store: Store, preferences: Settings) -> Self {
@@ -27,7 +26,6 @@ impl Local {
             pending: vec![],
             latest_result: None,
             replay: None,
-            captured: false,
         }
     }
     pub fn capture(
@@ -36,11 +34,10 @@ impl Local {
         capabilities: &Capabilities,
         date: f64,
     ) -> Result<bool> {
-        if !host.state().ended || self.captured {
+        if !host.state().ended || self.latest_result.is_some() {
             return Ok(false);
         }
         let record = storage::record(host, capabilities, self.preferences.record_replay, date)?;
-        self.captured = true;
         self.latest_result = Some(record.clone());
         self.pending.push(record);
         self.retry()?;
@@ -54,7 +51,6 @@ impl Local {
         Ok(())
     }
     pub fn restarted(&mut self) {
-        self.captured = false;
         self.latest_result = None;
     }
     pub fn configure_setup(&self, setup: &mut Setup) {
