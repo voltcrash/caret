@@ -99,6 +99,8 @@ describe("service-worker registration", () => {
     await settle();
     updates.activateWaiting(true);
     updates.dispose();
+    expect(updates.activateWaiting(true)).toBe(false);
+    updates.check();
     container.dispatchEvent(new Event("controllerchange"));
     expect(reload).not.toHaveBeenCalled();
     expect(registration.update).not.toHaveBeenCalled();
