@@ -1,5 +1,7 @@
 import { onCleanup } from "solid-js";
 
+import { createAppOwned, currentApplication } from "../../app/application";
+
 export type ModuleHotContext = { dispose: (callback: () => void) => void };
 
 type Listener<T> = (value: T) => void;
@@ -36,11 +38,13 @@ type EventBus<T> = {
  */
 
 export function createEvent<T = undefined>(): EventBus<T> {
-  const listeners = new Set<Listener<T>>();
+  // Listeners belong to the mounted app, so a remount never inherits them.
+  const appListeners = createAppOwned(() => new Set<Listener<T>>());
 
   function dispatch(...args: EventArgs<T>): void {
+    if (currentApplication() === undefined) return;
     const value = args[0] as T;
-    for (const fn of listeners) {
+    for (const fn of appListeners()) {
       try {
         fn(value);
       } catch (e) {
@@ -50,6 +54,7 @@ export function createEvent<T = undefined>(): EventBus<T> {
   }
 
   function subscribe(fn: Listener<T>, hot?: ModuleHotContext): () => void {
+    const listeners = appListeners();
     listeners.add(fn);
     const unsubscribe = (): void => {
       listeners.delete(fn);
@@ -60,6 +65,7 @@ export function createEvent<T = undefined>(): EventBus<T> {
 
   // Auto-unsubscribes when the Solid owner scope is disposed
   function useListener(fn: Listener<T>): void {
+    const listeners = appListeners();
     listeners.add(fn);
     onCleanup(() => listeners.delete(fn));
   }
@@ -68,6 +74,7 @@ export function createEvent<T = undefined>(): EventBus<T> {
     dispatch,
     subscribe,
     useListener,
-    hasListeners: () => listeners.size > 0,
+    hasListeners: () =>
+      currentApplication() !== undefined && appListeners().size > 0,
   };
 }

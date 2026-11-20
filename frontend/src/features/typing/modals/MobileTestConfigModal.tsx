@@ -8,12 +8,12 @@ import { Button } from "../../../ts/components/common/Button";
 import { Fa } from "../../../ts/components/common/Fa";
 import { setConfig, setQuoteLengthAll } from "../../../ts/config/setters";
 import { getConfig } from "../../../ts/config/store";
-import { restartTestEvent } from "../../../ts/events/test";
 import {
   isAuthenticated,
   showCommandLineForConfig,
 } from "../../../ts/states/core";
 import { hideModal, showModal } from "../../../ts/states/modals";
+import { restartTest } from "../../../ts/typing-host";
 import { areUnsortedArraysEqual } from "../../../ts/utils/arrays";
 import { cn } from "../../../ts/utils/cn";
 import { getLanguageDisplayString } from "../../../ts/utils/strings";
@@ -85,7 +85,7 @@ export function MobileTestConfigModal(): JSXElement {
   const handleModeClick = (mode: Mode) => {
     if (mode === getConfig.mode) return;
     setConfig("mode", mode);
-    restartTestEvent.dispatch();
+    restartTest();
   };
 
   const handleTimeClick = (time: number | "custom") => {
@@ -93,7 +93,7 @@ export function MobileTestConfigModal(): JSXElement {
       showModal("TestDuration");
     } else {
       setConfig("time", time);
-      restartTestEvent.dispatch();
+      restartTest();
       hideModal("MobileTestConfig");
     }
   };
@@ -103,7 +103,7 @@ export function MobileTestConfigModal(): JSXElement {
       showModal("CustomWordAmount");
     } else {
       setConfig("words", words);
-      restartTestEvent.dispatch();
+      restartTest();
       hideModal("MobileTestConfig");
     }
   };
@@ -111,7 +111,7 @@ export function MobileTestConfigModal(): JSXElement {
   const handleQuoteLengthClick = (value: string, e: MouseEvent) => {
     if (value === "all") {
       if (setQuoteLengthAll()) {
-        restartTestEvent.dispatch();
+        restartTest();
         hideModal("MobileTestConfig");
       }
     } else if (value === "-2") {
@@ -127,7 +127,7 @@ export function MobileTestConfigModal(): JSXElement {
       }
 
       if (setConfig("quoteLength", arr)) {
-        restartTestEvent.dispatch();
+        restartTest();
         // shift-click builds a multi-select, so keep the modal open
         if (!e.shiftKey) hideModal("MobileTestConfig");
       }
@@ -241,7 +241,7 @@ export function MobileTestConfigModal(): JSXElement {
             disabled={isPunctuationDisabled()}
             onClick={() => {
               setConfig("punctuation", !getConfig.punctuation);
-              restartTestEvent.dispatch();
+              restartTest();
             }}
           />
           <MCButton
@@ -250,7 +250,7 @@ export function MobileTestConfigModal(): JSXElement {
             disabled={isPunctuationDisabled()}
             onClick={() => {
               setConfig("numbers", !getConfig.numbers);
-              restartTestEvent.dispatch();
+              restartTest();
             }}
           />
         </div>

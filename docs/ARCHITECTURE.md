@@ -103,6 +103,11 @@ Preferences: one Solid store (`src/ts/config/store.ts`) holds the configuration.
 and read-only for hot paths. Only the setters write, inside a batch: change
 listeners (`configEvent`) see the new value first, then reactive readers update.
 
+Events: `createEvent` buses are for changes with several independent
+listeners (config changes, result highlighting, OAuth requests). Their
+listeners are app-owned. A one-listener notification is a direct call, a
+binding, or a typing host action instead.
+
 Command palette: `src/ts/commandline` owns the palette and core commands.
 Features add commands at named slots through `registry.ts` while the palette is
 mounted (`app/commandline.client.tsx`); shared commands reach typing only

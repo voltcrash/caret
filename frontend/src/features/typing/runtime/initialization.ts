@@ -36,7 +36,7 @@ import {
 
 import * as TestWords from "./test/words";
 
-import { highlight } from "../../../ts/events/keymap";
+import { highlight } from "../../../ts/states/keymap";
 import * as LazyModeState from "./remember-lazy-mode";
 
 import {

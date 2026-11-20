@@ -1,7 +1,6 @@
 import { onCleanup, onMount } from "solid-js";
 
 import { ModifierKeys } from "../../constants/modifier-keys";
-import { connectionEvent } from "../../events/connection";
 import { showErrorNotification } from "../../states/notifications";
 import { isDevEnvironment } from "../../utils/env";
 
@@ -62,18 +61,12 @@ export function GlobalEvents(): null {
       }
     };
 
-    const online = (): void => connectionEvent.dispatch(true);
-    const offline = (): void => connectionEvent.dispatch(false);
-    window.addEventListener("online", online);
-    window.addEventListener("offline", offline);
     window.addEventListener("keydown", preventSpaceScroll);
     window.addEventListener("pointerdown", usePointer, true);
     window.addEventListener("keydown", useKeyboard, true);
     window.onerror = onError;
     window.onunhandledrejection = onRejection;
     onCleanup(() => {
-      window.removeEventListener("online", online);
-      window.removeEventListener("offline", offline);
       window.removeEventListener("keydown", preventSpaceScroll);
       window.removeEventListener("pointerdown", usePointer, true);
       window.removeEventListener("keydown", useKeyboard, true);

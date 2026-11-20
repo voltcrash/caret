@@ -36,7 +36,7 @@ import {
   showErrorNotification,
   showNoticeNotification,
 } from "../../../ts/states/notifications";
-import { flash } from "../../../ts/events/keymap";
+import { flash } from "../../../ts/states/keymap";
 import { getActiveFunboxesWithFunction } from "./funbox/list";
 import * as Funbox from "./funbox/funbox";
 import { setLowFpsMode } from "../../../ts/anim";

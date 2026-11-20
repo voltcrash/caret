@@ -16,14 +16,15 @@ import {
 } from "./auth-client";
 import { updateFromServer as updateConfigFromServer } from "./config/remote";
 import * as DB from "./db";
-import { authEvent } from "./events/auth";
 import * as Sentry from "./sentry";
 import { hideLoaderBar, showLoaderBar } from "./states/loader-bar";
+import { showModal } from "./states/modals";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
 } from "./states/notifications";
+import { getLastSignedOutResult } from "./states/test";
 import { FaObject } from "./types/font-awesome";
 import { createErrorMessage } from "./utils/error";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
@@ -192,10 +193,13 @@ export async function loadUser(
     signOut();
     return result;
   }
-  if (result === "loaded") {
-    authEvent.dispatch({ type: "snapshotUpdated", data: { isInitial: true } });
-  }
+  if (result === "loaded") offerLastSignedOutResult();
   return result;
+}
+
+/** A guest result from before signing in can now be saved to the account. */
+function offerLastSignedOutResult(): void {
+  if (getLastSignedOutResult() !== null) showModal("LastSignedOutResult");
 }
 
 export async function addAuthProvider(options: {
@@ -211,7 +215,6 @@ export async function addAuthProvider(options: {
   try {
     await requestOAuth(getAuthProvider(options.authMethod), true);
     await refreshSession();
-    authEvent.dispatch({ type: "authConfigUpdated" });
     showSuccessNotification(`${providerName} authentication added`);
   } catch (error) {
     showErrorNotification(`Failed to add ${providerName} authentication`, {

@@ -3,7 +3,7 @@ import { createForm } from "@tanstack/solid-form";
 import { batch, createSignal, untrack } from "solid-js";
 import { setConfig } from "../../../../ts/config/setters";
 import { peekConfig } from "../../../../ts/config/store";
-import { restartTestEvent } from "../../../../ts/events/test";
+import { restartTest } from "../../../../ts/typing-host";
 import {
   getCustomTextIndicator,
   setCustomTextIndicator,
@@ -128,7 +128,7 @@ export function createCustomTextController() {
         setConfig("mode", "custom");
       }
       PractiseWords.resetBefore();
-      restartTestEvent.dispatch();
+      restartTest();
       hideModalAndClearChain("CustomText");
     },
   }));

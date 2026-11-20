@@ -8,9 +8,9 @@ import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
 import { fromSchema } from "../../../ts/components/ui/form/utils";
 import { setConfig } from "../../../ts/config/setters";
 import { getConfig } from "../../../ts/config/store";
-import { restartTestEvent } from "../../../ts/events/test";
 import { hideModalAndClearChain } from "../../../ts/states/modals";
 import { showNoticeNotification } from "../../../ts/states/notifications";
+import { restartTest } from "../../../ts/typing-host";
 import { getBailOutHint } from "../../../ts/utils/bail-out";
 
 export function CustomWordAmountModal(): JSXElement {
@@ -21,7 +21,7 @@ export function CustomWordAmountModal(): JSXElement {
     onSubmit: ({ value }) => {
       const val = value.words;
       setConfig("words", val);
-      restartTestEvent.dispatch();
+      restartTest();
 
       if (val > 2000) {
         showNoticeNotification("Stay safe and take breaks!");

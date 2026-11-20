@@ -1,8 +1,8 @@
 import { createRoot } from "solid-js";
 import { expect, it, vi } from "vite-plus/test";
-import { connectionEvent } from "../../src/ts/events/connection";
 import { getBanners, removeBanner } from "../../src/ts/states/banners";
 import {
+  get,
   showOfflineBanner,
   useConnectionEvents,
 } from "../../src/ts/states/connection";
@@ -14,7 +14,7 @@ it("keeps a dismissed banner hidden until reconnection", async () => {
     return dispose;
   });
   try {
-    connectionEvent.dispatch(false);
+    window.dispatchEvent(new Event("offline"));
     showOfflineBanner();
     const banner = getBanners().find(
       (item) => item.text === "No internet connection",
@@ -23,9 +23,9 @@ it("keeps a dismissed banner hidden until reconnection", async () => {
     removeBanner(banner.id);
     showOfflineBanner();
     expect(getBanners()).toHaveLength(0);
-    connectionEvent.dispatch(true);
+    window.dispatchEvent(new Event("online"));
     await vi.advanceTimersByTimeAsync(5000);
-    connectionEvent.dispatch(false);
+    window.dispatchEvent(new Event("offline"));
     expect(
       getBanners().filter((item) => item.text === "No internet connection"),
     ).toHaveLength(1);
@@ -33,4 +33,16 @@ it("keeps a dismissed banner hidden until reconnection", async () => {
     dispose();
     vi.useRealTimers();
   }
+});
+
+it("stops following the browser once disposed", () => {
+  const dispose = createRoot((dispose) => {
+    useConnectionEvents();
+    return dispose;
+  });
+  window.dispatchEvent(new Event("offline"));
+  expect(get()).toBe(false);
+  dispose();
+  window.dispatchEvent(new Event("online"));
+  expect(get()).toBe(false);
 });

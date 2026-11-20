@@ -1,7 +1,6 @@
 import { Component, For, JSXElement, lazy, Show } from "solid-js";
 
 import { ModalId, getModalVisibility } from "../ts/states/modals";
-import { useModalTriggers } from "./modal-triggers.client";
 
 function lazyModal(
   id: ModalId,
@@ -92,11 +91,6 @@ const lazyModals = [
       (m) => m.StreakHourOffsetModal,
     ),
   ),
-  lazyModal("GoogleSignup", async () =>
-    import("../ts/components/modals/GoogleSignUpModal").then(
-      (m) => m.GoogleSignupModal,
-    ),
-  ),
   lazyModal("UserReport", async () =>
     import("../ts/components/modals/UserReportModal").then(
       (m) => m.UserReportModal,
@@ -115,7 +109,6 @@ const lazyModals = [
 ];
 
 export function Modals(): JSXElement {
-  useModalTriggers();
   return (
     <For each={lazyModals}>
       {(modal) => (

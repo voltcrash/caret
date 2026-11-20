@@ -36,13 +36,12 @@ import {
   isResultCalculating,
   setBailedOut,
 } from "../../../../ts/states/test";
-import { restartTestEvent } from "../../../../ts/events/test";
 import * as TestWords from "./words";
 import { configEvent } from "../../../../ts/events/config";
 import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
 import { preloadResultHasher } from "../result/hash";
 
-import { highlight } from "../../../../ts/events/keymap";
+import { highlight } from "../../../../ts/states/keymap";
 import * as LazyModeState from "../remember-lazy-mode";
 
 import { getActiveFunboxesWithFunction } from "../funbox/list";
@@ -336,7 +335,6 @@ export function useTestLogicEvents(): void {
     }),
   );
 
-  restartTestEvent.useListener((event) => void restart(event));
   configEvent.useListener(({ key, newValue, previousValue, nosave }) => {
     // Account sync reapplies every setter, including unchanged language values.
     // Compare the settled batch, never its temporary reset to defaults.

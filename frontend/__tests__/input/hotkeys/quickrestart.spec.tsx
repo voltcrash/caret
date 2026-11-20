@@ -41,9 +41,6 @@ vi.mock("../../../src/ts/states/composition", () => ({ getData: () => "" }));
 vi.mock("../../../src/app/navigate", () => ({
   navigate: mocks.navigate,
 }));
-vi.mock("../../../src/ts/events/test", () => ({
-  restartTestEvent: { dispatch: mocks.restart },
-}));
 
 import { Balloon } from "../../../src/ts/components/common/Balloon";
 import { setConfigStore } from "../../../src/ts/config/store";
@@ -53,7 +50,7 @@ import {
   setWordsHaveNewline,
   setWordsHaveTab,
 } from "../../../src/ts/states/test";
-import { bindTypingHost } from "../../../src/ts/typing-host";
+import { bindTestTypingHost } from "../../__harness__/typing-host";
 
 function Shortcuts(): null {
   useQuickRestartHotkeys();
@@ -71,13 +68,9 @@ const [typingRoute, setTypingRoute] = createSignal(true);
 let unbind: () => void;
 beforeEach(() => {
   vi.clearAllMocks();
-  unbind = bindTypingHost({
+  unbind = bindTestTypingHost({
     isRouteActive: typingRoute,
-    restart: vi.fn(),
-    blur: vi.fn(),
-    reloadPaceCaret: vi.fn(),
-    updateHints: vi.fn(),
-    isNoQuitActive: () => false,
+    restart: mocks.restart,
   });
   mocks.popup = false;
   setConfigStore("quickRestart", "tab");

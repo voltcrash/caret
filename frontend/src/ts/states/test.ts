@@ -10,7 +10,6 @@ import type { Challenge } from "@caret/challenges";
 import { LayoutObject } from "@caret/schemas/layouts";
 import { CompletedEvent, IncompleteTest } from "@caret/schemas/results";
 
-import { keymapEvent } from "../events/keymap";
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
 import { getLayout } from "../utils/json-data";
@@ -158,19 +157,22 @@ const [getKeymapFlashState, setKeymapFlashState] = createAppStore<
 
 export { getKeymapFlashState, setKeymapFlashState };
 
-export function useKeymapEvents(): void {
-  keymapEvent.useListener(({ mode, key, correct }) => {
-    const mappedKey = key === "" ? " " : key;
-    setKeymapHighlightKey(mode === "highlight" ? mappedKey : undefined);
+/** Highlights `key` (or, with a flash, clears the highlight) on the keymap. */
+export function showKeymapKey(
+  mode: "highlight" | "flash",
+  key: string,
+  correct?: boolean,
+): void {
+  const mappedKey = key === "" ? " " : key;
+  setKeymapHighlightKey(mode === "highlight" ? mappedKey : undefined);
 
-    if (mode === "flash" && getConfig.keymapMode === "react") {
-      const existing = getKeymapFlashState[mappedKey];
-      setKeymapFlashState(mappedKey, {
-        tick: existing ? existing.tick + 1 : 1,
-        correct: correct ?? true,
-      });
-    }
-  });
+  if (mode === "flash" && getConfig.keymapMode === "react") {
+    const existing = getKeymapFlashState[mappedKey];
+    setKeymapFlashState(mappedKey, {
+      tick: existing ? existing.tick + 1 : 1,
+      correct: correct ?? true,
+    });
+  }
 }
 
 const getInputLayout = createAppMemo<{

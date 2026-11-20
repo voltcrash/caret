@@ -43,10 +43,7 @@ const pb = (lazyMode = false): ReturnType<typeof DB.getLocalPB> =>
 
 describe("local personal bests", () => {
   it("publishes favorite acknowledgements through the account query without losing progression", () => {
-    DB.setSnapshot(
-      { ...getDefaultSnapshot(), xp: 42 },
-      { dispatchEvent: false },
-    );
+    DB.setSnapshot({ ...getDefaultSnapshot(), xp: 42 });
     DB.updateLocalQuoteFavorite("english", "7", true);
     expect(observedSnapshot()?.favoriteQuotes?.english).toEqual(["7"]);
     DB.updateLocalQuoteFavorite("english", "7", true);
@@ -58,7 +55,7 @@ describe("local personal bests", () => {
   it("creates, updates and separates personal bests by settings", async () => {
     const snapshot = getDefaultSnapshot();
     snapshot.personalBests = { words: {} } as typeof snapshot.personalBests;
-    DB.setSnapshot(snapshot, { dispatchEvent: false });
+    DB.setSnapshot(snapshot);
 
     DB.saveLocalResult({ isPb: true, result: result(70) });
     expect(pb()).toMatchObject({ wpm: 70, raw: 75 });

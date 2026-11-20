@@ -3,7 +3,6 @@ import { debounce } from "@caret/util/timing";
 import { createAppOwned } from "../../app/application";
 import { createAppSignal } from "../../app/state";
 import { showSuccessNotification } from "./notifications";
-import { connectionEvent } from "../events/connection";
 import { addBanner, removeBanner } from "./banners";
 import { isTestActive } from "./test";
 const [getState, setState] = createAppSignal(true);
@@ -47,13 +46,21 @@ export function useConnectionEvents(): void {
       showOfflineBanner();
     }
   });
-  connectionEvent.useListener((value) => {
-    setState(value);
+  const update = (online: boolean): void => {
+    setState(online);
     handleState();
-  });
+  };
+  const online = (): void => update(true);
+  const offline = (): void => update(false);
   onMount(() => {
+    window.addEventListener("online", online);
+    window.addEventListener("offline", offline);
     setState(navigator.onLine);
     if (!getState()) showOfflineBanner();
+  });
+  onCleanup(() => {
+    window.removeEventListener("online", online);
+    window.removeEventListener("offline", offline);
   });
   onCleanup(() => handleState.cancel());
 }

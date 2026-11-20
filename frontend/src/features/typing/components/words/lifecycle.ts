@@ -14,7 +14,7 @@ import { animateAsync } from "../../../../ts/anim";
 import { peekConfig } from "../../../../ts/config/store";
 import * as SoundController from "../../../../ts/controllers/sound-controller";
 import * as ThemeController from "../../../../ts/controllers/theme-controller";
-import { highlight } from "../../../../ts/events/keymap";
+import { highlight } from "../../../../ts/states/keymap";
 import { isTouchKeyboardFocused } from "../../../../ts/input/input-element";
 import * as CompositionState from "../../../../ts/states/composition";
 import * as ConnectionState from "../../../../ts/states/connection";

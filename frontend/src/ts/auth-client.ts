@@ -13,7 +13,7 @@ import {
   getAuthenticatedUser,
   setUserState,
 } from "../features/auth/state.client";
-export { getAuthenticatedUser, setUserState };
+export { getAuthenticatedUser };
 
 const authState = createAppOwned(() => {
   const state = { revision: 0, available: false };
@@ -69,15 +69,6 @@ export async function signOut(): Promise<void> {
     session === undefined ? session : { ...session, user: null },
   );
   setUserState(null);
-}
-export async function updateProfile(name: string): Promise<void> {
-  checkAuthResult(await getAuthClient().updateUser({ name }));
-  await refreshSession();
-}
-export async function deleteUnfinishedUser(): Promise<void> {
-  checkAuthResult(
-    await getAuthClient().$fetch("/cancel-sign-up", { method: "POST" }),
-  );
 }
 
 export { requestOAuth } from "../features/auth/popup.client";

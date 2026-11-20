@@ -2,11 +2,7 @@ import { onCleanup, onMount } from "solid-js";
 
 import { useSoundEvents } from "../../ts/controllers/sound-controller";
 import { getBrowserEngine } from "../../ts/engine/owner.client";
-import {
-  getLastEventLog,
-  getActiveWordIndex,
-  useKeymapEvents,
-} from "../../ts/states/test";
+import { getLastEventLog, getActiveWordIndex } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
 import { useChallengeEvents } from "./runtime/challenge-controller";
 import { usePractiseEvents } from "./runtime/content/practise-words";
@@ -24,7 +20,6 @@ import { useTtsEvents } from "./runtime/tts";
 export function TypingRuntime(): null {
   initializeTypingState();
   useEngineInputProjection();
-  useKeymapEvents();
   useChallengeEvents();
   useQuoteEvents();
   useSoundEvents();
