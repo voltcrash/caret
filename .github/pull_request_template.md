@@ -21,7 +21,7 @@
 - [ ] Adding a theme?
   - Make sure to follow the [themes documentation](https://github.com/voltcrash/caret/blob/main/docs/THEMES.md)
   - [ ] Add theme to `packages/schemas/src/themes.ts`
-  - [ ] Add theme to `frontend/src/ts/constants/themes.ts`
+  - [ ] Add theme to `packages/web-shared/src/theme-palettes.json`
   - [ ] (optional) Add theme css file to `frontend/static/themes`
   - [ ] Add some screenshots of the theme, especially with different test settings (colorful, flip colors) to your pull request
 - [ ] Adding a layout?
