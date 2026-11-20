@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, type Accessor } from "solid-js";
-import { createAppOwned } from "../../../app/application";
+import { createAppOwned } from "#app/application.ts";
 import {
   initialLifecycle,
   isCompleting,

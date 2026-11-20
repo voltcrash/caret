@@ -1,7 +1,8 @@
 import { Meta, MetaProvider, Style } from "@solidjs/meta";
 import { createMemo, JSXElement, untrack } from "solid-js";
 
-import { toThemeVars } from "../../../app/theme-vars";
+import { toThemeVars } from "#app/theme-vars.ts";
+
 import { Theme as ThemeColors, themes } from "../../constants/themes";
 import { createEffectOn } from "../../hooks/effects";
 import { useRef } from "../../hooks/useRef";

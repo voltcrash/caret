@@ -1,7 +1,8 @@
 import { createEffect, createSignal, JSXElement } from "solid-js";
 
-import { captureApplication } from "../../../app/application";
-import { waitForTestIdle } from "../../../app/test-idle.client";
+import { captureApplication } from "#app/application.ts";
+import { waitForTestIdle } from "#app/test-idle.client.ts";
+
 import { getAcceptedCookies, setAcceptedCookies } from "../../cookies";
 import { hideModal, isModalOpen } from "../../states/modals";
 import { cn } from "../../utils/cn";

@@ -1,5 +1,5 @@
-import { createAccountOwned } from "../../../app/account-scope";
-import { appObject } from "../../../app/state";
+import { createAccountOwned } from "#app/account-scope.ts";
+import { appObject } from "#app/state.ts";
 import * as PresetController from "../../controllers/preset-controller";
 import { isAuthenticated } from "../../states/core";
 import { Command, CommandsSubgroup } from "../types";

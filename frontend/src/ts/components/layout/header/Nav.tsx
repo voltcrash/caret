@@ -8,7 +8,8 @@ import {
   Show,
 } from "solid-js";
 
-import { isStartupFinished } from "../../../../app/startup";
+import { isStartupFinished } from "#app/startup.ts";
+
 import { AccountPlaceholder } from "../../../../components/layout/account-placeholder";
 import { AccountSlot } from "../../../../components/layout/account-slot";
 import { createEffectOn } from "../../../hooks/effects";

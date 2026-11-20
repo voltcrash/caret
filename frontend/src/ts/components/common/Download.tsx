@@ -1,6 +1,7 @@
 import { createSignal, JSXElement, onCleanup, onMount } from "solid-js";
 
-import { createBinding } from "../../../app/binding";
+import { createBinding } from "#app/binding.ts";
+
 import { useRef } from "../../hooks/useRef";
 
 type DownloadOptions = { filename: string; data: Blob };
