@@ -1,17 +1,15 @@
 import { z } from "zod";
 
+import { reauthenticate } from "#shared/auth.tsx";
+import { resetConfig } from "#shared/config/lifecycle.ts";
+import { getSnapshot, setSnapshot } from "#shared/db.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
+import { ExecReturn, showSimpleModal } from "#shared/states/simple-modal.ts";
+import FileStorage from "#shared/utils/file-storage.ts";
+import { reloadAfter } from "#shared/utils/misc.ts";
+
 import { operation } from "../../../../data/operations";
-import { reauthenticate } from "../../../../ts/auth";
-import { resetConfig } from "../../../../ts/config/lifecycle";
-import { getSnapshot, setSnapshot } from "../../../../ts/db";
-import { isAuthenticated } from "../../../../ts/states/core";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
-import {
-  ExecReturn,
-  showSimpleModal,
-} from "../../../../ts/states/simple-modal";
-import FileStorage from "../../../../ts/utils/file-storage";
-import { reloadAfter } from "../../../../ts/utils/misc";
 
 export function showDeleteAccountModal(): void {
   showReauthConfirmModal({

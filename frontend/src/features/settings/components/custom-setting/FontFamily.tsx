@@ -3,21 +3,22 @@ import { FontNameSchema } from "@caret/schemas/fonts";
 import { createResource, For, JSXElement, Show } from "solid-js";
 import { z } from "zod";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { Separator } from "../../../../ts/components/common/Separator";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
 import {
   configMetadata,
   getOptionSearchKeywords,
-} from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
-import { showSimpleModal } from "../../../../ts/states/simple-modal";
-import { applyFontFamily } from "../../../../ts/ui";
-import FileStorage from "../../../../ts/utils/file-storage";
-import { normalizeName } from "../../../../ts/utils/strings";
-import { getOptions } from "../../../../ts/utils/zod";
+} from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { applyFontFamily } from "#shared/ui.ts";
+import FileStorage from "#shared/utils/file-storage.ts";
+import { normalizeName } from "#shared/utils/strings.ts";
+import { getOptions } from "#shared/utils/zod.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 import { SettingsSearchMatch } from "../SettingsSearchMatch";
 

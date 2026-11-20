@@ -2,11 +2,12 @@ import { MaxLineWidthSchema } from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 
-import { InputField } from "../../../../ts/components/ui/form/InputField";
-import { fromSchema } from "../../../../ts/components/ui/form/utils";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+
 import { useSavedIndicator } from "../../hooks/useSavedIndicator";
 import { SearchableSetting } from "../SearchableSetting";
 

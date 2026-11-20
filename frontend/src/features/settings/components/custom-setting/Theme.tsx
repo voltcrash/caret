@@ -3,50 +3,47 @@ import { debounce } from "@caret/util/timing";
 import { For, JSXElement, onCleanup, Show, untrack } from "solid-js";
 import { z } from "zod";
 
+import { AnimeMatch } from "#shared/components/common/anime/AnimeMatch.tsx";
+import { AnimeSwitch } from "#shared/components/common/anime/index.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import {
+  ColorName,
+  ThemesList,
+  ThemeWithName,
+} from "#shared/constants/themes.ts";
+import {
+  clearPreview,
+  convertCustomColorsToTheme,
+  convertThemeToCustomColors,
+  preview,
+} from "#shared/controllers/theme-controller.ts";
+import { createEffectOn } from "#shared/hooks/effects.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
+import {
+  showErrorNotification,
+  showNoticeNotification,
+  showSuccessNotification,
+} from "#shared/states/notifications.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { getTheme, setTheme, updateThemeColor } from "#shared/states/theme.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { hexToHSL } from "#shared/utils/colors.ts";
+import {
+  normalizeName,
+  replaceUnderscoresWithSpaces,
+} from "#shared/utils/strings.ts";
+
 import {
   addCustomTheme,
   deleteCustomTheme,
   editCustomTheme,
   useCustomThemesLiveQuery,
 } from "../../../../data/collections/custom-themes";
-import { AnimeSwitch } from "../../../../ts/components/common/anime";
-import { AnimeMatch } from "../../../../ts/components/common/anime/AnimeMatch";
-import { Button } from "../../../../ts/components/common/Button";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { Separator } from "../../../../ts/components/common/Separator";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
-import {
-  ColorName,
-  ThemesList,
-  ThemeWithName,
-} from "../../../../ts/constants/themes";
-import {
-  clearPreview,
-  convertCustomColorsToTheme,
-  convertThemeToCustomColors,
-  preview,
-} from "../../../../ts/controllers/theme-controller";
-import { createEffectOn } from "../../../../ts/hooks/effects";
-import { isAuthenticated } from "../../../../ts/states/core";
-import {
-  showErrorNotification,
-  showNoticeNotification,
-  showSuccessNotification,
-} from "../../../../ts/states/notifications";
-import { showSimpleModal } from "../../../../ts/states/simple-modal";
-import {
-  getTheme,
-  setTheme,
-  updateThemeColor,
-} from "../../../../ts/states/theme";
-import { cn } from "../../../../ts/utils/cn";
-import { hexToHSL } from "../../../../ts/utils/colors";
-import {
-  normalizeName,
-  replaceUnderscoresWithSpaces,
-} from "../../../../ts/utils/strings";
 import { SearchableSetting } from "../SearchableSetting";
 
 // darkest background first

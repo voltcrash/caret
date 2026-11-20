@@ -1,9 +1,10 @@
 import { JSXElement, onCleanup, onMount, Show } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { Fa } from "../../../ts/components/common/Fa";
-import { isAnyPopupVisible } from "../../../ts/states/overlay-visibility";
-import { cn } from "../../../ts/utils/cn";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { isAnyPopupVisible } from "#shared/states/overlay-visibility.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import { getSettingsSearch, setSettingsSearch } from "../search-state";
 import { isEditableElement, isTypeToSearchKey } from "../type-to-search";
 

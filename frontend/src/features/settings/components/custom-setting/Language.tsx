@@ -1,15 +1,16 @@
 import { Language as LanguageSchema } from "@caret/schemas/languages";
 import { JSXElement } from "solid-js";
 
-import Select, { SelectOptionGroup } from "../../../../ts/components/ui/Select";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
+import Select, { SelectOptionGroup } from "#shared/components/ui/Select.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
 import {
   LanguageGroupNames,
   LanguageGroups,
-} from "../../../../ts/constants/languages";
-import { getLanguageDisplayString } from "../../../../ts/utils/strings";
+} from "#shared/constants/languages.ts";
+import { getLanguageDisplayString } from "#shared/utils/strings.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 
 export function Language(): JSXElement {

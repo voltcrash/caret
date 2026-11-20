@@ -1,7 +1,7 @@
 import { detectPlatform } from "@tanstack/solid-hotkeys";
 import { JSXElement } from "solid-js";
 
-import { Kbd } from "../../../ts/components/common/Kbd";
+import { Kbd } from "#shared/components/common/Kbd.tsx";
 
 /** Settings sidebar footer; the loading layout passes default hotkeys. */
 export function SettingsKeyTips(props: { palette: JSXElement }): JSXElement {

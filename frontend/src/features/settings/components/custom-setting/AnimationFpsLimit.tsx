@@ -1,11 +1,12 @@
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 
-import { fpsLimitSchema, getfpsLimit, setfpsLimit } from "../../../../ts/anim";
-import { Button } from "../../../../ts/components/common/Button";
-import { Separator } from "../../../../ts/components/common/Separator";
-import { InputField } from "../../../../ts/components/ui/form/InputField";
-import { fromSchema } from "../../../../ts/components/ui/form/utils";
+import { fpsLimitSchema, getfpsLimit, setfpsLimit } from "#shared/anim.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
+
 import { useSavedIndicator } from "../../hooks/useSavedIndicator";
 import { SearchableSetting } from "../SearchableSetting";
 

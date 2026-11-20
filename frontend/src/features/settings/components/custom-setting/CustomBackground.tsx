@@ -2,21 +2,22 @@ import { ConfigSchema, CustomBackgroundSchema } from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { createResource, JSXElement, For, Show } from "solid-js";
 
-import { Button } from "../../../../ts/components/common/Button";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { Separator } from "../../../../ts/components/common/Separator";
-import { InputField } from "../../../../ts/components/ui/form/InputField";
-import { fromSchema } from "../../../../ts/components/ui/form/utils";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
 import {
   configMetadata,
   getOptionSearchKeywords,
-} from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
-import { applyCustomBackground } from "../../../../ts/controllers/theme-controller";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
-import FileStorage from "../../../../ts/utils/file-storage";
-import { getOptions } from "../../../../ts/utils/zod";
+} from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { applyCustomBackground } from "#shared/controllers/theme-controller.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
+import FileStorage from "#shared/utils/file-storage.ts";
+import { getOptions } from "#shared/utils/zod.ts";
+
 import { useSavedIndicator } from "../../hooks/useSavedIndicator";
 import { SearchableSetting } from "../SearchableSetting";
 import { SettingsSearchMatch } from "../SettingsSearchMatch";

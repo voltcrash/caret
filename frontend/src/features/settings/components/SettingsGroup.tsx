@@ -1,6 +1,6 @@
 import { createUniqueId, JSXElement } from "solid-js";
 
-import { cn } from "../../../ts/utils/cn";
+import { cn } from "#shared/utils/cn.ts";
 
 export function SettingsGroup(props: {
   title: string;

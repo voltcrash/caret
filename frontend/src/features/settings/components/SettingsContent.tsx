@@ -6,22 +6,23 @@ import {
   useContext,
 } from "solid-js";
 
-import { RestorePageScroll } from "../../../components/page-scroll";
-import { Button } from "../../../ts/components/common/Button";
-import { H2 } from "../../../ts/components/common/Headers";
-import { SidebarLayout } from "../../../ts/components/common/SidebarLayout";
-import { CommandPaletteHotkey } from "../../../ts/components/hotkeys/CommandPaletteHotkey";
-import { resetConfig } from "../../../ts/config/lifecycle";
-import { getConfig } from "../../../ts/config/store";
+import { Button } from "#shared/components/common/Button.tsx";
+import { H2 } from "#shared/components/common/Headers.tsx";
+import { SidebarLayout } from "#shared/components/common/SidebarLayout.tsx";
+import { CommandPaletteHotkey } from "#shared/components/hotkeys/CommandPaletteHotkey.tsx";
+import { resetConfig } from "#shared/config/lifecycle.ts";
+import { getConfig } from "#shared/config/store.ts";
 import {
   playTimeWarning,
   previewClick,
   previewError,
-} from "../../../ts/controllers/sound-controller";
-import { showModal } from "../../../ts/states/modals";
-import { showSimpleModal } from "../../../ts/states/simple-modal";
-import { cn } from "../../../ts/utils/cn";
-import fileStorage from "../../../ts/utils/file-storage";
+} from "#shared/controllers/sound-controller.ts";
+import { showModal } from "#shared/states/modals.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { cn } from "#shared/utils/cn.ts";
+import fileStorage from "#shared/utils/file-storage.ts";
+
+import { RestorePageScroll } from "../../../components/page-scroll";
 import {
   getSearchMatchCounts,
   getSettingsSearch,

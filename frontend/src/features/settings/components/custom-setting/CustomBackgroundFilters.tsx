@@ -1,10 +1,11 @@
 import { createUniqueId, JSXElement } from "solid-js";
 
-import { Slider } from "../../../../ts/components/common/Slider";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
-import { applyCustomBackgroundFilters } from "../../../../ts/controllers/theme-controller";
+import { Slider } from "#shared/components/common/Slider.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { applyCustomBackgroundFilters } from "#shared/controllers/theme-controller.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 
 export function CustomBackgroundFilters(): JSXElement {

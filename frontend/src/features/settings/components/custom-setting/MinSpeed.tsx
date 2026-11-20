@@ -2,13 +2,14 @@ import { MinWpmCustomSpeedSchema } from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 
-// import { showSuccessNotification } from "../../../../ts/states/notifications";
-import { Button } from "../../../../ts/components/common/Button";
-import { InputField } from "../../../../ts/components/ui/form/InputField";
-import { fromSchema } from "../../../../ts/components/ui/form/utils";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
+// import { showSuccessNotification } from "#shared/states/notifications.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+
 import { useSavedIndicator } from "../../hooks/useSavedIndicator";
 import { SearchableSetting } from "../SearchableSetting";
 

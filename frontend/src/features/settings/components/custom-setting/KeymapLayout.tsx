@@ -1,11 +1,12 @@
 import { KeymapLayout as KeymapLayoutSchema } from "@caret/schemas/configs";
 import { JSXElement } from "solid-js";
 
-import Select from "../../../../ts/components/ui/Select";
-import { configMetadata } from "../../../../ts/config/metadata";
-import { setConfig } from "../../../../ts/config/setters";
-import { getConfig } from "../../../../ts/config/store";
-import { LayoutsList } from "../../../../ts/constants/layouts";
+import Select from "#shared/components/ui/Select.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { LayoutsList } from "#shared/constants/layouts.ts";
+
 import { SearchableSetting } from "../SearchableSetting";
 
 export function KeymapLayout(): JSXElement {

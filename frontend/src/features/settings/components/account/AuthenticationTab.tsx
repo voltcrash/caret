@@ -9,8 +9,9 @@ import {
   getAuthMethodIcon,
   hasAdditionalAuthMethodsReactive,
   isUsingAuthenticationReactive,
-} from "../../../../ts/auth";
-import { Button } from "../../../../ts/components/common/Button";
+} from "#shared/auth.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+
 import { showRevokeAllTokensModal } from "./ReauthConfirmModals";
 import { showRemoveAuthMethodModal } from "./RemoveAuthMethodModal";
 import { Section } from "./utils";

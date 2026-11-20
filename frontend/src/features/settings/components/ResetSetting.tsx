@@ -1,11 +1,11 @@
 import { ConfigKey } from "@caret/schemas/configs";
 import { createMemo, createSignal, JSXElement, Show } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { setConfig } from "../../../ts/config/setters";
-import { getConfig } from "../../../ts/config/store";
-import { getDefaultConfig } from "../../../ts/constants/default-config";
-import { showErrorNotification } from "../../../ts/states/notifications";
+import { Button } from "#shared/components/common/Button.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { getDefaultConfig } from "#shared/constants/default-config.ts";
+import { showErrorNotification } from "#shared/states/notifications.ts";
 
 const defaults = getDefaultConfig();
 
