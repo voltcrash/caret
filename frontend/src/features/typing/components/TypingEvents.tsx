@@ -6,10 +6,6 @@ import { ModifierKeys } from "../../../ts/constants/modifier-keys";
 import { updateCurrentCode } from "../../../ts/controllers/sound-controller";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { getCustomTextIndicator } from "../../../ts/states/core";
-import {
-  handleModifierState,
-  useCapsLockEvents,
-} from "../../../ts/states/modifiers";
 import { isAnyPopupVisible } from "../../../ts/states/overlay-visibility";
 import {
   getFocus,
@@ -25,6 +21,7 @@ import * as Focus from "../runtime/focus";
 import { updateAltGrState } from "../runtime/layout-emulator";
 import * as TestUI from "../runtime/test/ui";
 import { isTypingRouteActive } from "../scope";
+import { handleModifierState, useCapsLockEvents } from "../state/modifiers";
 
 /**
  * Document/window listeners of the typing route. Owned by the test page and

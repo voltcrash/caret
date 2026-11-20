@@ -7,7 +7,7 @@ vi.mock("animejs", async (original) => ({
 }));
 
 import { ResultCrown } from "../../../../../src/features/typing/components/result/ResultCrown";
-import { setResultState } from "../../../../../src/ts/states/result";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 
 function renderCrown(): HTMLElement {
   const { container } = render(() => <ResultCrown />);

@@ -18,7 +18,7 @@ import * as TestTimer from "./timer";
 
 import * as Replay from "../replay";
 
-import { clearQuoteStats } from "../../../../ts/states/quote-rate";
+import { clearQuoteStats } from "../../state/quote-rate";
 
 import {
   getCustomTextIndicator,
@@ -58,7 +58,7 @@ import { getMutableConfig } from "../../../../ts/config/store";
 import { setConfig } from "../../../../ts/config/setters";
 import { getTestSession, resetTestEvents } from "../events/data";
 
-import { resetModifierState } from "../../../../ts/states/modifiers";
+import { resetModifierState } from "../../state/modifiers";
 import { nthElementFromArray } from "../../../../ts/utils/arrays";
 
 import { beginGuestScore } from "../../history/guest-scores.client";

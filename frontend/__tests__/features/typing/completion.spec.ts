@@ -27,7 +27,7 @@ vi.mock("../../../src/ts/states/test", async () => ({
 vi.mock("../../../src/features/typing/runtime/completion/snapshot", () => ({
   captureCompletionSnapshot: mocks.snapshot,
 }));
-vi.mock("../../../src/ts/states/result", () => ({
+vi.mock("../../../src/features/typing/state/result", () => ({
   prepareResultScreen: mocks.prepare,
 }));
 vi.mock("../../../src/features/typing/runtime/test/ui", () => ({

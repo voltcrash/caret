@@ -16,7 +16,7 @@ import type { PluginChartOptions } from "chart.js";
 import { configEvent } from "../../../../ts/events/config";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
 import { getResultVisible } from "../../../../ts/states/test";
-import { getResultChart, setResultState } from "../../../../ts/states/result";
+import { getResultChart, setResultState } from "../../state/result";
 import { buildSpeedStats } from "./view-model";
 
 export function subscribeResultConfigChanges(): void {

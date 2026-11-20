@@ -1,0 +1,99 @@
+import { EngineFailure } from "@caret/typing-engine/failure";
+import { decodeText, encodeText } from "@caret/typing-engine/text";
+import { getBrowserEngine } from "../../engine/owner.client";
+import { getEngineSession } from "../../runtime/session.client";
+import { getContentHost } from "../../runtime/content/host.client";
+import { getMutableConfig } from "../../../../ts/config/store";
+import {
+  isTestRestarting,
+  isResultCalculating,
+} from "../../../../ts/states/test";
+import { isCorrectShiftUsed } from "../state";
+import {
+  getInputElementValue,
+  setInputElementValue,
+  appendToInputElementValue,
+} from "../../../../ts/input/input-element";
+import {
+  insertionLayout,
+  observeInputView,
+  onBeforeInsertText,
+} from "./before-insert-text";
+
+type OnInsertTextParams = {
+  now: number;
+  data: string;
+  isCompositionEnding?: true;
+  lastInMultiIndex?: boolean;
+  automatic?: true;
+};
+export async function onInsertText(options: OnInsertTextParams): Promise<void> {
+  const session = getEngineSession();
+  if (!session.isPrepared() || isTestRestarting() || isResultCalculating()) {
+    return;
+  }
+  const lease = getBrowserEngine().captureSession();
+  // Browsers have already inserted this batch. Restore the baseline so layout
+  // measurements see the same per-unit DOM as physical typing/IME previously did.
+  setInputElementValue(
+    getInputElementValue().inputValue.slice(0, -options.data.length),
+  );
+  for (let index = 0; index < options.data.length; index++) {
+    if (!lease.isCurrent()) {
+      return;
+    }
+    const raw = options.data.charAt(index); // Explicit JavaScript UTF-16 units.
+    const preflight = session.preflight(raw);
+    const prepared =
+      preflight.expanded === undefined ? raw : decodeText(preflight.expanded);
+    for (let part = 0; part < prepared.length; part++) {
+      if (!lease.isCurrent()) {
+        return;
+      }
+      const data = prepared.charAt(part);
+      observeInputView(options.now);
+      const update = session.command({
+        op: "insert",
+        now: options.now,
+        date: Date.now(),
+        data: encodeText(data),
+        correctShiftUsed:
+          getMutableConfig().oppositeShiftMode === "off"
+            ? null
+            : isCorrectShiftUsed(),
+        automatic: options.automatic ?? null,
+        isCompositionEnding: options.isCompositionEnding ?? null,
+        layout: {
+          ...insertionLayout(data),
+          finalInBatch:
+            index === options.data.length - 1 &&
+            part === prepared.length - 1 &&
+            options.lastInMultiIndex !== false,
+        },
+      });
+      if (update.awaitingContent && update.contentRequest !== undefined) {
+        try {
+          await getContentHost().supplyActive(update.contentRequest);
+        } catch (error) {
+          if (
+            !lease.isCurrent() ||
+            (error instanceof DOMException && error.name === "AbortError") ||
+            (error instanceof EngineFailure && error.code === "staleRequest")
+          ) {
+            return;
+          }
+          throw error;
+        }
+      }
+    }
+  }
+}
+export async function emulateInsertText(
+  options: OnInsertTextParams,
+): Promise<void> {
+  if (onBeforeInsertText(options.data)) {
+    return;
+  }
+  appendToInputElementValue(options.data);
+  await onInsertText(options);
+}

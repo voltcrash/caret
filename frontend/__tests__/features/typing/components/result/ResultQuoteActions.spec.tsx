@@ -23,10 +23,10 @@ const mocks = vi.hoisted(() => ({
     | undefined,
 }));
 
-vi.mock("../../../../../src/ts/states/quote-rate", () => ({
+vi.mock("../../../../../src/features/typing/state/quote-rate", () => ({
   showQuoteRateModal: mocks.showQuoteRateModal,
 }));
-vi.mock("../../../../../src/ts/states/quote-report", () => ({
+vi.mock("../../../../../src/features/typing/state/quote-report", () => ({
   showQuoteReportModal: mocks.showQuoteReportModal,
 }));
 vi.mock("../../../../../src/ts/states/notifications", () => ({
@@ -59,7 +59,7 @@ vi.mock("../../../../../src/ts/db", () => ({
 }));
 
 import { ResultQuoteActions } from "../../../../../src/features/typing/components/result/ResultQuoteActions";
-import { setResultState } from "../../../../../src/ts/states/result";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 
 function renderActions(): Record<"report" | "favorite" | "rate", HTMLElement> {
   const { container } = render(() => <ResultQuoteActions />);

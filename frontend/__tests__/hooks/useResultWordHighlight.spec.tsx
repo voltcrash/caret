@@ -14,11 +14,11 @@ vi.mock("../../src/ts/states/test", () => ({
 }));
 
 import { useResultWordHighlight } from "../../src/features/typing/components/hooks/useResultWordHighlight";
-import { useRef } from "../../src/ts/hooks/useRef";
 import {
   resultWordHighlightEvent,
   setResultState,
-} from "../../src/ts/states/result";
+} from "../../src/features/typing/state/result";
+import { useRef } from "../../src/ts/hooks/useRef";
 
 let destroyHighlight: () => void;
 

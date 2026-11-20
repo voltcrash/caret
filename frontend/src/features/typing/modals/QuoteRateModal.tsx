@@ -1,0 +1,212 @@
+import { isSafeNumber } from "@caret/util/numbers";
+import { JSXElement, createSignal, For } from "solid-js";
+
+import { operation } from "../../../data/operations";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa } from "../../../ts/components/common/Fa";
+import { Separator } from "../../../ts/components/common/Separator";
+import * as DB from "../../../ts/db";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { hideModalAndClearChain } from "../../../ts/states/modals";
+import {
+  showNoticeNotification,
+  showErrorNotification,
+  showSuccessNotification,
+} from "../../../ts/states/notifications";
+import { cn } from "../../../ts/utils/cn";
+import { updateQuoteRating } from "../runtime/result/screen";
+import {
+  selectedQuote,
+  quoteStats,
+  getQuoteStats,
+  updateQuoteStats,
+  getRatingAverage,
+} from "../state/quote-rate";
+
+export function QuoteRateModal(): JSXElement {
+  const [rating, setRating] = createSignal(0);
+  const [hoverRating, setHoverRating] = createSignal(0);
+
+  const getLengthDesc = (): string => {
+    const quote = selectedQuote();
+    if (!quote) return "-";
+    if (quote.group === 0) return "short";
+    if (quote.group === 1) return "medium";
+    if (quote.group === 2) return "long";
+    if (quote.group === 3) return "thicc";
+    return "-";
+  };
+
+  const displayRating = (): number => hoverRating() || rating();
+
+  const handleBeforeShow = (): void => {
+    const quote = selectedQuote();
+    if (!quote) return;
+    setRating(0);
+    setHoverRating(0);
+    const snapshot = DB.getSnapshot();
+    const alreadyRated = snapshot?.quoteRatings?.[quote.language]?.[quote.id];
+    if (isSafeNumber(alreadyRated)) {
+      setRating(alreadyRated);
+    }
+    void getQuoteStats(quote);
+  };
+
+  const submit = async (): Promise<void> => {
+    if (rating() === 0) {
+      showNoticeNotification("Please select a rating");
+      return;
+    }
+    const quote = selectedQuote();
+    if (!quote) return;
+
+    hideModalAndClearChain("QuoteRate");
+
+    showLoaderBar();
+    const response = await operation("quotes.addRating", {
+      body: { quoteId: quote.id, language: quote.language, rating: rating() },
+    });
+    hideLoaderBar();
+
+    if (!response.ok) {
+      showErrorNotification("Failed to submit quote rating", {
+        operation: response,
+      });
+      return;
+    }
+
+    const snapshot = DB.getSnapshot();
+    if (!snapshot) return;
+    const quoteRatings = snapshot.quoteRatings ?? {};
+    const languageRatings = quoteRatings?.[quote.language] ?? {};
+    const stats = quoteStats() ?? {};
+
+    if (isSafeNumber(languageRatings?.[quote.id])) {
+      const oldRating = quoteRatings[quote.language]?.[quote.id] as number;
+      const diff = rating() - oldRating;
+      languageRatings[quote.id] = rating();
+      const newStats = {
+        ratings: stats?.ratings,
+        totalRating: isNaN(stats?.totalRating as number)
+          ? 0
+          : (stats?.totalRating as number) + diff,
+        quoteId: quote.id,
+        language: quote.language,
+      };
+      updateQuoteStats(newStats);
+      showSuccessNotification("Rating updated");
+    } else {
+      languageRatings[quote.id] = rating();
+      if (isSafeNumber(stats?.ratings) && isSafeNumber(stats.totalRating)) {
+        const newStats = {
+          ratings: stats.ratings + 1,
+          totalRating: stats.totalRating + rating(),
+          quoteId: quote.id,
+          language: quote.language,
+        };
+        updateQuoteStats(newStats);
+      } else {
+        updateQuoteStats({
+          ratings: 1,
+          totalRating: rating(),
+          quoteId: quote.id,
+          language: quote.language,
+        });
+      }
+      showSuccessNotification("Rating submitted");
+    }
+
+    snapshot.quoteRatings = quoteRatings;
+    DB.setSnapshot(snapshot);
+
+    const currentStats = quoteStats();
+    if (currentStats) {
+      const avg = getRatingAverage(currentStats);
+      updateQuoteStats({ ...currentStats, average: avg });
+      updateQuoteRating(avg.toFixed(1));
+    }
+  };
+
+  return (
+    <AnimatedModal
+      id="QuoteRate"
+      beforeShow={handleBeforeShow}
+      modalClass="max-w-[800px] overflow-visible"
+    >
+      <div class="text-text">
+        If you find a grammatical error or the quote has inappropriate language
+        - <span class="text-error">don{"'"}t give it a low rating!</span> Please
+        report it instead. You can do so by closing this popup and clicking the{" "}
+        <Fa class="text-sub" icon="fa-flag" /> flag icon.
+      </div>
+      <Separator />
+      <div class="grid gap-2">
+        <div class="text-xl text-text" dir="auto">
+          {selectedQuote()?.text ?? "-"}
+        </div>
+        <div class="grid grid-cols-2 gap-2 sm:grid-cols-[1fr_1fr_3fr]">
+          <div class="text-xs text-sub">
+            <div class="text-sub opacity-50">id</div>
+            {selectedQuote()?.id ?? "-"}
+          </div>
+          <div class="text-xs text-sub">
+            <div class="text-sub opacity-50">length</div>
+            {getLengthDesc()}
+          </div>
+          <div class="col-span-2 min-w-0 text-xs text-sub [overflow-wrap:anywhere] sm:col-span-1">
+            <div class="text-sub opacity-50">source</div>
+            {selectedQuote()?.source ?? "-"}
+          </div>
+        </div>
+      </div>
+      <Separator />
+      <div class="flex items-center gap-4">
+        <div class="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
+          <div>
+            <div class="text-sub">ratings</div>
+            <div class="text-4xl text-text">
+              {quoteStats()?.ratings?.toString() ?? "0"}
+            </div>
+          </div>
+          <div>
+            <div class="text-sub">average</div>
+            <div class="text-4xl text-text">
+              {quoteStats()?.average?.toFixed(1) ?? "-"}
+            </div>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <div class="text-sub">your rating</div>
+            <div class="flex gap-1 text-2xl">
+              <For each={[1, 2, 3, 4, 5]}>
+                {(star) => (
+                  <Button
+                    aria-label={`Rate ${star} ${star === 1 ? "star" : "stars"}`}
+                    variant="text"
+                    class={cn(
+                      "min-h-9 min-w-9 p-0 text-2xl sm:min-h-0 sm:min-w-0",
+                      displayRating() >= star
+                        ? "[--themable-button-text:var(--main-color)]"
+                        : "",
+                    )}
+                    fa={{ icon: "fa-star", fixedWidth: true }}
+                    onClick={() => setRating(star)}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  />
+                )}
+              </For>
+            </div>
+          </div>
+        </div>
+        <Button
+          aria-label="Submit quote rating"
+          variant="text"
+          class="text-3xl"
+          fa={{ icon: "fa-chevron-right" }}
+          onClick={() => void submit()}
+        />
+      </div>
+    </AnimatedModal>
+  );
+}

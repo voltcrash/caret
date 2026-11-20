@@ -12,16 +12,16 @@ import { envConfig } from "virtual:env-config";
 
 import { Fa } from "../../../../ts/components/common/Fa";
 import { showErrorNotification } from "../../../../ts/states/notifications";
+import { isTestActive } from "../../../../ts/states/test";
+import { subscribeResultConfigChanges } from "../../runtime/result/chart-config";
+import { captureTypingRoute } from "../../scope";
 import {
   resultState,
   resultWordHighlightEvent,
   setResultElements,
   bindResultChartLoader,
   waitForResultChart,
-} from "../../../../ts/states/result";
-import { isTestActive } from "../../../../ts/states/test";
-import { subscribeResultConfigChanges } from "../../runtime/result/chart-config";
-import { captureTypingRoute } from "../../scope";
+} from "../../state/result";
 import { ResultButtons } from "./ResultButtons";
 import { ResultLoginTip } from "./ResultLoginTip";
 import { ResultReplay } from "./ResultReplay";

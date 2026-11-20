@@ -18,7 +18,7 @@ import {
   resultState,
   setResultState,
   type ResultTag,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 
 export function updateSavedResultId(resultId: string): void {
   setResultState("tags", "savedResultId", resultId);

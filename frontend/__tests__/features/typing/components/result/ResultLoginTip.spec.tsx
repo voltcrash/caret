@@ -2,8 +2,8 @@ import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 
 import { ResultLoginTip } from "../../../../../src/features/typing/components/result/ResultLoginTip";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
-import { setResultState } from "../../../../../src/ts/states/result";
 
 describe("ResultLoginTip", () => {
   afterEach(() => {

@@ -19,7 +19,10 @@ vi.mock("../../../src/ts/controllers/sound-controller", () => ({
 
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
-import { resultState, setResultState } from "../../../src/ts/states/result";
+import {
+  resultState,
+  setResultState,
+} from "../../../src/features/typing/state/result";
 import "../../__harness__/native-engine";
 import { analyzeLog, BrowserReplay } from "@caret/typing-engine/browser.client";
 import { toEngineLog } from "@caret/typing-engine/text";

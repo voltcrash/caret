@@ -17,7 +17,7 @@ const state = vi.hoisted(() => ({
   tagPbWpm: 0,
 }));
 
-vi.mock("../../src/ts/states/result", async (importOriginal) => {
+vi.mock("../../src/features/typing/state/result", async (importOriginal) => {
   const datasets = new Map<string, Record<string, unknown>>();
   const scales = new Map<string, Record<string, unknown>>();
   const chart = {
@@ -65,7 +65,7 @@ vi.mock("../../src/ts/states/connection", () => ({
   get: () => true,
   showOfflineBanner: vi.fn(),
 }));
-vi.mock("../../src/ts/states/glarses-mode", () => ({
+vi.mock("../../src/features/typing/state/glarses-mode", () => ({
   get: () => false,
 }));
 vi.mock("../../src/data/collections/tags", () => ({
@@ -113,7 +113,7 @@ import {
   getResultChart,
   getResultChartDataset,
   type ResultStats,
-} from "../../src/ts/states/result";
+} from "../../src/features/typing/state/result";
 import { __testing } from "../../src/ts/config/testing";
 import { getMutableConfig } from "../../src/ts/config/store";
 import type { CompletedEvent } from "@caret/schemas/results";

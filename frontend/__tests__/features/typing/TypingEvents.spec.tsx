@@ -96,7 +96,7 @@ import { TypingEvents } from "../../../src/features/typing/components/TypingEven
 import {
   getModifierState,
   resetModifierState,
-} from "../../../src/ts/states/modifiers";
+} from "../../../src/features/typing/state/modifiers";
 
 beforeEach(() => {
   vi.clearAllMocks();

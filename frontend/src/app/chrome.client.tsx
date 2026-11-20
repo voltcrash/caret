@@ -16,10 +16,8 @@ import { CustomBackground } from "../ts/components/core/CustomBackground";
 import { GlobalEvents } from "../ts/components/core/GlobalEvents";
 import { HotkeyEvents } from "../ts/components/core/HotkeyEvents";
 import { SkillIssue } from "../ts/components/core/SkillIssue";
-import { DevTools } from "../ts/components/dev/DevTools";
 import { Overlays } from "../ts/components/layout/overlays/Overlays";
 import { usePageScroller } from "../ts/components/layout/PageScroller";
-import { Modals } from "../ts/components/modals/Modals";
 import { getAcceptedCookies } from "../ts/cookies";
 import { addBanner, removeBanner } from "../ts/states/banners";
 import { showModal } from "../ts/states/modals";
@@ -31,6 +29,8 @@ import {
   isTestRestarting,
   isResultCalculating,
 } from "../ts/states/test";
+import { DevTools } from "./dev-tools.client";
+import { Modals } from "./modals.client";
 import { RouterNavigation } from "./navigation.client";
 import { isChromeReady, isStartupFinished } from "./startup";
 

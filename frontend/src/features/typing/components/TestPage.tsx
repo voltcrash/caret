@@ -11,15 +11,15 @@ import {
   isTestRestarting,
 } from "../../../ts/states/test";
 import { setTestElements } from "../../../ts/states/test-dom";
-import {
-  getWordsWrapperHeight,
-  getWordsInputStyle,
-} from "../../../ts/states/words-layout";
 import { cn } from "../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../ts/utils/pointer";
 import { getBrowserEngine } from "../engine/owner.client";
 import { focusWords } from "../runtime/test/ui";
 import { words } from "../runtime/test/words";
+import {
+  getWordsWrapperHeight,
+  getWordsInputStyle,
+} from "../state/words-layout";
 import { CapsWarning } from "./CapsWarning";
 import { CompositionDisplay } from "./CompositionDisplay";
 import { EndTestButton } from "./EndTestButton";

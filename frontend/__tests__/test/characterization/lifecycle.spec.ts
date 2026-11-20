@@ -173,7 +173,7 @@ vi.mock("../../../src/features/typing/runtime/result/screen", () => ({
   showCrown: vi.fn(),
   showConfetti: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/result", () => ({
+vi.mock("../../../src/features/typing/state/result", () => ({
   prepareResultScreen: vi.fn().mockResolvedValue(undefined),
 }));
 vi.mock("../../../src/ts/states/notifications", () => ({
@@ -216,7 +216,7 @@ vi.mock("../../../src/ts/controllers/analytics-controller", () => ({
 vi.mock("../../../src/ts/controllers/sound-controller", () => ({
   playTimeWarning: mocks.timeWarning,
 }));
-vi.mock("../../../src/ts/states/quote-rate", () => ({
+vi.mock("../../../src/features/typing/state/quote-rate", () => ({
   clearQuoteStats: vi.fn(),
 }));
 vi.mock("../../../src/ts/states/loader-bar", () => ({
@@ -224,7 +224,7 @@ vi.mock("../../../src/ts/states/loader-bar", () => ({
   showLoaderBar: vi.fn(),
   hideLoaderBar: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/modifiers", () => ({
+vi.mock("../../../src/features/typing/state/modifiers", () => ({
   resetModifierState: vi.fn(),
 }));
 vi.mock("../../../src/ts/sentry", () => ({ captureException: vi.fn() }));
@@ -248,7 +248,7 @@ import { nativeSession } from "../../__harness__/native-engine";
 import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
 import { analyzeLog } from "@caret/typing-engine/browser.client";
 import { encodeText } from "@caret/typing-engine/text";
-import * as SlowTimer from "../../../src/ts/states/slow-timer";
+import * as SlowTimer from "../../../src/features/typing/state/slow-timer";
 import * as CustomText from "../../../src/features/typing/runtime/content/custom-text";
 import {
   restart,

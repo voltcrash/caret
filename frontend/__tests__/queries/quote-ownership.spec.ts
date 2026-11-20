@@ -6,7 +6,7 @@ import {
   getQuoteStats,
   quoteStats,
   updateQuoteStats,
-} from "../../src/ts/states/quote-rate";
+} from "../../src/features/typing/state/quote-rate";
 import { setUserId } from "../../src/ts/states/core";
 import { mockOperation, ok, resetOperations } from "../__harness__/operations";
 

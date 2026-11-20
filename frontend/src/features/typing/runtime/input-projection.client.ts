@@ -10,7 +10,7 @@ import * as TestUI from "./test/ui";
 import * as TestWords from "./test/words";
 import * as TestLogic from "./test/logic";
 import * as Composition from "../../../ts/states/composition";
-import * as SlowTimer from "../../../ts/states/slow-timer";
+import * as SlowTimer from "../state/slow-timer";
 import { getMutableConfig } from "../../../ts/config/store";
 import {
   getActiveWordIndex,
@@ -26,7 +26,7 @@ import {
   incrementIncorrectShiftsInARow,
   resetIncorrectShiftsInARow,
   getIncorrectShiftsInARow,
-} from "../../../ts/input/state";
+} from "../input/state";
 import {
   beginLoaderBar,
   showLoaderBar,

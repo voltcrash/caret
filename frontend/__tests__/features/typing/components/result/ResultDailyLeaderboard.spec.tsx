@@ -12,8 +12,8 @@ vi.mock("../../../../../src/app/navigate", () => ({
 }));
 
 import { ResultDailyLeaderboard } from "../../../../../src/features/typing/components/result/ResultDailyLeaderboard";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 import { __testing } from "../../../../../src/ts/config/testing";
-import { setResultState } from "../../../../../src/ts/states/result";
 
 function renderGroup(): HTMLElement {
   const { container } = render(() => (

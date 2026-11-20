@@ -24,7 +24,6 @@ import {
   showErrorNotification,
   showNoticeNotification,
 } from "../../../../ts/states/notifications";
-import { resultState } from "../../../../ts/states/result";
 import { showSimpleModal } from "../../../../ts/states/simple-modal";
 import { getLastEventLog, getResultVisible } from "../../../../ts/states/test";
 import { getTheme } from "../../../../ts/states/theme";
@@ -41,6 +40,7 @@ import {
   getBurstHeatmapWordColor,
 } from "../../runtime/result/view-model";
 import * as TestWords from "../../runtime/test/words";
+import { resultState } from "../../state/result";
 import { useResultWordHighlight } from "../hooks/useResultWordHighlight";
 
 async function copyToClipboard(

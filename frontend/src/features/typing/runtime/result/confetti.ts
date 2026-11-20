@@ -1,4 +1,4 @@
-import * as SlowTimer from "../../../../ts/states/slow-timer";
+import * as SlowTimer from "../../state/slow-timer";
 
 export async function showConfetti(): Promise<void> {
   if (SlowTimer.get()) return;

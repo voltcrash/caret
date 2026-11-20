@@ -21,7 +21,7 @@ import { ResultStats } from "../../../../../src/features/typing/components/resul
 import {
   setResultState,
   type ResultStats as ResultStatsType,
-} from "../../../../../src/ts/states/result";
+} from "../../../../../src/features/typing/state/result";
 
 function stats(overrides: Partial<ResultStatsType> = {}): ResultStatsType {
   return {

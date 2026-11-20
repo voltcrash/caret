@@ -7,7 +7,7 @@ import type {
   ResultCrownType,
   ResultSpeedStats,
   ResultStats,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 import { blendTwoHexColors } from "../../../../ts/utils/colors";
 import * as DateTime from "../../../../ts/utils/date-and-time";
 import * as Strings from "../../../../ts/utils/strings";

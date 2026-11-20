@@ -5,8 +5,8 @@ import { navigate } from "../../../../app/navigate";
 import { Balloon } from "../../../../ts/components/common/Balloon";
 import { getMutableConfig } from "../../../../ts/config/store";
 import Format from "../../../../ts/singletons/format";
-import { resultState } from "../../../../ts/states/result";
 import { applyReducedMotion, getMode2 } from "../../../../ts/utils/misc";
+import { resultState } from "../../state/result";
 
 export function ResultDailyLeaderboard(props: {
   topClass: string;

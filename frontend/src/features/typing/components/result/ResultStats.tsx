@@ -1,8 +1,8 @@
 import { For, JSXElement, Show } from "solid-js";
 
 import { Balloon } from "../../../../ts/components/common/Balloon";
-import { resultState } from "../../../../ts/states/result";
 import { cn } from "../../../../ts/utils/cn";
+import { resultState } from "../../state/result";
 import { ResultCrown } from "./ResultCrown";
 import { ResultDailyLeaderboard } from "./ResultDailyLeaderboard";
 import { ResultQuoteActions } from "./ResultQuoteActions";

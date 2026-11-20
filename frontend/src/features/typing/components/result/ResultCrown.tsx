@@ -3,12 +3,9 @@ import { JSXElement, Show } from "solid-js";
 
 import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
-import {
-  resultState,
-  type ResultCrownType,
-} from "../../../../ts/states/result";
 import { cn } from "../../../../ts/utils/cn";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
+import { resultState, type ResultCrownType } from "../../state/result";
 
 // --main = crown background, --alt = icon color
 const typeClass: Record<ResultCrownType, string> = {

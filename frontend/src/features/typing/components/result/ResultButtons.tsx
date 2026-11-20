@@ -15,7 +15,6 @@ import { holdKeyboardForRestart } from "../../../../ts/input/input-element";
 import { getIsScreenshotting } from "../../../../ts/states/core";
 import { showModal } from "../../../../ts/states/modals";
 import { showNoticeNotification } from "../../../../ts/states/notifications";
-import { resultState } from "../../../../ts/states/result";
 import {
   getResultVisible,
   isResultCalculating,
@@ -30,6 +29,7 @@ import { toggleResultWords } from "../../runtime/result/screen";
 import * as TestLogic from "../../runtime/test/logic";
 import * as TestScreenshot from "../../runtime/test/screenshot";
 import { isTypingRouteActive } from "../../scope";
+import { resultState } from "../../state/result";
 import { EngineMemoryNotice } from "./EngineMemoryNotice";
 
 export function ResultButtons(): JSXElement {

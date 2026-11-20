@@ -135,7 +135,7 @@ jobs:
               - 'frontend/src/ts/constants/keys.ts'
               - 'frontend/src/ts/utils/{key-converter,quick-restart}.ts'
               - 'frontend/src/ts/hooks/{useInputListener,useWordsInputScroll}.ts'
-              - 'frontend/src/ts/states/{composition,modifiers,test,test-dom,words-layout}.ts'
+              - 'frontend/src/ts/states/{composition,test,test-dom}.ts'
               - 'frontend/src/styles/{caret,test}.css'
               - 'frontend/static/layouts/**'
               - 'frontend/vite-plugins/typing-engine.ts'

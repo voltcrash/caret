@@ -24,7 +24,7 @@ import {
   getResultWrapperElement,
   resultState,
   setScreenshotWatermark,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 import { getTheme } from "../../../../ts/states/theme";
 import { download as downloadFile } from "../../../../ts/components/common/Download";
 

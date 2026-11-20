@@ -2,7 +2,7 @@ import { createComputed, createRoot } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import * as Composition from "../../src/ts/states/composition";
-import * as SlowTimer from "../../src/ts/states/slow-timer";
+import * as SlowTimer from "../../src/features/typing/state/slow-timer";
 
 function observe<T>(read: () => T): { values: T[]; dispose: () => void } {
   return createRoot((dispose) => {

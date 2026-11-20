@@ -19,7 +19,7 @@ import {
   getResultChart,
   getResultChartDataset,
   getResultChartScale,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 
 const chartOptions = appObject(
   createAppOwned(() => ({ smoothedBurst: true, fakeChartData: false })),

@@ -19,7 +19,7 @@ import {
 import {
   setWordsInputStyle,
   setWordsWrapperHeight,
-} from "../../../../ts/states/words-layout";
+} from "../../state/words-layout";
 import * as CustomText from "../../runtime/content/custom-text";
 import { convertRemToPixels } from "../../../../ts/utils/numbers";
 import { getWordsFontScale } from "./font";

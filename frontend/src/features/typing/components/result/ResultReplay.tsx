@@ -7,9 +7,9 @@ import { Fa } from "../../../../ts/components/common/Fa";
 import { useRef } from "../../../../ts/hooks/useRef";
 import { useSlideAnimation } from "../../../../ts/hooks/useSlideAnimation";
 import { getIsScreenshotting } from "../../../../ts/states/core";
-import { resultState } from "../../../../ts/states/result";
 import { cn } from "../../../../ts/utils/cn";
 import { jumpToLetter, togglePlayback } from "../../runtime/replay";
+import { resultState } from "../../state/result";
 
 const playbackLabels = {
   start: "Start replay",

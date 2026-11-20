@@ -45,8 +45,8 @@ vi.mock("../../../../../src/features/typing/engine/analysis.client", () => ({
 
 import { ResultWordsHistory } from "../../../../../src/features/typing/components/result/ResultWordsHistory";
 import { buildWordsHistory } from "../../../../../src/features/typing/runtime/word-markup";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 import { setConfigStore } from "../../../../../src/ts/config/store";
-import { setResultState } from "../../../../../src/ts/states/result";
 
 const targets = ["hello ", "world ", "foo ", "bar"];
 

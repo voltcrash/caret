@@ -62,9 +62,9 @@ vi.mock("../../../../../src/ts/states/core", async () => {
 
 import { ResultButtons } from "../../../../../src/features/typing/components/result/ResultButtons";
 import { setPracticeResult } from "../../../../../src/features/typing/runtime/content/practise-words";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 import { getConfig, setConfigStore } from "../../../../../src/ts/config/store";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
-import { setResultState } from "../../../../../src/ts/states/result";
 import { getKeyboardProxyElement } from "../../../../../src/ts/states/test-dom";
 
 function renderButtons(): HTMLElement {

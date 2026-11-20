@@ -15,11 +15,8 @@ import {
   type HighlightPosition,
 } from "../../../../ts/hooks/result-word-highlight/types";
 import { ResultWordHighlight } from "../../../../ts/hooks/result-word-highlight/View";
-import {
-  resultState,
-  resultWordHighlightEvent,
-} from "../../../../ts/states/result";
 import { isLanguageRightToLeft } from "../../../../ts/states/test";
+import { resultState, resultWordHighlightEvent } from "../../state/result";
 const TOGGLE_RESULT_WORDS_BUFFER = 250;
 export function useResultWordHighlight(
   wordsHistoryElement: Accessor<HTMLElement | undefined>,

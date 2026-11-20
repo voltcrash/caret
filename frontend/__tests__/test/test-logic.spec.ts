@@ -235,7 +235,9 @@ vi.mock("../../src/ts/controllers/challenge-controller", () => ({
 vi.mock("../../src/ts/controllers/analytics-controller", () => ({
   log: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("../../src/ts/states/quote-rate", () => ({ clearQuoteStats: vi.fn() }));
+vi.mock("../../src/features/typing/state/quote-rate", () => ({
+  clearQuoteStats: vi.fn(),
+}));
 vi.mock("../../src/ts/states/loader-bar", () => ({
   beginLoaderBar: () => () => undefined,
   showLoaderBar: vi.fn(),
@@ -245,7 +247,7 @@ vi.mock("../../src/ts/states/header", () => ({
   trackAccountWork: async <T>(work: () => Promise<T>): Promise<T> =>
     await work(),
 }));
-vi.mock("../../src/ts/states/modifiers", () => ({
+vi.mock("../../src/features/typing/state/modifiers", () => ({
   resetModifierState: vi.fn(),
 }));
 vi.mock("../../src/ts/sentry", () => ({ captureException: mocks.capture }));

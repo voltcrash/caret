@@ -1,10 +1,10 @@
 import { createMemo, JSXElement, on } from "solid-js";
 
-import { resultState } from "../../../../ts/states/result";
 import {
   isResultCalculating,
   getResultVisible,
 } from "../../../../ts/states/test";
+import { resultState } from "../../state/result";
 
 export function ResultAnnouncement(): JSXElement {
   const summary = createMemo(

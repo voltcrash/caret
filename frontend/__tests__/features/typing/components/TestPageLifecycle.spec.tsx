@@ -1,4 +1,4 @@
-vi.mock("../../../../src/ts/input/listeners", () => ({
+vi.mock("../../../../src/features/typing/input/listeners", () => ({
   bindInputListenersTo: vi.fn(),
 }));
 import { cleanup, render } from "@solidjs/testing-library";
