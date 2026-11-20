@@ -55,7 +55,14 @@ export function AccountContent(props: { client: Client }): JSXElement {
   const resultsQuery = useResultsLiveQuery({
     queryState,
     sorting,
-    limit: () => limit() + 1,
+  });
+
+  const chartResults = createMemo(() => {
+    const rows = resultsQuery();
+    const { field, direction } = sorting();
+    return field === "timestamp" && direction === "desc"
+      ? rows
+      : rows.toSorted((a, b) => b.timestamp - a.timestamp);
   });
 
   return (
@@ -101,6 +108,7 @@ export function AccountContent(props: { client: Client }): JSXElement {
       >
         <>
           <Charts
+            results={chartResults()}
             filters={filters}
             queryState={queryState}
             onHistoryChartClick={({ index, _id }) => {
