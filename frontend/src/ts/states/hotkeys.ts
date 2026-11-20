@@ -5,7 +5,7 @@ import { HotkeyChord } from "@tanstack/solid-hotkeys";
 
 import { getConfig } from "../config/store";
 import { wordsHaveNewline, wordsHaveTab, isLongTest } from "./test";
-import { isTypingRouteActive } from "../../features/typing/scope";
+import { isTypingRouteActive } from "../typing-host";
 import { NoKey } from "../input/hotkeys/utils";
 import {
   DEFAULT_COMMAND_PALETTE_HOTKEY,

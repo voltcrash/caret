@@ -1,4 +1,4 @@
-import { isTypingRouteActive } from "../../../features/typing/scope";
+import { isTypingRouteActive } from "../../typing-host";
 import { isAnyPopupVisible } from "../../states/overlay-visibility";
 
 import { navigate } from "../../../app/navigate";

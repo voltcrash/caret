@@ -29,7 +29,6 @@
   "runtime/test/logic",
   "runtime/test/ui",
   "runtime/today-tracker",
-  "scope",
   "state/glarses-mode",
   "state/modifiers"
 ]

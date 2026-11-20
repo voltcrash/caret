@@ -107,11 +107,20 @@ import { commandlineState } from "../../../src/ts/states/commandline";
 import { setCommandlineSubgroup } from "../../../src/ts/states/core";
 import { hideModalAndClearChain } from "../../../src/ts/states/modals";
 import { isAnyPopupVisible } from "../../../src/ts/states/overlay-visibility";
+import { bindTypingHost } from "../../../src/ts/typing-host";
 
 describe("theme picker lifecycle", () => {
   let displayStyles: HTMLStyleElement;
+  let releaseTypingRoute: () => void;
 
   beforeEach(() => {
+    // Quick restart only restarts on the typing route.
+    releaseTypingRoute = bindTypingHost({
+      isRouteActive: () => true,
+      restart: vi.fn(),
+      blur: vi.fn(),
+      reloadPaceCaret: vi.fn(),
+    });
     hideModalAndClearChain("Commandline");
     setCommandlineSubgroup(null);
     commandlineState.phase = "closed";
@@ -154,6 +163,7 @@ describe("theme picker lifecycle", () => {
 
   afterEach(() => {
     cleanup();
+    releaseTypingRoute();
     hideModalAndClearChain("Commandline");
     setCommandlineSubgroup(null);
     displayStyles.remove();
