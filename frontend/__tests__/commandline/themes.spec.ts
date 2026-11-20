@@ -29,7 +29,6 @@ import {
 import { getTheme } from "../../src/ts/states/theme";
 import * as Arrays from "../../src/ts/utils/arrays";
 
-vi.mock("../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../src/ts/ui", async (original) => ({
   ...(await original<typeof import("../../src/ts/ui")>()),
   clearFontPreview: vi.fn(),

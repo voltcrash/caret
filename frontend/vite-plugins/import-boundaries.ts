@@ -28,6 +28,7 @@ export const ssrSafeLegacyFiles = [
  * legacy state.
  */
 export const clientOnlyFeatureFiles = [
+  "src/features/typing/commands/**",
   "src/features/typing/components/**",
   "src/features/typing/input/**",
   "src/features/typing/modals/**",

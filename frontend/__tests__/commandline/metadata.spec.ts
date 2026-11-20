@@ -1,9 +1,6 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 import { typedKeys } from "@caret/util/objects";
 
-vi.mock("../../src/features/typing/runtime/test/logic", () => ({
-  restart: vi.fn(),
-}));
 vi.mock("../../src/ts/ui", () => ({ previewFontFamily: vi.fn() }));
 vi.mock("../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
 

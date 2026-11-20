@@ -1,10 +1,8 @@
 import { createAccountOwned } from "../../app/account-scope";
 import { setFixingSkillIssue } from "../states/skill-issue";
 import MinBurstCommands from "./lists/min-burst";
-import BailOutCommands from "./lists/bail-out";
 import QuoteFavoriteCommands from "./lists/quote-favorites";
 import NavigationCommands from "./lists/navigation";
-import ResultScreenCommands from "./lists/result-screen";
 import CustomBackgroundCommands from "./lists/custom-background";
 import FontFamilyCommands from "./lists/font-family";
 import CustomBackgroundFilterCommands from "./lists/background-filter";
@@ -12,9 +10,7 @@ import AddOrRemoveThemeToFavorite from "./lists/add-or-remove-theme-to-favorites
 import TagsCommands from "./lists/tags";
 import CustomThemesListCommands from "./lists/custom-themes-list";
 import PresetsCommands from "./lists/presets";
-import FunboxCommands from "./lists/funbox";
 import ThemesCommands from "./lists/themes";
-import LoadChallengeCommands from "./lists/load-challenge";
 
 import { getMutableConfig } from "../config/store";
 import { setConfig } from "../config/setters";
@@ -38,13 +34,13 @@ import {
 import { applyConfigFromJson } from "../config/lifecycle";
 import { getLastEventLog } from "../states/test";
 import { commandlineState } from "../states/commandline";
+import { contributedCommands, contributedList } from "./registry";
 
-const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
-  title: "",
-  list: [
-    //result
-    ...ResultScreenCommands,
-
+/** Core commands between the slots features contribute to. */
+const getCoreCommands = createAccountOwned<
+  Record<"testScreen" | "accountAndBehavior" | "settings" | "other", Command[]>
+>(() => ({
+  testScreen: [
     //test screen
     ...buildCommands(
       "punctuation",
@@ -75,7 +71,8 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
       shouldFocusTestUI: false,
     },
     ...QuoteFavoriteCommands,
-    ...BailOutCommands,
+  ],
+  accountAndBehavior: [
     {
       id: "shareTestSettings",
       display: "Share test settings",
@@ -102,10 +99,10 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
       "minAcc",
       ...MinBurstCommands,
       "britishEnglish",
-      ...FunboxCommands,
-      "customLayoutfluid",
-      "customPolyglot",
     ),
+  ],
+  settings: [
+    ...buildCommands("customLayoutfluid", "customPolyglot"),
 
     //input
     ...buildCommands(
@@ -208,7 +205,8 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
     ),
 
     //other
-    ...LoadChallengeCommands,
+  ],
+  other: [
     ...NavigationCommands,
     {
       id: "importSettingsJSON",
@@ -338,24 +336,40 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
   ],
 }));
 
-const getLists = createAccountOwned<
-  Record<CommandlineListKey, CommandsSubgroup | undefined>
->(() => ({
-  themes: ThemesCommands[0]?.subgroup,
-  loadChallenge: LoadChallengeCommands[0]?.subgroup,
-  minBurst: MinBurstCommands[0]?.subgroup,
-  funbox: FunboxCommands[0]?.subgroup,
-  tags: TagsCommands[0]?.subgroup,
-}));
+function getCommands(): CommandsSubgroup {
+  const core = getCoreCommands();
+  return {
+    title: "",
+    list: [
+      ...contributedCommands("result"),
+      ...core.testScreen,
+      ...contributedCommands("test"),
+      ...core.accountAndBehavior,
+      ...contributedCommands("behavior"),
+      ...core.settings,
+      ...contributedCommands("other"),
+      ...core.other,
+    ],
+  };
+}
 
-const getSubgroupByConfigKey = createAccountOwned(
-  () =>
-    Object.fromEntries(
-      getCommands()
-        .list.filter((it) => it.subgroup?.configKey !== undefined)
-        .map((it) => [it.subgroup?.configKey, it.subgroup]),
-    ) as Record<string, CommandsSubgroup>,
-);
+function getLists(): Record<CommandlineListKey, CommandsSubgroup | undefined> {
+  return {
+    themes: ThemesCommands[0]?.subgroup,
+    loadChallenge: contributedList("loadChallenge"),
+    minBurst: MinBurstCommands[0]?.subgroup,
+    funbox: contributedList("funbox"),
+    tags: TagsCommands[0]?.subgroup,
+  };
+}
+
+function getSubgroupByConfigKey(): Record<string, CommandsSubgroup> {
+  return Object.fromEntries(
+    getCommands()
+      .list.filter((it) => it.subgroup?.configKey !== undefined)
+      .map((it) => [it.subgroup?.configKey, it.subgroup]),
+  ) as Record<string, CommandsSubgroup>;
+}
 
 export function doesListExist(listName: string): boolean {
   if (getSubgroupByConfigKey()[listName] !== undefined) {

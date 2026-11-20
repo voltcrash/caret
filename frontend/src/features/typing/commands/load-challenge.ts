@@ -1,9 +1,9 @@
 import { getChallenges } from "@caret/challenges";
-import * as ChallengeController from "../../controllers/challenge-controller";
+import * as ChallengeController from "../runtime/challenge-controller";
 import { navigate } from "../../../app/navigate";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
-import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";
-import { Command, CommandsSubgroup } from "../types";
+import * as TestLogic from "../runtime/test/logic";
+import { capitalizeFirstLetterOfEachWord } from "../../../ts/utils/strings";
+import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
 
 const subgroup: CommandsSubgroup = {
   title: "Load challenge...",

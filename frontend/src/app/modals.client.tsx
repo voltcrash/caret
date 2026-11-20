@@ -17,7 +17,7 @@ const lazyModals = [
     import("../ts/components/modals/CookiesModal").then((m) => m.CookiesModal),
   ),
   lazyModal("Commandline", async () =>
-    import("../ts/components/modals/Commandline").then((m) => m.Commandline),
+    import("./commandline.client").then((m) => m.CommandlineHost),
   ),
   lazyModal("SimpleModal", async () =>
     import("../ts/components/modals/SimpleModal").then((m) => m.SimpleModal),

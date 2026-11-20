@@ -1,9 +1,8 @@
 import { CommandlineConfigMetadataObject } from "./types";
+import { isTypingRouteActive, restartTest } from "../typing-host";
 import * as ConfigSchemas from "@caret/schemas/configs";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
 import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
-import { isTypingRouteActive } from "../../../features/typing/scope";
 
 export const behaviorMetadata = {
   difficulty: {
@@ -79,7 +78,7 @@ export const behaviorMetadata = {
     subgroup: {
       options: "fromSchema",
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },
@@ -102,7 +101,7 @@ export const behaviorMetadata = {
         val.trim().split(" ") as ConfigSchemas.CustomPolyglot,
       afterExec: () => {
         if (isTypingRouteActive()) {
-          void TestLogic.restart();
+          restartTest();
         }
       },
     },

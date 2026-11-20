@@ -1,26 +1,26 @@
-import { createAppOwned } from "../../app/application";
-import { getBrowserAudit } from "../../features/typing/engine/audit.client";
-import { captureTypingMount } from "../../features/typing/scope";
+import { createAppOwned } from "../../../app/application";
+import { getBrowserAudit } from "../engine/audit.client";
+import { captureTypingMount } from "../scope";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../states/notifications";
-import * as CustomText from "../../features/typing/runtime/content/custom-text";
-import * as Funbox from "../../features/typing/runtime/funbox/funbox";
+} from "../../../ts/states/notifications";
+import * as CustomText from "./content/custom-text";
+import * as Funbox from "./funbox/funbox";
 
-import { setConfig } from "../config/setters";
-import { getMutableConfig } from "../config/store";
-import { configEvent } from "../events/config";
+import { setConfig } from "../../../ts/config/setters";
+import { getMutableConfig } from "../../../ts/config/store";
+import { configEvent } from "../../../ts/events/config";
 
 import { ChallengeName } from "@caret/schemas/challenges";
 import { CompletedEvent } from "@caret/schemas/results";
-import { hideLoaderBar, showLoaderBar } from "../states/loader-bar";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
 import {
   isTestRestarting,
   getLoadedChallenge,
   setLoadedChallenge,
-} from "../states/test";
+} from "../../../ts/states/test";
 
 const challengeState = createAppOwned((): { request?: symbol } => ({}));
 

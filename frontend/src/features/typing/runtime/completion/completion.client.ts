@@ -11,7 +11,7 @@ import * as PaceCaret from "../pace-caret";
 import * as DB from "../../../../ts/db";
 
 import * as TodayTracker from "../today-tracker";
-import * as ChallengeContoller from "../../../../ts/controllers/challenge-controller";
+import * as ChallengeContoller from "../challenge-controller";
 
 import {
   setLastEventLog,

@@ -1,6 +1,5 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { useChallengeEvents } from "../../ts/controllers/challenge-controller";
 import { useQuoteEvents } from "../../ts/controllers/quotes-controller";
 import { useSoundEvents } from "../../ts/controllers/sound-controller";
 import {
@@ -11,6 +10,7 @@ import {
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
 import { getBrowserEngine } from "./engine/owner.client";
+import { useChallengeEvents } from "./runtime/challenge-controller";
 import { usePractiseEvents } from "./runtime/content/practise-words";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";

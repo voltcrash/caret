@@ -34,7 +34,6 @@ vi.mock("../../../src/ts/utils/misc", async (original) => ({
   ...(await original<typeof import("../../../src/ts/utils/misc")>()),
   applyReducedMotion: (duration: number) => duration,
 }));
-vi.mock("../../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../../src/ts/ui", async (original) => ({
   ...(await original<typeof import("../../../src/ts/ui")>()),
   clearFontPreview: vi.fn(),

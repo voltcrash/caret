@@ -2,7 +2,7 @@ import { getCommandlineState } from "../states/commandline";
 import * as ThemeController from "../controllers/theme-controller";
 import { clearFontPreview } from "../ui";
 
-import { isTypingRouteActive } from "../../features/typing/scope";
+import { isTypingRouteActive } from "./typing-host";
 import { setCommandlineSubgroup } from "../states/core";
 
 import {

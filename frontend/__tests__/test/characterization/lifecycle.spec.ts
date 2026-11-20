@@ -207,7 +207,7 @@ vi.mock("../../../src/ts/db", () => ({
   getLocalPB: () => undefined,
 }));
 
-vi.mock("../../../src/ts/controllers/challenge-controller", () => ({
+vi.mock("../../../src/features/typing/runtime/challenge-controller", () => ({
   verify: () => null,
 }));
 vi.mock("../../../src/ts/controllers/analytics-controller", () => ({

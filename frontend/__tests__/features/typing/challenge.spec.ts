@@ -6,7 +6,7 @@ import {
 import {
   setup,
   verify,
-} from "../../../src/ts/controllers/challenge-controller";
+} from "../../../src/features/typing/runtime/challenge-controller";
 import { setConfig } from "../../../src/ts/config/setters";
 import {
   getLoadedChallenge,

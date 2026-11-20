@@ -1,12 +1,9 @@
-import * as Funbox from "../../../features/typing/runtime/funbox/funbox";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
+import * as Funbox from "../runtime/funbox/funbox";
+import * as TestLogic from "../runtime/test/logic";
 import { getAllFunboxes } from "@caret/funbox";
-import {
-  checkCompatibility,
-  enginePolicyReady,
-} from "../../../features/typing/engine/policy.client";
-import { Command, CommandsSubgroup } from "../types";
-import { getActiveFunboxNames } from "../../../features/typing/runtime/funbox/list";
+import { checkCompatibility, enginePolicyReady } from "../engine/policy.client";
+import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
+import { getActiveFunboxNames } from "../runtime/funbox/list";
 
 const list: Command[] = [
   {
