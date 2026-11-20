@@ -6,7 +6,7 @@ The account page waits for one `resultsGet` server-function call before it shows
 | --- | ---: | ---: | ---: |
 | `resultsGet`, 1,000 results | 566,107 | 58,420 | 34,921 |
 
-At the 4 Mbit/s cold-mobile profile in [mobile startup](mobile-startup.md), 58 KB of gzip is about 0.12 s of transfer. Transfer size does not justify paginating account history. Seroval's encoding nearly doubles the raw bytes compared with the decoded rows as JSON (295,995 bytes), but compression removes most of that overhead.
+At the 4 Mbit/s cold-mobile profile in [mobile startup](mobile-startup.md), 58 KB of gzip is about 0.12 s of transfer, so transfer size alone gives little reason to paginate this sample. Seroval's encoding nearly doubles the raw bytes compared with the decoded rows as JSON (295,995 bytes), but compression removes most of that overhead.
 
 ## Method
 
