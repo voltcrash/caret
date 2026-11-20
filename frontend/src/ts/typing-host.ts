@@ -12,6 +12,7 @@ type TypingHost = {
   blur: () => void;
   reloadPaceCaret: () => Promise<void>;
   updateHints: () => void;
+  isNoQuitActive: () => boolean;
 };
 
 // Reactive so derived state (hotkeys, palette behavior) follows mounts.
@@ -43,4 +44,9 @@ export async function reloadPaceCaret(): Promise<void> {
 
 export function updateTestHints(): void {
   untrack(getHost)?.updateHints();
+}
+
+/** Whether the running test forbids quitting; false off the typing route. */
+export function isNoQuitActive(): boolean {
+  return untrack(getHost)?.isNoQuitActive() ?? false;
 }

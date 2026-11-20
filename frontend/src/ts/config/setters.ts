@@ -1,5 +1,4 @@
 import { batch } from "solid-js";
-import { isNoQuitActive } from "../../features/typing/runtime/session.client";
 import * as ConfigSchemas from "@caret/schemas/configs";
 import { ZodType as ZodSchema } from "zod";
 import { saveToLocalStorage } from "../config/persistence";
@@ -16,6 +15,7 @@ import { isConfigValueValid } from "./validation";
 import { FunboxName } from "@caret/schemas/configs";
 import { typedKeys } from "@caret/util/objects";
 import { isTestActive } from "../states/test";
+import { isNoQuitActive } from "../typing-host";
 
 export function setConfig<T extends keyof ConfigSchemas.Config>(
   key: T,

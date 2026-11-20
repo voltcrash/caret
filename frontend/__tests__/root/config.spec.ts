@@ -15,7 +15,7 @@ import * as ConfigValidation from "../../src/ts/config/validation";
 import { configEvent } from "../../src/ts/events/config";
 import * as RemoteConfig from "../../src/ts/config/sync";
 import * as Notifications from "../../src/ts/states/notifications";
-import * as NativeSession from "../../src/features/typing/runtime/session.client";
+import * as TypingHost from "../../src/ts/typing-host";
 import * as TestState from "../../src/ts/states/test";
 import { getConfig as getConfigStore } from "../../src/ts/config/store";
 
@@ -60,7 +60,7 @@ describe("Config", () => {
     );
     const miscTriggerResizeMock = vi.spyOn(window, "dispatchEvent");
     const stateIsTestActiveMock = vi.spyOn(TestState, "isTestActive");
-    const nativeNoQuitMock = vi.spyOn(NativeSession, "isNoQuitActive");
+    const nativeNoQuitMock = vi.spyOn(TypingHost, "isNoQuitActive");
 
     const mocks = [
       canSetConfigWithCurrentFunboxesMock,
@@ -656,5 +656,5 @@ vi.mock("../../src/ts/config/funbox-validation", { spy: true });
 vi.mock("../../src/ts/config/validation", { spy: true });
 vi.mock("../../src/ts/config/sync", { spy: true });
 vi.mock("../../src/ts/states/notifications", { spy: true });
-vi.mock("../../src/features/typing/runtime/session.client", { spy: true });
+vi.mock("../../src/ts/typing-host", { spy: true });
 vi.mock("../../src/ts/states/test", { spy: true });
