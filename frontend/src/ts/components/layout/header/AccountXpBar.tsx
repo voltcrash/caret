@@ -28,8 +28,13 @@ type BreakdownItem = {
 };
 
 export function AccountXpBar(): JSXElement {
-  const [getShowBar, setShowBar] = createSignal(false);
-  const [getShowBreakdown, setShowBreakdown] = createSignal(false);
+  type Phase = "hidden" | "bar" | "breakdown" | "holdingBreakdown" | "skipped";
+  const [phase, setPhase] = createSignal<Phase>("hidden");
+  const getShowBar = (): boolean => phase() !== "hidden";
+  const getShowBreakdown = (): boolean =>
+    phase() === "breakdown" || phase() === "holdingBreakdown";
+  const breakdownStopped = (): boolean =>
+    phase() === "skipped" || phase() === "hidden";
   const [getBreakdownItems, setBreakdownItems] = createSignal<BreakdownItem[]>(
     [],
   );
@@ -49,8 +54,6 @@ export function AccountXpBar(): JSXElement {
     runId++;
   });
 
-  let canSkip = true;
-  let skipped = false;
   let runId = 0;
 
   const [flashAnimation, setFlashAnimation] = createSignal({
@@ -76,7 +79,7 @@ export function AccountXpBar(): JSXElement {
   };
 
   skipBreakdownEvent.useListener(async () => {
-    if (skipped || !canSkip) return;
+    if (phase() !== "breakdown") return;
 
     const myId = runId; // capture before first await
     const data = getXpBarData();
@@ -85,32 +88,28 @@ export function AccountXpBar(): JSXElement {
     const breakdown = data.breakdown;
     if (!getShowBreakdown() || !breakdown) return;
 
-    skipped = true;
-    setShowBreakdown(false);
+    setPhase("skipped");
     setBreakdownItems([]);
     setTotal(data.addedXp);
     await sleep(3000);
     if (runId !== myId) return;
-    setShowBar(false);
+    setPhase("hidden");
   });
 
   createEffectOn(getXpBarData, async (data) => {
     const myId = ++runId;
     const isStale = (): boolean => runId !== myId;
     if (data !== null) {
-      skipped = false;
-      canSkip = true;
       const breakdown = data.breakdown;
       const promises = [];
       if (breakdown) {
         promises.push(runBreakdown(breakdown, isStale));
-        setShowBreakdown(true);
+        setPhase("breakdown");
       } else {
-        setShowBreakdown(false);
+        setPhase("bar");
         setBreakdownItems([]);
         setTotal(data.addedXp);
       }
-      setShowBar(true);
       await sleep(125);
       if (isStale()) return;
 
@@ -121,15 +120,16 @@ export function AccountXpBar(): JSXElement {
           isStale,
         ),
       );
-      if (skipped) return;
+      if (phase() === "skipped") return;
       await Promise.all(promises);
-      canSkip = false;
+      if (isStale() || breakdownStopped()) return;
+      if (breakdown) setPhase("holdingBreakdown");
       await sleep(4000);
-      if (isStale() || skipped) return;
-      setShowBreakdown(false);
+      if (isStale() || breakdownStopped()) return;
+      setPhase("bar");
       await sleep(1000);
-      if (isStale() || skipped) return;
-      setShowBar(false);
+      if (isStale() || breakdownStopped()) return;
+      setPhase("hidden");
     }
   });
 
@@ -146,13 +146,13 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.fullAccuracy)) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total += breakdown.fullAccuracy;
       setTotal(total);
       addItem("perfect", breakdown.fullAccuracy);
     } else if (isSafeNumber(breakdown.corrected)) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total += breakdown.corrected;
       setTotal(total);
       addItem("clean", breakdown.corrected);
@@ -160,21 +160,21 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.quote)) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total += breakdown.quote;
       setTotal(total);
       addItem("quote", breakdown.quote);
     } else {
       if (isSafeNumber(breakdown.punctuation)) {
         await sleep(delay);
-        if (isStale() || skipped) return;
+        if (isStale() || breakdownStopped()) return;
         total += breakdown.punctuation;
         setTotal(total);
         addItem("punctuation", breakdown.punctuation);
       }
       if (isSafeNumber(breakdown.numbers)) {
         await sleep(delay);
-        if (isStale() || skipped) return;
+        if (isStale() || breakdownStopped()) return;
         total += breakdown.numbers;
         setTotal(total);
         addItem("numbers", breakdown.numbers);
@@ -183,7 +183,7 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.funbox)) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total += breakdown.funbox;
       setTotal(total);
       addItem("funbox", breakdown.funbox);
@@ -191,7 +191,7 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.streak)) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total += breakdown.streak;
       setTotal(total);
       addItem("streak", breakdown.streak);
@@ -199,7 +199,7 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.accPenalty) && breakdown.accPenalty > 0) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total -= breakdown.accPenalty;
       setTotal(total);
       addItem("accuracy penalty", -breakdown.accPenalty);
@@ -207,7 +207,7 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.incomplete) && breakdown.incomplete > 0) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total += breakdown.incomplete;
       setTotal(total);
       addItem("incomplete tests", breakdown.incomplete);
@@ -215,7 +215,7 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.configMultiplier)) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total *= breakdown.configMultiplier;
       setTotal(total);
       addItem("global multiplier", `x${breakdown.configMultiplier}`);
@@ -223,7 +223,7 @@ export function AccountXpBar(): JSXElement {
 
     if (isSafeNumber(breakdown.daily)) {
       await sleep(delay);
-      if (isStale() || skipped) return;
+      if (isStale() || breakdownStopped()) return;
       total += breakdown.daily;
       setTotal(total);
       addItem("daily bonus", breakdown.daily);
