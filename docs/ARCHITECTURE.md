@@ -121,7 +121,8 @@ Hot paths avoid Neon PostgreSQL where staleness is bounded:
 - Public reads: operations in `policies/edge-cache.ts` are stored in the
   location's Cache API for 30–300s. SSR documents stay `no-store`.
 
-Each invocation owns a lazy Neon HTTP client shared by Drizzle and raw queries.
+Each invocation owns a lazy `pg` pool over Cloudflare Hyperdrive (TCP), shared by
+Drizzle and raw queries and closed when its work completes.
 Reads use the primary. User writes lock a versioned user row and assert its
 version inside a PostgreSQL transaction. Durable receipts recover lost commit
 acknowledgements without duplicate progression. Cron expires receipts after
@@ -132,8 +133,9 @@ flowchart LR
   Browser[Start/Solid client] --> Worker[Start Worker]
   Worker --> Services[Backend services + policies]
   Worker --> Auth[Better Auth]
-  Auth --> Postgres[(Neon PostgreSQL / Drizzle)]
-  Services --> Postgres
+  Auth --> Hyperdrive[Hyperdrive]
+  Services --> Hyperdrive
+  Hyperdrive --> Postgres[(Neon PostgreSQL)]
   Cron[Cron] --> Worker
   Services --> Bridge[External quote automation]
 ```
@@ -142,7 +144,7 @@ flowchart LR
 
 `vp run dev` starts Start on port 3000 with local workerd and a development Neon branch
 (`vp run --filter @caret/frontend db:migrate` first). Vitest covers web
-units, Start SSR/workerd suites, backend services and real Neon PostgreSQL behaviour;
+units, Start SSR/workerd suites, backend services and PostgreSQL behaviour in PGlite;
 Playwright covers the built Start Worker.
 
 `frontend/wrangler.staging.json` and `wrangler.production.json` own deployment
