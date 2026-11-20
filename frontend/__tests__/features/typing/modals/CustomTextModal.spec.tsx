@@ -14,7 +14,7 @@ const mocks = vi.hoisted(() => ({
   hide: vi.fn(),
   setConfig: vi.fn(),
 }));
-vi.mock("../../../src/ts/components/common/AnimatedModal", () => ({
+vi.mock("../../../../src/ts/components/common/AnimatedModal", () => ({
   AnimatedModal: (
     props: ParentProps<{
       beforeShow: (chained: boolean) => void;
@@ -28,47 +28,50 @@ vi.mock("../../../src/ts/components/common/AnimatedModal", () => ({
     return <div>{props.children}</div>;
   },
 }));
-vi.mock("../../../src/ts/components/modals/CustomGeneratorModal", () => ({
+vi.mock("../../../../src/features/typing/modals/CustomGeneratorModal", () => ({
   CustomGeneratorModal: () => null,
 }));
-vi.mock("../../../src/ts/components/modals/SaveCustomTextModal", () => ({
+vi.mock("../../../../src/features/typing/modals/SaveCustomTextModal", () => ({
   SaveCustomTextModal: () => null,
 }));
-vi.mock("../../../src/ts/components/modals/SavedTextsModal", () => ({
+vi.mock("../../../../src/features/typing/modals/SavedTextsModal", () => ({
   SavedTextsModal: () => null,
 }));
-vi.mock("../../../src/ts/components/modals/WordFilterModal", () => ({
+vi.mock("../../../../src/features/typing/modals/WordFilterModal", () => ({
   WordFilterModal: () => null,
 }));
-vi.mock("../../../src/ts/states/modals", () => ({
+vi.mock("../../../../src/ts/states/modals", () => ({
   hideModalAndClearChain: mocks.hide,
   showModal: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/core", () => ({
+vi.mock("../../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
   setCustomTextIndicator: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/test", () => ({
+vi.mock("../../../../src/ts/states/test", () => ({
   getLoadedChallenge: () => null,
   setLoadedChallenge: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/notifications", () => ({
+vi.mock("../../../../src/ts/states/notifications", () => ({
   showNoticeNotification: mocks.notice,
   showErrorNotification: vi.fn(),
 }));
-vi.mock("../../../src/ts/config/setters", () => ({
+vi.mock("../../../../src/ts/config/setters", () => ({
   setConfig: mocks.setConfig,
 }));
-vi.mock("../../../src/features/typing/runtime/content/practise-words", () => ({
-  resetBefore: vi.fn(),
-}));
-vi.mock("../../../src/ts/utils/bail-out", () => ({
+vi.mock(
+  "../../../../src/features/typing/runtime/content/practise-words",
+  () => ({
+    resetBefore: vi.fn(),
+  }),
+);
+vi.mock("../../../../src/ts/utils/bail-out", () => ({
   getBailOutHint: () => "Use escape",
 }));
 
-import * as CustomText from "../../../src/features/typing/runtime/content/custom-text";
-import { CustomTextModal } from "../../../src/ts/components/modals/CustomTextModal";
-import { getMutableConfig } from "../../../src/ts/config/store";
+import { CustomTextModal } from "../../../../src/features/typing/modals/CustomTextModal";
+import * as CustomText from "../../../../src/features/typing/runtime/content/custom-text";
+import { getMutableConfig } from "../../../../src/ts/config/store";
 
 beforeEach(() => {
   vi.clearAllMocks();

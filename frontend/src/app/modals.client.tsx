@@ -28,7 +28,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("CustomText", async () =>
-    import("../ts/components/modals/CustomTextModal").then(
+    import("../features/typing/modals/CustomTextModal").then(
       (m) => m.CustomTextModal,
     ),
   ),

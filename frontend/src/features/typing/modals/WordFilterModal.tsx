@@ -11,25 +11,25 @@ import {
   Setter,
 } from "solid-js";
 
-import { LanguageList } from "../../constants/languages";
-import { LayoutsList } from "../../constants/layouts";
-import { createDebouncedSignal } from "../../hooks/createDebouncedSignal";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
-import { hideModal } from "../../states/modals";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Separator } from "../../../ts/components/common/Separator";
+import { Checkbox } from "../../../ts/components/ui/form/Checkbox";
+import { InputField } from "../../../ts/components/ui/form/InputField";
+import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
+import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
+import Select from "../../../ts/components/ui/Select";
+import { LanguageList } from "../../../ts/constants/languages";
+import { LayoutsList } from "../../../ts/constants/layouts";
+import { createDebouncedSignal } from "../../../ts/hooks/createDebouncedSignal";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { hideModal } from "../../../ts/states/modals";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../states/notifications";
-import * as JSONData from "../../utils/json-data";
-import * as Misc from "../../utils/misc";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { Separator } from "../common/Separator";
-import { Checkbox } from "../ui/form/Checkbox";
-import { InputField } from "../ui/form/InputField";
-import { LabeledField } from "../ui/form/LabeledField";
-import { SubmitButton } from "../ui/form/SubmitButton";
-import Select from "../ui/Select";
+} from "../../../ts/states/notifications";
+import * as JSONData from "../../../ts/utils/json-data";
+import * as Misc from "../../../ts/utils/misc";
 
 type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (

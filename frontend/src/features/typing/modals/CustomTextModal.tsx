@@ -1,7 +1,7 @@
 import { JSXElement } from "solid-js";
 
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Separator } from "../common/Separator";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Separator } from "../../../ts/components/common/Separator";
 import { createCustomTextController } from "./custom-text/createCustomTextController";
 import { CustomTextEditor } from "./custom-text/CustomTextEditor";
 import { CustomTextSettings } from "./custom-text/CustomTextSettings";

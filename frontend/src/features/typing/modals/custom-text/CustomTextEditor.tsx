@@ -2,10 +2,10 @@ import { JSXElement, Show } from "solid-js";
 
 import type { CustomTextController } from "./createCustomTextController";
 
-import { showModal } from "../../../states/modals";
-import { Button } from "../../common/Button";
-import { SubmitButton } from "../../ui/form/SubmitButton";
-import { TextareaField } from "../../ui/form/TextareaField";
+import { Button } from "../../../../ts/components/common/Button";
+import { SubmitButton } from "../../../../ts/components/ui/form/SubmitButton";
+import { TextareaField } from "../../../../ts/components/ui/form/TextareaField";
+import { showModal } from "../../../../ts/states/modals";
 
 export function CustomTextEditor(props: {
   controller: CustomTextController;

@@ -1,17 +1,17 @@
 import { createSignal, For, Index, JSXElement, Setter, Show } from "solid-js";
 
-import * as CustomText from "../../../features/typing/runtime/content/custom-text";
-import { setCustomTextIndicator } from "../../states/core";
-import { hideModal } from "../../states/modals";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { download } from "../../../ts/components/common/Download";
+import { Separator } from "../../../ts/components/common/Separator";
+import { setCustomTextIndicator } from "../../../ts/states/core";
+import { hideModal } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { showSimpleModal } from "../../states/simple-modal";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { download } from "../common/Download";
-import { Separator } from "../common/Separator";
+} from "../../../ts/states/notifications";
+import { showSimpleModal } from "../../../ts/states/simple-modal";
+import * as CustomText from "../runtime/content/custom-text";
 
 type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (

@@ -1,16 +1,16 @@
 import { createForm } from "@tanstack/solid-form";
 import { createSignal, JSXElement, Setter } from "solid-js";
 
-import { hideModal } from "../../states/modals";
-import { showNoticeNotification } from "../../states/notifications";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { Separator } from "../common/Separator";
-import { InputField } from "../ui/form/InputField";
-import { LabeledField } from "../ui/form/LabeledField";
-import { SubmitButton } from "../ui/form/SubmitButton";
-import { TextareaField } from "../ui/form/TextareaField";
-import Select from "../ui/Select";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Separator } from "../../../ts/components/common/Separator";
+import { InputField } from "../../../ts/components/ui/form/InputField";
+import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
+import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
+import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
+import Select from "../../../ts/components/ui/Select";
+import { hideModal } from "../../../ts/states/modals";
+import { showNoticeNotification } from "../../../ts/states/notifications";
 
 type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (

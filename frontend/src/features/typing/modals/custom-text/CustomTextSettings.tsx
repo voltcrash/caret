@@ -2,10 +2,10 @@ import { For, JSXElement } from "solid-js";
 
 import type { CustomTextController } from "./createCustomTextController";
 
-import { showModal } from "../../../states/modals";
-import { cn } from "../../../utils/cn";
-import { Button } from "../../common/Button";
-import { Separator } from "../../common/Separator";
+import { Button } from "../../../../ts/components/common/Button";
+import { Separator } from "../../../../ts/components/common/Separator";
+import { showModal } from "../../../../ts/states/modals";
+import { cn } from "../../../../ts/utils/cn";
 import { modeOptions, delimiterOptions } from "./options";
 import { SettingsGroup } from "./SettingsGroup";
 
