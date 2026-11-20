@@ -103,7 +103,9 @@ export async function applyConfig(
   }
   lease?.assertCurrent();
 
-  // Publish one settled configuration to reactive UI subscribers.
+  // Publish one settled configuration to reactive UI subscribers. A failure is
+  // rethrown after the batch so the rollback still reaches subscribers.
+  let failure: { error: unknown } | undefined;
   batch(() => {
     const previous = structuredClone(peekConfig());
     configEvent.dispatch({ key: "fullConfigChange" });
@@ -136,11 +138,12 @@ export async function applyConfig(
       for (const key of typedKeys(previous)) {
         setConfigStore(key, previous[key]);
       }
-      throw error;
+      failure = { error };
     } finally {
       configEvent.dispatch({ key: "fullConfigChangeFinished" });
     }
   });
+  if (failure !== undefined) throw failure.error;
 }
 
 export async function resetConfig(): Promise<void> {
