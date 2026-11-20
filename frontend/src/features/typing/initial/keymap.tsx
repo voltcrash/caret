@@ -1,6 +1,6 @@
 import { For, Show, createMemo } from "solid-js";
 
-import type { InitialTypingSnapshot } from "./snapshot";
+import type { InitialTypingSnapshot } from "../../../ts/config/typing-preview";
 
 import { cn } from "../../../ts/utils/cn";
 import { convertLayoutToKeymap } from "../keymap/converter";

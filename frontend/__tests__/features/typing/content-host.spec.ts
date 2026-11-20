@@ -62,7 +62,7 @@ import {
   initialContentKey,
   initialTypingState,
 } from "../../../src/features/typing/initial/snapshot.client";
-import { previewSettings } from "../../../src/features/typing/initial/snapshot";
+import { previewSettings } from "../../../src/ts/config/typing-preview";
 import {
   createTestApplication,
   releaseTestApplication,

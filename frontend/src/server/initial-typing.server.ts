@@ -6,7 +6,7 @@ import {
   readTypingPreview,
   selectTypingPreview,
   type InitialTypingSnapshot,
-} from "../features/typing/initial/snapshot";
+} from "../ts/config/typing-preview";
 
 // Build-time assets only. Never fetch layouts on the document request path.
 const layouts = import.meta.glob<LayoutObject>("../../static/layouts/*.json", {

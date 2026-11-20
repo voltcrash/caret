@@ -45,9 +45,7 @@ for the operation inventory, remaining compatibility rules and archived evidence
 | `backend/src/` | Services, policies, DAL, Drizzle/Neon PostgreSQL, Better Auth, jobs (server-only package) |
 
 Code used by one feature lives in that feature. Shared code in `src/ts` and
-`src/data` must not import features; `__tests__/architecture/feature-boundaries.spec.ts` fails
-on any edge missing from `shared-feature-imports.json`. Remove entries as edges
-are untangled; never add them. Code outside typing may only import the typing
+`src/data` must not import features; `__tests__/architecture/feature-boundaries.spec.ts` enforces this boundary. Code outside typing may only import the typing
 modules in `typing-public-surface.json`, which also only shrinks. Shared code
 triggers typing (restart, blur, hints, pace caret) and reads route activity
 through `src/ts/typing-host.ts`, which the typing route binds while mounted.

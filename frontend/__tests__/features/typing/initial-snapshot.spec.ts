@@ -6,13 +6,15 @@ import {
   readTypingPreview,
   selectTypingPreview,
   type InitialTypingSnapshot,
-} from "../../../src/features/typing/initial/snapshot";
+} from "../../../src/ts/config/typing-preview";
 import {
   initialTypingState,
-  saveTypingPreview,
-  refreshTypingPreviewSettings,
   initialContentKey,
 } from "../../../src/features/typing/initial/snapshot.client";
+import {
+  saveTypingPreview,
+  refreshTypingPreviewSettings,
+} from "../../../src/ts/config/typing-preview.client";
 import { mountApplication } from "../../../src/app/application";
 import {
   createTestApplication,
@@ -122,6 +124,7 @@ it("bounds the cookie while retaining complete words and preferences", () => {
     7,
     snapshot.key,
     Array.from({ length: 60 }, () => "a".repeat(100)),
+    snapshot.engineHash,
   );
   expect(document.cookie.length).toBeLessThan(3900);
   const restored = readTypingPreview(document.cookie);
@@ -132,16 +135,26 @@ it("bounds the cookie while retaining complete words and preferences", () => {
 });
 
 it("never sends local custom text to the server in a preview cookie", () => {
-  saveTypingPreview(config, 7, snapshot.key, ["public"]);
-  saveTypingPreview({ ...config, mode: "custom" }, 7, snapshot.key, [
-    "private-local-text",
-  ]);
+  saveTypingPreview(config, 7, snapshot.key, ["public"], snapshot.engineHash);
+  saveTypingPreview(
+    { ...config, mode: "custom" },
+    7,
+    snapshot.key,
+    ["private-local-text"],
+    snapshot.engineHash,
+  );
   expect(readTypingPreview(document.cookie)).toBeUndefined();
   expect(document.cookie).not.toContain("private-local-text");
 });
 
 it("saves layout preferences without generating another wordset", () => {
-  saveTypingPreview(config, 7, snapshot.key, ["same", "words"]);
+  saveTypingPreview(
+    config,
+    7,
+    snapshot.key,
+    ["same", "words"],
+    snapshot.engineHash,
+  );
   refreshTypingPreviewSettings({
     ...config,
     maxLineWidth: 40,
@@ -178,7 +191,13 @@ it("reads previews written before keyboard preferences were included", () => {
 });
 
 it("keeps content settings paired with the saved words until regeneration", () => {
-  saveTypingPreview(config, 7, snapshot.key, ["same", "words"]);
+  saveTypingPreview(
+    config,
+    7,
+    snapshot.key,
+    ["same", "words"],
+    snapshot.engineHash,
+  );
   refreshTypingPreviewSettings({
     ...config,
     mode: "time",

@@ -1,8 +1,6 @@
 [
   "commands",
   "initial/default",
-  "initial/snapshot",
-  "initial/snapshot.client",
   "modals/CustomTestDurationModal",
   "modals/CustomTextModal",
   "modals/CustomWordAmountModal",
