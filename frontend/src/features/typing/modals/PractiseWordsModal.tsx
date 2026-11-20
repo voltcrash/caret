@@ -1,12 +1,12 @@
 import { For, JSXElement, ParentProps, createSignal } from "solid-js";
 
-import { practiceHistory } from "../../../features/typing/history/practice.client";
-import * as PractiseWords from "../../../features/typing/runtime/content/practise-words";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
-import { hideModalAndClearChain } from "../../states/modals";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { Fa, FaProps } from "../common/Fa";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa, FaProps } from "../../../ts/components/common/Fa";
+import { hideModalAndClearChain } from "../../../ts/states/modals";
+import { practiceHistory } from "../history/practice.client";
+import * as PractiseWords from "../runtime/content/practise-words";
+import * as TestLogic from "../runtime/test/logic";
 
 type Missed = "off" | "words" | "biwords";
 

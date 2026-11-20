@@ -63,7 +63,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("ShareTestSettings", async () =>
-    import("../ts/components/modals/ShareTestSettings").then(
+    import("../features/typing/modals/ShareTestSettings").then(
       (m) => m.ShareTestSettings,
     ),
   ),
@@ -103,12 +103,12 @@ const lazyModals = [
     ),
   ),
   lazyModal("EditResultTags", async () =>
-    import("../ts/components/modals/EditResultTagsModal").then(
+    import("../features/typing/modals/EditResultTagsModal").then(
       (m) => m.EditResultTagsModal,
     ),
   ),
   lazyModal("PractiseWords", async () =>
-    import("../ts/components/modals/PractiseWordsModal").then(
+    import("../features/typing/modals/PractiseWordsModal").then(
       (m) => m.PractiseWordsModal,
     ),
   ),

@@ -2,18 +2,18 @@ import { createEffect, createSignal, For } from "solid-js";
 
 import { updateTags } from "../../../data/collections/results";
 import { useTagsLiveQuery } from "../../../data/collections/tags";
-import { updateTagsAfterEdit } from "../../../features/typing/runtime/result/screen";
-import { getSelectedResult } from "../../states/edit-result-tags";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
-import { hideModal } from "../../states/modals";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { getSelectedResult } from "../../../ts/states/edit-result-tags";
+import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { hideModal } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { areUnsortedArraysEqual } from "../../utils/arrays";
-import { createErrorMessage } from "../../utils/error";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
+} from "../../../ts/states/notifications";
+import { areUnsortedArraysEqual } from "../../../ts/utils/arrays";
+import { createErrorMessage } from "../../../ts/utils/error";
+import { updateTagsAfterEdit } from "../runtime/result/screen";
 
 export function EditResultTagsModal() {
   const [selectedTagIds, setSelectedTagIds] = createSignal<Set<string>>(
