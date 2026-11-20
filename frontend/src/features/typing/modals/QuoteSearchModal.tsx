@@ -19,9 +19,6 @@ import { InputField } from "../../../ts/components/ui/form/InputField";
 import Select from "../../../ts/components/ui/Select";
 import { setConfig } from "../../../ts/config/setters";
 import { getMutableConfig } from "../../../ts/config/store";
-import QuotesController, {
-  Quote,
-} from "../../../ts/controllers/quotes-controller";
 import * as DB from "../../../ts/db";
 import { createDebouncedEffectOn } from "../../../ts/hooks/effects";
 import { isAuthenticated } from "../../../ts/states/core";
@@ -45,6 +42,7 @@ import {
   SearchService,
   TextExtractor,
 } from "../../../ts/utils/search-service";
+import QuotesController, { Quote } from "../runtime/quotes-controller";
 import * as TestLogic from "../runtime/test/logic";
 import { showQuoteReportModal } from "../state/quote-report";
 import { QuoteApproveModal } from "./QuoteApproveModal";

@@ -1,6 +1,5 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { useQuoteEvents } from "../../ts/controllers/quotes-controller";
 import { useSoundEvents } from "../../ts/controllers/sound-controller";
 import {
   getLastEventLog,
@@ -16,6 +15,7 @@ import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { useEngineInputProjection } from "./runtime/input-projection.client";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
+import { useQuoteEvents } from "./runtime/quotes-controller";
 import { useTestLogicEvents } from "./runtime/test/logic";
 import * as TestTimer from "./runtime/test/timer";
 import { useTtsEvents } from "./runtime/tts";

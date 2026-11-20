@@ -39,7 +39,7 @@ vi.mock("../../src/features/typing/state/result", async (importOriginal) => {
     },
   };
 });
-vi.mock("../../src/ts/controllers/quotes-controller", () => ({
+vi.mock("../../src/features/typing/runtime/quotes-controller", () => ({
   default: { isQuoteFavorite: () => false },
 }));
 vi.mock("../../src/ts/db", () => ({
@@ -118,7 +118,7 @@ import { __testing } from "../../src/ts/config/testing";
 import { getMutableConfig } from "../../src/ts/config/store";
 import type { CompletedEvent } from "@caret/schemas/results";
 import type { Config as ConfigType } from "@caret/schemas/configs";
-import type { Quote } from "../../src/ts/controllers/quotes-controller";
+import type { Quote } from "../../src/features/typing/runtime/quotes-controller";
 
 const { replaceConfig } = __testing;
 

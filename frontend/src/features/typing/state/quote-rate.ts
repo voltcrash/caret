@@ -8,7 +8,7 @@ import {
 } from "../../../data/queries/quotes";
 import { createAppSignal } from "../../../app/state";
 
-import { Quote } from "../../../ts/controllers/quotes-controller";
+import { Quote } from "../runtime/quotes-controller";
 import { showErrorNotification } from "../../../ts/states/notifications";
 import { showModal } from "../../../ts/states/modals";
 import { isSafeNumber } from "@caret/util/numbers";

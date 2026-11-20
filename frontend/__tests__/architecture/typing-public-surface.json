@@ -22,7 +22,6 @@
   "page",
   "page.client",
   "runtime/content/custom-text",
-  "runtime/content/host.client",
   "runtime/funbox/list",
   "runtime/result/saving",
   "runtime/session.client",

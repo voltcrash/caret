@@ -12,7 +12,6 @@
   "src/ts/config/metadata.tsx -> src/features/typing/engine/policy.client",
   "src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client",
   "src/ts/config/setters.ts -> src/features/typing/runtime/session.client",
-  "src/ts/controllers/quotes-controller.ts -> src/features/typing/runtime/content/host.client",
   "src/ts/states/result-filters.ts -> src/features/account/components/utils",
   "src/ts/states/settings-sections.ts -> src/features/settings/tabs",
   "src/ts/states/test.ts -> src/features/typing/lifecycle/controller",

@@ -3,7 +3,7 @@ import { onMount, ParentProps } from "solid-js";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 const { getQuotes } = vi.hoisted(() => ({ getQuotes: vi.fn() }));
-vi.mock("../../../../src/ts/controllers/quotes-controller", () => ({
+vi.mock("../../../../src/features/typing/runtime/quotes-controller", () => ({
   default: { getQuotes, isQuoteFavorite: () => false },
 }));
 vi.mock("../../../../src/ts/components/common/AnimatedModal", () => ({

@@ -34,7 +34,7 @@ import type { PluginChartOptions } from "chart.js";
 
 import { getMutableConfig } from "../../../../ts/config/store";
 
-import { Quote } from "../../../../ts/controllers/quotes-controller";
+import { Quote } from "../quotes-controller";
 
 import { showNoticeNotification } from "../../../../ts/states/notifications";
 import {

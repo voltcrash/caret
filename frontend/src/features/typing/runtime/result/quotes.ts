@@ -1,7 +1,5 @@
 import { getMutableConfig } from "../../../../ts/config/store";
-import QuotesController, {
-  Quote,
-} from "../../../../ts/controllers/quotes-controller";
+import QuotesController, { Quote } from "../quotes-controller";
 import * as DB from "../../../../ts/db";
 import { isAuthenticated } from "../../../../ts/states/core";
 import { getQuoteStats } from "../../state/quote-rate";
