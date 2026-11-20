@@ -29,7 +29,7 @@ official Playwright image matching the installed client version.
 | `ci-be` | Backend, its tests, runtime packages, lint config | Lint, unit and PostgreSQL tests |
 | `ci-fe` | Frontend, any frontend tests, backend, runtime packages, lint config | Lint, circular imports |
 | `ci-fe-test` (2 shards) | Frontend, unit or Start tests, backend, runtime packages | Vitest |
-| `start-build` | SSR or browser suite selected | Build and dry-run production Worker; share artifact |
+| `start-build` | SSR or browser suite selected | Build and dry-run production Worker; eager JS budget; share artifact |
 | `start-ssr` | Frontend, Start tests, backend, runtime packages | Route checks, runtime-test build, SSR/workerd suites |
 | `start-browser` (6 shards) | Same, plus `e2e`/`start-e2e` | Playwright suites using shared Worker |
 | `start-updates` | Same, plus `update-e2e` | Service-worker update and rollback suites |
@@ -50,6 +50,15 @@ suite, top-level `frontend/static` files run the Start suites, layouts run
 frontend and package tests, and typing-core fixtures run backend and frontend
 tests. [`ci-routing.spec.js`](../packages/release/__tests__/ci-routing.spec.js)
 covers these rules.
+
+## Eager JS budget
+
+`start-build` runs `measure-eager-js.ts --check` on the built Worker. It sums the
+typing document's entry scripts and modulepreloads (lazy chunks excluded) and
+fails when raw or gzip bytes exceed
+[`eager-js-budget.json`](../frontend/scripts/eager-js-budget.json). Prefer
+deferring code off the first-keystroke path; otherwise raise the budget in the
+same PR so reviewers see the growth.
 
 ## Forcing runs
 
