@@ -1,10 +1,19 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
+import { z } from "zod";
 import { createWorkerd } from "../__tests__/start/workerd";
+
+const Budget = z.object({
+  raw: z.number().int().positive(),
+  gzip: z.number().int().positive(),
+});
 
 /** Eager JS: Start SSR document entry scripts and modulepreloads. */
 async function main(): Promise<void> {
+  const args = process.argv.slice(2);
+  const check = args.includes("--check");
+  const path = args.find((arg) => arg !== "--check");
   const worker = await createWorkerd();
   try {
     const response = await worker.dispatchFetch("http://localhost:3000/");
@@ -43,9 +52,30 @@ async function main(): Promise<void> {
       null,
       2,
     )}\n`;
-    const path = process.argv[2];
-    if (path === undefined) console.log(output);
-    else writeFileSync(path, output);
+    if (path !== undefined) writeFileSync(path, output);
+    else if (!check) console.log(output);
+    if (check) {
+      const budget = Budget.parse(
+        JSON.parse(
+          readFileSync(
+            resolve(import.meta.dirname, "eager-js-budget.json"),
+            "utf8",
+          ),
+        ),
+      );
+      const { raw, gzip } = runs[0] as (typeof runs)[number];
+      const failures = (["raw", "gzip"] as const).filter(
+        (key) => ({ raw, gzip })[key] > budget[key],
+      );
+      console.info(
+        `Eager JS: ${raw} raw / ${gzip} gzip bytes (budget ${budget.raw} / ${budget.gzip})`,
+      );
+      if (failures.length > 0) {
+        throw new Error(
+          `Eager JS exceeds its ${failures.join(" and ")} budget; defer code or raise frontend/scripts/eager-js-budget.json`,
+        );
+      }
+    }
   } finally {
     await worker.dispose();
   }
