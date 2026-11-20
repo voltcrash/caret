@@ -1,8 +1,8 @@
-import { createAppOwned } from "../../../app/application";
+import { createAppOwned } from "#app/application.ts";
 import { projectEngineConfig } from "@caret/typing-engine/config";
 import type { Config } from "@caret/schemas/configs";
 import { initialContentConfig } from "./content";
-import type { InitialTypingSnapshot } from "../../../ts/config/typing-preview";
+import type { InitialTypingSnapshot } from "#shared/config/typing-preview.ts";
 
 export const initialTypingState = createAppOwned(() => {
   type SeedState =

@@ -1,6 +1,6 @@
-import { createAppSignal } from "../../../app/state";
+import { createAppSignal } from "#app/state.ts";
 import { JSX } from "solid-js";
-import { createEvent } from "../../../ts/hooks/createEvent";
+import { createEvent } from "#shared/hooks/createEvent.ts";
 
 export const [getWordsWrapperHeight, setWordsWrapperHeight] =
   createAppSignal("");

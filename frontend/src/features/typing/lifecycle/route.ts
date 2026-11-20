@@ -1,24 +1,24 @@
-import { setIsScreenshotting } from "../../../ts/states/core";
+import { setIsScreenshotting } from "#shared/states/core.ts";
 import { setScreenshotWatermark } from "../state/result";
-import { preferencesReadiness } from "../../../app/readiness";
-import { setTypingReady } from "../../../app/startup";
-import { setFocusCursorHidden } from "../../../ts/states/app";
-import { hideLoaderBar } from "../../../ts/states/loader-bar";
+import { preferencesReadiness } from "#app/readiness.ts";
+import { setTypingReady } from "#app/startup.ts";
+import { setFocusCursorHidden } from "#shared/states/app.ts";
+import { hideLoaderBar } from "#shared/states/loader-bar.ts";
 import { resetModifierState } from "../state/modifiers";
 import {
   resetIncompleteTests,
   setFocus,
   setCompositionText,
   setTestFocusState,
-} from "../../../ts/states/test";
-import * as Composition from "../../../ts/states/composition";
+} from "#shared/states/test.ts";
+import * as Composition from "#shared/states/composition.ts";
 import {
   cancelPendingAnimationFrame,
   cancelPendingAnimationFramesStartingWith,
-} from "../../../ts/utils/debounced-animation-frame";
+} from "#shared/utils/debounced-animation-frame.ts";
 import { captureTypingMount } from "../scope";
 import { getTestSession } from "../runtime/events/data";
-import { getBrowserEngine } from "../../../ts/engine/owner.client";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import * as Funbox from "../runtime/funbox/funbox";
 import { getActiveFunboxesWithFunction } from "../runtime/funbox/list";
 import * as Layoutfluid from "../runtime/funbox/layoutfluid-funbox-timer";
@@ -27,7 +27,7 @@ import * as Replay from "../runtime/replay";
 import * as Timer from "../runtime/test/timer";
 import { restart } from "../runtime/test/logic";
 import { resetAltGrState } from "../runtime/layout-emulator";
-import { getTypingLifecycle } from "../../../ts/states/test-lifecycle/controller";
+import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
 
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {

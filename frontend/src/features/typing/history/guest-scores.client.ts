@@ -3,10 +3,10 @@ import type { CompletedEvent } from "@caret/schemas/results";
 import { z } from "zod";
 
 import type { SessionState } from "@caret/schemas/auth-session";
-import { sessionKey } from "../../../ts/session/session";
+import { sessionKey } from "#shared/session/session.ts";
 import { getQueryClient } from "../../../data/queries";
-import { appSignal, createAccountSignal } from "../../../app/state";
-import { useLocalStorage } from "../../../ts/hooks/useLocalStorage";
+import { appSignal, createAccountSignal } from "#app/state.ts";
+import { useLocalStorage } from "#shared/hooks/useLocalStorage.ts";
 
 const limit = 10;
 const scoreSchema = z.object({
