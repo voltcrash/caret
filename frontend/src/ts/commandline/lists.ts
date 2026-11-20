@@ -10,7 +10,6 @@ import AddOrRemoveThemeToFavorite from "./lists/add-or-remove-theme-to-favorites
 import TagsCommands from "./lists/tags";
 import CustomThemesListCommands from "./lists/custom-themes-list";
 import PresetsCommands from "./lists/presets";
-import FunboxCommands from "./lists/funbox";
 import ThemesCommands from "./lists/themes";
 
 import { getMutableConfig } from "../config/store";
@@ -100,7 +99,6 @@ const getCoreCommands = createAccountOwned<
       "minAcc",
       ...MinBurstCommands,
       "britishEnglish",
-      ...FunboxCommands,
     ),
   ],
   settings: [
@@ -360,7 +358,7 @@ function getLists(): Record<CommandlineListKey, CommandsSubgroup | undefined> {
     themes: ThemesCommands[0]?.subgroup,
     loadChallenge: contributedList("loadChallenge"),
     minBurst: MinBurstCommands[0]?.subgroup,
-    funbox: FunboxCommands[0]?.subgroup ?? contributedList("funbox"),
+    funbox: contributedList("funbox"),
     tags: TagsCommands[0]?.subgroup,
   };
 }

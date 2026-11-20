@@ -7,6 +7,7 @@ import * as PaceCaret from "../runtime/pace-caret";
 import * as TestLogic from "../runtime/test/logic";
 import { isTypingRouteActive } from "../scope";
 import ResultScreenCommands from "./result-screen";
+import FunboxCommands from "./funbox";
 import LoadChallengeCommands from "./load-challenge";
 import BailOutCommands from "./bail-out";
 
@@ -25,9 +26,13 @@ export function useTypingCommands(): void {
       commands: {
         result: ResultScreenCommands,
         test: BailOutCommands,
+        behavior: FunboxCommands,
         other: LoadChallengeCommands,
       },
-      lists: { loadChallenge: LoadChallengeCommands[0]?.subgroup },
+      lists: {
+        loadChallenge: LoadChallengeCommands[0]?.subgroup,
+        funbox: FunboxCommands[0]?.subgroup,
+      },
     }),
   );
 }
