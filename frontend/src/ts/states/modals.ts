@@ -51,22 +51,18 @@ export type ModalVisibility = {
 type ModalState = {
   openModals: Partial<Record<ModalId, ModalVisibility>>;
   modalStack: ModalId[];
-  pendingModal: ModalId | null;
-  pendingIsChained: boolean;
-  closingModal: ModalId | null;
+  closing: { id: ModalId; next: ModalId | null } | null;
 };
 
 const [modalState, setModalState] = createAppStore<ModalState>({
   openModals: {},
   modalStack: [],
-  pendingModal: null,
-  pendingIsChained: false,
-  closingModal: null,
+  closing: null,
 });
 
 export function showModal(id: ModalId): void {
-  if (modalState.closingModal !== null) {
-    setModalState({ pendingModal: id, pendingIsChained: true });
+  if (modalState.closing !== null) {
+    setModalState("closing", { id: modalState.closing.id, next: id });
     return;
   }
   const currentlyOpenModal = getCurrentlyOpenModal();
@@ -75,9 +71,7 @@ export function showModal(id: ModalId): void {
     // A different modal is open, chain them
     setModalState((state) => ({
       modalStack: [...state.modalStack, currentlyOpenModal],
-      pendingModal: id,
-      pendingIsChained: true,
-      closingModal: currentlyOpenModal,
+      closing: { id: currentlyOpenModal, next: id },
     }));
 
     // Hide current modal with chained flag - the new modal will show after hide completes
@@ -94,18 +88,16 @@ export function showModal(id: ModalId): void {
   }
 }
 export function hideModal(id: ModalId): void {
-  if (modalState.closingModal !== null || !isModalOpen(id)) return;
-  setModalState("closingModal", id);
+  if (modalState.closing !== null || !isModalOpen(id)) return;
   // Check if this modal was part of a chain (user dismissed, go back)
   const stackCopy = [...modalState.modalStack];
   const previousModal = stackCopy.pop();
 
+  setModalState("closing", { id, next: previousModal ?? null });
   if (previousModal !== undefined) {
     // Queue the previous modal to show after hide animation completes
     setModalState({
       modalStack: stackCopy,
-      pendingModal: previousModal,
-      pendingIsChained: true,
     });
 
     // Mark current modal as hiding with chained flag
@@ -119,16 +111,11 @@ export function hideModal(id: ModalId): void {
 
 /** Animation acknowledgement cannot be mistaken for another close request. */
 export function completeModalHide(id: ModalId): void {
-  if (modalState.closingModal !== id) return;
-  const next = modalState.pendingModal;
-  const chained = modalState.pendingIsChained;
-  setModalState({
-    closingModal: null,
-    pendingModal: null,
-    pendingIsChained: false,
-  });
+  if (modalState.closing?.id !== id) return;
+  const { next } = modalState.closing;
+  setModalState("closing", null);
   if (next !== null) {
-    setModalState("openModals", next, { visible: true, chained });
+    setModalState("openModals", next, { visible: true, chained: true });
   }
 }
 
@@ -136,8 +123,7 @@ export function hideModalAndClearChain(id: ModalId): void {
   // Clear the entire chain
   setModalState({
     modalStack: [],
-    pendingModal: null,
-    pendingIsChained: false,
+    closing: modalState.closing && { id: modalState.closing.id, next: null },
   });
 
   hideModal(id);
