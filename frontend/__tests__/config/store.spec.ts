@@ -54,3 +54,12 @@ it("leaves the previous array intact when an array value changes", () => {
   expect(before).toEqual(snapshot);
   expect(getConfig.quoteLength).toEqual([0, 1, 2, 3]);
 });
+
+it("does not alias the caller's array", () => {
+  const lengths: (0 | 1 | 2)[] = [0, 1];
+  setConfig("quoteLength", lengths, { nosave: true });
+  lengths.push(2);
+
+  expect(peekConfig().quoteLength).toEqual([0, 1]);
+  expect(getConfig.quoteLength).toEqual([0, 1]);
+});

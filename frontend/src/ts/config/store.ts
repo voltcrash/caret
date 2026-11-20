@@ -21,11 +21,15 @@ export function setFullConfigStore(newConfig: ConfigSchema): void {
   configStore()[1](reconcile(newConfig));
 }
 
-/** Replaces one value; arrays are replaced so earlier values stay intact. */
+/**
+ * Replaces one value. Arrays are copied, so neither earlier values nor the
+ * caller's array alias the stored one.
+ */
 export function setConfigStore<K extends keyof ConfigSchema>(
   key: K,
   value: ConfigSchema[K],
 ): void {
+  const stored = (Array.isArray(value) ? [...value] : value) as ConfigSchema[K];
   // Values are primitives or arrays, so the store sets them without merging.
-  (configStore()[1] as (key: K, value: ConfigSchema[K]) => void)(key, value);
+  (configStore()[1] as (key: K, value: ConfigSchema[K]) => void)(key, stored);
 }
