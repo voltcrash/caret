@@ -64,6 +64,14 @@ struct Batch {
     indexes: Vec<usize>,
     raw: Vec<Text>,
 }
+#[derive(Default)]
+enum BatchState {
+    #[default]
+    Idle,
+    AwaitingContent(Batch),
+    Failed(EngineError),
+}
+
 pub struct Generator {
     config: GenerationConfig,
     language: Language,
@@ -87,8 +95,7 @@ pub struct Generator {
     polyglot: Vec<Language>,
     word_languages: std::collections::BTreeMap<Vec<u16>, usize>,
     section_queue: Option<crate::content::Queue>,
-    batch: Option<Batch>,
-    source_failure: Option<EngineError>,
+    batch: BatchState,
     pub(crate) prepared_generation: u32,
 }
 pub(crate) fn case(text: &Text, upper: bool) -> Text {
@@ -404,8 +411,7 @@ impl Generator {
             polyglot,
             word_languages,
             section_queue,
-            batch: None,
-            source_failure: None,
+            batch: BatchState::Idle,
             prepared_generation: 0,
         })
     }
@@ -573,24 +579,23 @@ impl Generator {
             if active { "" } else { "Failed to pull section" },
             recovery,
         );
-        self.source_failure = Some(error.clone());
-        self.batch = None;
+        self.batch = BatchState::Failed(error.clone());
         Ok(error)
     }
     pub fn reset_requests(&mut self, generation: u32) {
-        self.source_failure = None;
         if let Some(queue) = &mut self.section_queue {
             queue.reset(generation);
         }
-        self.batch = None;
+        self.batch = BatchState::Idle;
     }
     pub fn generate(&mut self, repeating: bool) -> Result<Generated, crate::error::EngineError> {
-        if let Some(error) = &self.source_failure {
+        if let BatchState::Failed(error) = &self.batch {
             return Err(error.clone());
         }
-        let mut batch = if let Some(batch) = self.batch.take() {
+        let mut batch = if let BatchState::AwaitingContent(batch) = std::mem::take(&mut self.batch)
+        {
             if batch.repeating != repeating {
-                self.batch = Some(batch);
+                self.batch = BatchState::AwaitingContent(batch);
                 return Err("Generation already awaiting content".into());
             }
             batch
@@ -628,7 +633,7 @@ impl Generator {
                     Ok(next) => next,
                     Err(error) => {
                         if self.pending_request().is_some() {
-                            self.batch = Some(batch);
+                            self.batch = BatchState::AwaitingContent(batch);
                         }
                         return Err(error);
                     }
@@ -729,7 +734,7 @@ impl Generator {
             return Err("Invalid generation position/bound".into());
         }
 
-        if let Some(error) = &self.source_failure {
+        if let BatchState::Failed(error) = &self.batch {
             return Err(error.clone());
         }
         if self.repeating
