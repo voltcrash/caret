@@ -1,7 +1,6 @@
 [
   "src/ts/components/layout/header/Nav.tsx -> src/features/account/settled.client",
   "src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client",
-  "src/ts/states/result-filters.ts -> src/features/account/components/utils",
   "src/ts/states/settings-sections.ts -> src/features/settings/tabs",
   "src/ts/states/test.ts -> src/features/typing/lifecycle/controller"
 ]
