@@ -1,4 +1,4 @@
-//! Web theme palettes (`packages/web-shared/src/themes.ts`) projected onto cells.
+//! Web theme palettes (`packages/web-shared/src/theme-palettes.json`) projected onto cells.
 use ratatui::style::{Color, Style};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
