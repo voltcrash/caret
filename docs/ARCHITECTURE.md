@@ -133,8 +133,9 @@ flowchart LR
   Browser[Start/Solid client] --> Worker[Start Worker]
   Worker --> Services[Backend services + policies]
   Worker --> Auth[Better Auth]
-  Auth --> Postgres[(Neon PostgreSQL / Drizzle)]
-  Services --> Postgres
+  Auth --> Hyperdrive[Hyperdrive]
+  Services --> Hyperdrive
+  Hyperdrive --> Postgres[(Neon PostgreSQL / Drizzle)]
   Cron[Cron] --> Worker
   Services --> Bridge[External quote automation]
 ```
