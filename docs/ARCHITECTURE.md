@@ -143,7 +143,7 @@ flowchart LR
 
 `vp run dev` starts Start on port 3000 with local workerd and a development Neon branch
 (`vp run --filter @caret/frontend db:migrate` first). Vitest covers web
-units, Start SSR/workerd suites, backend services and real Neon PostgreSQL behaviour;
+units, Start SSR/workerd suites, backend services and PostgreSQL behaviour in PGlite;
 Playwright covers the built Start Worker.
 
 `frontend/wrangler.staging.json` and `wrangler.production.json` own deployment
