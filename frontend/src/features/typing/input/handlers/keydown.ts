@@ -8,7 +8,7 @@ import {
 } from "../../../../ts/states/notifications";
 import * as KeyConverter from "../../../../ts/utils/key-converter";
 import * as ShiftTracker from "../../runtime/shift-tracker";
-import { canQuickRestart } from "../../../../ts/utils/quick-restart";
+import { canQuickRestart } from "../../runtime/quick-restart";
 import * as CustomText from "../../runtime/content/custom-text";
 import {
   getLastBailoutAttempt,

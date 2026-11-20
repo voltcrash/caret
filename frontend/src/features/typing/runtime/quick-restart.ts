@@ -1,9 +1,6 @@
 import type { CustomTextSettings } from "@caret/schemas/results";
 import { projectEngineConfig } from "@caret/typing-engine/config";
-import {
-  enginePolicy,
-  enginePolicyReady,
-} from "../../features/typing/engine/policy.client";
+import { enginePolicy, enginePolicyReady } from "../engine/policy.client";
 
 /** Undefined until native policies load; loading UI must not infer a restriction. */
 export function canQuickRestart(

@@ -134,7 +134,7 @@ jobs:
               - 'frontend/src/ts/input/**'
               - 'frontend/src/ts/typing-host.ts'
               - 'frontend/src/ts/constants/keys.ts'
-              - 'frontend/src/ts/utils/{key-converter,quick-restart}.ts'
+              - 'frontend/src/ts/utils/key-converter.ts'
               - 'frontend/src/ts/hooks/{useInputListener,useWordsInputScroll}.ts'
               - 'frontend/src/ts/states/{composition,test,test-dom}.ts'
               - 'frontend/src/styles/{caret,test}.css'

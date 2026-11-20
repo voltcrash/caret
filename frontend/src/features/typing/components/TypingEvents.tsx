@@ -14,11 +14,11 @@ import {
 } from "../../../ts/states/test";
 import { isDevEnvironment } from "../../../ts/utils/env";
 import { isCoarsePointer } from "../../../ts/utils/pointer";
-import { canQuickRestart } from "../../../ts/utils/quick-restart";
 import * as Caret from "../runtime/caret";
 import * as CustomText from "../runtime/content/custom-text";
 import * as Focus from "../runtime/focus";
 import { updateAltGrState } from "../runtime/layout-emulator";
+import { canQuickRestart } from "../runtime/quick-restart";
 import * as TestUI from "../runtime/test/ui";
 import { isTypingRouteActive } from "../scope";
 import { handleModifierState, useCapsLockEvents } from "../state/modifiers";
