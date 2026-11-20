@@ -1,17 +1,17 @@
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
-import { toggleResultWords } from "../../../features/typing/runtime/result/screen";
-import { showModal } from "../../states/modals";
+import * as TestLogic from "../runtime/test/logic";
+import { toggleResultWords } from "../runtime/result/screen";
+import { showModal } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import * as TestWords from "../../../features/typing/runtime/test/words";
-import { getMutableConfig } from "../../config/store";
-import * as PractiseWords from "../../../features/typing/runtime/content/practise-words";
-import { Command, CommandsSubgroup } from "../types";
-import * as TestScreenshot from "../../../features/typing/runtime/test/screenshot";
-import { getInputHistory } from "../../../features/typing/engine/analysis.client";
-import { getLastEventLog, getResultVisible } from "../../states/test";
+} from "../../../ts/states/notifications";
+import * as TestWords from "../runtime/test/words";
+import { getMutableConfig } from "../../../ts/config/store";
+import * as PractiseWords from "../runtime/content/practise-words";
+import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
+import * as TestScreenshot from "../runtime/test/screenshot";
+import { getInputHistory } from "../engine/analysis.client";
+import { getLastEventLog, getResultVisible } from "../../../ts/states/test";
 
 const practiceSubgroup: CommandsSubgroup = {
   title: "Practice words...",
