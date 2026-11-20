@@ -111,16 +111,18 @@ export function AccountContent(props: { client: Client }): JSXElement {
             results={chartResults()}
             filters={filters}
             queryState={queryState}
-            onHistoryChartClick={({ index, _id }) => {
-              const newLimit = Math.ceil(index / 10) * 10;
+            onHistoryChartClick={(id) => {
+              const index = resultsQuery().findIndex((row) => row._id === id);
+              if (index < 0) return;
+              const newLimit = Math.ceil((index + 1) / 10) * 10;
               if (limit() < newLimit) {
                 setLimit(newLimit);
               }
-              setSelectedResultId(_id);
+              setSelectedResultId(id);
 
               requestAnimationFrame(() => {
                 tableElement()
-                  ?.querySelector(`tbody tr:nth-child(${index + 1})`)
+                  ?.querySelector('tbody tr[data-state="selected"]')
                   ?.scrollIntoView({
                     block: "center",
                   });

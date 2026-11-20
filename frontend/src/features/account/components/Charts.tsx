@@ -19,13 +19,13 @@ import {
 import { get as getTypingSpeedUnit } from "../../../ts/utils/typing-speed-units";
 import { DailyActivityChart } from "./DailyActivityChart";
 import { HistogramChart } from "./HistogramChart";
-import { HistoryChart, HistoryChartClickEvent } from "./HistoryChart";
+import { HistoryChart } from "./HistoryChart";
 
 export function Charts(props: {
   results: SnapshotResult<Mode>[];
   filters: ResultFilters;
   queryState: Accessor<ResultsQueryState | undefined>;
-  onHistoryChartClick?: (event: HistoryChartClickEvent) => void;
+  onHistoryChartClick?: (resultId: string) => void;
 }): JSXElement {
   const beginAtZero = createMemo(() => getConfig.startGraphsAtZero);
   const typingSpeedUnit = createMemo(() =>
@@ -43,7 +43,7 @@ export function Charts(props: {
           beginAtZero={beginAtZero()}
           typingSpeedUnit={typingSpeedUnit()}
           format={format()}
-          onClick={(index) => props.onHistoryChartClick?.(index)}
+          onClick={(id) => props.onHistoryChartClick?.(id)}
         />
       </div>
 

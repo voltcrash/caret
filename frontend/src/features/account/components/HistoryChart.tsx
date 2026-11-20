@@ -15,16 +15,12 @@ import { Formatting } from "../../../ts/utils/format";
 import { findLineByLeastSquares } from "../../../ts/utils/numbers";
 import { TypingSpeedUnitSettings } from "../../../ts/utils/typing-speed-units";
 
-export type HistoryChartClickEvent = {
-  index: number;
-  _id: string;
-};
 export function HistoryChart(props: {
   results: SnapshotResult<Mode>[];
   beginAtZero: boolean;
   typingSpeedUnit: TypingSpeedUnitSettings;
   format: Formatting;
-  onClick?: (event: HistoryChartClickEvent) => void;
+  onClick?: (resultId: string) => void;
 }): JSXElement {
   const formatAccuracy = (accuracy: number): string =>
     props.format.accuracy(accuracy, { showDecimalPlaces: true });
@@ -180,10 +176,8 @@ export function HistoryChart(props: {
             onClick: (_, elements) => {
               const nearest = elements.find((it) => it.datasetIndex === 0);
               if (nearest === undefined) return;
-              props.onClick?.({
-                index: nearest.index,
-                _id: props.results[nearest.index]?._id as string,
-              });
+              const result = props.results[nearest.index];
+              if (result !== undefined) props.onClick?.(result._id);
             },
             scales: {
               x: {
