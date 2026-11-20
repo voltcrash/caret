@@ -1,7 +1,7 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
-import { OAuthCallback } from "../../../src/ts/components/standalone/OAuthCallback";
+import { OAuthCallback } from "../../../src/features/auth/callback";
 
 const postMessage = vi.fn();
 

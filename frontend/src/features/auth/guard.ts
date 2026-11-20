@@ -1,7 +1,7 @@
 import type { QueryClient } from "@tanstack/solid-query";
 import type { UiSession } from "@caret/schemas/auth-session";
 import { redirect } from "@tanstack/solid-router";
-import { authRedirect, sessionOptions } from "./session";
+import { authRedirect, sessionOptions } from "../../ts/session/session";
 
 /**
  * Private layout guard: registered accounts only. Reads the canonical session

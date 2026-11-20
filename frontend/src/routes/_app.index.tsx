@@ -9,12 +9,12 @@ import {
   structuredDataScript,
 } from "../app/structured-data";
 import { defaultInitialTyping } from "../features/typing/initial/default";
+import { TypingLeaf } from "../features/typing/page";
+import { initialTypingSnapshot } from "../server/initial-typing.server";
 import {
   readTypingPreview,
   selectTypingPreview,
-} from "../features/typing/initial/snapshot";
-import { TypingLeaf } from "../features/typing/page";
-import { initialTypingSnapshot } from "../server/initial-typing.server";
+} from "../ts/config/typing-preview";
 
 const initialSnapshot = createIsomorphicFn()
   .server(initialTypingSnapshot)

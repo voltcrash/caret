@@ -27,7 +27,7 @@ import * as Replay from "../runtime/replay";
 import * as Timer from "../runtime/test/timer";
 import { restart } from "../runtime/test/logic";
 import { resetAltGrState } from "../runtime/layout-emulator";
-import { getTypingLifecycle } from "./controller";
+import { getTypingLifecycle } from "../../../ts/states/test-lifecycle/controller";
 
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {

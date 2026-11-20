@@ -131,6 +131,7 @@ jobs:
               - 'frontend/scripts/{browser-shards.ts,test-browser-shard.ts,browser-durations.json}'
             typing-smoke:
               - 'frontend/src/features/typing/**'
+              - 'frontend/src/ts/config/typing-preview*.ts'
               - 'frontend/src/ts/input/**'
               - 'frontend/src/ts/engine/**'
               - 'frontend/src/ts/typing-host.ts'
@@ -138,6 +139,7 @@ jobs:
               - 'frontend/src/ts/utils/key-converter.ts'
               - 'frontend/src/ts/hooks/{useInputListener,useWordsInputScroll}.ts'
               - 'frontend/src/ts/states/{composition,test,test-dom}.ts'
+              - 'frontend/src/ts/states/test-lifecycle/**'
               - 'frontend/src/styles/{caret,test}.css'
               - 'frontend/static/layouts/**'
               - 'frontend/vite-plugins/typing-engine.ts'

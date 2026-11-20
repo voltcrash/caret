@@ -1,7 +1,7 @@
 import { batch, createSignal } from "solid-js";
 import { appSignal } from "../../app/state";
 import { requireApplication } from "../../app/application";
-import type { AuthUser } from "../../ts/auth-types";
+import type { AuthUser } from "../auth-types";
 const [getAuthenticatedUser, setAuthenticatedUser] = appSignal(() =>
   createSignal<AuthUser | null>(null),
 );

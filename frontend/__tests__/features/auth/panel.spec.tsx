@@ -26,7 +26,7 @@ import type { TurnstileOptions } from "../../../src/ts/components/ui/form/Captch
 
 import { requireApplication } from "../../../src/app/application";
 import { AuthPanel } from "../../../src/features/auth/panel.client";
-import { sessionKey } from "../../../src/features/auth/session";
+import { sessionKey } from "../../../src/ts/session/session";
 
 let options: TurnstileOptions;
 const api = {

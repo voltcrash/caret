@@ -2,17 +2,14 @@ import { captureAccount } from "../app/account-scope";
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../app/application";
 import type { SessionState } from "@caret/schemas/auth-session";
-import { sessionKey, sessionOptions } from "../features/auth/session";
+import { sessionKey, sessionOptions } from "./session/session";
 import { getQueryClient } from "../data/queries";
 
-import { getAuthClient } from "../features/auth/client.client";
+import { getAuthClient } from "./session/client.client";
 export { getAuthClient };
 import type { AuthUser } from "./auth-types";
 export type { AuthUser, SocialProvider } from "./auth-types";
-import {
-  getAuthenticatedUser,
-  setUserState,
-} from "../features/auth/state.client";
+import { getAuthenticatedUser, setUserState } from "./session/state.client";
 export { getAuthenticatedUser };
 
 const authState = createAppOwned(() => {
@@ -23,7 +20,7 @@ const authState = createAppOwned(() => {
   return state;
 });
 
-import { checkAuthResult } from "../features/auth/result";
+import { checkAuthResult } from "./session/result";
 export { checkAuthResult };
 
 /** Refresh the canonical session after profile or authentication changes. */
@@ -71,4 +68,4 @@ export async function signOut(): Promise<void> {
   setUserState(null);
 }
 
-export { requestOAuth } from "../features/auth/popup.client";
+export { requestOAuth } from "./session/popup.client";

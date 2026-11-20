@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/solid-router";
 
 import { pageHead } from "../app/seo";
 import { AuthPage } from "../features/auth/page";
-import { authRedirect } from "../features/auth/session";
 import { getSessionState } from "../functions/session";
+import { authRedirect } from "../ts/session/session";
 export const Route = createFileRoute("/_app/login")({
   validateSearch: (search) => ({
     redirect:

@@ -3,9 +3,9 @@ import { createMemo, For, Show } from "solid-js";
 
 import { isStartupFinished } from "../../../app/startup";
 import { getConfig } from "../../../ts/config/store";
+import { sessionOptions } from "../../../ts/session/session";
 import { getFormatting, isAuthenticated } from "../../../ts/states/core";
 import { isTestActive } from "../../../ts/states/test";
-import { sessionOptions } from "../../auth/session";
 import { getGuestScores } from "../history/guest-scores.client";
 
 export function GuestScores() {

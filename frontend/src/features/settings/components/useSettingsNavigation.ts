@@ -13,10 +13,7 @@ import {
   getPageScroller,
 } from "../../../ts/states/page-layout";
 import { isSettingsSearchActive, setSettingsSearch } from "../search-state";
-import {
-  SettingsSection,
-  SettingsSectionHost,
-} from "../../../ts/states/settings-sections";
+import { SettingsSection, SettingsSectionHost } from "../sections-state";
 
 /** Keep section jumps scoped to the mounted settings content. */
 export function useSettingsNavigation(host: SettingsSectionHost): {

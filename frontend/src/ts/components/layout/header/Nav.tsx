@@ -11,10 +11,10 @@ import {
 import { isStartupFinished } from "../../../../app/startup";
 import { AccountPlaceholder } from "../../../../components/layout/account-placeholder";
 import { AccountSlot } from "../../../../components/layout/account-slot";
-import { useAccountSettled } from "../../../../features/account/settled.client";
-import { sessionOptions } from "../../../../features/auth/session";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
+import { useAccountSettled } from "../../../session/account-settled.client";
+import { sessionOptions } from "../../../session/session";
 import {
   getAccountButtonSpinner,
   getAnimatedLevel,

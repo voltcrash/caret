@@ -22,7 +22,7 @@ vi.mock("../../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
 }));
 vi.mock("../../../../src/ts/states/test", async () => ({
-  ...(await import("../../../../src/features/typing/lifecycle/controller"))
+  ...(await import("../../../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
   setBailedOut: vi.fn(),
 }));

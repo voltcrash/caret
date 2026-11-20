@@ -2,11 +2,11 @@ import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 import { encodeText } from "@caret/typing-engine/text";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import { saveNextTypingPreview } from "../../../src/features/typing/initial/next-snapshot.client";
-import { saveTypingPreview } from "../../../src/features/typing/initial/snapshot.client";
+import { saveTypingPreview } from "../../../src/ts/config/typing-preview.client";
 import {
   initialTypingCookie,
   readTypingPreview,
-} from "../../../src/features/typing/initial/snapshot";
+} from "../../../src/ts/config/typing-preview";
 
 const content = { preview: vi.fn() };
 

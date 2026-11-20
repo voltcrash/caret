@@ -3,7 +3,7 @@ import { createClientOnlyFn } from "@tanstack/solid-start";
 import { createMemo, lazy, Show, Suspense, type JSXElement } from "solid-js";
 import { isServer, NoHydration } from "solid-js/web";
 
-import type { InitialTypingSnapshot } from "./initial/snapshot";
+import type { InitialTypingSnapshot } from "../../ts/config/typing-preview";
 
 import { isTypingReady } from "../../app/startup";
 import { cn } from "../../ts/utils/cn";

@@ -66,7 +66,7 @@ vi.mock("../../src/ts/engine/owner.client", () => ({
 }));
 
 vi.mock("../../src/ts/states/test", async () => ({
-  ...(await import("../../src/features/typing/lifecycle/controller"))
+  ...(await import("../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
   isRepeated: () => mocks.repeated,
   setIsRepeated: (value: boolean) => {

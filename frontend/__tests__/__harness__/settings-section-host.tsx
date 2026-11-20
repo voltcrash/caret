@@ -4,7 +4,7 @@ import { createSignal, type JSXElement } from "solid-js";
 import {
   type SettingsSection,
   SettingsSectionHostContext,
-} from "../../src/ts/states/settings-sections";
+} from "../../src/features/settings/sections-state";
 
 /** Stand-in for the settings route's search: a signal-backed section host. */
 export function createSectionHost(): {

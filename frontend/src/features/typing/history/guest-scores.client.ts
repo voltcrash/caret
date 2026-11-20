@@ -3,7 +3,7 @@ import type { CompletedEvent } from "@caret/schemas/results";
 import { z } from "zod";
 
 import type { SessionState } from "@caret/schemas/auth-session";
-import { sessionKey } from "../../auth/session";
+import { sessionKey } from "../../../ts/session/session";
 import { getQueryClient } from "../../../data/queries";
 import { appSignal, createAccountSignal } from "../../../app/state";
 import { useLocalStorage } from "../../../ts/hooks/useLocalStorage";

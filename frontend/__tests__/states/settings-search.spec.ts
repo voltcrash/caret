@@ -8,7 +8,7 @@ import {
   setSettingsSearch,
 } from "../../src/features/settings/search-state";
 import { createSettingSearchIndex } from "../../src/ts/utils/settings-search";
-import { SettingsSection } from "../../src/ts/states/settings-sections";
+import { SettingsSection } from "../../src/features/settings/sections-state";
 
 let dispose: (() => void) | undefined;
 

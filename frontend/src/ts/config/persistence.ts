@@ -11,7 +11,7 @@ import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { isObject } from "../utils/misc";
 import { debounce } from "@caret/util/timing";
 import { setProperty } from "@caret/util/objects";
-import { refreshTypingPreviewSettings } from "../../features/typing/initial/snapshot.client";
+import { refreshTypingPreviewSettings } from "./typing-preview.client";
 
 const pendingSync = createAccountOwned(() => {
   const current = {

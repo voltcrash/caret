@@ -19,12 +19,6 @@ import {
   previewError,
 } from "../../../ts/controllers/sound-controller";
 import { showModal } from "../../../ts/states/modals";
-import {
-  getAvailableSettingsSections,
-  SettingsSection,
-  SettingsSectionHostContext,
-  settingsSections,
-} from "../../../ts/states/settings-sections";
 import { showSimpleModal } from "../../../ts/states/simple-modal";
 import { cn } from "../../../ts/utils/cn";
 import fileStorage from "../../../ts/utils/file-storage";
@@ -33,6 +27,12 @@ import {
   getSettingsSearch,
   isSettingsSearchActive,
 } from "../search-state";
+import {
+  getAvailableSettingsSections,
+  SettingsSection,
+  SettingsSectionHostContext,
+  settingsSections,
+} from "../sections-state";
 import { AccountTab } from "./account/AccountTab";
 import { AuthenticationTab } from "./account/AuthenticationTab";
 import { DangerZoneTab } from "./account/DangerZoneTab";

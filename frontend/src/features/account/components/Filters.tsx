@@ -27,12 +27,12 @@ import { showSimpleModal } from "../../../ts/states/simple-modal";
 import { FaSolidIcon } from "../../../ts/types/font-awesome";
 import { cn } from "../../../ts/utils/cn";
 import { createErrorMessage } from "../../../ts/utils/error";
+import { verifyResultFiltersStructure } from "../../../ts/utils/result-filters";
 import {
   getLanguageDisplayString,
   normalizeName,
   replaceUnderscoresWithSpaces,
 } from "../../../ts/utils/strings";
-import { verifyResultFiltersStructure } from "./utils";
 
 export function Filters(props: {
   filters: ResultFilters;

@@ -14,7 +14,7 @@ vi.mock("@tanstack/solid-router", () => ({
     (options: { select: (location: object) => string | undefined }) => () =>
       options.select({ pathname: pathname(), searchStr: search() }),
 }));
-vi.mock("../../../src/features/account/settled.client", () => ({
+vi.mock("../../../src/ts/session/account-settled.client", () => ({
   useAccountSettled: () => signedIn,
 }));
 vi.mock("../../../src/app/readiness", () => ({

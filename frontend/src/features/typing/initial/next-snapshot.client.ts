@@ -1,7 +1,7 @@
 import type { Config } from "@caret/schemas/configs";
 import type { BrowserContent } from "@caret/typing-engine/browser.client";
 import { decodeText } from "@caret/typing-engine/text";
-import { saveTypingPreview } from "./snapshot.client";
+import { saveTypingPreview } from "../../../ts/config/typing-preview.client";
 
 /** Prepare the next reload without changing the live content/session. */
 export function saveNextTypingPreview(

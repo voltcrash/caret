@@ -1,7 +1,7 @@
 import { For, Show, type JSXElement } from "solid-js";
 
+import type { InitialTypingSnapshot } from "../../../ts/config/typing-preview";
 import type { FaSolidIcon } from "../../../ts/types/font-awesome";
-import type { InitialTypingSnapshot } from "./snapshot";
 
 import { Button } from "../../../ts/components/common/Button";
 import { Fa } from "../../../ts/components/common/Fa";
