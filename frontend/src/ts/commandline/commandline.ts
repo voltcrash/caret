@@ -1,7 +1,7 @@
 import { getCommandlineState } from "../states/commandline";
 import { captureAccount, createAccountOwned } from "../../app/account-scope";
 import { onCleanup } from "solid-js";
-import { blurTest } from "./typing-host";
+import { blurTest } from "../typing-host";
 import * as CommandlineLists from "./lists";
 
 import { getMutableConfig } from "../config/store";

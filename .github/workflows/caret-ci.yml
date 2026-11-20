@@ -132,6 +132,7 @@ jobs:
             typing-smoke:
               - 'frontend/src/features/typing/**'
               - 'frontend/src/ts/input/**'
+              - 'frontend/src/ts/typing-host.ts'
               - 'frontend/src/ts/constants/keys.ts'
               - 'frontend/src/ts/utils/{key-converter,quick-restart}.ts'
               - 'frontend/src/ts/hooks/{useInputListener,useWordsInputScroll}.ts'
