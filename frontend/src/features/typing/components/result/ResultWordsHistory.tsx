@@ -9,6 +9,8 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
 import { Balloon } from "#shared/components/common/Balloon.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { setConfig } from "#shared/config/setters.ts";
@@ -35,7 +37,6 @@ import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 
 import type { WordLetter, WordsHistoryItem } from "../../runtime/word-markup";
 
-import { FaSolidIcon } from "../../../../ts/types/font-awesome";
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,

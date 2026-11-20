@@ -2,6 +2,8 @@ import { UserNameSchema } from "@caret/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
 import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
 import { Button } from "#shared/components/common/Button.tsx";
 import { addXp } from "#shared/db.ts";
@@ -21,7 +23,6 @@ import {
 import { remoteValidation } from "#shared/utils/remote-validation.ts";
 
 import { operation } from "../../../data/operations";
-import { FaSolidIcon } from "../../../ts/types/font-awesome";
 import { toggleCaretDebug } from "../components/words/caret-controller";
 import { toggleUserFakeChartData } from "../runtime/result/screen";
 import { disableSlowTimerFail } from "../runtime/test/timer";

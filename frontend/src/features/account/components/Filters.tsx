@@ -9,6 +9,8 @@ import { createMemo, createSignal, For, JSXElement, Show } from "solid-js";
 import { SetStoreFunction, unwrap } from "solid-js/store";
 import { z } from "zod";
 
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
 import { AnimeShow } from "#shared/components/common/anime/index.ts";
 import AsyncContent from "#shared/components/common/AsyncContent.tsx";
 import { Button } from "#shared/components/common/Button.tsx";
@@ -33,7 +35,6 @@ import {
   useResultFilterPresetsLiveQuery,
 } from "../../../data/collections/result-filter-presets";
 import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
-import { FaSolidIcon } from "../../../ts/types/font-awesome";
 
 export function Filters(props: {
   filters: ResultFilters;

@@ -8,6 +8,8 @@ import type {
 import { typedKeys } from "@caret/util/objects";
 import { For, JSXElement, onCleanup, Show } from "solid-js";
 
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
 import { ChartJs } from "#shared/components/common/ChartJs.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { Theme } from "#shared/constants/themes.ts";
@@ -20,7 +22,6 @@ import { cn } from "#shared/utils/cn.ts";
 import { blendTwoHexColors } from "#shared/utils/colors.ts";
 import { applyReducedMotion } from "#shared/utils/misc.ts";
 
-import { FaSolidIcon } from "../../../../ts/types/font-awesome";
 import { toggleResultChartLegend } from "../../runtime/result/screen";
 import {
   getResultChart,

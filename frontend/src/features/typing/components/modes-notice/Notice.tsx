@@ -1,13 +1,13 @@
 import { ParentProps, Show } from "solid-js";
 
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
 import { CommandlineSubgroupKey } from "#shared/commandline/types.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { showCommandLineForConfig } from "#shared/states/core.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { OneOf } from "#shared/utils/types.ts";
-
-import { FaSolidIcon } from "../../../../ts/types/font-awesome";
 export function Notice(
   props: {
     when: boolean | undefined;

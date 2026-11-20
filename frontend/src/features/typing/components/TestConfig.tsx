@@ -1,6 +1,8 @@
 import { animate } from "animejs";
 import { ComponentProps, For, JSXElement, Show } from "solid-js";
 
+import type { FaObject } from "#shared/types/font-awesome.d.ts";
+
 import { Anime, AnimeShow } from "#shared/components/common/anime/index.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { configMetadata } from "#shared/config/metadata.tsx";
@@ -16,7 +18,6 @@ import { areUnsortedArraysEqual } from "#shared/utils/arrays.ts";
 import { cn, updateClassNames } from "#shared/utils/cn.ts";
 import { applyReducedMotion } from "#shared/utils/misc.ts";
 
-import { FaObject } from "../../../ts/types/font-awesome";
 import { variables, buttonClass, cardClass } from "../config-layout";
 
 const durationMs = 250;

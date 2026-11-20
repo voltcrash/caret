@@ -8,6 +8,8 @@ import {
   Show,
 } from "solid-js";
 
+import type { FaObject } from "#shared/types/font-awesome.d.ts";
+
 import { Button } from "#shared/components/common/Button.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { getConfig } from "#shared/config/store.ts";
@@ -23,7 +25,6 @@ import {
 import { cn } from "#shared/utils/cn.ts";
 import { isCoarsePointer } from "#shared/utils/pointer.ts";
 
-import { FaObject } from "../../../../ts/types/font-awesome";
 import * as PractiseWords from "../../runtime/content/practise-words";
 import { toggleReplayDisplay } from "../../runtime/replay";
 import { toggleResultWords } from "../../runtime/result/screen";

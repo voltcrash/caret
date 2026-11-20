@@ -4,6 +4,7 @@ import { ResultFilters, ResultFiltersKeys } from "@caret/schemas/users";
 import { Accessor, createMemo, JSXElement } from "solid-js";
 
 import type { SnapshotResult } from "#shared/constants/default-snapshot.ts";
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
 import { Balloon } from "#shared/components/common/Balloon.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
@@ -17,7 +18,6 @@ import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 
 import { ResultsQueryState } from "../../../data/collections/results";
 import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
-import { FaSolidIcon } from "../../../ts/types/font-awesome";
 import { DailyActivityChart } from "./DailyActivityChart";
 import { HistogramChart } from "./HistogramChart";
 import { HistoryChart } from "./HistoryChart";

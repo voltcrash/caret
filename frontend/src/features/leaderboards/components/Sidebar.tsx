@@ -3,9 +3,10 @@ import { Language } from "@caret/schemas/languages";
 import { Mode } from "@caret/schemas/shared";
 import { Accessor, For, JSXElement, Show } from "solid-js";
 
+import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
+
 import { Button } from "#shared/components/common/Button.tsx";
 
-import { FaSolidIcon } from "../../../ts/types/font-awesome";
 import { Selection } from "../selection-state";
 
 type GroupItem<T> = { id: T; text: string; icon: FaSolidIcon };
