@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { readdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { parseSync } from "vite-plus";
@@ -66,8 +67,11 @@ export function specifiers(file: string, source: string): string[] {
   return found;
 }
 
-/** Relative and Vite root (`/src/...`) requests, resolved to a path. */
+/** Package-local, relative and Vite root (`/src/...`) requests, resolved to a path. */
 export function target(file: string, specifier: string): string | undefined {
+  if (specifier.startsWith("#")) {
+    return fileURLToPath(import.meta.resolve(specifier));
+  }
   if (specifier.startsWith(".")) return resolve(dirname(file), specifier);
   if (specifier.startsWith("/src/")) return resolve(root, specifier.slice(1));
   return undefined;

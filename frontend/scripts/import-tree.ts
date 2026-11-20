@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -76,6 +77,9 @@ function resolveSpecifier(
   specifier: string,
   importerDir: string,
 ): string | null {
+  if (specifier.startsWith("#")) {
+    return fileURLToPath(import.meta.resolve(specifier));
+  }
   if (specifier.startsWith("./") || specifier.startsWith("../")) {
     const base = path.resolve(importerDir, specifier);
     // exact match
