@@ -93,3 +93,27 @@ fn replay_requires_opt_in_and_compatible_versions_and_uses_native_steps_and_seek
     future["engineBehaviorVersion"] = serde_json::json!(99);
     assert!(Replay::new(&future).is_err());
 }
+
+#[test]
+fn recovery_preserves_bad_files_and_imports_valid_neighbors() {
+    let temp = tempfile::tempdir().unwrap();
+    let paths = Paths {
+        config: temp.path().join("config"),
+        data: temp.path().join("data"),
+    };
+    let mut store = Store::open(&paths).unwrap();
+    let dir = paths.data.join("pending");
+    std::fs::create_dir(&dir).unwrap();
+    let bad = dir.join("broken.json");
+    std::fs::write(&bad, b"{").unwrap();
+    let id = "valid";
+    let valid = serde_json::json!({"id": id, "createdMs": 1, "config": {"mode": "words"}});
+    let spool = dir.join(format!("{}.json", caret_tui::storage::hash(&id).unwrap()));
+    std::fs::write(&spool, serde_json::to_vec(&valid).unwrap()).unwrap();
+    let warnings = store.recover_pending().unwrap();
+    assert_eq!(warnings.len(), 1);
+    assert!(warnings[0].contains(bad.to_str().unwrap()));
+    assert_eq!(std::fs::read(bad).unwrap(), b"{");
+    assert!(!spool.exists());
+    assert_eq!(store.history(None, 10).unwrap(), vec![valid]);
+}
