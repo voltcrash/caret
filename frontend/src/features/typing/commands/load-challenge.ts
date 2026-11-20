@@ -1,5 +1,5 @@
 import { getChallenges } from "@caret/challenges";
-import * as ChallengeController from "../../../ts/controllers/challenge-controller";
+import * as ChallengeController from "../runtime/challenge-controller";
 import { navigate } from "../../../app/navigate";
 import * as TestLogic from "../runtime/test/logic";
 import { capitalizeFirstLetterOfEachWord } from "../../../ts/utils/strings";

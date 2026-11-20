@@ -23,7 +23,6 @@ import { z } from "zod";
 
 import { setConfig } from "../../../ts/config/setters";
 import { getMutableConfig } from "../../../ts/config/store";
-import * as ChallengeController from "../../../ts/controllers/challenge-controller";
 import {
   showErrorNotification,
   showNoticeNotification,
@@ -31,6 +30,7 @@ import {
 } from "../../../ts/states/notifications";
 import { setSelectedQuoteId } from "../../../ts/states/test";
 import * as Misc from "../../../ts/utils/misc";
+import * as ChallengeController from "./challenge-controller";
 import * as CustomText from "./content/custom-text";
 import { restart as restartTest } from "./test/logic";
 
