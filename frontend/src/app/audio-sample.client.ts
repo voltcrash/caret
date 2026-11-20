@@ -12,8 +12,11 @@ export function createAudioSample(
   src: string,
   signal: AbortSignal,
 ): AudioSample {
-  type Voice = { source?: AudioBufferSourceNode; ended: boolean };
-  const voices: Voice[] = [{ ended: true }];
+  type Playback =
+    | { phase: "ended" | "paused" }
+    | { phase: "playing"; source: AudioBufferSourceNode };
+  type Voice = { playback: Playback };
+  const voices: Voice[] = [{ playback: { phase: "ended" } }];
   type SampleState =
     | { phase: "loading"; queued?: () => void }
     | { phase: "ready"; buffer: AudioBuffer }
@@ -26,13 +29,12 @@ export function createAudioSample(
     else if (sample.phase === "ready") action();
   };
   const stopVoice = (voice: Voice): void => {
-    if (voice.source !== undefined) {
-      voice.source.onended = null;
-      voice.source.stop();
-      voice.source.disconnect();
-      voice.source = undefined;
+    if (voice.playback.phase === "playing") {
+      voice.playback.source.onended = null;
+      voice.playback.source.stop();
+      voice.playback.source.disconnect();
     }
-    voice.ended = true;
+    voice.playback = { phase: "ended" };
   };
   const startVoice = (voice: Voice): void => {
     if (sample.phase !== "ready") return;
@@ -41,13 +43,14 @@ export function createAudioSample(
     source.connect(destination);
     source.onended = () => {
       source.disconnect();
-      if (voice.source === source) {
-        voice.source = undefined;
-        voice.ended = true;
+      if (
+        voice.playback.phase === "playing" &&
+        voice.playback.source === source
+      ) {
+        voice.playback = { phase: "ended" };
       }
     };
-    voice.source = source;
-    voice.ended = false;
+    voice.playback = { phase: "playing", source };
     source.start();
     if (context.state !== "running" && context.state !== "closed") {
       void context.resume().catch(() => undefined);
@@ -77,9 +80,9 @@ export function createAudioSample(
       run(() => {
         const voice = voices[0];
         if (voice === undefined) return;
-        const playing = voice.source !== undefined;
+        const playing = voice.playback.phase === "playing";
         stopVoice(voice);
-        voice.ended = false;
+        voice.playback = { phase: "paused" };
         if (playing) startVoice(voice);
       });
     },
@@ -88,22 +91,26 @@ export function createAudioSample(
         // Preserve seek(0); play(): rewind the first active voice, then overlap
         // with another. A stopped/ended first voice is reused instead.
         const paused = voices.filter(
-          (voice) => !voice.ended && voice.source === undefined,
+          (voice) => voice.playback.phase === "paused",
         );
         if (paused.length !== 1) {
           // Drain surplus ended voices from the tail before recycling one.
-          let idle = voices.filter((voice) => voice.ended).length;
+          let idle = voices.filter(
+            (voice) => voice.playback.phase === "ended",
+          ).length;
           for (let i = voices.length - 1; i >= 0 && idle > 5; i--) {
-            if (voices[i]?.ended) {
+            if (voices[i]?.playback.phase === "ended") {
               voices.splice(i, 1);
               idle--;
             }
           }
         }
         let voice =
-          paused.length === 1 ? paused[0] : voices.find((voice) => voice.ended);
+          paused.length === 1
+            ? paused[0]
+            : voices.find((voice) => voice.playback.phase === "ended");
         if (voice === undefined) {
-          voice = { ended: true };
+          voice = { playback: { phase: "ended" } };
           voices.push(voice);
         }
         startVoice(voice);
