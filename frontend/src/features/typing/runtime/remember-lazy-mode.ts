@@ -20,19 +20,13 @@ function persistedBoolean(storage: LocalStorageWithSchema<boolean>): {
   get: () => boolean;
   set: (value: boolean) => void;
 } {
-  let initialized = false;
-  const [getValue, setValue] = createSignal(false);
+  const [getValue, setValue] = createSignal<boolean>();
   return {
     get(): boolean {
-      if (!initialized) {
-        initialized = true;
-        setValue(storage.get());
-      }
-      return getValue();
+      return getValue() ?? setValue(storage.get());
     },
     set(value: boolean): void {
       if (storage.set(value)) {
-        initialized = true;
         setValue(value);
       }
     },
