@@ -59,6 +59,7 @@ Typing feature (`frontend/src/features/typing/`):
 | `engine/` | Browser engine owner and Rust analysis, audit and policy wrappers |
 | `history/` | Result outbox, guest scores and practice history |
 | `keymap/` | Keymap layouts and conversion |
+| `commands/` | Palette commands and the typing host the palette binds |
 | `components/` | Test page, words renderer, result screen and live stats |
 | `input/` | Keystroke, composition and input listeners and handlers |
 | `state/` | Typing-only app state (result, layout, modifiers, quote rating) |
@@ -94,6 +95,11 @@ change. Never keep module-level mutable state: use `createAppOwned`,
 `createAppSignal`/`createAppStore`, or `createBinding` (`app/binding.ts`) for a
 handle a mounted component publishes. `caret-rules/no-module-let` rejects
 top-level `let`; document-scoped exceptions carry a suppression reason.
+
+Command palette: `src/ts/commandline` owns the palette and core commands.
+Features add commands at named slots through `registry.ts` while the palette is
+mounted (`app/commandline.client.tsx`), and shared commands reach typing only
+through the bound `typing-host.ts`.
 
 Tailwind CSS supplies utilities and theme colors; compatibility CSS keeps
 theme/funbox selectors. Icons use `Fa`. `AnimatedModal` uses `hidden open:flex`:
