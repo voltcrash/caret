@@ -7,19 +7,9 @@
   "src/ts/components/layout/header/Nav.tsx -> src/features/account/settled.client",
   "src/ts/components/layout/header/Nav.tsx -> src/features/auth/session",
   "src/ts/components/standalone/OAuthCallback.tsx -> src/features/auth/callback",
-  "src/ts/config/funbox-validation.ts -> src/features/typing/engine/policy.client",
-  "src/ts/config/lifecycle.ts -> src/features/typing/engine/owner.client",
-  "src/ts/config/metadata.tsx -> src/features/typing/engine/policy.client",
   "src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client",
   "src/ts/config/setters.ts -> src/features/typing/runtime/session.client",
-  "src/ts/controllers/preset-controller.ts -> src/features/typing/runtime/test/logic",
-  "src/ts/controllers/quotes-controller.ts -> src/features/typing/runtime/content/host.client",
-  "src/ts/input/hotkeys/quickrestart.ts -> src/features/typing/scope",
-  "src/ts/states/hotkeys.ts -> src/features/typing/scope",
   "src/ts/states/result-filters.ts -> src/features/account/components/utils",
   "src/ts/states/settings-sections.ts -> src/features/settings/tabs",
-  "src/ts/states/test.ts -> src/features/typing/lifecycle/controller",
-  "src/ts/states/test.ts -> src/features/typing/runtime/content/custom-text",
-  "src/ts/ui.ts -> src/features/typing/runtime/test/ui",
-  "src/ts/utils/quick-restart.ts -> src/features/typing/engine/policy.client"
+  "src/ts/states/test.ts -> src/features/typing/lifecycle/controller"
 ]

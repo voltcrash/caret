@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import { isTypingRouteActive, restartTest } from "../typing-host";
+import { isTypingRouteActive, restartTest } from "../../typing-host";
 import * as ConfigSchemas from "@caret/schemas/configs";
 import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";

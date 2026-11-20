@@ -1,12 +1,12 @@
-import { getContentHost } from "../../features/typing/runtime/content/host.client";
-import { operation } from "../../data/operations";
-import { createAppOwned } from "../../app/application";
-import { appObject } from "../../app/state";
+import { getContentHost } from "./content/host.client";
+import { operation } from "../../../data/operations";
+import { createAppOwned } from "../../../app/application";
+import { appObject } from "../../../app/state";
 import { Quote } from "@caret/web-shared/quotes";
 export type { Quote } from "@caret/web-shared/quotes";
-import { removeLanguageSize } from "../utils/strings";
-import { configEvent } from "../events/config";
-import * as DB from "../db";
+import { removeLanguageSize } from "../../../ts/utils/strings";
+import { configEvent } from "../../../ts/events/config";
+import * as DB from "../../../ts/db";
 import { Language } from "@caret/schemas/languages";
 
 class QuotesController {

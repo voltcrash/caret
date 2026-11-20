@@ -1,5 +1,5 @@
 import { createAppOwned } from "../../../app/application";
-import { getBrowserAudit } from "../engine/audit.client";
+import { getBrowserAudit } from "../../../ts/engine/audit.client";
 import { captureTypingMount } from "../scope";
 import {
   showErrorNotification,

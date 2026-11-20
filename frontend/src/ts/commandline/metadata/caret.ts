@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import { restartTest } from "../typing-host";
+import { restartTest } from "../../typing-host";
 import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 

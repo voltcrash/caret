@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import { restartTest } from "../typing-host";
+import { restartTest } from "../../typing-host";
 
 export const inputMetadata = {
   freedomMode: {

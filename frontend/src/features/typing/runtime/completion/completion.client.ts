@@ -36,7 +36,7 @@ import {
   getAnalysis,
   getMissedWords,
   getWordBurstHistory,
-} from "../../engine/analysis.client";
+} from "../../../../ts/engine/analysis.client";
 import * as PractiseWords from "../content/practise-words";
 import { recordGuestScore } from "../../history/guest-scores.client";
 import { practiceHistory } from "../../history/practice.client";

@@ -39,7 +39,7 @@ vi.mock("../../src/features/typing/state/result", async (importOriginal) => {
     },
   };
 });
-vi.mock("../../src/ts/controllers/quotes-controller", () => ({
+vi.mock("../../src/features/typing/runtime/quotes-controller", () => ({
   default: { isQuoteFavorite: () => false },
 }));
 vi.mock("../../src/ts/db", () => ({
@@ -88,7 +88,7 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getKoreanStatus: () => false,
   isTestInvalid: () => state.testInvalid,
 }));
-vi.mock("../../src/features/typing/engine/analysis.client", () => ({
+vi.mock("../../src/ts/engine/analysis.client", () => ({
   getAccuracy: () => state.accuracy,
   getRawHistory: () => [],
   getTimerBoundaryLabels: () => [],
@@ -118,7 +118,7 @@ import { __testing } from "../../src/ts/config/testing";
 import { getMutableConfig } from "../../src/ts/config/store";
 import type { CompletedEvent } from "@caret/schemas/results";
 import type { Config as ConfigType } from "@caret/schemas/configs";
-import type { Quote } from "../../src/ts/controllers/quotes-controller";
+import type { Quote } from "../../src/features/typing/runtime/quotes-controller";
 
 const { replaceConfig } = __testing;
 
@@ -673,7 +673,7 @@ describe("result update", () => {
   });
 });
 
-vi.mock("../../src/features/typing/engine/owner.client", () => ({
+vi.mock("../../src/ts/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     status: () => ({ state: "ready" }),
     api: () => ({ policy: evaluatePolicy }),

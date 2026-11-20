@@ -15,6 +15,11 @@ import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { setConfig } from "../../../../ts/config/setters";
 import { getConfig } from "../../../../ts/config/store";
+import {
+  getInputHistory,
+  getMissedWords,
+  getWordBurstHistory,
+} from "../../../../ts/engine/analysis.client";
 import { useRef } from "../../../../ts/hooks/useRef";
 import { useSlideAnimation } from "../../../../ts/hooks/useSlideAnimation";
 import Format from "../../../../ts/singletons/format";
@@ -30,11 +35,6 @@ import { getTheme } from "../../../../ts/states/theme";
 import { FaSolidIcon } from "../../../../ts/types/font-awesome";
 import { cn, updateClassNames } from "../../../../ts/utils/cn";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
-import {
-  getInputHistory,
-  getMissedWords,
-  getWordBurstHistory,
-} from "../../engine/analysis.client";
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,

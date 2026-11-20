@@ -12,7 +12,7 @@ import { JSXElement, untrack } from "solid-js";
 import {
   checkCompatibility,
   canSetFunboxWithConfig,
-} from "../../features/typing/engine/policy.client";
+} from "../engine/policy.client";
 import {
   DEFAULT_COMMAND_PALETTE_HOTKEY,
   getCommandPaletteHotkeyError,

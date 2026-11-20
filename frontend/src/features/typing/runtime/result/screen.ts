@@ -34,7 +34,7 @@ import type { PluginChartOptions } from "chart.js";
 
 import { getMutableConfig } from "../../../../ts/config/store";
 
-import { Quote } from "../../../../ts/controllers/quotes-controller";
+import { Quote } from "../quotes-controller";
 
 import { showNoticeNotification } from "../../../../ts/states/notifications";
 import {
@@ -56,7 +56,7 @@ import * as Funbox from "../funbox/funbox";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
 import { CompletedEvent } from "@caret/schemas/results";
 
-import { canQuickRestart as canQuickRestartFn } from "../../../../ts/utils/quick-restart";
+import { canQuickRestart as canQuickRestartFn } from "../quick-restart";
 
 import { blurInputElement } from "../../../../ts/input/input-element";
 import * as ConnectionState from "../../../../ts/states/connection";

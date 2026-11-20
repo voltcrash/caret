@@ -10,7 +10,7 @@ import {
 } from "solid-js";
 
 import { Button } from "../../../../ts/components/common/Button";
-import { getInspection } from "../../engine/analysis.client";
+import { getInspection } from "../../../../ts/engine/analysis.client";
 import { getCurrentMs, getVisibleTypes } from "../../state/event-log-viewer";
 import { createPlayback } from "./createPlayback";
 import { createVideoSync } from "./createVideoSync";

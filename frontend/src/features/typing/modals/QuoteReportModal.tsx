@@ -15,7 +15,6 @@ import {
 } from "../../../ts/components/ui/form/utils";
 import Select from "../../../ts/components/ui/Select";
 import { getMutableConfig } from "../../../ts/config/store";
-import QuotesController from "../../../ts/controllers/quotes-controller";
 import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
 import { hideModalAndClearChain } from "../../../ts/states/modals";
 import {
@@ -24,6 +23,7 @@ import {
   showSuccessNotification,
 } from "../../../ts/states/notifications";
 import { removeLanguageSize } from "../../../ts/utils/strings";
+import QuotesController from "../runtime/quotes-controller";
 import { quoteId } from "../state/quote-report";
 
 export function QuoteReportModal(): JSXElement {

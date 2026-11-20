@@ -21,7 +21,7 @@ vi.mock("../../../src/ts/config/setters", async (original) => ({
   setConfig: vi.fn(),
 }));
 // Reuse the real browser audit module while controlling the route lifecycle.
-vi.mock("../../../src/features/typing/engine/audit.client", () => ({
+vi.mock("../../../src/ts/engine/audit.client", () => ({
   getBrowserAudit: () => ({ load: async () => browserAudit }),
 }));
 vi.mock("@caret/challenges", () => ({

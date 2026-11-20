@@ -7,7 +7,7 @@ import {
   toggleTagActive,
 } from "../../../data/collections/tags";
 import { getMutableConfig } from "../../config/store";
-import { reloadPaceCaret } from "../typing-host";
+import { reloadPaceCaret } from "../../typing-host";
 import { isAuthenticated } from "../../states/core";
 import { Command, CommandsSubgroup } from "../types";
 import { showAddTagModal } from "../../components/modals/AddTagModal";

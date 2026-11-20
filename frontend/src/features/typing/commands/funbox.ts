@@ -1,7 +1,10 @@
 import * as Funbox from "../runtime/funbox/funbox";
 import * as TestLogic from "../runtime/test/logic";
 import { getAllFunboxes } from "@caret/funbox";
-import { checkCompatibility, enginePolicyReady } from "../engine/policy.client";
+import {
+  checkCompatibility,
+  enginePolicyReady,
+} from "../../../ts/engine/policy.client";
 import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
 import { getActiveFunboxNames } from "../runtime/funbox/list";
 

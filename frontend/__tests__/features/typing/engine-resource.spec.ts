@@ -23,8 +23,8 @@ vi.mock("@caret/typing-engine/browser.client", () => ({
   },
 }));
 import { mountApplication } from "../../../src/app/application";
-import { getBrowserAudit } from "../../../src/features/typing/engine/audit.client";
-import { getBrowserEngine } from "../../../src/features/typing/engine/owner.client";
+import { getBrowserAudit } from "../../../src/ts/engine/audit.client";
+import { getBrowserEngine } from "../../../src/ts/engine/owner.client";
 import {
   createTestApplication,
   releaseTestApplication,

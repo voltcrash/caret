@@ -37,7 +37,7 @@ vi.mock("../../../../../src/ts/states/test", async (original) => ({
   getResultVisible: () => true,
   getLastEventLog: () => [],
 }));
-vi.mock("../../../../../src/features/typing/engine/analysis.client", () => ({
+vi.mock("../../../../../src/ts/engine/analysis.client", () => ({
   getInputHistory: () => mocks.inputHistory,
   getMissedWords: () => ({ hello: 1 }),
   getWordBurstHistory: () => mocks.burstHistory,

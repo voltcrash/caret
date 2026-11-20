@@ -9,7 +9,7 @@ import { getConfig } from "../../../../ts/config/store";
 import {
   checkCompatibility,
   enginePolicyReady,
-} from "../../../typing/engine/policy.client";
+} from "../../../../ts/engine/policy.client";
 import { getActiveFunboxNames } from "../../../typing/runtime/funbox/list";
 import { SearchableSetting } from "../SearchableSetting";
 

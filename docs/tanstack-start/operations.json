@@ -1299,7 +1299,7 @@
     },
     "browserCallers": [
       "frontend/src/features/typing/components/result/ResultQuoteActions.tsx",
-      "frontend/src/ts/controllers/quotes-controller.ts"
+      "frontend/src/features/typing/runtime/quotes-controller.ts"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
@@ -1945,7 +1945,7 @@
     },
     "browserCallers": [
       "frontend/src/features/typing/components/result/ResultQuoteActions.tsx",
-      "frontend/src/ts/controllers/quotes-controller.ts"
+      "frontend/src/features/typing/runtime/quotes-controller.ts"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",

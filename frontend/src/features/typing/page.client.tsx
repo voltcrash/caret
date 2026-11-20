@@ -14,6 +14,7 @@ import { FunboxEffects } from "./components/FunboxEffects";
 import { BarTimerProgress } from "./components/live-stats/BarTimerProgress";
 import { MonkeyPower } from "./components/MonkeyPower";
 import { TestPage } from "./components/TestPage";
+import { bindTypingRouteHost } from "./host.client";
 import { enterTypingRoute, exitTypingRoute } from "./lifecycle/route";
 import { TypingRuntime } from "./runtime.client";
 import { focusWords } from "./runtime/test/ui";
@@ -22,12 +23,14 @@ import { useUrlSettings } from "./url-settings.client";
 
 export default function TypingPage(): JSXElement {
   const release = mountTypingScope();
+  const releaseHost = bindTypingRouteHost();
   const [phase, setPhase] = createSignal<"entering" | "entered" | "disposed">(
     "entering",
   );
   onCleanup(() => {
     setPhase("disposed");
     exitTypingRoute();
+    releaseHost();
     release();
   });
   // URL settings restart or navigate; startup restarts must finish first.

@@ -68,7 +68,7 @@ vi.mock("../../../src/ts/states/overlay-visibility", () => ({
     return state.popup;
   },
 }));
-vi.mock("../../../src/ts/utils/quick-restart", () => ({
+vi.mock("../../../src/features/typing/runtime/quick-restart", () => ({
   canQuickRestart: () => state.quickRestart,
 }));
 vi.mock("../../../src/features/typing/runtime/content/custom-text", () => ({

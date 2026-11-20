@@ -8,16 +8,11 @@ import * as Lifecycle from "../../src/ts/config/lifecycle";
 import * as ConfigUtils from "../../src/ts/config/utils";
 import * as Persistence from "../../src/ts/config/persistence";
 import * as Notifications from "../../src/ts/states/notifications";
-import * as TestLogic from "../../src/features/typing/runtime/test/logic";
+import * as TypingHost from "../../src/ts/typing-host";
 import * as Tags from "../../src/data/collections/tags";
 import * as Presets from "../../src/data/collections/presets";
 
-vi.mock("../../src/features/typing/runtime/test/logic", () => ({
-  restart: vi.fn(),
-}));
-vi.mock("../../src/features/typing/runtime/pace-caret", () => ({
-  //
-}));
+vi.mock("../../src/ts/typing-host", () => ({ restartTest: vi.fn() }));
 
 describe("PresetController", () => {
   describe("apply", () => {
@@ -36,7 +31,7 @@ describe("PresetController", () => {
       Notifications,
       "showSuccessNotification",
     );
-    const testRestartMock = vi.spyOn(TestLogic, "restart");
+    const testRestartMock = vi.spyOn(TypingHost, "restartTest");
     const tagsClearMock = vi.spyOn(Tags, "clearActiveTags");
     const tagsSetMock = vi.spyOn(Tags, "setTagActive");
     const tagsSaveActiveMock = vi.spyOn(Tags, "saveActiveToLocalStorage");

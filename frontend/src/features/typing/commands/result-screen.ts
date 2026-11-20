@@ -10,7 +10,7 @@ import { getMutableConfig } from "../../../ts/config/store";
 import * as PractiseWords from "../runtime/content/practise-words";
 import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
 import * as TestScreenshot from "../runtime/test/screenshot";
-import { getInputHistory } from "../engine/analysis.client";
+import { getInputHistory } from "../../../ts/engine/analysis.client";
 import { getLastEventLog, getResultVisible } from "../../../ts/states/test";
 
 const practiceSubgroup: CommandsSubgroup = {

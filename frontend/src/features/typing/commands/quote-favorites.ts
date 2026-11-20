@@ -1,13 +1,13 @@
-import { getMutableConfig } from "../../config/store";
-import QuotesController, { Quote } from "../../controllers/quotes-controller";
+import { getMutableConfig } from "../../../ts/config/store";
+import QuotesController, { Quote } from "../runtime/quotes-controller";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { isAuthenticated } from "../../states/core";
-import { showLoaderBar, hideLoaderBar } from "../../states/loader-bar";
-import { Command } from "../types";
-import { getCurrentQuote } from "../../states/test";
+} from "../../../ts/states/notifications";
+import { isAuthenticated } from "../../../ts/states/core";
+import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
+import { Command } from "../../../ts/commandline/types";
+import { getCurrentQuote } from "../../../ts/states/test";
 
 const commands: Command[] = [
   {

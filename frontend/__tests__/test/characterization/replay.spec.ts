@@ -27,7 +27,7 @@ import "../../__harness__/native-engine";
 import { analyzeLog, BrowserReplay } from "@caret/typing-engine/browser.client";
 import { toEngineLog } from "@caret/typing-engine/text";
 const recorded = vi.hoisted(() => ({ log: undefined as EventLog | undefined }));
-vi.mock("../../../src/features/typing/engine/owner.client", () => ({
+vi.mock("../../../src/ts/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     api: () => ({
       analyze: analyzeLog,

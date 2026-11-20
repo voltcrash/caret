@@ -1,7 +1,6 @@
 import { createAccountOwned } from "../../app/account-scope";
 import { setFixingSkillIssue } from "../states/skill-issue";
 import MinBurstCommands from "./lists/min-burst";
-import QuoteFavoriteCommands from "./lists/quote-favorites";
 import NavigationCommands from "./lists/navigation";
 import CustomBackgroundCommands from "./lists/custom-background";
 import FontFamilyCommands from "./lists/font-family";
@@ -70,7 +69,6 @@ const getCoreCommands = createAccountOwned<
       },
       shouldFocusTestUI: false,
     },
-    ...QuoteFavoriteCommands,
   ],
   accountAndBehavior: [
     {

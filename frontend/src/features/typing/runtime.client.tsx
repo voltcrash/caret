@@ -1,21 +1,21 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { useQuoteEvents } from "../../ts/controllers/quotes-controller";
 import { useSoundEvents } from "../../ts/controllers/sound-controller";
+import { getBrowserEngine } from "../../ts/engine/owner.client";
 import {
   getLastEventLog,
   getActiveWordIndex,
-  initializeTypingState,
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
-import { getBrowserEngine } from "./engine/owner.client";
 import { useChallengeEvents } from "./runtime/challenge-controller";
 import { usePractiseEvents } from "./runtime/content/practise-words";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { useEngineInputProjection } from "./runtime/input-projection.client";
+import { initializeTypingState } from "./runtime/long-test";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
+import { useQuoteEvents } from "./runtime/quotes-controller";
 import { useTestLogicEvents } from "./runtime/test/logic";
 import * as TestTimer from "./runtime/test/timer";
 import { useTtsEvents } from "./runtime/tts";

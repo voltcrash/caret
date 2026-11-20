@@ -3,6 +3,7 @@ import { spread } from "solid-js/web";
 
 import { isTypingReady } from "../../../app/startup";
 import { getConfig } from "../../../ts/config/store";
+import { getBrowserEngine } from "../../../ts/engine/owner.client";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
 import {
@@ -13,7 +14,6 @@ import {
 import { setTestElements } from "../../../ts/states/test-dom";
 import { cn } from "../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../ts/utils/pointer";
-import { getBrowserEngine } from "../engine/owner.client";
 import { focusWords } from "../runtime/test/ui";
 import { words } from "../runtime/test/words";
 import {

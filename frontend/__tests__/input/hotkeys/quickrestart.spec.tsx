@@ -45,7 +45,6 @@ vi.mock("../../../src/ts/events/test", () => ({
   restartTestEvent: { dispatch: mocks.restart },
 }));
 
-import { bindTypingActivity } from "../../../src/features/typing/scope";
 import { Balloon } from "../../../src/ts/components/common/Balloon";
 import { setConfigStore } from "../../../src/ts/config/store";
 import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
@@ -54,6 +53,7 @@ import {
   setWordsHaveNewline,
   setWordsHaveTab,
 } from "../../../src/ts/states/test";
+import { bindTypingHost } from "../../../src/ts/typing-host";
 
 function Shortcuts(): null {
   useQuickRestartHotkeys();
@@ -71,7 +71,13 @@ const [typingRoute, setTypingRoute] = createSignal(true);
 let unbind: () => void;
 beforeEach(() => {
   vi.clearAllMocks();
-  unbind = bindTypingActivity(typingRoute);
+  unbind = bindTypingHost({
+    isRouteActive: typingRoute,
+    restart: vi.fn(),
+    blur: vi.fn(),
+    reloadPaceCaret: vi.fn(),
+    updateHints: vi.fn(),
+  });
   mocks.popup = false;
   setConfigStore("quickRestart", "tab");
   setConfigStore("funbox", []);

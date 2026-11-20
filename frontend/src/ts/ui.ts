@@ -7,14 +7,14 @@ import {
   setFontFamily,
   setMediaQueryDebugLevel as setDebugLevel,
 } from "./states/app";
-import * as TestUI from "../features/typing/runtime/test/ui";
+import { updateTestHints } from "./typing-host";
 
 const fontPreview = appObject(createAppOwned(() => ({ active: false })));
 export function previewFontFamily(font: FontName): void {
   setFontFamily(
     `"${font.replaceAll(/_/g, " ")}", "Roboto Mono", "Vazirharf", "monospace"`,
   );
-  void TestUI.updateHintsPositionDebounced();
+  updateTestHints();
   fontPreview.active = true;
 }
 
