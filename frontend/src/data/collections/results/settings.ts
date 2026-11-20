@@ -12,12 +12,12 @@ import {
   useLiveQuery,
 } from "@tanstack/solid-db";
 import { Accessor, createMemo } from "solid-js";
-import { isAuthenticated } from "../../../ts/states/core";
+import { isAuthenticated } from "#shared/states/core.ts";
 import { getActiveTagsOnce, useActiveTagsLiveQuery } from "../tags";
-import { getConfig } from "../../../ts/config/store";
-import { getMode2 } from "../../../ts/utils/misc";
-import { getCurrentQuote } from "../../../ts/states/test";
-import { removeLanguageSize } from "../../../ts/utils/strings";
+import { getConfig } from "#shared/config/store.ts";
+import { getMode2 } from "#shared/utils/misc.ts";
+import { getCurrentQuote } from "#shared/states/test.ts";
+import { removeLanguageSize } from "#shared/utils/strings.ts";
 
 export function useUserAverage10LiveQuery(options: {
   isEnabled: Accessor<boolean>;

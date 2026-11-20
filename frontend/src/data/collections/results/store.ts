@@ -1,14 +1,14 @@
 import { operation } from "../../operations";
-import { captureAccount } from "../../../app/account-scope";
+import { captureAccount } from "#app/account-scope.ts";
 import { queryKeys } from "./keys";
 import { normalizeResult } from "./normalize";
 import { Client, Mode } from "@caret/schemas/shared";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { BTreeIndex, createCollection } from "@tanstack/solid-db";
-import { SnapshotResult } from "../../../ts/constants/default-snapshot";
+import { SnapshotResult } from "#shared/constants/default-snapshot.ts";
 import { getQueryClient } from "../../queries";
-import { isAuthenticated } from "../../../ts/states/core";
-import { getLastResult, setLastResult } from "../../../ts/states/snapshot";
+import { isAuthenticated } from "#shared/states/core.ts";
+import { getLastResult, setLastResult } from "#shared/states/snapshot.ts";
 import { getTagsOnce } from "../tags";
 import { applyIdWorkaround } from "../utils/misc";
 import { defineCollection } from "../utils/scope";

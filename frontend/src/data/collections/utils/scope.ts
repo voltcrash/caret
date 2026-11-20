@@ -1,9 +1,6 @@
-import {
-  currentApplication,
-  requireApplication,
-} from "../../../app/application";
-import type { OwnedScope } from "../../../app/scope";
-import type { ModuleHotContext } from "../../../ts/hooks/createEvent";
+import { currentApplication, requireApplication } from "#app/application.ts";
+import type { OwnedScope } from "#app/scope.ts";
+import type { ModuleHotContext } from "#shared/hooks/createEvent.ts";
 
 /** Reactive; the mounted application's current account-data scope. */
 export function collectionScope(): OwnedScope {
