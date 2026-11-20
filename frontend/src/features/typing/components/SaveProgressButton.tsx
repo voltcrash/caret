@@ -1,9 +1,10 @@
 import { JSXElement, Show } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { getConfig } from "../../../ts/config/store";
-import { getCustomTextIndicator } from "../../../ts/states/core";
-import { isTestActive, setBailedOut } from "../../../ts/states/test";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { getCustomTextIndicator } from "#shared/states/core.ts";
+import { isTestActive, setBailedOut } from "#shared/states/test.ts";
+
 import * as TestLogic from "../runtime/test/logic";
 
 // Touch-only equivalent of shift+enter saving progress on a long custom text.

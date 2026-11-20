@@ -4,7 +4,7 @@ import { updateWordsWrapperHeight } from "./sizing";
 import {
   cancelPendingAnimationFrame,
   requestDebouncedAnimationFrame,
-} from "../../../../ts/utils/debounced-animation-frame";
+} from "#shared/utils/debounced-animation-frame.ts";
 
 const FRAME_ID = "test-ui.updateWordsWrapperHeight";
 

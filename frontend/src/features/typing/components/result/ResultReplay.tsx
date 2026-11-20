@@ -1,13 +1,14 @@
 import { For, JSXElement } from "solid-js";
 
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { useRef } from "#shared/hooks/useRef.ts";
+import { useSlideAnimation } from "#shared/hooks/useSlideAnimation.ts";
+import { getIsScreenshotting } from "#shared/states/core.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import type { ReplayLetter } from "../../replay-view";
 
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { useRef } from "../../../../ts/hooks/useRef";
-import { useSlideAnimation } from "../../../../ts/hooks/useSlideAnimation";
-import { getIsScreenshotting } from "../../../../ts/states/core";
-import { cn } from "../../../../ts/utils/cn";
 import { jumpToLetter, togglePlayback } from "../../runtime/replay";
 import { resultState } from "../../state/result";
 

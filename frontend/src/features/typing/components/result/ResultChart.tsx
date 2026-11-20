@@ -8,18 +8,19 @@ import type {
 import { typedKeys } from "@caret/util/objects";
 import { For, JSXElement, onCleanup, Show } from "solid-js";
 
-import { ChartJs } from "../../../../ts/components/common/ChartJs";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { Theme } from "../../../../ts/constants/themes";
-import { getWordIndexesForSecond } from "../../../../ts/engine/analysis.client";
-import { createDebouncedEffectOn } from "../../../../ts/hooks/effects";
-import { getLastEventLog } from "../../../../ts/states/test";
-import { getTheme } from "../../../../ts/states/theme";
+import { ChartJs } from "#shared/components/common/ChartJs.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { Theme } from "#shared/constants/themes.ts";
+import { getWordIndexesForSecond } from "#shared/engine/analysis.client.ts";
+import { createDebouncedEffectOn } from "#shared/hooks/effects.ts";
+import { getLastEventLog } from "#shared/states/test.ts";
+import { getTheme } from "#shared/states/theme.ts";
+import * as Arrays from "#shared/utils/arrays.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { blendTwoHexColors } from "#shared/utils/colors.ts";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
+
 import { FaSolidIcon } from "../../../../ts/types/font-awesome";
-import * as Arrays from "../../../../ts/utils/arrays";
-import { cn } from "../../../../ts/utils/cn";
-import { blendTwoHexColors } from "../../../../ts/utils/colors";
-import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { toggleResultChartLegend } from "../../runtime/result/screen";
 import {
   getResultChart,

@@ -1,8 +1,8 @@
-import { createAppMemo } from "../../../../app/application";
+import { createAppMemo } from "#app/application.ts";
 
 import * as LiveStats from "@caret/web-shared/live-stats";
-import { getConfig } from "../../../../ts/config/store";
-import Format from "../../../../ts/singletons/format";
+import { getConfig } from "#shared/config/store.ts";
+import Format from "#shared/singletons/format.ts";
 import * as CustomText from "../../runtime/content/custom-text";
 import * as TestWords from "../../runtime/test/words";
 import {
@@ -13,7 +13,7 @@ import {
   getFocus,
   isResultCalculating,
   isTestActive,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 
 function getCustomLimit(): LiveStats.CustomLimit {
   return {

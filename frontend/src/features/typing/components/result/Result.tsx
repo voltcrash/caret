@@ -10,9 +10,10 @@ import {
 } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
-import { Fa } from "../../../../ts/components/common/Fa";
-import { showErrorNotification } from "../../../../ts/states/notifications";
-import { isTestActive } from "../../../../ts/states/test";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { showErrorNotification } from "#shared/states/notifications.ts";
+import { isTestActive } from "#shared/states/test.ts";
+
 import { subscribeResultConfigChanges } from "../../runtime/result/chart-config";
 import { captureTypingRoute } from "../../scope";
 import {

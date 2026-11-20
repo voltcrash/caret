@@ -9,8 +9,9 @@ import {
 } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
-import { showErrorNotification } from "../../../../ts/states/notifications";
-import { isTestActive } from "../../../../ts/states/test";
+import { showErrorNotification } from "#shared/states/notifications.ts";
+import { isTestActive } from "#shared/states/test.ts";
+
 import { captureTypingRoute } from "../../scope";
 import {
   bindResultScreenLoader,

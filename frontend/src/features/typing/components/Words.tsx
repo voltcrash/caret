@@ -1,9 +1,10 @@
 import { createEffect, JSXElement, onCleanup, onMount } from "solid-js";
 
-import { configEvent } from "../../../ts/events/config";
-import { getBackground } from "../../../ts/states/background";
-import { cn } from "../../../ts/utils/cn";
-import { cancelPendingAnimationFramesStartingWith } from "../../../ts/utils/debounced-animation-frame";
+import { configEvent } from "#shared/events/config.ts";
+import { getBackground } from "#shared/states/background.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { cancelPendingAnimationFramesStartingWith } from "#shared/utils/debounced-animation-frame.ts";
+
 import { useWordsFocus } from "./hooks/useWordsFocus";
 import { onWordsConfigChange } from "./words/config";
 import { setClass } from "./words/elements";

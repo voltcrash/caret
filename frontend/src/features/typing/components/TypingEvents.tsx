@@ -1,19 +1,20 @@
 import { debounce, throttle } from "@caret/util/timing";
 import { onCleanup, onMount } from "solid-js";
 
-import { peekConfig } from "../../../ts/config/store";
-import { ModifierKeys } from "../../../ts/constants/modifier-keys";
-import { updateCurrentCode } from "../../../ts/controllers/sound-controller";
-import { isInputElementFocused } from "../../../ts/input/input-element";
-import { getCustomTextIndicator } from "../../../ts/states/core";
-import { isAnyPopupVisible } from "../../../ts/states/overlay-visibility";
+import { peekConfig } from "#shared/config/store.ts";
+import { ModifierKeys } from "#shared/constants/modifier-keys.ts";
+import { updateCurrentCode } from "#shared/controllers/sound-controller.ts";
+import { isInputElementFocused } from "#shared/input/input-element.ts";
+import { getCustomTextIndicator } from "#shared/states/core.ts";
+import { isAnyPopupVisible } from "#shared/states/overlay-visibility.ts";
 import {
   getFocus,
   getResultVisible,
   isTestActive,
-} from "../../../ts/states/test";
-import { isDevEnvironment } from "../../../ts/utils/env";
-import { isCoarsePointer } from "../../../ts/utils/pointer";
+} from "#shared/states/test.ts";
+import { isDevEnvironment } from "#shared/utils/env.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
+
 import * as Caret from "../runtime/caret";
 import * as CustomText from "../runtime/content/custom-text";
 import * as Focus from "../runtime/focus";

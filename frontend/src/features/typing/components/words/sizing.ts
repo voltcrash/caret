@@ -1,27 +1,27 @@
 import { isTypingRouteActive } from "../../scope";
 import { keepWordsInputInTheCenter } from "./focus";
 import { getActiveWordElement, setClass } from "./elements";
-import { peekConfig } from "../../../../ts/config/store";
-import { getInputElement } from "../../../../ts/input/input-element";
-import { setWordsWrapperVisible } from "../../../../ts/states/funbox";
+import { peekConfig } from "#shared/config/store.ts";
+import { getInputElement } from "#shared/input/input-element.ts";
+import { setWordsWrapperVisible } from "#shared/states/funbox.ts";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
   setOutOfFocusMaxHeight,
   wordsHaveNewline,
   getResultVisible,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,
   getTypingTestElement,
-} from "../../../../ts/states/test-dom";
+} from "#shared/states/test-dom.ts";
 import {
   setWordsInputStyle,
   setWordsWrapperHeight,
 } from "../../state/words-layout";
 import * as CustomText from "../../runtime/content/custom-text";
-import { convertRemToPixels } from "../../../../ts/utils/numbers";
+import { convertRemToPixels } from "#shared/utils/numbers.ts";
 import { getWordsFontScale } from "./font";
 
 export function updateWordsInputPosition(): void {

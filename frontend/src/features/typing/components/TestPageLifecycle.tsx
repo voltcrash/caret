@@ -1,12 +1,13 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { peekConfig } from "../../../ts/config/store";
-import { isInputElementFocused } from "../../../ts/input/input-element";
+import { peekConfig } from "#shared/config/store.ts";
+import { isInputElementFocused } from "#shared/input/input-element.ts";
 import {
   getResultVisible,
   isTestActive,
   setTestFocusState,
-} from "../../../ts/states/test";
+} from "#shared/states/test.ts";
+
 import { bindInputListenersTo } from "../input/listeners";
 import * as Caret from "../runtime/caret";
 import { restart } from "../runtime/test/logic";

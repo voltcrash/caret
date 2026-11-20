@@ -1,16 +1,17 @@
 import { JSXElement } from "solid-js";
 
-import { operation } from "../../../../data/operations";
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { Fa } from "../../../../ts/components/common/Fa";
-import * as DB from "../../../../ts/db";
-import { hideLoaderBar, showLoaderBar } from "../../../../ts/states/loader-bar";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import * as DB from "#shared/db.ts";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
 import {
   addNotificationWithLevel,
   showErrorNotification,
-} from "../../../../ts/states/notifications";
-import { getCurrentQuote } from "../../../../ts/states/test";
-import { cn } from "../../../../ts/utils/cn";
+} from "#shared/states/notifications.ts";
+import { getCurrentQuote } from "#shared/states/test.ts";
+import { cn } from "#shared/utils/cn.ts";
+
+import { operation } from "../../../../data/operations";
 import { showQuoteRateModal } from "../../state/quote-rate";
 import { showQuoteReportModal } from "../../state/quote-report";
 import { resultState, setResultState } from "../../state/result";

@@ -1,9 +1,7 @@
 import { createMemo, JSXElement, on } from "solid-js";
 
-import {
-  isResultCalculating,
-  getResultVisible,
-} from "../../../../ts/states/test";
+import { isResultCalculating, getResultVisible } from "#shared/states/test.ts";
+
 import { resultState } from "../../state/result";
 
 export function ResultAnnouncement(): JSXElement {

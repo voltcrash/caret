@@ -1,19 +1,20 @@
 import { createMemo, JSXElement, onCleanup, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
-import { isTypingReady } from "../../../app/startup";
-import { getConfig } from "../../../ts/config/store";
-import { getBrowserEngine } from "../../../ts/engine/owner.client";
-import { isInputElementFocused } from "../../../ts/input/input-element";
-import { isWordsWrapperVisible } from "../../../ts/states/funbox";
+import { isTypingReady } from "#app/startup.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
+import { isInputElementFocused } from "#shared/input/input-element.ts";
+import { isWordsWrapperVisible } from "#shared/states/funbox.ts";
+import { setTestElements } from "#shared/states/test-dom.ts";
 import {
   getTestInitError,
   getActiveWordIndex,
   isTestRestarting,
-} from "../../../ts/states/test";
-import { setTestElements } from "../../../ts/states/test-dom";
-import { cn } from "../../../ts/utils/cn";
-import { isCoarsePointer } from "../../../ts/utils/pointer";
+} from "#shared/states/test.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
+
 import { focusWords } from "../runtime/test/ui";
 import { words } from "../runtime/test/words";
 import {

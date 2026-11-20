@@ -1,15 +1,15 @@
 import { createMemo, lazy, Show, Suspense } from "solid-js";
 
-import * as Commandline from "../../../../ts/commandline/open";
-import { Kbd } from "../../../../ts/components/common/Kbd";
-import { getConfig } from "../../../../ts/config/store";
+import * as Commandline from "#shared/commandline/open.ts";
+import { Kbd } from "#shared/components/common/Kbd.tsx";
+import { getConfig } from "#shared/config/store.ts";
 import {
   getCustomTextIndicator,
   getFormatting,
   showCommandLineForConfig,
   isAuthenticated,
-} from "../../../../ts/states/core";
-import { hotkeys } from "../../../../ts/states/hotkeys";
+} from "#shared/states/core.ts";
+import { hotkeys } from "#shared/states/hotkeys.ts";
 import {
   getFocus,
   getLoadedChallenge,
@@ -18,12 +18,13 @@ import {
   isRepeated,
   wordsHaveNewline,
   wordsHaveTab,
-} from "../../../../ts/states/test";
-import { cn } from "../../../../ts/utils/cn";
+} from "#shared/states/test.ts";
+import { cn } from "#shared/utils/cn.ts";
 import {
   getLanguageDisplayString,
   replaceUnderscoresWithSpaces,
-} from "../../../../ts/utils/strings";
+} from "#shared/utils/strings.ts";
+
 import { PersonalNotices } from "../../personal-notices";
 import { getActiveFunboxNames } from "../../runtime/funbox/list";
 import { Notice } from "./Notice";

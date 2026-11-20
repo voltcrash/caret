@@ -1,5 +1,5 @@
 import { createComponent, createRoot } from "solid-js";
-import { Fa, FaProps } from "../../../../ts/components/common/Fa";
+import { Fa, FaProps } from "#shared/components/common/Fa.tsx";
 
 const prototypes = new Map<string, HTMLElement>();
 

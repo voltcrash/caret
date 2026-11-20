@@ -1,7 +1,8 @@
 import { animate } from "animejs";
 import { JSXElement, createEffect } from "solid-js";
 
-import { applyReducedMotion } from "../../../ts/utils/misc";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
+
 import {
   FunboxTimerVisibility,
   getLayoutfluidTimerText,

@@ -1,8 +1,8 @@
 import { setClass } from "./elements";
-import { hasClassName } from "../../../../ts/utils/cn";
-import { peekConfig } from "../../../../ts/config/store";
+import { hasClassName } from "#shared/utils/cn.ts";
+import { peekConfig } from "#shared/config/store.ts";
 import { setResultState } from "../../state/result";
-import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
+import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
 
 export function setJoiningClass(isEnabled: boolean): void {
   const joiningScript =

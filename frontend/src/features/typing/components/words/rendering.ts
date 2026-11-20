@@ -1,4 +1,4 @@
-import { createAppOwned } from "../../../../app/application";
+import { createAppOwned } from "#app/application.ts";
 import { scrollTape } from "./tape";
 import { updateWordWrapperClasses } from "./wrapper-classes";
 import { lineJump } from "./line-jumping";
@@ -14,10 +14,10 @@ import {
   getActiveWordElement,
   setClass,
 } from "./elements";
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import * as SlowTimer from "../../state/slow-timer";
-import { getActiveWordIndex } from "../../../../ts/states/test";
-import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
+import { getActiveWordIndex } from "#shared/states/test.ts";
+import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
 import * as CustomText from "../../runtime/content/custom-text";
 import { findSingleActiveFunboxWithFunction } from "../../runtime/funbox/list";
 import * as PaceCaret from "../../runtime/pace-caret";
@@ -25,7 +25,7 @@ import * as TestWords from "../../runtime/test/words";
 import { appendInitialWordNodes, clearWordTemplates } from "./initial";
 import { updateLiveWordNodes } from "./live";
 import { createLetter, createNewlineSpacers } from "./letters";
-import { requestDebouncedAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";
+import { requestDebouncedAnimationFrame } from "#shared/utils/debounced-animation-frame.ts";
 
 export function updateActiveElement(
   options:

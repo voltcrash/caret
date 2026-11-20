@@ -1,11 +1,12 @@
 import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
-import { navigate } from "../../../../app/navigate";
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { peekConfig } from "../../../../ts/config/store";
-import Format from "../../../../ts/singletons/format";
-import { applyReducedMotion, getMode2 } from "../../../../ts/utils/misc";
+import { navigate } from "#app/navigate.ts";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { peekConfig } from "#shared/config/store.ts";
+import Format from "#shared/singletons/format.ts";
+import { applyReducedMotion, getMode2 } from "#shared/utils/misc.ts";
+
 import { resultState } from "../../state/result";
 
 export function ResultDailyLeaderboard(props: {

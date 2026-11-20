@@ -1,10 +1,11 @@
 import { For, JSXElement, Show } from "solid-js";
 
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { showEditResultTagsModal } from "#shared/states/edit-result-tags.ts";
+import { cn } from "#shared/utils/cn.ts";
+
 import { useTagsLiveQuery } from "../../../../data/collections/tags";
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { Fa } from "../../../../ts/components/common/Fa";
-import { showEditResultTagsModal } from "../../../../ts/states/edit-result-tags";
-import { cn } from "../../../../ts/utils/cn";
 import { resultState, type ResultTag } from "../../state/result";
 
 function Tag(props: { tag: ResultTag }): JSXElement {

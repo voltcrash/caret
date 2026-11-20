@@ -1,7 +1,8 @@
 import { Show } from "solid-js";
 
-import { Fa } from "../../../ts/components/common/Fa";
-import { getConfig } from "../../../ts/config/store";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { getConfig } from "#shared/config/store.ts";
+
 import { isCapsLockOn } from "../state/modifiers";
 
 export function CapsWarning() {

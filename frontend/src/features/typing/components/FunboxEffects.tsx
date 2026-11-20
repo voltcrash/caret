@@ -1,7 +1,7 @@
 import { Link, MetaProvider } from "@solidjs/meta";
 import { For, JSXElement, Show } from "solid-js";
 
-import { getCrt, getFunboxStylesheets } from "../../../ts/states/funbox";
+import { getCrt, getFunboxStylesheets } from "#shared/states/funbox.ts";
 
 export function FunboxEffects(): JSXElement {
   return (

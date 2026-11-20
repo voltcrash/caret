@@ -1,21 +1,22 @@
 import { animate } from "animejs";
 import { ComponentProps, For, JSXElement, Show } from "solid-js";
 
-import { Anime, AnimeShow } from "../../../ts/components/common/anime";
-import { Button } from "../../../ts/components/common/Button";
-import { configMetadata } from "../../../ts/config/metadata";
-import { setConfig, setQuoteLengthAll } from "../../../ts/config/setters";
-import { getConfig } from "../../../ts/config/store";
-import { createEffectOn } from "../../../ts/hooks/effects";
-import { useRef } from "../../../ts/hooks/useRef";
-import { isAuthenticated } from "../../../ts/states/core";
-import { showModal } from "../../../ts/states/modals";
-import { getResultVisible, getFocus } from "../../../ts/states/test";
+import { Anime, AnimeShow } from "#shared/components/common/anime/index.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { configMetadata } from "#shared/config/metadata.tsx";
+import { setConfig, setQuoteLengthAll } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { createEffectOn } from "#shared/hooks/effects.ts";
+import { useRef } from "#shared/hooks/useRef.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
+import { showModal } from "#shared/states/modals.ts";
+import { getResultVisible, getFocus } from "#shared/states/test.ts";
+import { restartTest } from "#shared/typing-host.ts";
+import { areUnsortedArraysEqual } from "#shared/utils/arrays.ts";
+import { cn, updateClassNames } from "#shared/utils/cn.ts";
+import { applyReducedMotion } from "#shared/utils/misc.ts";
+
 import { FaObject } from "../../../ts/types/font-awesome";
-import { restartTest } from "../../../ts/typing-host";
-import { areUnsortedArraysEqual } from "../../../ts/utils/arrays";
-import { cn, updateClassNames } from "../../../ts/utils/cn";
-import { applyReducedMotion } from "../../../ts/utils/misc";
 import { variables, buttonClass, cardClass } from "../config-layout";
 
 const durationMs = 250;

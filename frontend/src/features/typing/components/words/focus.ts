@@ -2,9 +2,9 @@ import { scrollToCenterOrTop } from "./dimensions";
 import {
   blurInputElement,
   focusInputElement,
-} from "../../../../ts/input/input-element";
-import { isTestActive } from "../../../../ts/states/test";
-import { getTypingTestElement } from "../../../../ts/states/test-dom";
+} from "#shared/input/input-element.ts";
+import { isTestActive } from "#shared/states/test.ts";
+import { getTypingTestElement } from "#shared/states/test-dom.ts";
 import { centerWordsInputEvent } from "../../state/words-layout";
 
 export function focusWords(force = false): void {

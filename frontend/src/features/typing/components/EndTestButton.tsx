@@ -1,10 +1,11 @@
 import { createSignal, JSXElement, onCleanup, Show } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { getConfig } from "../../../ts/config/store";
-import { createEffectOn } from "../../../ts/hooks/effects";
-import { getCustomTextIndicator } from "../../../ts/states/core";
-import { isTestActive, setBailedOut } from "../../../ts/states/test";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { createEffectOn } from "#shared/hooks/effects.ts";
+import { getCustomTextIndicator } from "#shared/states/core.ts";
+import { isTestActive, setBailedOut } from "#shared/states/test.ts";
+
 import * as CustomText from "../runtime/content/custom-text";
 import { canQuickRestart } from "../runtime/quick-restart";
 import * as TestLogic from "../runtime/test/logic";

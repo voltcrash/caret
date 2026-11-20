@@ -1,7 +1,7 @@
-import { createBinding } from "../../../../app/binding";
+import { createBinding } from "#app/binding.ts";
 import { onCleanup, onMount } from "solid-js";
 
-import { showErrorNotification } from "../../../../ts/states/notifications";
+import { showErrorNotification } from "#shared/states/notifications.ts";
 
 type Crop = {
   source: HTMLCanvasElement;

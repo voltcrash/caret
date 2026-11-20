@@ -1,10 +1,10 @@
-import { createBinding } from "../../../../app/binding";
+import { createBinding } from "#app/binding.ts";
 import { captureTypingPresentation } from "../../scope";
 import { Accessor, createEffect, onCleanup, onMount } from "solid-js";
 
-import { animateAsync } from "../../../../ts/anim";
-import { getIsScreenshotting } from "../../../../ts/states/core";
-import { updateClassNames } from "../../../../ts/utils/cn";
+import { animateAsync } from "#shared/anim.ts";
+import { getIsScreenshotting } from "#shared/states/core.ts";
+import { updateClassNames } from "#shared/utils/cn.ts";
 
 const show = createBinding<(duration: number) => Promise<void>>();
 
