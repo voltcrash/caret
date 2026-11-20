@@ -3,9 +3,9 @@ import type { Client } from "@caret/schemas/shared";
 import { createResource, type JSXElement, Match, Switch } from "solid-js";
 
 import { captureAccount } from "../../app/account-scope";
+import { useSessionSettled } from "../../ts/session/settled.client";
 import { getUserId } from "../../ts/states/core";
 import { getSnapshot } from "../../ts/states/snapshot";
-import { useSessionSettled } from "../auth/settled.client";
 import * as TodayTracker from "../typing/runtime/today-tracker";
 import { AccountContent } from "./components/AccountContent";
 import { AccountSkeleton } from "./skeleton";

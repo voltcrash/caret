@@ -1,18 +1,18 @@
 import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
-import { getAuthClient } from "../../../src/features/auth/client.client";
 import { OAuthRuntime } from "../../../src/features/auth/oauth-runtime.client";
-import { oauthRequestEvent } from "../../../src/features/auth/popup.client";
+import { getAuthClient } from "../../../src/ts/session/client.client";
+import { oauthRequestEvent } from "../../../src/ts/session/popup.client";
 
 const client = vi.hoisted(() => ({
   signIn: { social: vi.fn() },
   linkSocial: vi.fn(),
 }));
-vi.mock("../../../src/features/auth/client.client", () => ({
+vi.mock("../../../src/ts/session/client.client", () => ({
   getAuthClient: () => client,
 }));
-vi.mock("../../../src/features/auth/popup.client", () => ({
+vi.mock("../../../src/ts/session/popup.client", () => ({
   oauthRequestEvent: { subscribe: vi.fn() },
 }));
 const authClient = getAuthClient();

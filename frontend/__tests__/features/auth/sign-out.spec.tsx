@@ -7,17 +7,17 @@ const sessionRequest = vi.hoisted(() => vi.fn());
 vi.mock("../../../src/functions/session", () => ({
   getSessionState: sessionRequest,
 }));
-vi.mock("../../../src/features/auth/client.client", () => ({
+vi.mock("../../../src/ts/session/client.client", () => ({
   getAuthClient: () => ({ signOut: signOutRequest }),
 }));
 
 import { requireApplication } from "../../../src/app/application";
-import { sessionKey } from "../../../src/features/auth/session";
+import { refreshSession, signOut } from "../../../src/ts/auth-client";
+import { sessionKey } from "../../../src/ts/session/session";
 import {
   getAuthenticatedUser,
   setUserState,
-} from "../../../src/features/auth/state.client";
-import { refreshSession, signOut } from "../../../src/ts/auth-client";
+} from "../../../src/ts/session/state.client";
 
 const user = {
   uid: "a",

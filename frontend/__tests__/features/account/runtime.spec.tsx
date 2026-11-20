@@ -20,9 +20,9 @@ vi.mock("../../../src/functions/session", () => ({
 import { requireApplication } from "../../../src/app/application";
 import { AccountRuntime } from "../../../src/features/account/runtime.client";
 import { useAccountSettled } from "../../../src/features/account/settled.client";
-import { sessionKey } from "../../../src/features/auth/session";
-import { setUserState } from "../../../src/features/auth/state.client";
 import { isAuthAvailable } from "../../../src/ts/auth-client";
+import { sessionKey } from "../../../src/ts/session/session";
+import { setUserState } from "../../../src/ts/session/state.client";
 
 const user = (
   uid: string,

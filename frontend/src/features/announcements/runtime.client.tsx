@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/solid-query";
 import { createEffect, on } from "solid-js";
 
-import { sessionOptions } from "../auth/session";
+import { sessionOptions } from "../../ts/session/session";
 import { showPsas } from "./psas.client";
 
 /** Loads announcements once the session settles and again per actor change. */

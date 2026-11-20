@@ -1,10 +1,10 @@
 import type { QueryClient } from "@tanstack/solid-query";
 import type { UiSession } from "@caret/schemas/auth-session";
-import { getAuthClient } from "./client.client";
-import { setUserState } from "./state.client";
-import { checkAuthResult } from "./result";
-import { requestOAuth } from "./popup.client";
-import { sessionOptions, sessionKey } from "./session";
+import { getAuthClient } from "../../ts/session/client.client";
+import { setUserState } from "../../ts/session/state.client";
+import { checkAuthResult } from "../../ts/session/result";
+import { requestOAuth } from "../../ts/session/popup.client";
+import { sessionOptions, sessionKey } from "../../ts/session/session";
 import { completeSignUp } from "../../functions/signup";
 import { createAppOwned } from "../../app/application";
 const authOperation = createAppOwned(() => ({ busy: false }));

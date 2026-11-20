@@ -6,12 +6,12 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { urlSearch } from "../app/search";
 import { pageHead } from "../app/seo";
 import { onlyCachedOnServer } from "../data/prefetch";
-import { sessionOptions } from "../features/auth/session";
 import { SettingsPage } from "../features/settings/page";
 import {
   sectionForTab,
   SettingsUrlParamsSchema,
 } from "../features/settings/tabs";
+import { sessionOptions } from "../ts/session/session";
 
 export const Route = createFileRoute("/_app/settings")({
   staticData: { fixedHeader: true },

@@ -1,8 +1,8 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { getAuthClient } from "./client.client";
-import { oauthRequestEvent } from "./popup.client";
-import { checkAuthResult } from "./result";
+import { getAuthClient } from "../../ts/session/client.client";
+import { oauthRequestEvent } from "../../ts/session/popup.client";
+import { checkAuthResult } from "../../ts/session/result";
 
 /** Own popup windows and listeners for sign-in, linking, and reauthentication. */
 export function OAuthRuntime(): null {

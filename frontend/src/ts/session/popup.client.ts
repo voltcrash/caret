@@ -1,6 +1,6 @@
 import { envConfig } from "virtual:env-config";
-import type { SocialProvider } from "../../ts/auth-types";
-import { createEvent } from "../../ts/hooks/createEvent";
+import type { SocialProvider } from "../auth-types";
+import { createEvent } from "../hooks/createEvent";
 type OAuthRequest = {
   provider: SocialProvider;
   link: boolean;

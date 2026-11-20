@@ -1,11 +1,5 @@
 [
-  "src/ts/auth-client.ts -> src/features/auth/client.client",
-  "src/ts/auth-client.ts -> src/features/auth/popup.client",
-  "src/ts/auth-client.ts -> src/features/auth/result",
-  "src/ts/auth-client.ts -> src/features/auth/session",
-  "src/ts/auth-client.ts -> src/features/auth/state.client",
   "src/ts/components/layout/header/Nav.tsx -> src/features/account/settled.client",
-  "src/ts/components/layout/header/Nav.tsx -> src/features/auth/session",
   "src/ts/components/standalone/OAuthCallback.tsx -> src/features/auth/callback",
   "src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client",
   "src/ts/states/result-filters.ts -> src/features/account/components/utils",

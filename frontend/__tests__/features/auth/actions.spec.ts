@@ -18,13 +18,13 @@ vi.mock("../../../src/functions/session", () => ({
 vi.mock("../../../src/functions/signup", () => ({
   completeSignUp: mocks.signup,
 }));
-vi.mock("../../../src/features/auth/popup.client", () => ({
+vi.mock("../../../src/ts/session/popup.client", () => ({
   requestOAuth: mocks.popup,
 }));
-vi.mock("../../../src/features/auth/state.client", () => ({
+vi.mock("../../../src/ts/session/state.client", () => ({
   setUserState: mocks.setUser,
 }));
-vi.mock("../../../src/features/auth/client.client", () => ({
+vi.mock("../../../src/ts/session/client.client", () => ({
   getAuthClient: () => ({
     signOut: mocks.signOut,
     updateUser: mocks.updateUser,
@@ -38,7 +38,7 @@ import {
   authRedirect,
   sessionKey,
   sessionOptions,
-} from "../../../src/features/auth/session";
+} from "../../../src/ts/session/session";
 import { requireSession } from "../../../src/features/auth/guard";
 const user = {
   uid: "a",

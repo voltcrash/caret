@@ -3,7 +3,7 @@ import { requireApplication } from "../../../src/app/application";
 import {
   getAuthenticatedUser,
   setUserState,
-} from "../../../src/features/auth/state.client";
+} from "../../../src/ts/session/state.client";
 afterEach(() => setUserState(null));
 it("rotates private requests, collections and cache identity on account switch and logout", () => {
   const app = requireApplication();

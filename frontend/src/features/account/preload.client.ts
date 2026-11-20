@@ -2,7 +2,7 @@ import type { SessionState } from "@caret/schemas/auth-session";
 
 import { currentApplication } from "../../app/application";
 import { accountQueryCache } from "../../app/query-cache.client";
-import { sessionKey } from "../auth/session";
+import { sessionKey } from "../../ts/session/session";
 
 /** Warm browser history only after the registered actor owns its scope. */
 export async function preloadAccount(

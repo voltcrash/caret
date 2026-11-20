@@ -17,6 +17,8 @@ export const ssrSafeLegacyFiles = [
   "src/ts/components/common/Kbd.tsx",
   "src/ts/components/common/Separator.tsx",
   "src/features/settings/components/SettingsKeyTips.tsx",
+  "src/ts/session/session.ts",
+  "src/ts/session/result.ts",
   "src/ts/utils/numbers.ts",
   "src/ts/utils/cn.ts",
   "src/ts/types/**",

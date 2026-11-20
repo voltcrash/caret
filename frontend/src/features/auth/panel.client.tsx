@@ -12,8 +12,8 @@ import { Fa } from "../../ts/components/common/Fa";
 import { Captcha } from "../../ts/components/ui/form/Captcha";
 import { SubmitButton } from "../../ts/components/ui/form/SubmitButton";
 import { allFieldsMandatory } from "../../ts/components/ui/form/utils";
+import { sessionOptions, authRedirect } from "../../ts/session/session";
 import { createAuthActions } from "./actions.client";
-import { sessionOptions, authRedirect } from "./session";
 
 export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
   const router = useRouter();

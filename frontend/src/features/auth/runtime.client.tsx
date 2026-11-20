@@ -4,10 +4,13 @@ import { useQuery } from "@tanstack/solid-query";
 import { useRouter } from "@tanstack/solid-router";
 import { createEffect, onCleanup, onMount } from "solid-js";
 
-import { getAuthClient } from "./client.client";
+import { getAuthClient } from "../../ts/session/client.client";
+import { sessionOptions, sessionKey } from "../../ts/session/session";
+import {
+  getAuthenticatedUser,
+  setUserState,
+} from "../../ts/session/state.client";
 import { OAuthRuntime } from "./oauth-runtime.client";
-import { sessionOptions, sessionKey } from "./session";
-import { getAuthenticatedUser, setUserState } from "./state.client";
 
 /** Start observes server authority and invalidates route data. */
 export function AuthRuntime() {
