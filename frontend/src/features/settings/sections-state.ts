@@ -4,8 +4,8 @@ import {
   type SettingsSection,
   settingsSections,
   SettingsUrlParamsSchema,
-} from "../../features/settings/tabs";
-import { isAuthenticated } from "./core";
+} from "./tabs";
+import { isAuthenticated } from "../../ts/states/core";
 
 export type { SettingsSection };
 export { settingsSections, SettingsUrlParamsSchema };

@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it } from "vite-plus/test";
-import { safeParse, serialize } from "../../src/app/url-search-params";
+import { safeParse, serialize } from "../../../src/app/url-search-params";
 
-import { sectionForTab } from "../../src/features/settings/tabs";
-import { setUserId } from "../../src/ts/states/core";
+import { sectionForTab } from "../../../src/features/settings/tabs";
+import { setUserId } from "../../../src/ts/states/core";
 import {
   getAvailableSettingsSections,
   SettingsUrlParamsSchema,
-} from "../../src/ts/states/settings-sections";
+} from "../../../src/features/settings/sections-state";
 
 afterEach(() => {
   setUserId(null);

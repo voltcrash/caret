@@ -8,12 +8,12 @@ import {
 
 import { useSessionSettled } from "../../ts/session/settled.client";
 import { highlightSetting } from "../../ts/states/settings-highlight";
+import { cn } from "../../ts/utils/cn";
+import { SettingsContent } from "./components/SettingsContent";
 import {
   type SettingsSection,
   SettingsSectionHostContext,
-} from "../../ts/states/settings-sections";
-import { cn } from "../../ts/utils/cn";
-import { SettingsContent } from "./components/SettingsContent";
+} from "./sections-state";
 
 /** Preference UI; route search owns the section and each highlight request. */
 export function SettingsView(props: {

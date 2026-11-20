@@ -1,10 +1,10 @@
 import { ConfigKey, ConfigKeySchema } from "@caret/schemas/configs";
 import { untrack, createMemo, JSXElement, useContext } from "solid-js";
 
-import { SettingsSectionHostContext } from "../../../ts/states/settings-sections";
 import { cn } from "../../../ts/utils/cn";
 import { createSettingSearchIndex } from "../../../ts/utils/settings-search";
 import { registerSearchable, settingMatchesSearch } from "../search-state";
+import { SettingsSectionHostContext } from "../sections-state";
 import { ResetSetting } from "./ResetSetting";
 import { Setting, SettingProps } from "./Setting";
 import { SettingsSectionContext } from "./settings-section-context";
