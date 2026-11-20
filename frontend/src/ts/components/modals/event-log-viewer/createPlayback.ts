@@ -4,6 +4,7 @@ import {
   createMemo,
   createSignal,
   onCleanup,
+  untrack,
 } from "solid-js";
 
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
@@ -39,29 +40,29 @@ export function createPlayback(options: {
   const timelineMaxMs = options.maxMs;
   const currentMs = getCurrentMs;
 
-  const [timelinePlaying, setTimelinePlaying] = createSignal(false);
-  let rafId: number | undefined;
-  let lastFrame: number | undefined;
+  type TimelineClock = { frame: number; lastTime?: number };
+  const [clock, setClock] = createSignal<TimelineClock>();
 
   const playing = createMemo(() =>
-    isSynced() ? videoPlayState() : timelinePlaying(),
+    isSynced() ? videoPlayState() : clock() !== undefined,
   );
 
   const stopTimelinePlay = (): void => {
-    if (rafId !== undefined) cancelAnimationFrame(rafId);
-    rafId = undefined;
-    lastFrame = undefined;
-    setTimelinePlaying(false);
+    const active = untrack(clock);
+    if (active !== undefined) cancelAnimationFrame(active.frame);
+    setClock(undefined);
   };
 
   const tick = (now: number): void => {
-    if (lastFrame === undefined) {
-      lastFrame = now;
-      rafId = requestAnimationFrame(tick);
+    const active = clock();
+    if (active === undefined) return;
+    if (active.lastTime === undefined) {
+      active.lastTime = now;
+      active.frame = requestAnimationFrame(tick);
       return;
     }
-    const dt = now - lastFrame;
-    lastFrame = now;
+    const dt = now - active.lastTime;
+    active.lastTime = now;
     const next = currentMs() + dt;
     if (next >= timelineMaxMs()) {
       setCurrentMs(timelineMaxMs());
@@ -69,7 +70,7 @@ export function createPlayback(options: {
       return;
     }
     setCurrentMs(Math.round(next));
-    rafId = requestAnimationFrame(tick);
+    if (clock() === active) active.frame = requestAnimationFrame(tick);
   };
 
   const togglePlay = (): void => {
@@ -84,13 +85,11 @@ export function createPlayback(options: {
       }
       return;
     }
-    if (timelinePlaying()) {
+    if (clock() !== undefined) {
       stopTimelinePlay();
     } else {
       if (currentMs() >= timelineMaxMs()) setCurrentMs(timelineMinMs());
-      setTimelinePlaying(true);
-      lastFrame = undefined;
-      rafId = requestAnimationFrame(tick);
+      setClock({ frame: requestAnimationFrame(tick) });
     }
   };
 
