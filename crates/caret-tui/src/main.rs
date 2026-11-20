@@ -66,6 +66,9 @@ fn run() -> Result<()> {
     }
     let (config, content, custom) = cli.prepare(preferences.config.clone())?;
     let recovery_warnings = store.recover_pending()?;
+    for warning in &recovery_warnings {
+        eprintln!("Pending result recovery failed: {warning}");
+    }
     let mut local = Local::new(store, preferences);
     let mut setup = Setup::new(config.clone(), custom.as_ref());
     local.configure_setup(&mut setup);
@@ -92,8 +95,8 @@ fn run() -> Result<()> {
         String::new()
     } else {
         format!(
-            "Could not recover pending results: {}",
-            recovery_warnings.join(" | ")
+            "Recovery failed for {} pending file(s). See terminal output after quit.",
+            recovery_warnings.len()
         )
     };
     let mut last_draw = Instant::now();
