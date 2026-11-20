@@ -22,20 +22,21 @@ import { useUrlSettings } from "./url-settings.client";
 
 export default function TypingPage(): JSXElement {
   const release = mountTypingScope();
-  let disposed = false;
+  const [phase, setPhase] = createSignal<"entering" | "entered" | "disposed">(
+    "entering",
+  );
   onCleanup(() => {
-    disposed = true;
+    setPhase("disposed");
     exitTypingRoute();
     release();
   });
   // URL settings restart or navigate; startup restarts must finish first.
-  const [entered, setEntered] = createSignal(false);
-  useUrlSettings(() => entered() && !isTestRestarting());
+  useUrlSettings(() => phase() === "entered" && !isTestRestarting());
   onMount(() => {
     void enterTypingRoute()
       .then(() => {
-        if (disposed) return;
-        setEntered(true);
+        if (phase() !== "entering") return;
+        setPhase("entered");
         if (!isCoarsePointer() && getTestInitError() === null) focusWords();
       })
       .catch((error: unknown) =>
