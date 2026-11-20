@@ -4,7 +4,7 @@ import { createEffect, untrack } from "solid-js";
 import { createAppOwned } from "../../app/application";
 import { preferencesReadiness } from "../../app/readiness";
 import { applyUrlSettings } from "./runtime/url-handler";
-import { useAccountSettled } from "../account/settled.client";
+import { useAccountSettled } from "../../ts/session/account-settled.client";
 
 const applied = createAppOwned(() => ({
   search: undefined as string | undefined,

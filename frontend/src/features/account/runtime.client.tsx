@@ -6,10 +6,10 @@ import { canPrefetch } from "../../app/network.client";
 import { loadUser, type AccountLoad } from "../../ts/auth";
 import { setAuthAvailable } from "../../ts/auth-client";
 import * as Sentry from "../../ts/sentry";
+import { setLoadedAccount } from "../../ts/session/account-settled.client";
 import { sessionOptions } from "../../ts/session/session";
 import { useSessionSettled } from "../../ts/session/settled.client";
 import { preloadAccount } from "./page";
-import { setLoadedAccount } from "./settled.client";
 
 /**
  * Loads a registered actor's account snapshot, presets, tags, themes,

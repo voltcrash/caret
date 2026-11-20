@@ -1,5 +1,4 @@
 [
-  "src/ts/components/layout/header/Nav.tsx -> src/features/account/settled.client",
   "src/ts/config/persistence.ts -> src/features/typing/initial/snapshot.client",
   "src/ts/states/test.ts -> src/features/typing/lifecycle/controller"
 ]

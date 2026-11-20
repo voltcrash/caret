@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/solid-query";
 import { createMemo } from "solid-js";
 
 import { createAppSignal } from "../../app/state";
-import { useSessionSettled } from "../../ts/session/settled.client";
-import { sessionOptions } from "../../ts/session/session";
+import { useSessionSettled } from "./settled.client";
+import { sessionOptions } from "./session";
 
 /** Registered actor whose initial account load (snapshot, collections, server preferences) finished. */
 const [getLoadedAccount, setLoadedAccount] = createAppSignal<string | null>(
