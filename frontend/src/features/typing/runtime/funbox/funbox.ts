@@ -78,18 +78,14 @@ export async function activate(
   lease = captureTypingRoute(),
 ): Promise<boolean | undefined> {
   if (!lease.isCurrent()) return false;
-  if (funbox === undefined || funbox === null) {
-    funbox = peekConfig().funbox;
-  } else if (peekConfig().funbox !== funbox) {
-    setConfigStore("funbox", funbox);
-  }
+  funbox ??= getActiveFunboxNames();
 
-  // The configuration might be edited with dev tools,
-  // so we need to double check its validity
-  if (!checkCompatibility(getActiveFunboxNames())) {
+  // The configuration might be edited with dev tools, so check the list
+  // before publishing it.
+  if (!checkCompatibility(funbox)) {
     showErrorNotification(
-      `Failed to activate funbox: funboxes ${peekConfig()
-        .funbox.map((it) => it.replace(/_/g, " "))
+      `Failed to activate funbox: funboxes ${funbox
+        .map((it) => it.replace(/_/g, " "))
         .join(", ")} are not compatible`,
     );
     setConfig("funbox", [], {
@@ -98,6 +94,7 @@ export async function activate(
     await clear();
     return false;
   }
+  if (peekConfig().funbox !== funbox) setConfigStore("funbox", funbox);
 
   MemoryTimer.reset();
   await setFunboxBodyClasses();
