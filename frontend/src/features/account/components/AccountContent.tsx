@@ -15,7 +15,7 @@ import { isAuthenticated } from "../../../ts/states/core";
 import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
 import { showErrorNotification } from "../../../ts/states/notifications";
 import { filters, setFilters } from "../../../ts/states/result-filters";
-import { downloadResultsCSV } from "../../../ts/utils/misc";
+import { downloadResultsCSV } from "../results-csv.client";
 import { Charts } from "./Charts";
 import { Filters } from "./Filters";
 import { MyProfile } from "./MyProfile";
@@ -79,7 +79,7 @@ export function AccountContent(props: { client: Client }): JSXElement {
             void import("../export.client")
               .then(async ({ exportAllResults }) => {
                 const results = await exportAllResults(setExportedCount);
-                await downloadResultsCSV(results);
+                downloadResultsCSV(results);
               })
               .catch((error: unknown) => {
                 showErrorNotification("Could not export history", { error });
@@ -132,9 +132,8 @@ export function AccountContent(props: { client: Client }): JSXElement {
                 showLoaderBar();
                 void getResultsQueryOnce({ queryState, sorting })
                   .then(
-                    async (results) =>
-                      results !== undefined &&
-                      (await downloadResultsCSV(results)),
+                    (results) =>
+                      results !== undefined && downloadResultsCSV(results),
                   )
                   .finally(() => {
                     hideLoaderBar();

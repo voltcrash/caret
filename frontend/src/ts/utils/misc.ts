@@ -1,9 +1,6 @@
 import { lastElementFromArray } from "./arrays";
-import { Mode } from "@caret/schemas/shared";
-import { Result } from "@caret/schemas/results";
 import { RankAndCount } from "@caret/schemas/users";
 import { roundTo2 } from "@caret/util/numbers";
-import { download } from "../components/common/Download";
 
 export function findGetParameter(
   parameterName: string,
@@ -70,74 +67,6 @@ type LastIndex = {
 };
 
 export { getMode2 } from "@caret/web-shared/mode";
-
-export async function downloadResultsCSV(array: Result<Mode>[]): Promise<void> {
-  const csvString = [
-    [
-      "_id",
-      "isPb",
-      "wpm",
-      "acc",
-      "rawWpm",
-      "consistency",
-      "charStats",
-      "mode",
-      "mode2",
-      "quoteLength",
-      "restartCount",
-      "testDuration",
-      "afkDuration",
-      "incompleteTestSeconds",
-      "punctuation",
-      "numbers",
-      "language",
-      "funbox",
-      "difficulty",
-      "lazyMode",
-      "blindMode",
-      "bailedOut",
-      "tags",
-      "timestamp",
-      "client",
-      "offline",
-      "verification",
-    ],
-    ...array.map((item) => [
-      item._id,
-      item.isPb,
-      item.wpm,
-      item.acc,
-      item.rawWpm,
-      item.consistency,
-      item.charStats.join(";"),
-      item.mode,
-      item.mode2,
-      item.quoteLength,
-      item.restartCount,
-      item.testDuration,
-      item.afkDuration,
-      item.incompleteTestSeconds,
-      item.punctuation,
-      item.numbers,
-      item.language,
-      item.funbox,
-      item.difficulty,
-      item.lazyMode,
-      item.blindMode,
-      item.bailedOut,
-      item.tags?.join(";"),
-      item.timestamp,
-      item.client ?? "web",
-      item.offline ?? false,
-      item.verification ?? "legacy",
-    ]),
-  ]
-    .map((e) => e.join(","))
-    .join("\n");
-
-  const blob = new Blob([csvString], { type: "text/csv" });
-  download({ filename: "results.csv", data: blob });
-}
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
