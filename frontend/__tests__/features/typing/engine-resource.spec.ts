@@ -23,6 +23,7 @@ vi.mock("@caret/typing-engine/browser.client", () => ({
   },
 }));
 import { mountApplication } from "../../../src/app/application";
+import { getBrowserAudit } from "../../../src/features/typing/engine/audit.client";
 import { getBrowserEngine } from "../../../src/features/typing/engine/owner.client";
 import {
   createTestApplication,
@@ -101,4 +102,13 @@ it("cannot publish initialization after the app owner was disposed", async () =>
   await expect(loading).rejects.toThrow("disposed");
   expect(resource.status().state).toBe("disposed");
   expect(mocks.engine.createContent).not.toHaveBeenCalled();
+});
+
+it("discards the audit API when its owner is disposed", async () => {
+  const resource = getBrowserAudit();
+  const audit = await resource.load();
+  expect(resource.current()).toBe(audit);
+  dispose();
+  expect(resource.current()).toBeUndefined();
+  await expect(resource.load()).rejects.toMatchObject({ name: "AbortError" });
 });
