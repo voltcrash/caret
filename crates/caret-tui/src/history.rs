@@ -1,6 +1,7 @@
 //! Historical summaries are displayed/exported as stored, never recalculated.
 use crate::{Result, storage::Store};
 use serde_json::Value;
+use std::collections::HashMap;
 
 const MODES: &[Option<&str>] = &[
     None,
@@ -40,6 +41,7 @@ pub struct History {
     pub selected: usize,
     pub details: bool,
     pub scroll: usize,
+    bests: HashMap<String, f64>,
     filter: usize,
     page: usize,
 }
@@ -48,7 +50,9 @@ impl History {
         MODES[self.filter]
     }
     pub fn refresh(&mut self, store: &Store) -> Result<()> {
-        self.rows = store.history_page(self.mode(), 100, self.page * 100)?;
+        let rows = store.history_page(self.mode(), 100, self.page * 100)?;
+        self.bests = store.bests_by_group()?;
+        self.rows = rows;
         self.selected = self.selected.min(self.rows.len().saturating_sub(1));
         Ok(())
     }
@@ -85,13 +89,13 @@ impl History {
         self.page + 1
     }
     /// Whether `row` holds its group's stored personal best.
-    pub fn best(row: &Value, store: &Store) -> bool {
+    pub fn best(&self, row: &Value) -> bool {
         row["formatVersion"] == 1
             && row["personalBestEligible"] == true
             && row["personalBestGroup"]
                 .as_str()
-                .and_then(|g| store.best(g).ok().flatten())
-                == row["summary"]["wpm"].as_f64()
+                .and_then(|group| self.bests.get(group))
+                .is_some_and(|best| Some(*best) == row["summary"]["wpm"].as_f64())
     }
     pub fn current(&self) -> Option<&Value> {
         self.rows.get(self.selected)

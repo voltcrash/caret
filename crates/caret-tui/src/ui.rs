@@ -1,6 +1,6 @@
 //! Screen composition. Imperative work stays in the terminal; this only paints frames.
 use crate::theme::Palette;
-use crate::{engine::EngineHost, history::History, local::Local, setup::Setup};
+use crate::{engine::EngineHost, local::Local, setup::Setup};
 use ratatui::{
     Frame,
     layout::{Alignment, Constraint, Layout, Rect},
@@ -872,11 +872,7 @@ fn history(frame: &mut Frame, area: Rect, local: &Local, palette: &Palette) {
                 }
             };
             let selected = index == history.selected;
-            let crown = if History::best(row, &local.store) {
-                "♛"
-            } else {
-                ""
-            };
+            let crown = if history.best(row) { "♛" } else { "" };
             let mut style = Style::new().fg(if invalid { palette.error } else { palette.text });
             if index % 2 == 0 {
                 style = style.bg(palette.sub_alt);

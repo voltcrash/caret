@@ -28,6 +28,38 @@ fn finished() -> EngineHost {
     host
 }
 #[test]
+fn history_crowns_use_group_bests_from_all_pages_until_refresh() {
+    let temp = tempfile::tempdir().unwrap();
+    let paths = Paths {
+        config: temp.path().join("config"),
+        data: temp.path().join("data"),
+    };
+    let mut store = Store::open(&paths).unwrap();
+    let mut history = caret_tui::history::History::default();
+    let score = |id: usize, group: &str, wpm: u32, eligible: bool| {
+        serde_json::json!({
+            "id": id.to_string(), "formatVersion": 1, "createdMs": id, "config": {"mode": "words"},
+            "personalBestEligible": eligible, "personalBestGroup": group, "summary": {"wpm": wpm},
+        })
+    };
+    store.save(&score(0, "a", 100, true)).unwrap();
+    for i in 1..=100 {
+        store.save(&score(i, "a", 80, true)).unwrap();
+    }
+    store.save(&score(101, "b", 50, true)).unwrap();
+    store.save(&score(102, "b", 150, false)).unwrap();
+    history.refresh(&store).unwrap();
+    assert!(!history.best(&history.rows[0]));
+    assert!(history.best(&history.rows[1]));
+    assert!(!history.best(&history.rows[2]));
+    store.save(&score(103, "b", 90, true)).unwrap();
+    assert!(history.best(&history.rows[1]));
+    history.refresh(&store).unwrap();
+    assert!(history.best(&history.rows[0]));
+    assert!(!history.best(&history.rows[2]));
+}
+
+#[test]
 fn failed_write_queue_retries_the_same_uuid_once_and_history_filters_page() {
     let temp = tempfile::tempdir().unwrap();
     let paths = Paths {
