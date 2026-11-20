@@ -100,29 +100,22 @@ import { show } from "../../../src/ts/commandline/commandline";
 import { ThemeIndicator } from "../../../src/ts/components/layout/header/ThemeIndicator";
 import { Commandline } from "../../../src/ts/components/modals/Commandline";
 import { setConfigStore } from "../../../src/ts/config/store";
-import { restartTestEvent } from "../../../src/ts/events/test";
 import { useCommandPaletteHotkeys } from "../../../src/ts/input/hotkeys/command-palette";
 import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
 import { commandlineState } from "../../../src/ts/states/commandline";
 import { setCommandlineSubgroup } from "../../../src/ts/states/core";
 import { hideModalAndClearChain } from "../../../src/ts/states/modals";
 import { isAnyPopupVisible } from "../../../src/ts/states/overlay-visibility";
-import { bindTypingHost } from "../../../src/ts/typing-host";
+import { bindTestTypingHost } from "../../__harness__/typing-host";
 
 describe("theme picker lifecycle", () => {
   let displayStyles: HTMLStyleElement;
   let releaseTypingRoute: () => void;
+  const restart = vi.fn();
 
   beforeEach(() => {
     // Quick restart only restarts on the typing route.
-    releaseTypingRoute = bindTypingHost({
-      isRouteActive: () => true,
-      restart: vi.fn(),
-      blur: vi.fn(),
-      reloadPaceCaret: vi.fn(),
-      updateHints: vi.fn(),
-      isNoQuitActive: () => false,
-    });
+    releaseTypingRoute = bindTestTypingHost({ restart });
     hideModalAndClearChain("Commandline");
     setCommandlineSubgroup(null);
     commandlineState.phase = "closed";
@@ -192,8 +185,7 @@ describe("theme picker lifecycle", () => {
       const dialog = view.container.querySelector(
         "dialog",
       ) as HTMLDialogElement;
-      const restart = vi.fn();
-      const unsubscribe = restartTestEvent.subscribe(restart);
+      restart.mockClear();
       try {
         if (savedCustomTheme) {
           // Saved themes are a command-line subgroup; the custom footer opens
@@ -247,7 +239,7 @@ describe("theme picker lifecycle", () => {
         );
         await waitFor(() => expect(dialog.open).toBe(true));
       } finally {
-        unsubscribe();
+        restart.mockClear();
       }
     },
   );

@@ -6,13 +6,13 @@ import { Button } from "../../../ts/components/common/Button";
 import { configMetadata } from "../../../ts/config/metadata";
 import { setConfig, setQuoteLengthAll } from "../../../ts/config/setters";
 import { getConfig } from "../../../ts/config/store";
-import { restartTestEvent } from "../../../ts/events/test";
 import { createEffectOn } from "../../../ts/hooks/effects";
 import { useRef } from "../../../ts/hooks/useRef";
 import { isAuthenticated } from "../../../ts/states/core";
 import { showModal } from "../../../ts/states/modals";
 import { getResultVisible, getFocus } from "../../../ts/states/test";
 import { FaObject } from "../../../ts/types/font-awesome";
+import { restartTest } from "../../../ts/typing-host";
 import { areUnsortedArraysEqual } from "../../../ts/utils/arrays";
 import { cn, updateClassNames } from "../../../ts/utils/cn";
 import { applyReducedMotion } from "../../../ts/utils/misc";
@@ -168,7 +168,7 @@ function PuncAndNum(): JSXElement {
                 }
                 onClick={() => {
                   setConfig(configKey, !getConfig[configKey]);
-                  restartTestEvent.dispatch();
+                  restartTest();
                 }}
               />
             )}
@@ -198,7 +198,7 @@ function Mode(): JSXElement {
             active={getConfig.mode === modeOption}
             onClick={() => {
               setConfig("mode", modeOption);
-              restartTestEvent.dispatch();
+              restartTest();
             }}
           />
         )}
@@ -318,7 +318,7 @@ function Mode2Time(props: ComponentProps<"div">): JSXElement {
             active={getConfig.time === time}
             onClick={() => {
               setConfig("time", time);
-              restartTestEvent.dispatch();
+              restartTest();
             }}
           />
         )}
@@ -349,7 +349,7 @@ function Mode2Words(props: ComponentProps<"div">): JSXElement {
             active={getConfig.words === count}
             onClick={() => {
               setConfig("words", count);
-              restartTestEvent.dispatch();
+              restartTest();
             }}
           />
         )}
@@ -385,7 +385,7 @@ function Mode2Quote(props: ComponentProps<"div">): JSXElement {
         active={areUnsortedArraysEqual(getConfig.quoteLength, [0, 1, 2, 3])}
         onClick={() => {
           setQuoteLengthAll();
-          restartTestEvent.dispatch();
+          restartTest();
         }}
       />
       <For each={quoteLengths}>
@@ -395,7 +395,7 @@ function Mode2Quote(props: ComponentProps<"div">): JSXElement {
             active={areUnsortedArraysEqual(getConfig.quoteLength, [length])}
             onClick={() => {
               setConfig("quoteLength", [length]);
-              restartTestEvent.dispatch();
+              restartTest();
             }}
           />
         )}
@@ -409,7 +409,7 @@ function Mode2Quote(props: ComponentProps<"div">): JSXElement {
           active={areUnsortedArraysEqual(getConfig.quoteLength, [-3])}
           onClick={() => {
             setConfig("quoteLength", [-3]);
-            restartTestEvent.dispatch();
+            restartTest();
           }}
         />
       </Show>

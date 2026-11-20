@@ -12,12 +12,12 @@ vi.mock("../../../../src/ts/states/modals", async (importOriginal) => ({
 
 import { TypingRouteHost } from "../../../../src/components/typing-route-host";
 import { Logo } from "../../../../src/ts/components/layout/header/Logo";
-import { restartTestEvent } from "../../../../src/ts/events/test";
 import {
   getCommandlineSubgroup,
   setCommandlineSubgroup,
   setThemeIndicator,
 } from "../../../../src/ts/states/core";
+import { bindTestTypingHost } from "../../../__harness__/typing-host";
 
 describe("Logo", () => {
   const [typing, setTyping] = createSignal(false);
@@ -60,7 +60,7 @@ describe("Logo", () => {
     (target) => {
       setTyping(true);
       const restart = vi.fn();
-      const unsubscribe = restartTestEvent.subscribe(restart);
+      const unsubscribe = bindTestTypingHost({ restart });
       try {
         const view = renderLogo();
         const home = view.getByRole("link", { name: "Caret Home" });
@@ -81,7 +81,7 @@ describe("Logo", () => {
 
   it("navigates home from the wordmark on other routes without restarting", () => {
     const restart = vi.fn();
-    const unsubscribe = restartTestEvent.subscribe(restart);
+    const unsubscribe = bindTestTypingHost({ restart });
     try {
       const view = renderLogo();
       fireEvent.click(view.getByText("caret"));

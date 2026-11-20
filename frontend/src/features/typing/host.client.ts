@@ -10,7 +10,7 @@ import { isTypingRouteActive } from "./scope";
 export function bindTypingRouteHost(): () => void {
   return bindTypingHost({
     isRouteActive: isTypingRouteActive,
-    restart: () => void TestLogic.restart(),
+    restart: (options) => void TestLogic.restart(options),
     blur: () => Focus.set(false),
     reloadPaceCaret: async () => PaceCaret.init(),
     updateHints: () => void updateHintsPositionDebounced(),

@@ -8,7 +8,7 @@ import { createAppSignal } from "../app/state";
  */
 type TypingHost = {
   isRouteActive: () => boolean;
-  restart: () => void;
+  restart: (options?: { isQuickRestart?: boolean }) => void;
   blur: () => void;
   reloadPaceCaret: () => Promise<void>;
   updateHints: () => void;
@@ -30,8 +30,8 @@ export function isTypingRouteActive(): boolean {
   return getHost()?.isRouteActive() ?? false;
 }
 
-export function restartTest(): void {
-  untrack(getHost)?.restart();
+export function restartTest(options?: { isQuickRestart?: boolean }): void {
+  untrack(getHost)?.restart(options);
 }
 
 export function blurTest(): void {

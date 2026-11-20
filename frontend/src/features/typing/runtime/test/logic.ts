@@ -36,7 +36,6 @@ import {
   isResultCalculating,
   setBailedOut,
 } from "../../../../ts/states/test";
-import { restartTestEvent } from "../../../../ts/events/test";
 import * as TestWords from "./words";
 import { configEvent } from "../../../../ts/events/config";
 import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
@@ -336,7 +335,6 @@ export function useTestLogicEvents(): void {
     }),
   );
 
-  restartTestEvent.useListener((event) => void restart(event));
   configEvent.useListener(({ key, newValue, previousValue, nosave }) => {
     // Account sync reapplies every setter, including unchanged language values.
     // Compare the settled batch, never its temporary reset to defaults.

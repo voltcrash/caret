@@ -3,8 +3,8 @@ import { JSXElement } from "solid-js";
 import { CaretMark } from "../../../../components/brand/caret-mark";
 import { CaretWordmark } from "../../../../components/brand/caret-wordmark";
 import { useTypingRoute } from "../../../../components/typing-route-host";
-import { restartTestEvent } from "../../../events/test";
 import { getFocus } from "../../../states/test";
+import { restartTest } from "../../../typing-host";
 import { cn } from "../../../utils/cn";
 import { Link } from "../../common/Link";
 import { ThemeIndicator } from "./ThemeIndicator";
@@ -23,7 +23,7 @@ export function Logo(): JSXElement {
         aria-label="Caret Home"
         style={{ "box-sizing": "content-box" }}
         onClick={() => {
-          if (typing()) restartTestEvent.dispatch();
+          if (typing()) restartTest();
         }}
       >
         <CaretMark
