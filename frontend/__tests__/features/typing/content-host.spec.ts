@@ -20,7 +20,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("../../../src/features/typing/initial/next-snapshot.client", () => ({
   saveNextTypingPreview: mocks.prepareNext,
 }));
-vi.mock("../../../src/features/typing/engine/owner.client", () => ({
+vi.mock("../../../src/ts/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     load: async () => undefined,
     status: () => ({ state: "ready" }),

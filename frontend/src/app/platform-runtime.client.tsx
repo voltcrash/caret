@@ -1,7 +1,6 @@
 import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
-import { getBrowserEngine } from "../features/typing/engine/owner.client";
 import { enable as glarsesMode } from "../features/typing/state/glarses-mode";
 import { applyEngineSettings } from "../ts/anim";
 import { Theme } from "../ts/components/core/Theme";
@@ -11,6 +10,7 @@ import { getMutableConfig } from "../ts/config/store";
 import { deactivateAnalytics } from "../ts/controllers/analytics-controller";
 import { useThemeEvents } from "../ts/controllers/theme-controller";
 import { activateWhatsAccepted, getAcceptedCookies } from "../ts/cookies";
+import { getBrowserEngine } from "../ts/engine/owner.client";
 import { disposeSentry, toggleDebug as toggleSentryDebug } from "../ts/sentry";
 import { useConnectionEvents } from "../ts/states/connection";
 import { installLogger, toggleDebugLogs } from "../ts/utils/logger";

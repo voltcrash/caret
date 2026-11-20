@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, untrack } from "solid-js";
-import { createAppOwned } from "../../../app/application";
+import { createAppOwned } from "../../app/application";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import type {
   BrowserContent,

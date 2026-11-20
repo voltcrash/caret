@@ -2,8 +2,8 @@ import { type AnnotationOptions } from "chartjs-plugin-annotation";
 import { createMemo, JSXElement, Show } from "solid-js";
 
 import { ChartJs } from "../../../../ts/components/common/ChartJs";
+import { requireBrowserAudit } from "../../../../ts/engine/audit.client";
 import { getTheme } from "../../../../ts/states/theme";
-import { requireBrowserAudit } from "../../engine/audit.client";
 import "./chart-setup";
 import {
   bucketLabels,

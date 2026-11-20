@@ -14,7 +14,7 @@ import { getLastEventLog, getResultVisible } from "../../../../ts/states/test";
 import {
   getRawHistory,
   getTimerBoundaryLabels,
-} from "../../engine/analysis.client";
+} from "../../../../ts/engine/analysis.client";
 import {
   getResultChart,
   getResultChartDataset,

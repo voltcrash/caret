@@ -7,7 +7,7 @@ import {
 } from "../__harness__/test-application";
 
 releaseTestApplication();
-import { getBrowserEngine } from "../../src/features/typing/engine/owner.client";
+import { getBrowserEngine } from "../../src/ts/engine/owner.client";
 import { projectEngineConfig } from "@caret/typing-engine/config";
 import { getMutableConfig } from "../../src/ts/config/store";
 import { encodeText } from "@caret/typing-engine/text";

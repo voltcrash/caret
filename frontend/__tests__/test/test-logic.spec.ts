@@ -61,7 +61,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("../../src/features/typing/runtime/content/host.client", () => ({
   getContentHost: () => ({ prepare: mocks.generate }),
 }));
-vi.mock("../../src/features/typing/engine/owner.client", () => ({
+vi.mock("../../src/ts/engine/owner.client", () => ({
   getBrowserEngine: () => ({ load: mocks.engineLoad }),
 }));
 
@@ -258,7 +258,7 @@ vi.mock("../../src/features/typing/runtime/result/hash", () => ({
   hashResult: vi.fn().mockResolvedValue("hash"),
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("../../src/features/typing/engine/analysis.client", () => ({
+vi.mock("../../src/ts/engine/analysis.client", () => ({
   analyze: () => ({ reason: null, afk: false }),
   getAnalysis: () => ({
     incompleteTestSeconds: 0,

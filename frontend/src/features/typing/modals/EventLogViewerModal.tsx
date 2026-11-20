@@ -4,11 +4,11 @@ import { JSXElement, Show, createSignal, onCleanup } from "solid-js";
 
 import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
 import { Button } from "../../../ts/components/common/Button";
+import { getInspection } from "../../../ts/engine/analysis.client";
+import { getBrowserAudit } from "../../../ts/engine/audit.client";
+import { getBrowserEngine } from "../../../ts/engine/owner.client";
 import { hideModal } from "../../../ts/states/modals";
 import { getLastEventLog } from "../../../ts/states/test";
-import { getInspection } from "../engine/analysis.client";
-import { getBrowserAudit } from "../engine/audit.client";
-import { getBrowserEngine } from "../engine/owner.client";
 import {
   getError,
   getEventLog,

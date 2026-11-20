@@ -43,7 +43,7 @@ const mocks = vi.hoisted(() => ({
   generation: 0,
 }));
 
-vi.mock("../../../src/features/typing/engine/owner.client", () => ({
+vi.mock("../../../src/ts/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     load: async () => undefined,
     session: () => mocks.session,

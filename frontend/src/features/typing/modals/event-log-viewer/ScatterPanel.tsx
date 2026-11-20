@@ -7,8 +7,8 @@ import { Button } from "../../../../ts/components/common/Button";
 import {
   getKeypressDurations,
   getKeypressSpacing,
-} from "../../engine/analysis.client";
-import { requireBrowserAudit } from "../../engine/audit.client";
+} from "../../../../ts/engine/analysis.client";
+import { requireBrowserAudit } from "../../../../ts/engine/audit.client";
 import { getScatterOpen, setScatterOpen } from "../../state/event-log-viewer";
 import {
   getCharPositionPoints,

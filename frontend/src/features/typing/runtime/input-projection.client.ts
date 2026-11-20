@@ -2,7 +2,7 @@ import { batch, createEffect, createSignal, onCleanup } from "solid-js";
 import type { ContentRequest } from "@caret/typing-engine/browser.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { decodeText } from "@caret/typing-engine/text";
-import { getBrowserEngine } from "../engine/owner.client";
+import { getBrowserEngine } from "../../../ts/engine/owner.client";
 import { captureTypingRoute } from "../scope";
 import { getEngineSession } from "./session.client";
 import { getContentHost } from "./content/host.client";

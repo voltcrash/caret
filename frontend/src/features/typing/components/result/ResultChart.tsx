@@ -11,6 +11,7 @@ import { For, JSXElement, onCleanup, Show } from "solid-js";
 import { ChartJs } from "../../../../ts/components/common/ChartJs";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { Theme } from "../../../../ts/constants/themes";
+import { getWordIndexesForSecond } from "../../../../ts/engine/analysis.client";
 import { createDebouncedEffectOn } from "../../../../ts/hooks/effects";
 import { getLastEventLog } from "../../../../ts/states/test";
 import { getTheme } from "../../../../ts/states/theme";
@@ -19,7 +20,6 @@ import * as Arrays from "../../../../ts/utils/arrays";
 import { cn } from "../../../../ts/utils/cn";
 import { blendTwoHexColors } from "../../../../ts/utils/colors";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
-import { getWordIndexesForSecond } from "../../engine/analysis.client";
 import { toggleResultChartLegend } from "../../runtime/result/screen";
 import {
   getResultChart,

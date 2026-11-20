@@ -2,11 +2,11 @@ import { createMemo, Show, type JSXElement } from "solid-js";
 
 import { pendingResultSaves } from "../../../../app/update-safety";
 import { Button } from "../../../../ts/components/common/Button";
+import { getBrowserEngine } from "../../../../ts/engine/owner.client";
 import {
   getResultVisible,
   isResultCalculating,
 } from "../../../../ts/states/test";
-import { getBrowserEngine } from "../../engine/owner.client";
 import { resultOutbox } from "../../history/outbox.client";
 
 /** A new document safely releases Wasm's high-water memory and every handle. */

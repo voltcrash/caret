@@ -1,13 +1,13 @@
 import { onCleanup, onMount } from "solid-js";
 
 import { useSoundEvents } from "../../ts/controllers/sound-controller";
+import { getBrowserEngine } from "../../ts/engine/owner.client";
 import {
   getLastEventLog,
   getActiveWordIndex,
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
-import { getBrowserEngine } from "./engine/owner.client";
 import { useChallengeEvents } from "./runtime/challenge-controller";
 import { usePractiseEvents } from "./runtime/content/practise-words";
 import { buildEventLog, getTestSession } from "./runtime/events/data";

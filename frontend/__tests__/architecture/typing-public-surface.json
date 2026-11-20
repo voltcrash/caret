@@ -1,7 +1,5 @@
 [
   "commands",
-  "engine/owner.client",
-  "engine/policy.client",
   "initial/default",
   "initial/snapshot",
   "initial/snapshot.client",

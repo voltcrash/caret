@@ -9,7 +9,7 @@ import {
   getCorrectedWordsHistory,
   getInputHistory,
   getWordBurstHistory,
-} from "../../engine/analysis.client";
+} from "../../../../ts/engine/analysis.client";
 import * as TestWords from "../test/words";
 import { buildWordsHistory } from "../word-markup";
 import { resultState, setResultState } from "../../state/result";

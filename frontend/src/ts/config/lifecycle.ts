@@ -1,5 +1,5 @@
 import { createAppOwned } from "../../app/application";
-import { getBrowserEngine } from "../../features/typing/engine/owner.client";
+import { getBrowserEngine } from "../engine/owner.client";
 import { batch } from "solid-js";
 import { preferencesReadiness } from "../../app/readiness";
 import * as ConfigSchemas from "@caret/schemas/configs";

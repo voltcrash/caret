@@ -23,7 +23,7 @@ import { Mode } from "@caret/schemas/shared";
 import {
   checkCompatibility,
   checkForcedConfig,
-} from "../../engine/policy.client";
+} from "../../../../ts/engine/policy.client";
 import {
   getAllFunboxes,
   getActiveFunboxNames,
