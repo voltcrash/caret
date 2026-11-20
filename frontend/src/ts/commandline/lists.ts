@@ -38,13 +38,13 @@ import {
 import { applyConfigFromJson } from "../config/lifecycle";
 import { getLastEventLog } from "../states/test";
 import { commandlineState } from "../states/commandline";
+import { contributedCommands, contributedList } from "./registry";
 
-const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
-  title: "",
-  list: [
-    //result
-    ...ResultScreenCommands,
-
+/** Core commands between the slots features contribute to. */
+const getCoreCommands = createAccountOwned<
+  Record<"testScreen" | "accountAndBehavior" | "settings" | "other", Command[]>
+>(() => ({
+  testScreen: [
     //test screen
     ...buildCommands(
       "punctuation",
@@ -76,6 +76,8 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
     },
     ...QuoteFavoriteCommands,
     ...BailOutCommands,
+  ],
+  accountAndBehavior: [
     {
       id: "shareTestSettings",
       display: "Share test settings",
@@ -103,9 +105,10 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
       ...MinBurstCommands,
       "britishEnglish",
       ...FunboxCommands,
-      "customLayoutfluid",
-      "customPolyglot",
     ),
+  ],
+  settings: [
+    ...buildCommands("customLayoutfluid", "customPolyglot"),
 
     //input
     ...buildCommands(
@@ -209,6 +212,8 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
 
     //other
     ...LoadChallengeCommands,
+  ],
+  other: [
     ...NavigationCommands,
     {
       id: "importSettingsJSON",
@@ -338,24 +343,42 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
   ],
 }));
 
-const getLists = createAccountOwned<
-  Record<CommandlineListKey, CommandsSubgroup | undefined>
->(() => ({
-  themes: ThemesCommands[0]?.subgroup,
-  loadChallenge: LoadChallengeCommands[0]?.subgroup,
-  minBurst: MinBurstCommands[0]?.subgroup,
-  funbox: FunboxCommands[0]?.subgroup,
-  tags: TagsCommands[0]?.subgroup,
-}));
+function getCommands(): CommandsSubgroup {
+  const core = getCoreCommands();
+  return {
+    title: "",
+    list: [
+      ...ResultScreenCommands,
+      ...contributedCommands("result"),
+      ...core.testScreen,
+      ...contributedCommands("test"),
+      ...core.accountAndBehavior,
+      ...contributedCommands("behavior"),
+      ...core.settings,
+      ...contributedCommands("other"),
+      ...core.other,
+    ],
+  };
+}
 
-const getSubgroupByConfigKey = createAccountOwned(
-  () =>
-    Object.fromEntries(
-      getCommands()
-        .list.filter((it) => it.subgroup?.configKey !== undefined)
-        .map((it) => [it.subgroup?.configKey, it.subgroup]),
-    ) as Record<string, CommandsSubgroup>,
-);
+function getLists(): Record<CommandlineListKey, CommandsSubgroup | undefined> {
+  return {
+    themes: ThemesCommands[0]?.subgroup,
+    loadChallenge:
+      LoadChallengeCommands[0]?.subgroup ?? contributedList("loadChallenge"),
+    minBurst: MinBurstCommands[0]?.subgroup,
+    funbox: FunboxCommands[0]?.subgroup ?? contributedList("funbox"),
+    tags: TagsCommands[0]?.subgroup,
+  };
+}
+
+function getSubgroupByConfigKey(): Record<string, CommandsSubgroup> {
+  return Object.fromEntries(
+    getCommands()
+      .list.filter((it) => it.subgroup?.configKey !== undefined)
+      .map((it) => [it.subgroup?.configKey, it.subgroup]),
+  ) as Record<string, CommandsSubgroup>;
+}
 
 export function doesListExist(listName: string): boolean {
   if (getSubgroupByConfigKey()[listName] !== undefined) {
