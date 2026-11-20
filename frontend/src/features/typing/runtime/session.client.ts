@@ -1,9 +1,9 @@
 import { onCleanup } from "solid-js";
-import { createAppOwned } from "../../../app/application";
-import { getBrowserEngine } from "../../../ts/engine/owner.client";
+import { createAppOwned } from "#app/application.ts";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { EngineFailure } from "@caret/typing-engine/failure";
-import { getTypingLifecycle } from "../../../ts/states/test-lifecycle/controller";
-import { isUpdateReserved } from "../../../app/update-safety";
+import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
+import { isUpdateReserved } from "#app/update-safety.ts";
 import {
   engineConfigMatches,
   projectEngineConfig,
@@ -35,7 +35,7 @@ import type {
   InsertionLayout,
   RestartOptions,
 } from "@caret/typing-engine/browser.client";
-import { peekConfig } from "../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import * as CustomText from "./content/custom-text";
 import type { CompletedEvent } from "@caret/schemas/results";
 

@@ -1,7 +1,7 @@
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import QuotesController, { Quote } from "../quotes-controller";
-import * as DB from "../../../../ts/db";
-import { isAuthenticated } from "../../../../ts/states/core";
+import * as DB from "#shared/db.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
 import { getQuoteStats } from "../../state/quote-rate";
 import * as Numbers from "@caret/util/numbers";
 import { setResultState } from "../../state/result";

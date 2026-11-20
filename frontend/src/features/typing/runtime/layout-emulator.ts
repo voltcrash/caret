@@ -1,9 +1,9 @@
-import { createAppOwned } from "../../../app/application";
-import { appObject } from "../../../app/state";
+import { createAppOwned } from "#app/application.ts";
+import { appObject } from "#app/state.ts";
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
 import { getCharFromLayout } from "@caret/web-shared/layout-emulator";
-import { showErrorNotification } from "../../../ts/states/notifications";
-import { waitForInputLayout } from "../../../ts/states/test";
+import { showErrorNotification } from "#shared/states/notifications.ts";
+import { waitForInputLayout } from "#shared/states/test.ts";
 
 const altGr = appObject(createAppOwned(() => ({ pressed: false })));
 export async function getCharFromEvent(

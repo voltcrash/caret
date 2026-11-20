@@ -1,7 +1,7 @@
 import type { CompletedEvent } from "@caret/schemas/results";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
 
-import { createAppOwned } from "../../../../app/application";
+import { createAppOwned } from "#app/application.ts";
 
 type ResultContext = {
   result: CompletedEvent | undefined;

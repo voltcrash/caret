@@ -1,5 +1,5 @@
-import { getLastEventLog } from "../../../../ts/states/test";
-import { getAccuracy } from "../../../../ts/engine/analysis.client";
+import { getLastEventLog } from "#shared/states/test.ts";
+import { getAccuracy } from "#shared/engine/analysis.client.ts";
 
 export function getEventLogAccuracy(): {
   correct: number;

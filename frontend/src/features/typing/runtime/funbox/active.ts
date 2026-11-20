@@ -1,4 +1,4 @@
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import { FunboxProperty, getFunboxObject } from "@caret/funbox";
 import { FunboxName } from "@caret/schemas/configs";
 

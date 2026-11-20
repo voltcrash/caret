@@ -8,25 +8,25 @@ import {
   beginLoaderBar,
   showLoaderBar,
   hideLoaderBar,
-} from "../../../../ts/states/loader-bar";
+} from "#shared/states/loader-bar.ts";
 import * as Replay from "../replay";
-import { setIsScreenshotting } from "../../../../ts/states/core";
+import { setIsScreenshotting } from "#shared/states/core.ts";
 import { getActiveFunboxesWithFunction } from "../funbox/list";
-import * as DB from "../../../../ts/db";
+import * as DB from "#shared/db.ts";
 import { format } from "date-fns/format";
 import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../../ts/states/notifications";
-import { convertRemToPixels } from "../../../../ts/utils/numbers";
+} from "#shared/states/notifications.ts";
+import { convertRemToPixels } from "#shared/utils/numbers.ts";
 import {
   getResultWrapperElement,
   resultState,
   setScreenshotWatermark,
 } from "../../state/result";
-import { getTheme } from "../../../../ts/states/theme";
-import { download as downloadFile } from "../../../../ts/components/common/Download";
+import { getTheme } from "#shared/states/theme.ts";
+import { download as downloadFile } from "#shared/components/common/Download.tsx";
 
 function revert(): void {
   setIsScreenshotting(false);

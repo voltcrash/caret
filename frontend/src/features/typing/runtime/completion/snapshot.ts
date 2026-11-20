@@ -1,7 +1,7 @@
-import { captureAccount } from "../../../../app/account-scope";
-import { getAuthenticatedUser } from "../../../../ts/auth-client";
-import { peekConfig } from "../../../../ts/config/store";
-import { getCustomTextIndicator } from "../../../../ts/states/core";
+import { captureAccount } from "#app/account-scope.ts";
+import { getAuthenticatedUser } from "#shared/auth-client.ts";
+import { peekConfig } from "#shared/config/store.ts";
+import { getCustomTextIndicator } from "#shared/states/core.ts";
 import {
   getBailedOut,
   getCurrentQuote,
@@ -9,7 +9,7 @@ import {
   getIncompleteTests,
   getRestartCount,
   isRepeated,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import { buildEventLog, getTestSession } from "../events/data";
 import * as CustomText from "../content/custom-text";
 import { words } from "../test/words";

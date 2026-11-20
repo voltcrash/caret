@@ -1,7 +1,7 @@
 import { setMaxChartValue } from "./chart-bounds";
-import { peekConfig } from "../../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import * as Numbers from "@caret/util/numbers";
-import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
+import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 import {
   getResultChart,
   getResultChartDataset,

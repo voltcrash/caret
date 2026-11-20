@@ -4,8 +4,8 @@ import {
   initialContentKey,
 } from "../../initial/snapshot.client";
 import { saveNextTypingPreview } from "../../initial/next-snapshot.client";
-import { createAppOwned } from "../../../../app/application";
-import { getBrowserEngine } from "../../../../ts/engine/owner.client";
+import { createAppOwned } from "#app/application.ts";
+import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { getEngineSession } from "../session.client";
 import { captureTypingRoute } from "../../scope";
 import { projectEngineConfig } from "@caret/typing-engine/config";
@@ -24,17 +24,17 @@ import {
   type Language,
 } from "@caret/schemas/languages";
 import { QuoteDataSchema } from "@caret/schemas/quotes";
-import { peekConfig } from "../../../../ts/config/store";
-import { cachedFetchJson, getLanguage } from "../../../../ts/utils/json-data";
-import { removeLanguageSize } from "../../../../ts/utils/strings";
+import { peekConfig } from "#shared/config/store.ts";
+import { cachedFetchJson, getLanguage } from "#shared/utils/json-data.ts";
+import { removeLanguageSize } from "#shared/utils/strings.ts";
 import {
   getSelectedQuoteId,
   isRepeated,
   setCurrentQuote,
   getCurrentQuote,
-} from "../../../../ts/states/test";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
-import { getSnapshot } from "../../../../ts/db";
+} from "#shared/states/test.ts";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
+import { getSnapshot } from "#shared/db.ts";
 import * as CustomText from "./custom-text";
 import {
   engineLanguage,

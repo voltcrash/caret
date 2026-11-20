@@ -4,8 +4,8 @@ import type {
   TestEventData,
 } from "@caret/web-shared/events/types";
 import { getEngineSession } from "../session.client";
-import { getActiveWordIndex } from "../../../../ts/states/test";
-import { peekConfig } from "../../../../ts/config/store";
+import { getActiveWordIndex } from "#shared/states/test.ts";
+import { peekConfig } from "#shared/config/store.ts";
 
 /** Legacy string transport is a mechanical view of the owned native session. */
 export const getTestSession = getEngineSession;

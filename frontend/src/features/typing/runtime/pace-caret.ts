@@ -1,18 +1,18 @@
-import { isStartupFinished } from "../../../app/startup";
-import { createAppOwned } from "../../../app/application";
+import { isStartupFinished } from "#app/startup.ts";
+import { createAppOwned } from "#app/application.ts";
 import { onCleanup } from "solid-js";
 import { captureTypingRoute } from "../scope";
 import { getTestSession } from "./events/data";
-import { peekConfig } from "../../../ts/config/store";
-import * as DB from "../../../ts/db";
-import * as Misc from "../../../ts/utils/misc";
-import { configEvent } from "../../../ts/events/config";
+import { peekConfig } from "#shared/config/store.ts";
+import * as DB from "#shared/db.ts";
+import * as Misc from "#shared/utils/misc.ts";
+import { configEvent } from "#shared/events/config.ts";
 import { getActiveFunboxes } from "./funbox/list";
 import { CaretController } from "../components/words/caret-controller";
 import {
   areTestElementsMounted,
   getPaceCaretElement,
-} from "../../../ts/states/test-dom";
+} from "#shared/states/test-dom.ts";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
@@ -21,7 +21,7 @@ import {
   isPaceRepeat,
   isTestActive,
   setPaceCaretWpm,
-} from "../../../ts/states/test";
+} from "#shared/states/test.ts";
 
 // The session owns pace state; this module schedules steps and renders them.
 const state = createAppOwned(() => {

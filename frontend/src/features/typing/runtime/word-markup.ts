@@ -1,6 +1,6 @@
 import { assemble } from "./hangul-assembly";
 
-import * as Strings from "../../../ts/utils/strings";
+import * as Strings from "#shared/utils/strings.ts";
 
 export type WordLetter = {
   char: string;

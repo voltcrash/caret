@@ -4,21 +4,21 @@ import {
   setReadAheadDisabled,
   setWordsVisible,
   setWordsWrapperVisible,
-} from "../../../../ts/states/funbox";
-import { peekConfig } from "../../../../ts/config/store";
-import { setConfig, toggleFunbox } from "../../../../ts/config/setters";
+} from "#shared/states/funbox.ts";
+import { peekConfig } from "#shared/config/store.ts";
+import { setConfig, toggleFunbox } from "#shared/config/setters.ts";
 import { save } from "./funbox-memory";
 import { ttsEvent } from "../events/tts";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 import * as TestWords from "../test/words";
 import { getCurrentInput, getInputForWord } from "../events/data";
 import * as LayoutfluidFunboxTimer from "./layoutfluid-funbox-timer";
-import { highlight } from "../../../../ts/states/keymap";
+import { highlight } from "#shared/states/keymap.ts";
 import * as MemoryTimer from "./memory-funbox-timer";
-import { getActiveWordIndex } from "../../../../ts/states/test";
+import { getActiveWordIndex } from "#shared/states/test.ts";
 import { FunboxName, KeymapLayout, Layout } from "@caret/schemas/configs";
 
 export type FunboxFunctions = {

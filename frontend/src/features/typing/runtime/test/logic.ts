@@ -1,15 +1,15 @@
-import { getTypingLifecycle } from "../../../../ts/states/test-lifecycle/controller";
-import { isUpdateReserved } from "../../../../app/update-safety";
+import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
+import { isUpdateReserved } from "#app/update-safety.ts";
 import { captureTypingRoute, isTypingRouteActive } from "../../scope";
-import { hideLoaderBar } from "../../../../ts/states/loader-bar";
-import { createAppOwned } from "../../../../app/application";
+import { hideLoaderBar } from "#shared/states/loader-bar.ts";
+import { createAppOwned } from "#app/application.ts";
 import { onCleanup } from "solid-js";
 import * as TestUI from "./ui";
-import * as Strings from "../../../../ts/utils/strings";
+import * as Strings from "#shared/utils/strings.ts";
 
-import * as JSONData from "../../../../ts/utils/json-data";
+import * as JSONData from "#shared/utils/json-data.ts";
 import * as Numbers from "@caret/util/numbers";
-import { showNoticeNotification } from "../../../../ts/states/notifications";
+import { showNoticeNotification } from "#shared/states/notifications.ts";
 import * as CustomText from "../content/custom-text";
 import * as PractiseWords from "../content/practise-words";
 import * as Funbox from "../funbox/funbox";
@@ -23,7 +23,7 @@ import { clearQuoteStats } from "../../state/quote-rate";
 import {
   getCustomTextIndicator,
   isAuthenticated,
-} from "../../../../ts/states/core";
+} from "#shared/states/core.ts";
 import {
   setKoreanStatus,
   isTestRestarting,
@@ -35,30 +35,30 @@ import {
   setIsTestInvalid,
   isResultCalculating,
   setBailedOut,
-} from "../../../../ts/states/test";
+} from "#shared/states/test.ts";
 import * as TestWords from "./words";
-import { configEvent } from "../../../../ts/events/config";
-import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
+import { configEvent } from "#shared/events/config.ts";
+import * as AnalyticsController from "#shared/controllers/analytics-controller.ts";
 import { preloadResultHasher } from "../result/hash";
 
-import { highlight } from "../../../../ts/states/keymap";
+import { highlight } from "#shared/states/keymap.ts";
 import * as LazyModeState from "../remember-lazy-mode";
 
 import { getActiveFunboxesWithFunction } from "../funbox/list";
 
-import * as CompositionState from "../../../../ts/states/composition";
+import * as CompositionState from "#shared/states/composition.ts";
 
-import { setInputElementValue } from "../../../../ts/input/input-element";
+import { setInputElementValue } from "#shared/input/input-element.ts";
 import { debounce } from "@caret/util/timing";
 import { typedKeys } from "@caret/util/objects";
 import { sharedConfigMetadata } from "@caret/web-shared/config/metadata";
 
-import { peekConfig } from "../../../../ts/config/store";
-import { setConfig } from "../../../../ts/config/setters";
+import { peekConfig } from "#shared/config/store.ts";
+import { setConfig } from "#shared/config/setters.ts";
 import { getTestSession, resetTestEvents } from "../events/data";
 
 import { resetModifierState } from "../../state/modifiers";
-import { nthElementFromArray } from "../../../../ts/utils/arrays";
+import { nthElementFromArray } from "#shared/utils/arrays.ts";
 
 import { beginGuestScore } from "../../history/guest-scores.client";
 import { testLogicState } from "./logic-state";

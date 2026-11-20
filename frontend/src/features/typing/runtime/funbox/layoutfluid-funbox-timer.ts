@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from "../../../../ts/utils/strings";
+import { capitalizeFirstLetter } from "#shared/utils/strings.ts";
 import {
   setLayoutfluidTimerText,
   setLayoutfluidTimerVisibility,

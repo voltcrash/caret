@@ -1,5 +1,5 @@
 import { CustomTextLimitMode, CustomTextMode } from "@caret/schemas/util";
-import { LocalStorageWithSchema } from "../../../../ts/utils/local-storage-with-schema";
+import { LocalStorageWithSchema } from "#shared/utils/local-storage-with-schema.ts";
 import { z } from "zod";
 import {
   CustomTextSettings,

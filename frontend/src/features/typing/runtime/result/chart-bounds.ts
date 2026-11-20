@@ -1,8 +1,8 @@
-import { createAppOwned } from "../../../../app/application";
-import { appObject } from "../../../../app/state";
+import { createAppOwned } from "#app/application.ts";
+import { appObject } from "#app/state.ts";
 import { resultAnnotations } from "./context";
-import { peekConfig } from "../../../../ts/config/store";
-import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
+import { peekConfig } from "#shared/config/store.ts";
+import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 import { getResultChartDataset, getResultChartScale } from "../../state/result";
 
 const bounds = appObject(createAppOwned(() => ({ min: 0, max: 0 })));

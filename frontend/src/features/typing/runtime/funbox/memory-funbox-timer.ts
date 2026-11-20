@@ -1,7 +1,7 @@
 import { onCleanup } from "solid-js";
 import { createTypingOwned } from "../../scope";
-import { appObject } from "../../../../app/state";
-import { setWordsWrapperVisible } from "../../../../ts/states/funbox";
+import { appObject } from "#app/state.ts";
+import { setWordsWrapperVisible } from "#shared/states/funbox.ts";
 import { setMemoryTimerText, setMemoryTimerVisibility } from "./timers-state";
 
 const timerState = createTypingOwned(() => {

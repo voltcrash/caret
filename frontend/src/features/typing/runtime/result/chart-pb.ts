@@ -1,11 +1,11 @@
 import { captureTypingPresentation } from "../../scope";
 import { currentResult, resultAnnotations } from "./context";
-import { peekConfig } from "../../../../ts/config/store";
-import * as DB from "../../../../ts/db";
+import { peekConfig } from "#shared/config/store.ts";
+import * as DB from "#shared/db.ts";
 import * as Numbers from "@caret/util/numbers";
-import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
+import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 import { getFunbox } from "@caret/funbox";
-import { getTheme } from "../../../../ts/states/theme";
+import { getTheme } from "#shared/states/theme.ts";
 
 export async function updateChartPBLine(): Promise<void> {
   const lease = captureTypingPresentation();

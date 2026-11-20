@@ -1,7 +1,7 @@
-import { createAppOwned } from "../../../../app/application";
+import { createAppOwned } from "#app/application.ts";
 import { Config, ConfigKey, ConfigValue } from "@caret/schemas/configs";
 
-import { setConfig } from "../../../../ts/config/setters";
+import { setConfig } from "#shared/config/setters.ts";
 
 type SetFunction<T> = (param: T, nosave?: boolean) => boolean;
 

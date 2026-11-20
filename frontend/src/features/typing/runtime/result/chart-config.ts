@@ -13,9 +13,9 @@ import {
   resetResultAnnotations,
 } from "./context";
 import type { PluginChartOptions } from "chart.js";
-import { configEvent } from "../../../../ts/events/config";
+import { configEvent } from "#shared/events/config.ts";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
-import { getResultVisible } from "../../../../ts/states/test";
+import { getResultVisible } from "#shared/states/test.ts";
 import { getResultChart, setResultState } from "../../state/result";
 import { buildSpeedStats } from "./view-model";
 
