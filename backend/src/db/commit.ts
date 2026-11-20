@@ -9,10 +9,14 @@ import {
 } from "./retry";
 import { newId } from "../utils/id";
 
+type BatchCommit =
+  | { status: "acknowledged"; results: QueryResult[] }
+  | { status: "recovered"; results?: undefined };
+
 /** Receipt and effects commit together; replay never applies an increment twice. */
 export async function commitBatch(
   queries: PreparedQuery[],
-): Promise<QueryResult[] | undefined> {
+): Promise<BatchCommit> {
   const receipt = newId();
   const batch = [
     statement(
@@ -38,10 +42,13 @@ export async function commitBatch(
         }
         return results;
       });
-      return results.slice(1).map((result) => ({
-        results: result.rows,
-        rowCount: result.rowCount ?? 0,
-      }));
+      return {
+        status: "acknowledged",
+        results: results.slice(1).map((result) => ({
+          results: result.rows,
+          rowCount: result.rowCount ?? 0,
+        })),
+      };
     } catch (error) {
       const pg = postgresError(error);
       const duplicateReceipt =
@@ -55,7 +62,7 @@ export async function commitBatch(
           ).first(),
       );
       if (committed === null) throw error;
-      return undefined;
+      return { status: "recovered" };
     }
   });
 }

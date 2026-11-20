@@ -56,7 +56,7 @@ export async function createReport(
       ),
     ]);
     const inserted =
-      committed?.[1]?.rowCount ??
+      committed.results?.[1]?.rowCount ??
       ((await statement(
         "SELECT id FROM reports WHERE id=?",
         report._id,
