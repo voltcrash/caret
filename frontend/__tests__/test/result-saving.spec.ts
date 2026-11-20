@@ -101,7 +101,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   resetOperations();
   __testing.replaceConfig({ resultSaving: true });
-  DB.setSnapshot(getDefaultSnapshot(), { dispatchEvent: false });
+  DB.setSnapshot(getDefaultSnapshot());
   mockOperation("results.add", () => ok({ insertedId: "saved", isPb: true }));
 });
 
@@ -222,7 +222,7 @@ it("does not apply a save to an account switched during durable acknowledgement"
     requireApplication().accountData.setActor(
       `replacement-${crypto.randomUUID()}`,
     );
-    DB.setSnapshot(getDefaultSnapshot(), { dispatchEvent: false });
+    DB.setSnapshot(getDefaultSnapshot());
     await remove(hash);
   });
   mockOperation("results.add", () =>

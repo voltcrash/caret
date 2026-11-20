@@ -171,16 +171,13 @@ export const Default = meta.story({
 export const AccountPage = meta.story({
   // The snapshot belongs to this story's application owner.
   render: () => {
-    setSnapshot(
-      {
-        ...getDefaultSnapshot(),
-        uid: baseProfile.uid ?? "user123",
-        name: baseProfile.name,
-        details: baseProfile.details,
-        inventory: baseProfile.inventory,
-      },
-      { dispatchEvent: false },
-    );
+    setSnapshot({
+      ...getDefaultSnapshot(),
+      uid: baseProfile.uid ?? "user123",
+      name: baseProfile.name,
+      details: baseProfile.details,
+      inventory: baseProfile.inventory,
+    });
     return <UserProfile profile={baseProfile} isAccountPage />;
   },
 });

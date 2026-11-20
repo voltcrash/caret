@@ -11,7 +11,6 @@ import { Mode, Mode2, PersonalBest } from "@caret/schemas/shared";
 import { Snapshot, SavedResult } from "./constants/default-snapshot";
 import { getFirstDayOfTheWeek } from "./utils/date-and-time";
 import { Language } from "@caret/schemas/languages";
-import { authEvent } from "./events/auth";
 import { sync as syncServerConfiguration } from "./states/server-configuration";
 import { setLastResult } from "./states/snapshot";
 import { XpBreakdown } from "@caret/schemas/results";
@@ -66,10 +65,7 @@ export function updateLocalQuoteFavorite(
  * moderation fields (banned, verified, leaderboard opt-out) keep their
  * loaded values.
  */
-export function setSnapshot(
-  newSnapshot: Snapshot | undefined,
-  options?: { dispatchEvent?: boolean },
-): void {
+export function setSnapshot(newSnapshot: Snapshot | undefined): void {
   const client = getQueryClient();
   if (newSnapshot === undefined) {
     // Resetting (not removing) also clears the reactive view's observer.
@@ -83,10 +79,6 @@ export function setSnapshot(
       verified: previous?.verified,
       lbOptOut: previous?.lbOptOut,
     });
-  }
-
-  if (options?.dispatchEvent !== false) {
-    authEvent.dispatch({ type: "snapshotUpdated", data: { isInitial: false } });
   }
 }
 
@@ -296,9 +288,7 @@ export function saveLocalResult(data: SaveLocalResultData): void {
     }
   }
 
-  setSnapshot(snapshot, {
-    dispatchEvent: false,
-  });
+  setSnapshot(snapshot);
   if (data.xp !== undefined) {
     setXpBarData({
       addedXp: data.xp,
@@ -314,9 +304,7 @@ export function addXp(xp: number, breakdown?: XpBreakdown): void {
 
   snapshot.xp ??= 0;
   snapshot.xp += xp;
-  setSnapshot(snapshot, {
-    dispatchEvent: false,
-  });
+  setSnapshot(snapshot);
   setXpBarData({
     addedXp: xp,
     resultingXp: snapshot.xp,

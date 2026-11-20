@@ -1,7 +1,6 @@
 import { Component, For, JSXElement, lazy, Show } from "solid-js";
 
 import { ModalId, getModalVisibility } from "../ts/states/modals";
-import { useModalTriggers } from "./modal-triggers.client";
 
 function lazyModal(
   id: ModalId,
@@ -110,7 +109,6 @@ const lazyModals = [
 ];
 
 export function Modals(): JSXElement {
-  useModalTriggers();
   return (
     <For each={lazyModals}>
       {(modal) => (
