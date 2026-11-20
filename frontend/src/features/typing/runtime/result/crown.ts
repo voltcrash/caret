@@ -8,7 +8,7 @@ import {
   resultState,
   setResultState,
   type ResultCrownType,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 import { buildCrown, type CanGetPb } from "./view-model";
 
 export function showCrown(type: ResultCrownType): void {

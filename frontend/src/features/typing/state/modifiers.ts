@@ -1,10 +1,10 @@
 import { onCleanup, onMount } from "solid-js";
-import { createAppSignal } from "../../app/state";
+import { createAppSignal } from "../../../app/state";
 import {
   isCapsLockOn as checkCapsLockOn,
   onCapsLockChange,
 } from "@leonabcd123/modern-caps-lock";
-import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
+import { createAppSignalWithSetters } from "../../../ts/hooks/createSignalWithSetters";
 
 type ModifierState = {
   shift: boolean;

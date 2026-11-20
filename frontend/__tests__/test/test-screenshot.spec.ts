@@ -31,7 +31,7 @@ vi.mock(
 vi.mock("../../src/ts/components/common/Download", () => ({
   download: mocks.download,
 }));
-vi.mock("../../src/ts/states/result", () => ({
+vi.mock("../../src/features/typing/state/result", () => ({
   getResultWrapperElement: () => mocks.wrapper,
   resultState: { replay: { visible: false } },
   setScreenshotWatermark: vi.fn(),

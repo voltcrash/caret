@@ -10,7 +10,7 @@ import {
   removeNotification,
 } from "../../../../ts/states/notifications";
 import * as Caret from "../caret";
-import * as SlowTimer from "../../../../ts/states/slow-timer";
+import * as SlowTimer from "../../state/slow-timer";
 import { highlight } from "../../../../ts/events/keymap";
 import * as LayoutfluidFunboxTimer from "../funbox/layoutfluid-funbox-timer";
 import { KeymapLayout, Layout } from "@caret/schemas/configs";

@@ -2,10 +2,10 @@ import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
 import { getMutableConfig } from "../../../ts/config/store";
-import * as SlowTimer from "../../../ts/states/slow-timer";
 import { getCaretElement } from "../../../ts/states/test-dom";
 import { getTheme } from "../../../ts/states/theme";
 import { requestDebouncedAnimationFrame } from "../../../ts/utils/debounced-animation-frame";
+import * as SlowTimer from "../state/slow-timer";
 
 type Particle = {
   x: number;

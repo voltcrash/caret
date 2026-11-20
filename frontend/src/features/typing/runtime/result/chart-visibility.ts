@@ -13,7 +13,7 @@ import {
   getResultChartDataset,
   setResultState,
   type ResultChartLegendId,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 
 const resultChartDataVisibility = new LocalStorageWithSchema({
   key: "resultChartDataVisibility",

@@ -2,7 +2,7 @@ import { JSXElement, Show } from "solid-js";
 
 import { UserFlags } from "../../../../ts/components/common/UserFlags";
 import { getIsScreenshotting } from "../../../../ts/states/core";
-import { getScreenshotWatermark } from "../../../../ts/states/result";
+import { getScreenshotWatermark } from "../../state/result";
 
 export function ResultWatermark(): JSXElement {
   return (

@@ -245,7 +245,7 @@ vi.mock("../../src/ts/states/header", () => ({
   trackAccountWork: async <T>(work: () => Promise<T>): Promise<T> =>
     await work(),
 }));
-vi.mock("../../src/ts/states/modifiers", () => ({
+vi.mock("../../src/features/typing/state/modifiers", () => ({
   resetModifierState: vi.fn(),
 }));
 vi.mock("../../src/ts/sentry", () => ({ captureException: mocks.capture }));

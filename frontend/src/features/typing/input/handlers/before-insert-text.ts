@@ -4,7 +4,7 @@ import { getEngineSession } from "../../runtime/session.client";
 import * as TestUI from "../../runtime/test/ui";
 import { getInputElementValue } from "../../../../ts/input/input-element";
 import { isAwaitingNextWord } from "../state";
-import * as SlowTimer from "../../../../ts/states/slow-timer";
+import * as SlowTimer from "../../state/slow-timer";
 import {
   isTestRestarting,
   getActiveWordIndex,

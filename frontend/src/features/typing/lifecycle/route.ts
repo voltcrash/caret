@@ -1,10 +1,10 @@
 import { setIsScreenshotting } from "../../../ts/states/core";
-import { setScreenshotWatermark } from "../../../ts/states/result";
+import { setScreenshotWatermark } from "../state/result";
 import { preferencesReadiness } from "../../../app/readiness";
 import { setTypingReady } from "../../../app/startup";
 import { setFocusCursorHidden } from "../../../ts/states/app";
 import { hideLoaderBar } from "../../../ts/states/loader-bar";
-import { resetModifierState } from "../../../ts/states/modifiers";
+import { resetModifierState } from "../state/modifiers";
 import {
   resetIncompleteTests,
   setFocus,

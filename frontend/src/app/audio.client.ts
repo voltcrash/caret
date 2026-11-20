@@ -15,7 +15,7 @@ import {
   SupportedOscillatorTypes,
   ValidNotes,
 } from "../ts/constants/sounds";
-import { getModifierState } from "../ts/states/modifiers";
+import { getModifierState } from "../features/typing/state/modifiers";
 function createAudio(): {
   previewClick: typeof previewClick;
   previewError: typeof previewError;

@@ -12,7 +12,7 @@ import {
 } from "../../engine/analysis.client";
 import * as TestWords from "../test/words";
 import { buildWordsHistory } from "../word-markup";
-import { resultState, setResultState } from "../../../../ts/states/result";
+import { resultState, setResultState } from "../../state/result";
 
 function loadWordsHistory(): boolean {
   setResultState("wordsHistory", "items", []);

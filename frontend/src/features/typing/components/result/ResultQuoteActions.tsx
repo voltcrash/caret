@@ -11,9 +11,9 @@ import {
 } from "../../../../ts/states/notifications";
 import { showQuoteRateModal } from "../../../../ts/states/quote-rate";
 import { showQuoteReportModal } from "../../../../ts/states/quote-report";
-import { resultState, setResultState } from "../../../../ts/states/result";
 import { getCurrentQuote } from "../../../../ts/states/test";
 import { cn } from "../../../../ts/utils/cn";
+import { resultState, setResultState } from "../../state/result";
 
 async function toggleFavorite(): Promise<void> {
   const { language: quoteLang, id: quoteId, favorite } = resultState.quote;

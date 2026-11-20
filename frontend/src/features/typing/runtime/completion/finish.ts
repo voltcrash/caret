@@ -11,7 +11,7 @@ import {
   cleanupData,
 } from "../events/data";
 import { captureCompletionSnapshot, type CompletionSnapshot } from "./snapshot";
-import { prepareResultScreen } from "../../../../ts/states/result";
+import { prepareResultScreen } from "../../state/result";
 import * as TestUI from "../test/ui";
 import * as TestTimer from "../test/timer";
 

@@ -73,7 +73,7 @@ vi.mock("../../../../../src/features/typing/input/state", () => ({
   isAwaitingNextWord: () => false,
 }));
 
-vi.mock("../../../../../src/ts/states/slow-timer", () => ({
+vi.mock("../../../../../src/features/typing/state/slow-timer", () => ({
   get: () => false,
 }));
 

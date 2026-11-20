@@ -12,7 +12,7 @@ import { getWpmHistory } from "../engine/analysis.client";
 import * as Sound from "../../../ts/controllers/sound-controller";
 import { getMutableConfig } from "../../../ts/config/store";
 import { buildEventLog, getTestSession } from "./events/data";
-import { resultState, setResultState } from "../../../ts/states/result";
+import { resultState, setResultState } from "../state/result";
 
 function webWord(word: PlaybackSnapshot["words"][number]): ReplayWord {
   return {

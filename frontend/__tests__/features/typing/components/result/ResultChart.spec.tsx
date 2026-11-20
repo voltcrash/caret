@@ -43,7 +43,7 @@ import { ResultChart } from "../../../../../src/features/typing/components/resul
 import {
   getResultChart,
   setResultState,
-} from "../../../../../src/ts/states/result";
+} from "../../../../../src/features/typing/state/result";
 
 const onHighlightWords = vi.fn();
 const onHoverChange = vi.fn();

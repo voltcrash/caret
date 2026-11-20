@@ -10,12 +10,12 @@ import {
 import { envConfig } from "virtual:env-config";
 
 import { showErrorNotification } from "../../../../ts/states/notifications";
+import { isTestActive } from "../../../../ts/states/test";
+import { captureTypingRoute } from "../../scope";
 import {
   bindResultScreenLoader,
   waitForResultScreen,
-} from "../../../../ts/states/result";
-import { isTestActive } from "../../../../ts/states/test";
-import { captureTypingRoute } from "../../scope";
+} from "../../state/result";
 
 const Result = lazy(async () =>
   import("./Result").then((m) => ({ default: m.Result })),

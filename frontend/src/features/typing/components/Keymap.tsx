@@ -5,7 +5,6 @@ import { Anime } from "../../../ts/components/common/anime";
 import { Button } from "../../../ts/components/common/Button";
 import { getConfig } from "../../../ts/config/store";
 import { showCommandLineForConfig } from "../../../ts/states/core";
-import { getModifierState, isCapsLockOn } from "../../../ts/states/modifiers";
 import {
   FlashEntry,
   getKeymapFlashState,
@@ -20,6 +19,7 @@ import { cn } from "../../../ts/utils/cn";
 import { isMacLike } from "../../../ts/utils/misc";
 import { convertLayoutToKeymap } from "../keymap/converter";
 import { KeyboardDefinition, KeyDefinition } from "../keymap/layouts";
+import { getModifierState, isCapsLockOn } from "../state/modifiers";
 
 const symbolsPattern = /^[^\p{L}\p{N}]{1}$/u;
 

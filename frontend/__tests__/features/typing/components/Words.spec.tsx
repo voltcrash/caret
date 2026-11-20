@@ -49,7 +49,7 @@ vi.mock("../../../../src/ts/states/test", () => ({
 vi.mock("../../../../src/ts/states/background", () => ({
   getBackground: () => ({ url: "" }),
 }));
-vi.mock("../../../../src/ts/states/result", () => ({
+vi.mock("../../../../src/features/typing/state/result", () => ({
   setResultState: vi.fn(),
   getResultElement: () => document.createElement("div"),
 }));
@@ -68,7 +68,7 @@ vi.mock("../../../../src/ts/states/header", () => ({
     await work(),
   skipBreakdownEvent: { dispatch: vi.fn() },
 }));
-vi.mock("../../../../src/ts/states/slow-timer", () => ({
+vi.mock("../../../../src/features/typing/state/slow-timer", () => ({
   get: () => false,
 }));
 vi.mock("../../../../src/ts/controllers/sound-controller", () => mocks.sound);
@@ -135,14 +135,14 @@ import { createNewlineSpacers } from "../../../../src/features/typing/components
 import * as ui from "../../../../src/features/typing/runtime/test/ui";
 import { words } from "../../../../src/features/typing/runtime/test/words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
+import {
+  getWordsInputStyle,
+  getWordsWrapperHeight,
+} from "../../../../src/features/typing/state/words-layout";
 import { getMutableConfig } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
 import { setCurrentLiveStats } from "../../../../src/ts/states/test";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
-import {
-  getWordsInputStyle,
-  getWordsWrapperHeight,
-} from "../../../../src/ts/states/words-layout";
 
 let element: HTMLDivElement;
 let wrapper: HTMLDivElement;

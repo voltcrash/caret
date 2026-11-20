@@ -6,7 +6,7 @@ import {
   getResultChart,
   getResultChartDataset,
   getResultChartScale,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 
 export function applyFakeChartData(): void {
   const fakeChartData = {

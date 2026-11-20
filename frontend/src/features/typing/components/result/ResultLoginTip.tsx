@@ -2,8 +2,8 @@ import { JSXElement } from "solid-js";
 
 import { Link } from "../../../../ts/components/common/Link";
 import { getIsScreenshotting } from "../../../../ts/states/core";
-import { resultState } from "../../../../ts/states/result";
 import { cn } from "../../../../ts/utils/cn";
+import { resultState } from "../../state/result";
 
 export function ResultLoginTip(): JSXElement {
   return (

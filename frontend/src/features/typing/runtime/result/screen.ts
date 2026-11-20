@@ -42,7 +42,7 @@ import {
   isAuthenticated,
 } from "../../../../ts/states/core";
 
-import * as GlarsesMode from "../../../../ts/states/glarses-mode";
+import * as GlarsesMode from "../../state/glarses-mode";
 
 import * as Misc from "../../../../ts/utils/misc";
 
@@ -68,7 +68,7 @@ import {
   resultState,
   prepareResultChart,
   setResultState,
-} from "../../../../ts/states/result";
+} from "../../state/result";
 import { buildResultStats } from "./view-model";
 
 export function updateTodayTracker(): void {

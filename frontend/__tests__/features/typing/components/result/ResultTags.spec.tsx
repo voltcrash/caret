@@ -14,7 +14,7 @@ vi.mock("../../../../../src/data/collections/tags", () => ({
 }));
 
 import { ResultTags } from "../../../../../src/features/typing/components/result/ResultTags";
-import { setResultState } from "../../../../../src/ts/states/result";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 
 function renderTags(): HTMLElement {
   const { container } = render(() => (

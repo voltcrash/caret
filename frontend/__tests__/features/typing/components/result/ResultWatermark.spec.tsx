@@ -2,8 +2,8 @@ import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 
 import { ResultWatermark } from "../../../../../src/features/typing/components/result/ResultWatermark";
+import { setScreenshotWatermark } from "../../../../../src/features/typing/state/result";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
-import { setScreenshotWatermark } from "../../../../../src/ts/states/result";
 
 describe("ResultWatermark", () => {
   afterEach(() => {

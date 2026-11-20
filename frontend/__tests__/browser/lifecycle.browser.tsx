@@ -5,6 +5,7 @@ import { page, userEvent } from "vite-plus/test/browser";
 
 import "../../src/app/app.css";
 import { useWordsInputScroll } from "../../src/features/typing/components/hooks/useWordsInputScroll";
+import { centerWordsInputEvent } from "../../src/features/typing/state/words-layout";
 import { AnimatedModal } from "../../src/ts/components/common/AnimatedModal";
 import { useInputListener } from "../../src/ts/hooks/useInputListener";
 import {
@@ -12,7 +13,6 @@ import {
   hideModalAndClearChain,
   showModal,
 } from "../../src/ts/states/modals";
-import { centerWordsInputEvent } from "../../src/ts/states/words-layout";
 
 afterEach(() => {
   cleanup();

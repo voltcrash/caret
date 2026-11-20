@@ -9,7 +9,7 @@ import {
 } from "vite-plus/test";
 
 import { useWordsInputScroll } from "../../src/features/typing/components/hooks/useWordsInputScroll";
-import { centerWordsInputEvent } from "../../src/ts/states/words-layout";
+import { centerWordsInputEvent } from "../../src/features/typing/state/words-layout";
 import { isCoarsePointer } from "../../src/ts/utils/pointer";
 
 vi.mock("../../src/ts/utils/pointer", () => ({

@@ -77,7 +77,7 @@ import {
   pauseReplay,
   toggleReplayDisplay,
 } from "../../../../../src/features/typing/runtime/replay";
-import { setResultState } from "../../../../../src/ts/states/result";
+import { setResultState } from "../../../../../src/features/typing/state/result";
 
 function input(testMs: number, data: Input): (typeof mocks.events)[number] {
   return { type: "input", testMs, data };

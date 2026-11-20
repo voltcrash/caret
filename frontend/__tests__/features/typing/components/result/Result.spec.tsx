@@ -18,7 +18,7 @@ vi.mock(
   async () => {
     const { onMount } = await import("solid-js");
     const { setResultChart } =
-      await import("../../../../../src/ts/states/result");
+      await import("../../../../../src/features/typing/state/result");
     return {
       ResultChart: () => {
         onMount(() =>
@@ -65,7 +65,7 @@ import {
   setResultState,
   setResultChart,
   prepareResultChart,
-} from "../../../../../src/ts/states/result";
+} from "../../../../../src/features/typing/state/result";
 import { resetTypingLifecycle } from "../../../../__harness__/typing-lifecycle";
 
 describe("Result", () => {

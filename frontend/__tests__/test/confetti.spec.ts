@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from "vite-plus/test";
 import { showConfetti } from "../../src/features/typing/runtime/result/confetti";
-import * as SlowTimer from "../../src/ts/states/slow-timer";
+import * as SlowTimer from "../../src/features/typing/state/slow-timer";
 
 afterEach(() => {
   SlowTimer.clear();

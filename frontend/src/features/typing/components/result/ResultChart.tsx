@@ -12,14 +12,6 @@ import { ChartJs } from "../../../../ts/components/common/ChartJs";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { Theme } from "../../../../ts/constants/themes";
 import { createDebouncedEffectOn } from "../../../../ts/hooks/effects";
-import {
-  getResultChart,
-  getResultChartDataset,
-  resultState,
-  setResultChart,
-  type ResultChartLegendId,
-  type ResultChartType,
-} from "../../../../ts/states/result";
 import { getLastEventLog } from "../../../../ts/states/test";
 import { getTheme } from "../../../../ts/states/theme";
 import { FaSolidIcon } from "../../../../ts/types/font-awesome";
@@ -29,6 +21,14 @@ import { blendTwoHexColors } from "../../../../ts/utils/colors";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { getWordIndexesForSecond } from "../../engine/analysis.client";
 import { toggleResultChartLegend } from "../../runtime/result/screen";
+import {
+  getResultChart,
+  getResultChartDataset,
+  resultState,
+  setResultChart,
+  type ResultChartLegendId,
+  type ResultChartType,
+} from "../../state/result";
 
 type LegendButton = {
   id: "scale" | ResultChartLegendId;

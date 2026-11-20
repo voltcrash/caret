@@ -71,7 +71,7 @@ import {
 import {
   getModifierState,
   updateModifierState,
-} from "../../../src/ts/states/modifiers";
+} from "../../../src/features/typing/state/modifiers";
 import {
   getFocus,
   getResultVisible,

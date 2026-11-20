@@ -2,6 +2,7 @@ import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
 import { getBrowserEngine } from "../features/typing/engine/owner.client";
+import { enable as glarsesMode } from "../features/typing/state/glarses-mode";
 import { applyEngineSettings } from "../ts/anim";
 import { Theme } from "../ts/components/core/Theme";
 import { ThemeEvents } from "../ts/components/core/ThemeEvents";
@@ -12,7 +13,6 @@ import { useThemeEvents } from "../ts/controllers/theme-controller";
 import { activateWhatsAccepted, getAcceptedCookies } from "../ts/cookies";
 import { disposeSentry, toggleDebug as toggleSentryDebug } from "../ts/sentry";
 import { useConnectionEvents } from "../ts/states/connection";
-import { enable as glarsesMode } from "../ts/states/glarses-mode";
 import { installLogger, toggleDebugLogs } from "../ts/utils/logger";
 import { addToGlobal } from "../ts/utils/misc";
 import { lockMath } from "./browser-integrity";

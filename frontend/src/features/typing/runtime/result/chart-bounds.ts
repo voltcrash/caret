@@ -3,10 +3,7 @@ import { appObject } from "../../../../app/state";
 import { resultAnnotations } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
-import {
-  getResultChartDataset,
-  getResultChartScale,
-} from "../../../../ts/states/result";
+import { getResultChartDataset, getResultChartScale } from "../../state/result";
 
 const bounds = appObject(createAppOwned(() => ({ min: 0, max: 0 })));
 

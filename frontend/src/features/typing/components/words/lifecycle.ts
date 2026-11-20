@@ -19,7 +19,7 @@ import { isTouchKeyboardFocused } from "../../../../ts/input/input-element";
 import * as CompositionState from "../../../../ts/states/composition";
 import * as ConnectionState from "../../../../ts/states/connection";
 import { skipBreakdownEvent } from "../../../../ts/states/header";
-import { getResultElement } from "../../../../ts/states/result";
+import { getResultElement } from "../../state/result";
 import {
   getActiveWordIndex,
   setCompositionText,
@@ -30,7 +30,7 @@ import {
   getWordsElement as getWordsEl,
   getTypingTestElement,
 } from "../../../../ts/states/test-dom";
-import { setWordsInputStyle } from "../../../../ts/states/words-layout";
+import { setWordsInputStyle } from "../../state/words-layout";
 import * as Caret from "../../runtime/caret";
 import { getCurrentInput } from "../../runtime/events/data";
 import { getLiveCachedAccuracy } from "../../runtime/events/live-cache";

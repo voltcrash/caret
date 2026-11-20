@@ -1,14 +1,14 @@
 import { onCleanup } from "solid-js";
-import { createTypingOwned } from "../../features/typing/scope";
-import { createAppStore, createAppSignal } from "../../app/state";
+import { createTypingOwned } from "../scope";
+import { createAppStore, createAppSignal } from "../../../app/state";
 import type { CartesianScaleOptions, Chart, ChartDataset } from "chart.js";
 
 import { Language } from "@caret/schemas/languages";
 import { TypingSpeedUnit } from "@caret/schemas/configs";
-import type { WordsHistoryItem } from "../../features/typing/runtime/word-markup";
-import { createEvent } from "../hooks/createEvent";
-import type { ReplayWord } from "../../features/typing/replay-view";
-import type { SupportsFlags } from "../controllers/user-flag-controller";
+import type { WordsHistoryItem } from "../runtime/word-markup";
+import { createEvent } from "../../../ts/hooks/createEvent";
+import type { ReplayWord } from "../replay-view";
+import type { SupportsFlags } from "../../../ts/controllers/user-flag-controller";
 
 export type ResultCrownType =
   | "normal"

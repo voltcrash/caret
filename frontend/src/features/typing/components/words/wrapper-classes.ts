@@ -9,7 +9,7 @@ import { updateHintsPositionDebounced } from "./hints";
 import { setClass } from "./elements";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { isInputElementFocused } from "../../../../ts/input/input-element";
-import { setResultState } from "../../../../ts/states/result";
+import { setResultState } from "../../state/result";
 import {
   isLanguageRightToLeft,
   setTestFocusState,

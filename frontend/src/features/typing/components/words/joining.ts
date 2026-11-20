@@ -1,7 +1,7 @@
 import { setClass } from "./elements";
 import { hasClassName } from "../../../../ts/utils/cn";
 import { getMutableConfig } from "../../../../ts/config/store";
-import { setResultState } from "../../../../ts/states/result";
+import { setResultState } from "../../state/result";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
 
 export function setJoiningClass(isEnabled: boolean): void {
