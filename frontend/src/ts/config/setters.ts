@@ -1,3 +1,4 @@
+import { batch } from "solid-js";
 import { isNoQuitActive } from "../../features/typing/runtime/session.client";
 import * as ConfigSchemas from "@caret/schemas/configs";
 import { ZodType as ZodSchema } from "zod";
@@ -21,7 +22,6 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
   value: ConfigSchemas.Config[T],
   options?: {
     nosave?: boolean;
-    partOfFullConfigChange?: boolean;
   },
 ): boolean {
   const metadata = configMetadata[key];
@@ -186,20 +186,19 @@ function commitConfig<T extends keyof ConfigSchemas.Config>(
   key: T,
   value: ConfigSchemas.Config[T],
   previousValue: ConfigSchemas.Config[T],
-  options?: { nosave?: boolean; partOfFullConfigChange?: boolean },
+  options?: { nosave?: boolean },
 ): void {
-  getMutableConfig()[key] = value;
-  if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
-
-  // The generic key and both values share Config[T]; preserve that pair in the event union.
-  configEvent.dispatch({
-    key: key,
-    newValue: value,
-    nosave: options?.nosave ?? false,
-    previousValue: previousValue,
-  } as ConfigEventData);
-
-  if (!options?.partOfFullConfigChange) {
+  // Listeners read the new value everywhere; reactive readers update after them.
+  batch(() => {
     setConfigStore(key, value);
-  }
+    if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
+
+    // The generic key and both values share Config[T]; preserve that pair in the event union.
+    configEvent.dispatch({
+      key: key,
+      newValue: value,
+      nosave: options?.nosave ?? false,
+      previousValue: previousValue,
+    } as ConfigEventData);
+  });
 }

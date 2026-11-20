@@ -11,7 +11,7 @@ import {
 } from "../../../../ts/states/notifications";
 import * as JSONData from "../../../../ts/utils/json-data";
 import * as Strings from "../../../../ts/utils/strings";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { getMutableConfig, setConfigStore } from "../../../../ts/config/store";
 import {
   toggleFunbox as configToggleFunbox,
   setConfig,
@@ -81,7 +81,7 @@ export async function activate(
   if (funbox === undefined || funbox === null) {
     funbox = getMutableConfig().funbox;
   } else if (getMutableConfig().funbox !== funbox) {
-    getMutableConfig().funbox = funbox;
+    setConfigStore("funbox", funbox);
   }
 
   // The configuration might be edited with dev tools,
