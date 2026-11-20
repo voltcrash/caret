@@ -36,7 +36,7 @@ for the operation inventory, remaining compatibility rules and archived evidence
 | Path | Role |
 | --- | --- |
 | `frontend/src/routes/` | File routes: `__root` document, `_app` layout, pages, `/api` server routes |
-| `frontend/src/app/` | Document, providers, application owner, browser runtime, navigation |
+| `frontend/src/app/` | Document, providers, application owner, browser runtime, navigation, modal host and dev tools |
 | `frontend/src/features/` | Route-level product features (typing, account, settings, …), each owning its components, state and hooks |
 | `frontend/src/functions/`, `src/server/` | Server functions and server-only policy adapters |
 | `frontend/src/data/` | Operation client (`operations.ts`), browser query helpers (`queries/`) and IndexedDB collections (`collections/`); feature-specific query options live in the feature (`features/*/queries.ts`) |
@@ -60,6 +60,9 @@ Typing feature (`frontend/src/features/typing/`):
 | `history/` | Result outbox, guest scores and practice history |
 | `keymap/` | Keymap layouts and conversion |
 | `components/` | Test page, words renderer, result screen and live stats |
+| `input/` | Keystroke, composition and input listeners and handlers |
+| `state/` | Typing-only app state (result, layout, modifiers, quote rating) |
+| `modals/` | Typing modals (custom text, quotes, practice, event log viewer, dev options) |
 | `runtime/test/` | Test logic, timer, words and UI facade |
 | `runtime/content/`, `runtime/completion/`, `runtime/result/` | Content loading, test completion, result screen and saving |
 | `runtime/events/`, `runtime/funbox/` | Session events and funbox behaviour |
