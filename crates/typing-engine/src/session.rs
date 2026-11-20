@@ -476,6 +476,14 @@ pub(crate) struct Retained {
     pub quote: Option<crate::quotes::Quote>,
     pub generation: u32,
 }
+#[derive(Default)]
+enum ContentState {
+    #[default]
+    Available,
+    Waiting(Checkpoint),
+    Recovery,
+}
+
 enum RunState {
     Ready,
     Running {
@@ -555,8 +563,7 @@ pub struct Session {
     visual_input_override: Option<Text>,
     has_tab: bool,
     has_newline: bool,
-    pending_commit: Option<Checkpoint>,
-    awaiting_recovery: bool,
+    content_state: ContentState,
     deferred_input: Option<DeferredInput>,
     defer_finish: bool,
     monitor_render_drift: bool,
@@ -705,8 +712,7 @@ impl Session {
             visual_input_override: None,
             has_tab,
             has_newline,
-            pending_commit: None,
-            awaiting_recovery: false,
+            content_state: ContentState::Available,
             deferred_input: None,
             defer_finish: false,
             monitor_render_drift: false,
@@ -778,8 +784,7 @@ impl Session {
             ..observation
         };
         let blocked = self.run.ended()
-            || self.awaiting_recovery
-            || self.pending_commit.is_some()
+            || !matches!(self.content_state, ContentState::Available)
             || self.run.pending_finish().is_some()
             || observation.data.len() > 65536
             || crate::input::blocked(&self.config, &observation, self.has_newline);
@@ -819,9 +824,9 @@ impl Session {
             return Err("Composition exceeds input bound".into());
         }
         if !self.run.active()
-            || self.awaiting_recovery
+            || matches!(self.content_state, ContentState::Recovery)
             || self.run.pending_finish().is_some()
-            || self.pending_commit.is_some()
+            || matches!(self.content_state, ContentState::Waiting(_))
             || !self.all_generated
             || self.index + 1 < self.words.len()
         {
@@ -904,9 +909,9 @@ impl Session {
             SessionPhase::Ended
         } else if self.run.pending_finish().is_some() {
             SessionPhase::FinishPending
-        } else if self.awaiting_recovery {
+        } else if matches!(self.content_state, ContentState::Recovery) {
             SessionPhase::AwaitingRecovery
-        } else if self.pending_commit.is_some() {
+        } else if matches!(self.content_state, ContentState::Waiting(_)) {
             SessionPhase::AwaitingContent
         } else if self.run.active() {
             SessionPhase::Running
@@ -918,7 +923,7 @@ impl Session {
         debug_assert!(
             !self.run.ended()
                 || (self.run.pending_finish().is_none()
-                    && self.pending_commit.is_none()
+                    && !matches!(self.content_state, ContentState::Waiting(_))
                     && self.deferred_input.is_none())
         );
         State {
@@ -926,7 +931,7 @@ impl Session {
             input_value: self.current(),
             active: self.run.active(),
             ended: self.run.ended(),
-            awaiting_recovery: self.awaiting_recovery.then_some(true),
+            awaiting_recovery: matches!(self.content_state, ContentState::Recovery).then_some(true),
             reason: self.run.reason().cloned(),
         }
     }
@@ -962,7 +967,9 @@ impl Session {
         });
     }
     fn start(&mut self, now: f64, date: f64) {
-        if !matches!(self.run, RunState::Ready) || self.awaiting_recovery {
+        if !matches!(self.run, RunState::Ready)
+            || matches!(self.content_state, ContentState::Recovery)
+        {
             return;
         }
         self.run = RunState::Running { start: now };
@@ -997,9 +1004,8 @@ impl Session {
         self.slow_timer = false;
         self.slow_timer_count = 0;
 
-        self.pending_commit = None;
+        self.content_state = ContentState::Available;
         self.deferred_input = None;
-        self.awaiting_recovery = false;
         self.automatic.clear();
         self.indent_pending = false;
         if let Some(generator) = &mut self.generator {
@@ -1072,7 +1078,7 @@ impl Session {
         {
             return Err("Timer catchup exceeds bounded work".into());
         }
-        if self.awaiting_recovery
+        if matches!(self.content_state, ContentState::Recovery)
             && matches!(
                 command,
                 Command::Start { .. }
@@ -1125,7 +1131,7 @@ impl Session {
                             .as_ref()
                             .and_then(|generator| generator.pending_request())
                             .cloned(),
-                        awaiting_content: self.pending_commit.is_some(),
+                        awaiting_content: matches!(self.content_state, ContentState::Waiting(_)),
                         finish: self.run.pending_finish().cloned(),
                         slow_timer: self.slow_timer,
                         drift: None,
@@ -1147,8 +1153,7 @@ impl Session {
                     .as_mut()
                     .ok_or("Session has no generated content")?
                     .fail_source(&request, true)?;
-                self.awaiting_recovery = true;
-                self.pending_commit = None;
+                self.content_state = ContentState::Recovery;
                 self.deferred_input = None;
                 self.automatic.clear();
                 return Err(error);
@@ -1172,7 +1177,10 @@ impl Session {
                     {
                         return Err(error);
                     }
-                } else if let Some(checkpoint) = self.pending_commit.take() {
+                } else if matches!(self.content_state, ContentState::Waiting(_))
+                    && let ContentState::Waiting(checkpoint) =
+                        std::mem::take(&mut self.content_state)
+                {
                     let input_now = checkpoint.now;
                     let input_date = checkpoint.date;
                     self.complete_input(checkpoint, now, date);
@@ -1246,8 +1254,7 @@ impl Session {
             Command::Reset { .. } => {
                 self.index = 0;
                 self.bailed_out = false;
-                self.awaiting_recovery = false;
-                self.pending_commit = None;
+                self.content_state = ContentState::Available;
                 self.deferred_input = None;
 
                 self.slow_timer = false;
@@ -1330,7 +1337,7 @@ impl Session {
                 .as_ref()
                 .and_then(|generator| generator.pending_request())
                 .cloned(),
-            awaiting_content: self.pending_commit.is_some(),
+            awaiting_content: matches!(self.content_state, ContentState::Waiting(_)),
             finish: self.run.pending_finish().cloned(),
             slow_timer: self.slow_timer,
             drift: self.last_drift,
@@ -1352,7 +1359,7 @@ impl Session {
                 input.automatic,
                 input.composition,
             );
-            if self.pending_commit.is_some() {
+            if matches!(self.content_state, ContentState::Waiting(_)) {
                 if !input.units.is_empty() {
                     self.deferred_input = Some(input);
                 }
@@ -1374,7 +1381,9 @@ impl Session {
         self.drain_indentation(now, date);
     }
     fn drain_indentation(&mut self, now: f64, date: f64) {
-        if self.pending_commit.is_some() || self.run.ended() || self.run.pending_finish().is_some()
+        if matches!(self.content_state, ContentState::Waiting(_))
+            || self.run.ended()
+            || self.run.pending_finish().is_some()
         {
             return;
         }
@@ -1385,7 +1394,7 @@ impl Session {
         }
         while self.indent_pending
             && !self.run.ended()
-            && self.pending_commit.is_none()
+            && !matches!(self.content_state, ContentState::Waiting(_))
             && self.run.pending_finish().is_none()
         {
             self.indent_pending = false;
@@ -1527,7 +1536,7 @@ impl Session {
                 .is_some()
             {
                 if self.index + 1 >= self.words.len() {
-                    self.pending_commit = Some(checkpoint);
+                    self.content_state = ContentState::Waiting(checkpoint);
                     return;
                 }
             } else {
@@ -1679,8 +1688,7 @@ impl Session {
     /// Pure beforeinput guard; deletion repeats this check before mutation.
     pub fn can_delete(&self) -> bool {
         if !self.run.active()
-            || self.awaiting_recovery
-            || self.pending_commit.is_some()
+            || !matches!(self.content_state, ContentState::Available)
             || self.run.pending_finish().is_some()
         {
             return false;
@@ -1766,7 +1774,10 @@ impl Session {
     }
 
     fn advance(&mut self, now: f64, date: f64) {
-        if !self.run.active() || self.awaiting_recovery || self.run.pending_finish().is_some() {
+        if !self.run.active()
+            || matches!(self.content_state, ContentState::Recovery)
+            || self.run.pending_finish().is_some()
+        {
             return;
         }
         let start = self.run.start_time().unwrap_or(now);
