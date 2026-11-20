@@ -4,8 +4,8 @@ import { getAllFunboxes } from "@caret/funbox";
 import {
   checkCompatibility,
   enginePolicyReady,
-} from "../../../ts/engine/policy.client";
-import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
+} from "#shared/engine/policy.client.ts";
+import { Command, CommandsSubgroup } from "#shared/commandline/types.ts";
 import { getActiveFunboxNames } from "../runtime/funbox/list";
 
 const list: Command[] = [

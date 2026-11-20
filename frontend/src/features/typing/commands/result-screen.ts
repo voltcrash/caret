@@ -1,17 +1,17 @@
 import * as TestLogic from "../runtime/test/logic";
 import { toggleResultWords } from "../runtime/result/screen";
-import { showModal } from "../../../ts/states/modals";
+import { showModal } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
 import * as TestWords from "../runtime/test/words";
-import { peekConfig } from "../../../ts/config/store";
+import { peekConfig } from "#shared/config/store.ts";
 import * as PractiseWords from "../runtime/content/practise-words";
-import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
+import { Command, CommandsSubgroup } from "#shared/commandline/types.ts";
 import * as TestScreenshot from "../runtime/test/screenshot";
-import { getInputHistory } from "../../../ts/engine/analysis.client";
-import { getLastEventLog, getResultVisible } from "../../../ts/states/test";
+import { getInputHistory } from "#shared/engine/analysis.client.ts";
+import { getLastEventLog, getResultVisible } from "#shared/states/test.ts";
 
 const practiceSubgroup: CommandsSubgroup = {
   title: "Practice words...",
