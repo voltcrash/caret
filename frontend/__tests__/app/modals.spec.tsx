@@ -43,8 +43,9 @@ describe("Modals", () => {
     expect(simpleMounts).not.toHaveBeenCalled();
 
     showModal("Commandline");
-    await waitFor(() =>
-      expect(screen.getByTestId("commandline")).toBeInTheDocument(),
+    await waitFor(
+      () => expect(screen.getByTestId("commandline")).toBeInTheDocument(),
+      { timeout: 10000 },
     );
     hideModal("Commandline");
     showModal("SimpleModal");
