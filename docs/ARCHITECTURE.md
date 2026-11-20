@@ -40,14 +40,17 @@ for the operation inventory, remaining compatibility rules and archived evidence
 | `frontend/src/features/` | Route-level product features (typing, account, settings, …), each owning its components, state and hooks |
 | `frontend/src/functions/`, `src/server/` | Server functions and server-only policy adapters |
 | `frontend/src/data/` | Operation client (`operations.ts`), browser query helpers (`queries/`) and IndexedDB collections (`collections/`); feature-specific query options live in the feature (`features/*/queries.ts`) |
-| `frontend/src/ts/` | Shared UI kit, app-wide state, commandline and utilities; no new feature imports (see below) |
+| `frontend/src/ts/` | Shared UI kit, app-wide state, browser engine wrappers (`engine/`), commandline and utilities; no new feature imports (see below) |
 | `frontend/src/sw/` | Service worker generated per build |
 | `backend/src/` | Services, policies, DAL, Drizzle/Neon PostgreSQL, Better Auth, jobs (server-only package) |
 
 Code used by one feature lives in that feature. Shared code in `src/ts` and
 `src/data` must not import features; `__tests__/architecture/feature-boundaries.spec.ts` fails
 on any edge missing from `shared-feature-imports.json`. Remove entries as edges
-are untangled; never add them.
+are untangled; never add them. Code outside typing may only import the typing
+modules in `typing-public-surface.json`, which also only shrinks. Shared code
+triggers typing (restart, blur, hints, pace caret) and reads route activity
+through `src/ts/typing-host.ts`, which the typing route binds while mounted.
 
 Typing feature (`frontend/src/features/typing/`):
 
@@ -56,10 +59,9 @@ Typing feature (`frontend/src/features/typing/`):
 | `page*.tsx`, `runtime.client.tsx` | Route page and client-only typing leaf |
 | `initial/` | SSR initial content, snapshot and first-paint view |
 | `lifecycle/` | Route enter/exit, lifecycle controller and state machine |
-| `engine/` | Browser engine owner and Rust analysis, audit and policy wrappers |
 | `history/` | Result outbox, guest scores and practice history |
 | `keymap/` | Keymap layouts and conversion |
-| `commands/` | Palette commands and the typing host the palette binds |
+| `commands/`, `host.client.ts` | Palette command contributions; the typing host the route binds while mounted |
 | `components/` | Test page, words renderer, result screen and live stats |
 | `input/` | Keystroke, composition and input listeners and handlers |
 | `state/` | Typing-only app state (result, layout, modifiers, quote rating) |
@@ -98,8 +100,8 @@ top-level `let`; document-scoped exceptions carry a suppression reason.
 
 Command palette: `src/ts/commandline` owns the palette and core commands.
 Features add commands at named slots through `registry.ts` while the palette is
-mounted (`app/commandline.client.tsx`), and shared commands reach typing only
-through the bound `typing-host.ts`.
+mounted (`app/commandline.client.tsx`); shared commands reach typing only
+through `typing-host.ts`.
 
 Tailwind CSS supplies utilities and theme colors; compatibility CSS keeps
 theme/funbox selectors. Icons use `Fa`. `AnimatedModal` uses `hidden open:flex`:
