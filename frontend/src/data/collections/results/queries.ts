@@ -49,19 +49,16 @@ export function useResultsLiveQuery(options: {
     field: keyof SnapshotResult<Mode>;
     direction: "asc" | "desc";
   }>;
-  limit: Accessor<number>;
 }) {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
     const state = options.queryState();
     const sorting = options.sorting();
-    const limit = options.limit();
     if (state === undefined) return undefined;
 
     return q
       .from({ r: buildResultsQuery(state) })
-      .orderBy(({ r }) => r[sorting.field], sorting.direction)
-      .limit(limit);
+      .orderBy(({ r }) => r[sorting.field], sorting.direction);
   });
 }
 

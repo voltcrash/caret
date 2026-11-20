@@ -1,17 +1,16 @@
+import type { Mode } from "@caret/schemas/shared";
+
 import { ResultFilters, ResultFiltersKeys } from "@caret/schemas/users";
-import { useLiveQuery } from "@tanstack/solid-db";
 import { Accessor, createMemo, JSXElement } from "solid-js";
 
-import {
-  buildResultsQuery,
-  ResultsQueryState,
-} from "../../../data/collections/results";
+import type { SnapshotResult } from "../../../ts/constants/default-snapshot";
+
+import { ResultsQueryState } from "../../../data/collections/results";
 import { type TagItem, useTagsLiveQuery } from "../../../data/collections/tags";
-import AsyncContent from "../../../ts/components/common/AsyncContent";
 import { Balloon } from "../../../ts/components/common/Balloon";
 import { Fa } from "../../../ts/components/common/Fa";
 import { getConfig } from "../../../ts/config/store";
-import { getFormatting, isAuthenticated } from "../../../ts/states/core";
+import { getFormatting } from "../../../ts/states/core";
 import { FaSolidIcon } from "../../../ts/types/font-awesome";
 import {
   capitalizeFirstLetter,
@@ -20,12 +19,13 @@ import {
 import { get as getTypingSpeedUnit } from "../../../ts/utils/typing-speed-units";
 import { DailyActivityChart } from "./DailyActivityChart";
 import { HistogramChart } from "./HistogramChart";
-import { HistoryChart, HistoryChartClickEvent } from "./HistoryChart";
+import { HistoryChart } from "./HistoryChart";
 
 export function Charts(props: {
+  results: SnapshotResult<Mode>[];
   filters: ResultFilters;
   queryState: Accessor<ResultsQueryState | undefined>;
-  onHistoryChartClick?: (event: HistoryChartClickEvent) => void;
+  onHistoryChartClick?: (resultId: string) => void;
 }): JSXElement {
   const beginAtZero = createMemo(() => getConfig.startGraphsAtZero);
   const typingSpeedUnit = createMemo(() =>
@@ -34,44 +34,31 @@ export function Charts(props: {
   const format = getFormatting;
   const tags = useTagsLiveQuery();
 
-  const resultsQuery = useLiveQuery((q) => {
-    if (!isAuthenticated()) return undefined;
-    const state = props.queryState();
-    if (state === undefined) return undefined;
-    return q
-      .from({ r: buildResultsQuery(state) })
-      .orderBy(({ r }) => r.timestamp, "desc");
-  });
-
   return (
-    <AsyncContent collections={{ resultsQuery }}>
-      {({ resultsQueryData }) => (
-        <div class="flex flex-col gap-8">
-          <div>
-            <FilterSummary filters={props.filters} tags={tags()} />
-            <HistoryChart
-              results={resultsQueryData()}
-              beginAtZero={beginAtZero()}
-              typingSpeedUnit={typingSpeedUnit()}
-              format={format()}
-              onClick={(index) => props.onHistoryChartClick?.(index)}
-            />
-          </div>
+    <div class="flex flex-col gap-8">
+      <div>
+        <FilterSummary filters={props.filters} tags={tags()} />
+        <HistoryChart
+          results={props.results}
+          beginAtZero={beginAtZero()}
+          typingSpeedUnit={typingSpeedUnit()}
+          format={format()}
+          onClick={(id) => props.onHistoryChartClick?.(id)}
+        />
+      </div>
 
-          <HistogramChart
-            results={resultsQueryData()}
-            typingSpeedUnit={typingSpeedUnit()}
-          />
+      <HistogramChart
+        results={props.results}
+        typingSpeedUnit={typingSpeedUnit()}
+      />
 
-          <DailyActivityChart
-            queryState={props.queryState}
-            beginAtZero={beginAtZero()}
-            typingSpeedUnit={typingSpeedUnit()}
-            format={format()}
-          />
-        </div>
-      )}
-    </AsyncContent>
+      <DailyActivityChart
+        queryState={props.queryState}
+        beginAtZero={beginAtZero()}
+        typingSpeedUnit={typingSpeedUnit()}
+        format={format()}
+      />
+    </div>
   );
 }
 
