@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{
+    collections::HashMap,
     fs,
     io::Write,
     path::{Path, PathBuf},
@@ -278,6 +279,20 @@ impl Store {
     }
     pub fn best(&self, group: &str) -> Result<Option<f64>> {
         Ok(self.history.query_row("SELECT MAX(json_extract(json,'$.summary.wpm')) FROM results WHERE json_extract(json,'$.formatVersion')=1 AND json_extract(json,'$.personalBestEligible')=1 AND json_extract(json,'$.personalBestGroup')=?1", [group], |r|r.get(0))?)
+    }
+    pub fn bests_by_group(&self) -> Result<HashMap<String, f64>> {
+        let mut query = self.history.prepare(
+            "SELECT json_extract(json, '$.personalBestGroup') AS best_group,
+                    MAX(json_extract(json, '$.summary.wpm'))
+             FROM results
+             WHERE json_extract(json, '$.formatVersion') = 1
+               AND json_extract(json, '$.personalBestEligible') = 1
+               AND json_type(json, '$.personalBestGroup') = 'text'
+               AND json_type(json, '$.summary.wpm') IN ('integer', 'real')
+             GROUP BY best_group",
+        )?;
+        let rows = query.query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?;
+        Ok(rows.collect::<rusqlite::Result<_>>()?)
     }
     /// Export the stored bytes/fields semantically; never recompute old scores.
     pub fn export(&self, path: &Path, mode: Option<&str>) -> Result<()> {
