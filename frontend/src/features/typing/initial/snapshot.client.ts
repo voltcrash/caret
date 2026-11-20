@@ -10,21 +10,33 @@ import {
 } from "./snapshot";
 
 export const initialTypingState = createAppOwned(() => {
-  let initial: InitialTypingSnapshot | undefined;
-  let consumed = false;
+  type SeedState =
+    | { phase: "empty" }
+    | { phase: "available"; snapshot: InitialTypingSnapshot }
+    | { phase: "consumed"; engineHash: string };
+  let state: SeedState = { phase: "empty" };
   return {
     initialize: (value: InitialTypingSnapshot) => {
-      initial = value;
+      state =
+        state.phase === "consumed"
+          ? { phase: "consumed", engineHash: value.engineHash ?? "" }
+          : { phase: "available", snapshot: value };
     },
     seed: (key: string): number | undefined => {
-      if (consumed) return undefined;
+      if (state.phase === "consumed") return undefined;
+      const initial = state.phase === "available" ? state.snapshot : undefined;
       // Remounting or later reverting settings must not replay the first test.
-      consumed = true;
+      state = { phase: "consumed", engineHash: initial?.engineHash ?? "" };
       return initial?.version === 2 && initial.key === key
         ? initial.seed
         : undefined;
     },
-    engineHash: () => initial?.engineHash ?? "",
+    engineHash: () =>
+      state.phase === "available"
+        ? (state.snapshot.engineHash ?? "")
+        : state.phase === "consumed"
+          ? state.engineHash
+          : "",
   };
 });
 
