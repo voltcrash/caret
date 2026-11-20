@@ -152,7 +152,7 @@ import { words as TestWords } from "../../../../../src/features/typing/runtime/t
 import { __testing } from "../../../../../src/ts/config/testing";
 import { nativeSession } from "../../../../__harness__/native-engine";
 import { getEngineSession } from "../../../../../src/features/typing/runtime/session.client";
-import { getMutableConfig } from "../../../../../src/ts/config/store";
+import { peekConfig } from "../../../../../src/ts/config/store";
 import { decodeText } from "@caret/typing-engine/text";
 let unsubscribe: (() => void) | undefined;
 afterEach(() => {
@@ -175,7 +175,7 @@ function pushWords(...words: string[]): void {
     TestWords.push(i === words.length - 1 ? word : `${word} `, i);
   });
   native.session = nativeSession(
-    getMutableConfig(),
+    peekConfig(),
     words.map((word, index) =>
       index + 1 === words.length ? word : `${word} `,
     ),

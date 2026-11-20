@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../config/store";
+import { peekConfig } from "../config/store";
 import { applyConfig } from "../config/lifecycle";
 import * as DB from "../db";
 import { showSuccessNotification } from "../states/notifications";
@@ -26,7 +26,7 @@ export async function apply(_id: string): Promise<void> {
   if (isPartialPreset(presetToApply)) {
     await applyConfig(
       {
-        ...structuredClone(getMutableConfig()),
+        ...structuredClone(peekConfig()),
         ...presetToApply.config,
       },
       lease,

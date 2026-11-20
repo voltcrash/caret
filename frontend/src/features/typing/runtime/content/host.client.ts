@@ -24,7 +24,7 @@ import {
   type Language,
 } from "@caret/schemas/languages";
 import { QuoteDataSchema } from "@caret/schemas/quotes";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { cachedFetchJson, getLanguage } from "../../../../ts/utils/json-data";
 import { removeLanguageSize } from "../../../../ts/utils/strings";
 import {
@@ -208,14 +208,14 @@ export const getContentHost = createAppOwned(() => {
         isCurrent: () => session.isCurrent() && route.isCurrent(),
       };
       setCurrentQuote(null);
-      const config = projectEngineConfig(getMutableConfig());
+      const config = projectEngineConfig(peekConfig());
       const repeated = isRepeated();
       const engineHash = initialTypingState().engineHash();
       const contentKey =
         engineHash === ""
           ? ""
           : await initialContentKey(
-              getMutableConfig(),
+              peekConfig(),
               languageHashes[language.name] ?? "",
               engineHash,
             );
@@ -259,7 +259,7 @@ export const getContentHost = createAppOwned(() => {
         .filter(
           ([name]) =>
             removeLanguageSize(LanguageSchema.parse(name)) ===
-            removeLanguageSize(getMutableConfig().language),
+            removeLanguageSize(peekConfig().language),
         )
         .flatMap(([, ids]) => ids ?? [])
         .map((id) => Number.parseInt(id, 10));
@@ -311,12 +311,7 @@ export const getContentHost = createAppOwned(() => {
       );
       if (engineHash !== "" && !repeated) {
         try {
-          saveNextTypingPreview(
-            getMutableConfig(),
-            content,
-            contentKey,
-            engineHash,
-          );
+          saveNextTypingPreview(peekConfig(), content, contentKey, engineHash);
         } catch (error) {
           // Optional precomputation must not prevent the current test starting.
           console.warn("Could not prepare the next typing preview", error);

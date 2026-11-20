@@ -3,7 +3,7 @@ import { decodeText, encodeText } from "@caret/typing-engine/text";
 import { getBrowserEngine } from "../../../../ts/engine/owner.client";
 import { getEngineSession } from "../../runtime/session.client";
 import { getContentHost } from "../../runtime/content/host.client";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import {
   isTestRestarting,
   isResultCalculating,
@@ -58,7 +58,7 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
         date: Date.now(),
         data: encodeText(data),
         correctShiftUsed:
-          getMutableConfig().oppositeShiftMode === "off"
+          peekConfig().oppositeShiftMode === "off"
             ? null
             : isCorrectShiftUsed(),
         automatic: options.automatic ?? null,

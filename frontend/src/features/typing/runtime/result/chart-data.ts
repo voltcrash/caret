@@ -3,7 +3,7 @@ import { appObject } from "../../../../app/state";
 import { captureTypingPresentation } from "../../scope";
 import { applyFakeChartData } from "./fake-chart";
 import { currentResult, resultAnnotations } from "./context";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { showSuccessNotification } from "../../../../ts/states/notifications";
 import * as Numbers from "@caret/util/numbers";
 import * as Arrays from "../../../../ts/utils/arrays";
@@ -59,9 +59,7 @@ export async function updateChartData(): Promise<void> {
     return;
   }
 
-  const typingSpeedUnit = getTypingSpeedUnit(
-    getMutableConfig().typingSpeedUnit,
-  );
+  const typingSpeedUnit = getTypingSpeedUnit(peekConfig().typingSpeedUnit);
   getResultChartScale("wpm").title.text = typingSpeedUnit.fullUnitString;
 
   const labels = getTimerBoundaryLabels(eventLog, false);
@@ -87,7 +85,7 @@ export async function updateChartData(): Promise<void> {
 
   const subcolor = getTheme().sub;
 
-  if (getMutableConfig().funbox.length > 0) {
+  if (peekConfig().funbox.length > 0) {
     let content = "";
     for (const fb of getActiveFunboxes()) {
       content += fb.name;
@@ -109,7 +107,7 @@ export async function updateChartData(): Promise<void> {
       label: {
         backgroundColor: "transparent",
         font: {
-          family: getMutableConfig().fontFamily.replace(/_/g, " "),
+          family: peekConfig().fontFamily.replace(/_/g, " "),
           size: 11,
           style: "normal",
           weight: Chart.defaults.font.weight,
@@ -128,7 +126,7 @@ export async function updateChartData(): Promise<void> {
   getResultChart().data.labels = labels;
 
   getResultChartDataset("wpm").data = chartData1;
-  getResultChartDataset("wpm").label = getMutableConfig().typingSpeedUnit;
+  getResultChartDataset("wpm").label = peekConfig().typingSpeedUnit;
 
   getResultChartDataset("raw").data = chartData2;
 

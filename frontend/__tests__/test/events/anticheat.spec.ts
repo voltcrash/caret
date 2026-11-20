@@ -15,7 +15,7 @@ import { analyzeLog } from "@caret/typing-engine/browser.client";
 import { toEngineLog } from "@caret/typing-engine/text";
 
 vi.mock("../../../src/ts/config/store", () => ({
-  getMutableConfig: (() => {
+  peekConfig: (() => {
     const storedConfig = { mode: "time", funbox: [] };
     return () => storedConfig;
   })(),

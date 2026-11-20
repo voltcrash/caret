@@ -1,4 +1,4 @@
-import { isNoQuitActive } from "../../features/typing/runtime/session.client";
+import { batch } from "solid-js";
 import * as ConfigSchemas from "@caret/schemas/configs";
 import { ZodType as ZodSchema } from "zod";
 import { saveToLocalStorage } from "../config/persistence";
@@ -10,18 +10,18 @@ import {
 } from "./funbox-validation";
 import { camelCaseToWords, capitalizeFirstLetter } from "../utils/strings";
 import { configMetadata } from "./metadata";
-import { getMutableConfig, setConfigStore } from "./store";
+import { peekConfig, setConfigStore } from "./store";
 import { isConfigValueValid } from "./validation";
 import { FunboxName } from "@caret/schemas/configs";
 import { typedKeys } from "@caret/util/objects";
 import { isTestActive } from "../states/test";
+import { isNoQuitActive } from "../typing-host";
 
 export function setConfig<T extends keyof ConfigSchemas.Config>(
   key: T,
   value: ConfigSchemas.Config[T],
   options?: {
     nosave?: boolean;
-    partOfFullConfigChange?: boolean;
   },
 ): boolean {
   const metadata = configMetadata[key];
@@ -32,12 +32,12 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
   if (metadata.overrideValue) {
     value = metadata.overrideValue({
       value,
-      currentValue: getMutableConfig()[key],
-      currentConfig: getMutableConfig(),
+      currentValue: peekConfig()[key],
+      currentConfig: peekConfig(),
     });
   }
 
-  const previousValue = getMutableConfig()[key];
+  const previousValue = peekConfig()[key];
 
   if (metadata.changeRequiresRestart && isTestActive() && isNoQuitActive()) {
     showNoticeNotification(
@@ -54,7 +54,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
     return false;
   }
 
-  if (metadata.isBlocked?.({ value, currentConfig: getMutableConfig() })) {
+  if (metadata.isBlocked?.({ value, currentConfig: peekConfig() })) {
     console.warn(
       `Could not set config key "${key}" with value "${JSON.stringify(
         value,
@@ -74,7 +74,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
     return false;
   }
 
-  if (!canSetConfigWithCurrentFunboxes(key, value, getMutableConfig().funbox)) {
+  if (!canSetConfigWithCurrentFunboxes(key, value, peekConfig().funbox)) {
     if (key === "words" || key === "time") {
       showNoticeNotification("Active funboxes do not support infinite tests");
     } else {
@@ -96,7 +96,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
   if (metadata.overrideConfig) {
     const targetConfig = metadata.overrideConfig({
       value,
-      currentConfig: getMutableConfig(),
+      currentConfig: peekConfig(),
     });
 
     for (const targetKey of typedKeys(targetConfig)) {
@@ -104,7 +104,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
         targetKey
       ] as ConfigSchemas.Config[keyof typeof configMetadata];
 
-      if (getMutableConfig()[targetKey] === targetValue) {
+      if (peekConfig()[targetKey] === targetValue) {
         continue; // no need to set if the value is already the same
       }
 
@@ -117,20 +117,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
     }
   }
 
-  getMutableConfig()[key] = value;
-  if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
-
-  // The generic key and both values share Config[T]; preserve that pair in the event union.
-  configEvent.dispatch({
-    key: key,
-    newValue: value,
-    nosave: options?.nosave ?? false,
-    previousValue: previousValue,
-  } as ConfigEventData);
-
-  if (!options?.partOfFullConfigChange) {
-    setConfigStore(key, value);
-  }
+  commitConfig(key, value, previousValue, options);
 
   if (metadata.triggerResize && !options?.nosave) {
     window.dispatchEvent(new Event("resize"));
@@ -138,7 +125,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
 
   metadata.afterSet?.({
     nosave: options?.nosave ?? false,
-    currentConfig: getMutableConfig(),
+    currentConfig: peekConfig(),
   });
   return true;
 }
@@ -160,7 +147,7 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
     return false;
   }
 
-  const funboxCheck = canSetFunboxWithConfig(funbox, getMutableConfig());
+  const funboxCheck = canSetFunboxWithConfig(funbox, peekConfig());
   if (!funboxCheck.ok) {
     const errorStrings = funboxCheck.errors.map(
       (e) =>
@@ -175,9 +162,9 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
     return false;
   }
 
-  const previousValue = getMutableConfig().funbox;
+  const previousValue = peekConfig().funbox;
 
-  let newConfig: FunboxName[] = getMutableConfig().funbox;
+  let newConfig: FunboxName[] = peekConfig().funbox;
 
   if (newConfig.includes(funbox)) {
     newConfig = newConfig.filter((it) => it !== funbox);
@@ -189,16 +176,29 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
     return false;
   }
 
-  getMutableConfig().funbox = newConfig;
-  saveToLocalStorage("funbox", nosave);
-  configEvent.dispatch({
-    key: "funbox",
-    newValue: getMutableConfig().funbox,
-    nosave,
-    previousValue,
-  });
-
-  setConfigStore("funbox", newConfig);
+  commitConfig("funbox", newConfig, previousValue, { nosave });
 
   return true;
+}
+
+/** The one write path: store the value, persist it and announce the change. */
+function commitConfig<T extends keyof ConfigSchemas.Config>(
+  key: T,
+  value: ConfigSchemas.Config[T],
+  previousValue: ConfigSchemas.Config[T],
+  options?: { nosave?: boolean },
+): void {
+  // Listeners read the new value everywhere; reactive readers update after them.
+  batch(() => {
+    setConfigStore(key, value);
+    if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
+
+    // The generic key and both values share Config[T]; preserve that pair in the event union.
+    configEvent.dispatch({
+      key: key,
+      newValue: value,
+      nosave: options?.nosave ?? false,
+      previousValue: previousValue,
+    } as ConfigEventData);
+  });
 }

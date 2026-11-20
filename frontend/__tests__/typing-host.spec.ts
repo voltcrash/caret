@@ -17,6 +17,7 @@ function host(): Parameters<typeof bindTypingHost>[0] {
     blur: vi.fn(),
     reloadPaceCaret: vi.fn(async () => undefined),
     updateHints: vi.fn(),
+    isNoQuitActive: () => false,
   };
 }
 

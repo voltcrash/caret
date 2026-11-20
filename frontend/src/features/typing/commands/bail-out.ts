@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { getCustomTextIndicator } from "../../../ts/states/core";
 import * as CustomText from "../runtime/content/custom-text";
 import { setBailedOut } from "../../../ts/states/test";
@@ -7,22 +7,22 @@ import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
 
 function canBailOut(): boolean {
   return (
-    (getMutableConfig().mode === "custom" &&
+    (peekConfig().mode === "custom" &&
       getCustomTextIndicator()?.isLong === true) ||
-    (getMutableConfig().mode === "custom" &&
+    (peekConfig().mode === "custom" &&
       (CustomText.getLimitMode() === "word" ||
         CustomText.getLimitMode() === "section") &&
       (CustomText.getLimit().value >= 5000 ||
         CustomText.getLimit().value === 0)) ||
-    (getMutableConfig().mode === "custom" &&
+    (peekConfig().mode === "custom" &&
       CustomText.getLimitMode() === "time" &&
       (CustomText.getLimitValue() >= 3600 ||
         CustomText.getLimitValue() === 0)) ||
-    (getMutableConfig().mode === "words" && getMutableConfig().words >= 5000) ||
-    getMutableConfig().words === 0 ||
-    (getMutableConfig().mode === "time" &&
-      (getMutableConfig().time >= 3600 || getMutableConfig().time === 0)) ||
-    getMutableConfig().mode === "zen"
+    (peekConfig().mode === "words" && peekConfig().words >= 5000) ||
+    peekConfig().words === 0 ||
+    (peekConfig().mode === "time" &&
+      (peekConfig().time >= 3600 || peekConfig().time === 0)) ||
+    peekConfig().mode === "zen"
   );
 }
 

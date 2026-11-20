@@ -1,5 +1,5 @@
 import { setMaxChartValue } from "./chart-bounds";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as Numbers from "@caret/util/numbers";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
 import {
@@ -30,9 +30,7 @@ export function applyFakeChartData(): void {
 
   const labels = fakeChartData.wpm.map((_, i) => (i + 1).toString());
 
-  const typingSpeedUnit = getTypingSpeedUnit(
-    getMutableConfig().typingSpeedUnit,
-  );
+  const typingSpeedUnit = getTypingSpeedUnit(peekConfig().typingSpeedUnit);
 
   const chartData1 = [
     ...fakeChartData.wpm.map((a) =>
@@ -64,7 +62,7 @@ export function applyFakeChartData(): void {
 
   let minChartVal = 0;
 
-  if (!getMutableConfig().startGraphsAtZero) {
+  if (!peekConfig().startGraphsAtZero) {
     minChartVal = Math.min(
       ...[
         Math.min(...chartData1),
@@ -80,7 +78,7 @@ export function applyFakeChartData(): void {
   getResultChart().data.labels = labels;
 
   getResultChartDataset("wpm").data = chartData1;
-  getResultChartDataset("wpm").label = getMutableConfig().typingSpeedUnit;
+  getResultChartDataset("wpm").label = peekConfig().typingSpeedUnit;
   getResultChartScale("wpm").min = minChartVal;
   getResultChartScale("wpm").max = maxChartVal;
 

@@ -11,7 +11,7 @@ import { preferencesReadiness } from "../../app/readiness";
 import { saveFullConfigToLocalStorage } from "./persistence";
 import { SnapshotInitError } from "../utils/snapshot-init-error";
 import { getDefaultConfig } from "../constants/default-config";
-import { getMutableConfig } from "./store";
+import { peekConfig } from "./store";
 
 export async function updateFromServer(
   accountReady?: Promise<unknown>,
@@ -27,9 +27,9 @@ export async function updateFromServer(
   await waitForTestIdle(lease.signal);
   lease.assertCurrent();
   const areConfigsEqual =
-    JSON.stringify(getMutableConfig()) === JSON.stringify(remoteConfig);
+    JSON.stringify(peekConfig()) === JSON.stringify(remoteConfig);
 
-  if (getMutableConfig() === undefined || !areConfigsEqual) {
+  if (peekConfig() === undefined || !areConfigsEqual) {
     console.log(
       "no local config or local and db configs are different - applying db",
     );

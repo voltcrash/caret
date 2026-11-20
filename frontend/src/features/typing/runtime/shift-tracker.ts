@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { Keycode } from "../../../ts/constants/keys";
 import { getModifierState } from "../state/modifiers";
 import * as KeyConverter from "../../../ts/utils/key-converter";
@@ -9,7 +9,7 @@ export function isUsingOppositeShift(keycode: Keycode): boolean {
     return true;
   }
 
-  if (getMutableConfig().oppositeShiftMode === "off") {
+  if (peekConfig().oppositeShiftMode === "off") {
     return true;
   }
 

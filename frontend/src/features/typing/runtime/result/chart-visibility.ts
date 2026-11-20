@@ -3,7 +3,7 @@ import {
   applyMinMaxChartValues,
 } from "./chart-bounds";
 import { resultAnnotations } from "./context";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { setConfig } from "../../../../ts/config/setters";
 import { isAuthenticated } from "../../../../ts/states/core";
 import { LocalStorageWithSchema } from "../../../../ts/utils/local-storage-with-schema";
@@ -65,7 +65,7 @@ export function toggleResultChartLegend(
   id: "scale" | ResultChartLegendId,
 ): void {
   if (id === "scale") {
-    setConfig("startGraphsAtZero", !getMutableConfig().startGraphsAtZero);
+    setConfig("startGraphsAtZero", !peekConfig().startGraphsAtZero);
     return;
   }
 

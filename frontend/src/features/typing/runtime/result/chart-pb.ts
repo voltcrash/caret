@@ -1,6 +1,6 @@
 import { captureTypingPresentation } from "../../scope";
 import { currentResult, resultAnnotations } from "./context";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
 import * as Numbers from "@caret/util/numbers";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
@@ -24,9 +24,7 @@ export async function updateChartPBLine(): Promise<void> {
   );
   const localPbWpm = localPb?.wpm ?? 0;
   if (localPbWpm === 0) return;
-  const typingSpeedUnit = getTypingSpeedUnit(
-    getMutableConfig().typingSpeedUnit,
-  );
+  const typingSpeedUnit = getTypingSpeedUnit(peekConfig().typingSpeedUnit);
   const chartlpb = Numbers.roundTo2(
     typingSpeedUnit.fromWpm(localPbWpm),
   ).toFixed(2);
@@ -42,7 +40,7 @@ export async function updateChartPBLine(): Promise<void> {
     label: {
       backgroundColor: themecolors.sub,
       font: {
-        family: getMutableConfig().fontFamily.replace(/_/g, " "),
+        family: peekConfig().fontFamily.replace(/_/g, " "),
         size: 11,
         style: "normal",
         weight: Chart.defaults.font.weight,

@@ -14,14 +14,14 @@ import {
   saveFullConfigToLocalStorage,
   resetPendingConfigSync,
 } from "./persistence";
-import { getMutableConfig, setFullConfigStore } from "./store";
+import { peekConfig, setConfigStore } from "./store";
 import { getDefaultConfig } from "../constants/default-config";
 import { configEvent } from "../events/config";
 import { migrateConfig } from "./utils";
 import { isObject } from "../utils/misc";
 import { setConfig } from "./setters";
 import { deleteConfig } from "./sync";
-import { setProperty, typedKeys } from "@caret/util/objects";
+import { typedKeys } from "@caret/util/objects";
 import { lastConfigsToApply } from "@caret/web-shared/config/apply-order";
 
 export async function applyConfigFromJson(json: string): Promise<boolean> {
@@ -103,14 +103,16 @@ export async function applyConfig(
   }
   lease?.assertCurrent();
 
-  // Publish one settled configuration to reactive UI subscribers.
+  // Publish one settled configuration to reactive UI subscribers. A failure is
+  // rethrown after the batch so the rollback still reaches subscribers.
+  let failure: { error: unknown } | undefined;
   batch(() => {
-    const previous = structuredClone(getMutableConfig());
+    const previous = structuredClone(peekConfig());
     configEvent.dispatch({ key: "fullConfigChange" });
     try {
       const defaultConfig = getDefaultConfig();
       for (const key of typedKeys(fullConfig)) {
-        setProperty(getMutableConfig(), key, defaultConfig[key]);
+        setConfigStore(key, defaultConfig[key]);
       }
 
       const configKeysToReset: (keyof ConfigSchemas.Config)[] = [];
@@ -122,10 +124,7 @@ export async function applyConfig(
       for (const configKey of [...firstKeys, ...lastConfigsToApply]) {
         const configValue = fullConfig[configKey];
 
-        const set = setConfig(configKey, configValue, {
-          nosave: true,
-          partOfFullConfigChange: true,
-        });
+        const set = setConfig(configKey, configValue, { nosave: true });
 
         if (!set) {
           configKeysToReset.push(configKey);
@@ -136,13 +135,15 @@ export async function applyConfig(
         saveToLocalStorage(key);
       }
     } catch (error) {
-      Object.assign(getMutableConfig(), previous);
-      throw error;
+      for (const key of typedKeys(previous)) {
+        setConfigStore(key, previous[key]);
+      }
+      failure = { error };
     } finally {
-      setFullConfigStore(structuredClone(getMutableConfig()));
       configEvent.dispatch({ key: "fullConfigChangeFinished" });
     }
   });
+  if (failure !== undefined) throw failure.error;
 }
 
 export async function resetConfig(): Promise<void> {

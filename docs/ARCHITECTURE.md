@@ -98,6 +98,11 @@ change. Never keep module-level mutable state: use `createAppOwned`,
 handle a mounted component publishes. `caret-rules/no-module-let` rejects
 top-level `let`; document-scoped exceptions carry a suppression reason.
 
+Preferences: one Solid store (`src/ts/config/store.ts`) holds the configuration.
+`getConfig` reads it reactively; `peekConfig` returns the same object untracked
+and read-only for hot paths. Only the setters write, inside a batch: change
+listeners (`configEvent`) see the new value first, then reactive readers update.
+
 Command palette: `src/ts/commandline` owns the palette and core commands.
 Features add commands at named slots through `registry.ts` while the palette is
 mounted (`app/commandline.client.tsx`); shared commands reach typing only

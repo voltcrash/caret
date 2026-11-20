@@ -1,6 +1,6 @@
 import { captureTypingPresentation } from "../../scope";
 import { currentResult } from "./context";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
 import { getActiveFunboxes } from "../funbox/list";
 import { getFunbox } from "@caret/funbox";
@@ -20,7 +20,7 @@ function updateCrownText(text: string, wide = false): void {
 }
 
 export async function updateCrown(dontSave: boolean): Promise<void> {
-  if (getMutableConfig().mode === "quote" || dontSave) {
+  if (peekConfig().mode === "quote" || dontSave) {
     hideCrown();
     return;
   }
@@ -32,13 +32,13 @@ export async function updateCrown(dontSave: boolean): Promise<void> {
   console.debug("Result can get PB:", canGetPb.value, canGetPb.reason ?? "");
 
   const localPb = DB.getLocalPB(
-    getMutableConfig().mode,
+    peekConfig().mode,
     currentResult().mode2,
-    getMutableConfig().punctuation,
-    getMutableConfig().numbers,
-    getMutableConfig().language,
-    getMutableConfig().difficulty,
-    getMutableConfig().lazyMode,
+    peekConfig().punctuation,
+    peekConfig().numbers,
+    peekConfig().language,
+    peekConfig().difficulty,
+    peekConfig().lazyMode,
     canGetPb.value ? getActiveFunboxes() : [],
   );
   const localPbWpm = localPb?.wpm ?? 0;
@@ -77,7 +77,7 @@ export async function resultCanGetPb(): Promise<CanGetPb> {
   const funboxesOk = funboxes.length === 0 || allFunboxesCanGetPb;
   // allow stopOnError:letter to be PB only if 100% accuracy, since it doesn't affect gameplay
   const stopOnLetterTriggered =
-    getMutableConfig().stopOnError === "letter" && currentResult().acc < 100;
+    peekConfig().stopOnError === "letter" && currentResult().acc < 100;
   const notBailedOut = !currentResult().bailedOut;
 
   if (funboxesOk && !stopOnLetterTriggered && notBailedOut) {

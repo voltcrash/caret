@@ -27,7 +27,7 @@ const { state, callbacks } = vi.hoisted(() => ({
   },
 }));
 vi.mock("../../../../src/ts/config/store", () => ({
-  getMutableConfig: (() => {
+  peekConfig: (() => {
     const storedConfig = {
       get mode() {
         return state.mode;

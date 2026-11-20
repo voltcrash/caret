@@ -22,7 +22,7 @@ import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
 import { setConfig } from "../../../ts/config/setters";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import {
   showErrorNotification,
   showNoticeNotification,
@@ -73,8 +73,8 @@ function loadCustomThemeFromUrl(getOverride?: string): void {
     return;
   }
 
-  const oldCustomTheme = getMutableConfig().customTheme;
-  const oldCustomThemeColors = getMutableConfig().customThemeColors;
+  const oldCustomTheme = peekConfig().customTheme;
+  const oldCustomThemeColors = peekConfig().customThemeColors;
   try {
     setConfig("customThemeColors", colorArray);
     showSuccessNotification("Custom theme applied");
@@ -85,7 +85,7 @@ function loadCustomThemeFromUrl(getOverride?: string): void {
       setConfig("customBackgroundFilter", filter);
     }
 
-    if (!getMutableConfig().customTheme) setConfig("customTheme", true);
+    if (!peekConfig().customTheme) setConfig("customTheme", true);
   } catch (e) {
     showNoticeNotification(
       "Something went wrong. Reverting to previous state.",
@@ -147,7 +147,7 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
     applied["mode"] = de[0];
   }
 
-  const mode = de[0] ?? getMutableConfig().mode;
+  const mode = de[0] ?? peekConfig().mode;
   if (de[1] !== null) {
     if (mode === "time") {
       setConfig("time", parseInt(de[1], 10), {

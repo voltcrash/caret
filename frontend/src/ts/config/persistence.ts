@@ -3,7 +3,7 @@ import { createAccountOwned, captureAccount } from "../../app/account-scope";
 import { Config as ConfigSchema } from "@caret/schemas/configs";
 import { saveConfig } from "./sync";
 import { trackAccountWork } from "../states/header";
-import { getMutableConfig } from "./store";
+import { peekConfig } from "./store";
 import * as ConfigSchemas from "@caret/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
 import { migrateConfig } from "./utils";
@@ -54,20 +54,20 @@ export function saveToLocalStorage(
   noDbCheck = false,
 ): void {
   if (nosave) return;
-  configLS.set(getMutableConfig());
-  refreshTypingPreviewSettings(getMutableConfig());
+  configLS.set(peekConfig());
+  refreshTypingPreviewSettings(peekConfig());
   if (!noDbCheck) {
-    setProperty(pendingSync().config, key, getMutableConfig()[key]);
+    setProperty(pendingSync().config, key, peekConfig()[key]);
     pendingSync().save();
   }
 }
 
 export function saveFullConfigToLocalStorage(noDbCheck = false): void {
   console.log("saving full config to localStorage");
-  configLS.set(getMutableConfig());
-  refreshTypingPreviewSettings(getMutableConfig());
+  configLS.set(peekConfig());
+  refreshTypingPreviewSettings(peekConfig());
   if (!noDbCheck) {
-    persist(structuredClone(getMutableConfig()));
+    persist(structuredClone(peekConfig()));
   }
 }
 

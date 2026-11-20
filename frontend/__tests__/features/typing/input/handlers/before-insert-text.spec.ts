@@ -84,7 +84,7 @@ vi.mock("../../../../../src/features/typing/runtime/funbox/list", () => ({
 import { onBeforeInsertText } from "../../../../../src/features/typing/input/handlers/before-insert-text";
 import { nativeSession } from "../../../../__harness__/native-engine";
 import { encodeText } from "@caret/typing-engine/text";
-import { getMutableConfig } from "../../../../../src/ts/config/store";
+import { peekConfig } from "../../../../../src/ts/config/store";
 afterEach(() => {
   native.session?.dispose();
   native.session = undefined;
@@ -108,7 +108,7 @@ describe("onBeforeInsertText - line overflow", () => {
       difficulty: "normal",
       strictSpace: false,
     });
-    native.session = nativeSession(getMutableConfig(), ["hello ", "world"]);
+    native.session = nativeSession(peekConfig(), ["hello ", "world"]);
     native.session.command({
       op: "insert",
       data: encodeText("hello"),

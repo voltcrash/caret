@@ -1,7 +1,7 @@
 import { CommandlineConfigMetadataObject } from "./types";
 import { isTypingRouteActive, restartTest } from "../../typing-host";
 import * as ConfigSchemas from "@caret/schemas/configs";
-import { getMutableConfig } from "../../config/store";
+import { peekConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 
 export const behaviorMetadata = {
@@ -53,9 +53,7 @@ export const behaviorMetadata = {
       secondKey: "minWpmCustomSpeed",
       inputValueConvert: (value) => {
         let newVal = Number(value);
-        newVal = getTypingSpeedUnit(getMutableConfig().typingSpeedUnit).toWpm(
-          newVal,
-        );
+        newVal = getTypingSpeedUnit(peekConfig().typingSpeedUnit).toWpm(newVal);
         return newVal;
       },
     },
@@ -86,7 +84,7 @@ export const behaviorMetadata = {
   customLayoutfluid: {
     input: {
       defaultValue: () => {
-        return getMutableConfig().customLayoutfluid.join(" ");
+        return peekConfig().customLayoutfluid.join(" ");
       },
       inputValueConvert: (val) =>
         val.trim().split(" ") as ConfigSchemas.CustomLayoutFluid,
@@ -95,7 +93,7 @@ export const behaviorMetadata = {
   customPolyglot: {
     input: {
       defaultValue: () => {
-        return getMutableConfig().customPolyglot.join(" ");
+        return peekConfig().customPolyglot.join(" ");
       },
       inputValueConvert: (val) =>
         val.trim().split(" ") as ConfigSchemas.CustomPolyglot,

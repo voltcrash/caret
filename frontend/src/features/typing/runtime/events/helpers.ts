@@ -1,17 +1,11 @@
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { Keycode } from "../../../../ts/constants/keys";
 export function getTestEventCode(event: KeyboardEvent): Keycode | "NoCode" {
-  if (
-    event.code === "NumpadEnter" &&
-    getMutableConfig().funbox.includes("58008")
-  ) {
+  if (event.code === "NumpadEnter" && peekConfig().funbox.includes("58008")) {
     return "Space";
   }
 
-  if (
-    event.code.includes("Arrow") &&
-    getMutableConfig().funbox.includes("arrows")
-  ) {
+  if (event.code.includes("Arrow") && peekConfig().funbox.includes("arrows")) {
     return "NoCode";
   }
 

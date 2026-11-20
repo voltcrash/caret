@@ -16,7 +16,7 @@ import {
   fromSchema,
 } from "../../../ts/components/ui/form/utils";
 import Select from "../../../ts/components/ui/Select";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { LanguageGroupNames } from "../../../ts/constants/languages";
 import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
 import { hideModalAndClearChain } from "../../../ts/states/modals";
@@ -35,7 +35,7 @@ export function QuoteSubmitModal(): JSXElement {
     text: g.replace(/_/g, " "),
   }));
 
-  const language = removeLanguageSize(getMutableConfig().language) as string;
+  const language = removeLanguageSize(peekConfig().language) as string;
 
   const form = createForm(() => ({
     defaultValues: {
@@ -82,7 +82,7 @@ export function QuoteSubmitModal(): JSXElement {
       defaultValues: {
         text: "",
         source: "",
-        language: removeLanguageSize(getMutableConfig().language),
+        language: removeLanguageSize(peekConfig().language),
         captcha: "",
       },
     });

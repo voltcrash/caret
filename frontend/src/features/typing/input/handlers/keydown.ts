@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as TestLogic from "../../runtime/test/logic";
 import { getCharFromEvent } from "../../runtime/layout-emulator";
 import { emulateInsertText } from "./insert-text";
@@ -37,14 +37,14 @@ async function handleTab(e: KeyboardEvent, now: number): Promise<void> {
 
 async function handleEnter(e: KeyboardEvent, _now: number): Promise<void> {
   if (e.shiftKey) {
-    if (getMutableConfig().mode === "zen") {
+    if (peekConfig().mode === "zen") {
       void TestLogic.finish();
       return;
     } else if (
       canQuickRestart(
-        getMutableConfig().mode,
-        getMutableConfig().words,
-        getMutableConfig().time,
+        peekConfig().mode,
+        peekConfig().words,
+        peekConfig().time,
         CustomText.getData(),
         getCustomTextIndicator()?.isLong ?? false,
       ) === false
@@ -74,8 +74,8 @@ async function handleEnter(e: KeyboardEvent, _now: number): Promise<void> {
 
 async function handleOppositeShift(event: KeyboardEvent): Promise<void> {
   if (
-    getMutableConfig().oppositeShiftMode === "keymap" &&
-    getMutableConfig().keymapLayout !== "overrideSync"
+    peekConfig().oppositeShiftMode === "keymap" &&
+    peekConfig().keymapLayout !== "overrideSync"
   ) {
     let keymapLayout = await waitForKeymapLayout().catch(() => undefined);
     if (keymapLayout === undefined) {
@@ -130,7 +130,7 @@ export async function onKeydown(event: KeyboardEvent): Promise<void> {
   });
 
   // allow arrows in arrows funbox
-  const arrowsActive = getMutableConfig().funbox.includes("arrows");
+  const arrowsActive = peekConfig().funbox.includes("arrows");
   if (
     event.key === "Home" ||
     event.key === "End" ||
@@ -142,7 +142,7 @@ export async function onKeydown(event: KeyboardEvent): Promise<void> {
     return;
   }
 
-  if (getMutableConfig().oppositeShiftMode !== "off") {
+  if (peekConfig().oppositeShiftMode !== "off") {
     await handleOppositeShift(event);
   }
 
@@ -152,7 +152,7 @@ export async function onKeydown(event: KeyboardEvent): Promise<void> {
     return;
   }
 
-  if (getMutableConfig().layout !== "default") {
+  if (peekConfig().layout !== "default") {
     const emulatedChar = await getCharFromEvent(event);
     if (emulatedChar !== null) {
       await emulateInsertText({ data: emulatedChar, now });

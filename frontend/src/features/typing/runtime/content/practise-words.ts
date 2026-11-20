@@ -5,7 +5,7 @@ import { getEngineSession } from "../session.client";
 import * as TestWords from "../test/words";
 import { showNoticeNotification } from "../../../../ts/states/notifications";
 
-import { getConfig, getMutableConfig } from "../../../../ts/config/store";
+import { getConfig, peekConfig } from "../../../../ts/config/store";
 import { setConfig } from "../../../../ts/config/setters";
 import * as CustomText from "./custom-text";
 import { configEvent } from "../../../../ts/events/config";
@@ -66,7 +66,7 @@ export function weakestWords(): PracticeWord[] {
 }
 
 export function initFromHistory(): boolean {
-  const config = getMutableConfig();
+  const config = peekConfig();
   const selected = weakestWords();
   if (selected.length === 0) return false;
   const previous = {
@@ -110,14 +110,14 @@ export function init(
   const practice = selection.result;
   if (practice === null) return false;
 
-  const mode = before.mode ?? getMutableConfig().mode;
-  const punctuation = before.punctuation ?? getMutableConfig().punctuation;
-  const numbers = before.numbers ?? getMutableConfig().numbers;
+  const mode = before.mode ?? peekConfig().mode;
+  const punctuation = before.punctuation ?? peekConfig().punctuation;
+  const numbers = before.numbers ?? peekConfig().numbers;
 
   let customText = before.customText;
   if (
     customText === null &&
-    getMutableConfig().mode === "custom" &&
+    peekConfig().mode === "custom" &&
     before.mode === null
   ) {
     customText = CustomText.getData();

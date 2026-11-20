@@ -1,7 +1,7 @@
 import { debounce, throttle } from "@caret/util/timing";
 import { onCleanup, onMount } from "solid-js";
 
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { ModifierKeys } from "../../../ts/constants/modifier-keys";
 import { updateCurrentCode } from "../../../ts/controllers/sound-controller";
 import { isInputElementFocused } from "../../../ts/input/input-element";
@@ -69,7 +69,7 @@ export function TypingEvents(): null {
           !e.ctrlKey
         ) {
           TestUI.focusWords();
-          if (getMutableConfig().showOutOfFocusWarning) e.preventDefault();
+          if (peekConfig().showOutOfFocusWarning) e.preventDefault();
         }
       }
     };
@@ -93,9 +93,9 @@ export function TypingEvents(): null {
         isTypingRouteActive() &&
         isTestActive() &&
         canQuickRestart(
-          getMutableConfig().mode,
-          getMutableConfig().words,
-          getMutableConfig().time,
+          peekConfig().mode,
+          peekConfig().words,
+          peekConfig().time,
           CustomText.getData(),
           getCustomTextIndicator()?.isLong ?? false,
         ) === false
@@ -110,7 +110,7 @@ export function TypingEvents(): null {
     const timers = new Set<ReturnType<typeof setTimeout>>();
     const debouncedResize = debounce(250, () => {
       if (!isTypingRouteActive() || getResultVisible()) return;
-      if (getMutableConfig().tapeMode !== "off") {
+      if (peekConfig().tapeMode !== "off") {
         void TestUI.scrollTape();
       } else {
         void TestUI.centerActiveLine();

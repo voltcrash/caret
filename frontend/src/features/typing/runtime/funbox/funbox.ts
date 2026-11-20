@@ -11,7 +11,7 @@ import {
 } from "../../../../ts/states/notifications";
 import * as JSONData from "../../../../ts/utils/json-data";
 import * as Strings from "../../../../ts/utils/strings";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig, setConfigStore } from "../../../../ts/config/store";
 import {
   toggleFunbox as configToggleFunbox,
   setConfig,
@@ -35,7 +35,7 @@ import { tryCatch } from "@caret/util/trycatch";
 import { configEvent } from "../../../../ts/events/config";
 
 export function toggleScript(...params: string[]): void {
-  if (getMutableConfig().funbox.length === 0) return;
+  if (peekConfig().funbox.length === 0) return;
 
   for (const fb of getActiveFunboxesWithFunction("toggleScript")) {
     fb.functions.toggleScript(params);
@@ -51,7 +51,7 @@ export function setFunbox(funbox: FunboxName[]): boolean {
 export function toggleFunbox(funbox: FunboxName): void {
   if (
     !checkCompatibility(getActiveFunboxNames(), funbox) &&
-    !getMutableConfig().funbox.includes(funbox)
+    !peekConfig().funbox.includes(funbox)
   ) {
     showNoticeNotification(
       `${Strings.capitalizeFirstLetter(
@@ -78,18 +78,14 @@ export async function activate(
   lease = captureTypingRoute(),
 ): Promise<boolean | undefined> {
   if (!lease.isCurrent()) return false;
-  if (funbox === undefined || funbox === null) {
-    funbox = getMutableConfig().funbox;
-  } else if (getMutableConfig().funbox !== funbox) {
-    getMutableConfig().funbox = funbox;
-  }
+  funbox ??= getActiveFunboxNames();
 
-  // The configuration might be edited with dev tools,
-  // so we need to double check its validity
-  if (!checkCompatibility(getActiveFunboxNames())) {
+  // The configuration might be edited with dev tools, so check the list
+  // before publishing it.
+  if (!checkCompatibility(funbox)) {
     showErrorNotification(
-      `Failed to activate funbox: funboxes ${getMutableConfig()
-        .funbox.map((it) => it.replace(/_/g, " "))
+      `Failed to activate funbox: funboxes ${funbox
+        .map((it) => it.replace(/_/g, " "))
         .join(", ")} are not compatible`,
     );
     setConfig("funbox", [], {
@@ -98,6 +94,7 @@ export async function activate(
     await clear();
     return false;
   }
+  if (peekConfig().funbox !== funbox) setConfigStore("funbox", funbox);
 
   MemoryTimer.reset();
   await setFunboxBodyClasses();
@@ -108,7 +105,7 @@ export async function activate(
   setWordsWrapperVisible(true);
 
   const { data: language, error } = await tryCatch(
-    JSONData.getCurrentLanguage(getMutableConfig().language),
+    JSONData.getCurrentLanguage(peekConfig().language),
   );
   if (!lease.isCurrent()) return false;
   if (error) {
@@ -135,7 +132,7 @@ export async function activate(
 
   let canSetSoFar = true;
 
-  for (const [configKey, configValue] of Object.entries(getMutableConfig())) {
+  for (const [configKey, configValue] of Object.entries(peekConfig())) {
     const check = checkForcedConfig(
       configKey,
       configValue,
@@ -170,13 +167,13 @@ export async function activate(
   }
 
   if (!canSetSoFar) {
-    if (getMutableConfig().funbox.length > 1) {
+    if (peekConfig().funbox.length > 1) {
       showErrorNotification(
-        `Failed to activate funboxes ${getMutableConfig().funbox}: no intersecting forced configs. Disabling funbox`,
+        `Failed to activate funboxes ${peekConfig().funbox}: no intersecting forced configs. Disabling funbox`,
       );
     } else {
       showErrorNotification(
-        `Failed to activate funbox ${getMutableConfig().funbox}: no forced configs. Disabling funbox`,
+        `Failed to activate funbox ${peekConfig().funbox}: no forced configs. Disabling funbox`,
       );
     }
     setConfig("funbox", [], {

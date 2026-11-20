@@ -2,7 +2,7 @@ import { FontName } from "@caret/schemas/fonts";
 
 import { createAppOwned } from "../app/application";
 import { appObject } from "../app/state";
-import { getMutableConfig } from "./config/store";
+import { peekConfig } from "./config/store";
 import {
   setFontFamily,
   setMediaQueryDebugLevel as setDebugLevel,
@@ -22,7 +22,7 @@ export { applyFontFamily } from "../app/fonts.client";
 
 export function clearFontPreview(): void {
   if (!fontPreview.active) return;
-  previewFontFamily(getMutableConfig().fontFamily);
+  previewFontFamily(peekConfig().fontFamily);
   fontPreview.active = false;
 }
 

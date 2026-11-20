@@ -3,7 +3,7 @@ import { JSXElement, Show } from "solid-js";
 
 import { navigate } from "../../../../app/navigate";
 import { Balloon } from "../../../../ts/components/common/Balloon";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import Format from "../../../../ts/singletons/format";
 import { applyReducedMotion, getMode2 } from "../../../../ts/utils/misc";
 import { resultState } from "../../state/result";
@@ -34,8 +34,8 @@ export function ResultDailyLeaderboard(props: {
           class={props.bottomClass}
           onClick={() => {
             void navigate(
-              `/leaderboards?type=daily&language=${getMutableConfig().language}&mode2=${getMode2(
-                getMutableConfig(),
+              `/leaderboards?type=daily&language=${peekConfig().language}&mode2=${getMode2(
+                peekConfig(),
                 null,
               )}&goToUserPage=true`,
             );

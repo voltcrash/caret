@@ -6,7 +6,7 @@ import {
   showSuccessNotification,
 } from "../../../ts/states/notifications";
 import * as TestWords from "../runtime/test/words";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import * as PractiseWords from "../runtime/content/practise-words";
 import { Command, CommandsSubgroup } from "../../../ts/commandline/types";
 import * as TestScreenshot from "../runtime/test/screenshot";
@@ -143,7 +143,7 @@ const commands: Command[] = [
 
       const inputHistory = getInputHistory(eventLog);
       const words =
-        getMutableConfig().mode === "zen"
+        peekConfig().mode === "zen"
           ? inputHistory.join("")
           : TestWords.words
               .get()

@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../config/store";
+import { peekConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import {
   ConfigMetadata,
@@ -202,8 +202,7 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
   } = {
     id: `set${capitalizeFirstLetter(key)}Custom`,
     defaultValue:
-      inputProps?.defaultValue ??
-      (() => getMutableConfig()[key]?.toString() ?? ""),
+      inputProps?.defaultValue ?? (() => peekConfig()[key]?.toString() ?? ""),
     configValue:
       inputProps !== undefined && "configValue" in inputProps
         ? (inputProps.configValue ?? undefined)

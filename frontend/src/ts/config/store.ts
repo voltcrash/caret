@@ -1,29 +1,38 @@
 import type { Config as ConfigSchema } from "@caret/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
-import { reconcile } from "solid-js/store";
+import { createStore, reconcile, unwrap } from "solid-js/store";
 import { createAppOwned } from "../../app/application";
-import { createAppStore } from "../../app/state";
+import { appObject } from "../../app/state";
 
-export const getMutableConfig = createAppOwned(getDefaultConfig);
+// One configuration per app: `getConfig` reads it reactively, and
+// `peekConfig` returns the same object untracked for hot paths.
+const configStore = createAppOwned(() =>
+  createStore<ConfigSchema>(getDefaultConfig()),
+);
 
-const [getConfigStore, setConfigStoreRaw] =
-  createAppStore<ConfigSchema>(getDefaultConfig);
+export const getConfig = appObject(() => configStore()[0]);
 
-export const getConfig = getConfigStore;
+/**
+ * The store's own object: its fields read untracked (the accessor itself
+ * still follows the mounted app). Write through the setters.
+ */
+export const peekConfig = createAppOwned((): Readonly<ConfigSchema> =>
+  unwrap(configStore()[0]),
+);
 
 export function setFullConfigStore(newConfig: ConfigSchema): void {
-  setConfigStoreRaw(reconcile(newConfig));
+  configStore()[1](reconcile(newConfig));
 }
 
+/**
+ * Replaces one value. Arrays are copied, so neither earlier values nor the
+ * caller's array alias the stored one.
+ */
 export function setConfigStore<K extends keyof ConfigSchema>(
   key: K,
   value: ConfigSchema[K],
 ): void {
-  if (Array.isArray(value)) {
-    setConfigStoreRaw(key, reconcile(value));
-  } else {
-    setConfigStoreRaw(key, value);
-  }
+  const stored = (Array.isArray(value) ? [...value] : value) as ConfigSchema[K];
+  // Values are primitives or arrays, so the store sets them without merging.
+  (configStore()[1] as (key: K, value: ConfigSchema[K]) => void)(key, stored);
 }
-
-// window.getConfigStore = getConfigStore;

@@ -25,7 +25,7 @@ vi.mock("../../../../src/ts/utils/json-data", () => ({
   getLanguage: async () => ({ rightToLeft: false }),
 }));
 vi.mock("../../../../src/ts/config/store", () => ({
-  getMutableConfig: (() => {
+  peekConfig: (() => {
     const storedConfig = { language: "english" };
     return () => storedConfig;
   })(),

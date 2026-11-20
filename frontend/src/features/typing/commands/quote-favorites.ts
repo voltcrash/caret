@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import QuotesController, { Quote } from "../runtime/quotes-controller";
 import {
   showErrorNotification,
@@ -19,7 +19,7 @@ const commands: Command[] = [
       return (
         isAuthenticated() &&
         quote !== null &&
-        getMutableConfig().mode === "quote" &&
+        peekConfig().mode === "quote" &&
         !QuotesController.isQuoteFavorite(quote)
       );
     },
@@ -47,7 +47,7 @@ const commands: Command[] = [
       return (
         isAuthenticated() &&
         quote !== null &&
-        getMutableConfig().mode === "quote" &&
+        peekConfig().mode === "quote" &&
         QuotesController.isQuoteFavorite(quote)
       );
     },

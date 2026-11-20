@@ -2,7 +2,7 @@ import { CustomTextIncomingData, Mode } from "./types";
 import { createForm } from "@tanstack/solid-form";
 import { batch, createSignal, untrack } from "solid-js";
 import { setConfig } from "../../../../ts/config/setters";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { restartTestEvent } from "../../../../ts/events/test";
 import {
   getCustomTextIndicator,
@@ -124,7 +124,7 @@ export function createCustomTextController() {
         showNoticeNotification("Challenge cleared");
         setLoadedChallenge(null);
       }
-      if (getMutableConfig().mode !== "custom") {
+      if (peekConfig().mode !== "custom") {
         setConfig("mode", "custom");
       }
       PractiseWords.resetBefore();

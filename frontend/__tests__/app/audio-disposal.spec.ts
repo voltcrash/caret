@@ -7,7 +7,7 @@ import {
   releaseTestApplication,
 } from "../__harness__/test-application";
 
-import { getMutableConfig } from "../../src/ts/config/store";
+import { setConfigStore } from "../../src/ts/config/store";
 import { configEvent } from "../../src/ts/events/config";
 releaseTestApplication();
 it("discards a sample load that finishes after its app is replaced", async () => {
@@ -47,7 +47,7 @@ it("resumes a suspended context on a gesture and follows volume changes", async 
   const gains = vi.spyOn(AudioContext.prototype, "createGain");
   const first = createTestApplication();
   const release = mountApplication(first.application);
-  getMutableConfig().soundVolume = 0.4;
+  setConfigStore("soundVolume", 0.4);
   await previewError("1");
   const context = gains.mock.contexts[0];
   const gain = gains.mock.results[0]?.value as GainNode;

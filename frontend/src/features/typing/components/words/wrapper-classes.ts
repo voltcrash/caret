@@ -7,7 +7,7 @@ import {
 } from "./sizing";
 import { updateHintsPositionDebounced } from "./hints";
 import { setClass } from "./elements";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { isInputElementFocused } from "../../../../ts/input/input-element";
 import { setResultState } from "../../state/result";
 import {
@@ -29,7 +29,7 @@ export function updateWordWrapperClasses(): void {
   // outoffocus applies transition, need to remove it
   setTestFocusState("focused");
 
-  if (getMutableConfig().tapeMode !== "off") {
+  if (peekConfig().tapeMode !== "off") {
     setClass(getWordsEl(), "tape", true);
     setClass(getWordsWrapperEl(), "tape", true);
   } else {
@@ -37,7 +37,7 @@ export function updateWordWrapperClasses(): void {
     setClass(getWordsWrapperEl(), "tape", false);
   }
 
-  if (getMutableConfig().blindMode) {
+  if (peekConfig().blindMode) {
     setClass(getWordsEl(), "blind", true);
     setClass(getWordsWrapperEl(), "blind", true);
   } else {
@@ -46,8 +46,8 @@ export function updateWordWrapperClasses(): void {
   }
 
   if (
-    getMutableConfig().indicateTypos === "below" ||
-    getMutableConfig().indicateTypos === "both"
+    peekConfig().indicateTypos === "below" ||
+    peekConfig().indicateTypos === "both"
   ) {
     setClass(getWordsEl(), "indicateTyposBelow", true);
     setClass(getWordsWrapperEl(), "indicateTyposBelow", true);
@@ -56,7 +56,7 @@ export function updateWordWrapperClasses(): void {
     setClass(getWordsWrapperEl(), "indicateTyposBelow", false);
   }
 
-  if (getMutableConfig().hideExtraLetters) {
+  if (peekConfig().hideExtraLetters) {
     setClass(getWordsEl(), "hideExtraLetters", true);
     setClass(getWordsWrapperEl(), "hideExtraLetters", true);
   } else {
@@ -64,13 +64,13 @@ export function updateWordWrapperClasses(): void {
     setClass(getWordsWrapperEl(), "hideExtraLetters", false);
   }
 
-  if (getMutableConfig().flipTestColors) {
+  if (peekConfig().flipTestColors) {
     setClass(getWordsEl(), "flipped", true);
   } else {
     setClass(getWordsEl(), "flipped", false);
   }
 
-  if (getMutableConfig().colorfulMode) {
+  if (peekConfig().colorfulMode) {
     setClass(getWordsEl(), "colorfulMode", true);
   } else {
     setClass(getWordsEl(), "colorfulMode", false);
@@ -81,10 +81,10 @@ export function updateWordWrapperClasses(): void {
     getPaceCaretElement(),
     getTypingTestElement(),
   ]) {
-    element.style.fontSize = getWordsFontSize(getMutableConfig().fontSize);
+    element.style.fontSize = getWordsFontSize(peekConfig().fontSize);
   }
   // under 16px ios zooms the page in when the input is focused
-  getWordsInputElement().style.fontSize = `max(16px, ${getWordsFontSize(getMutableConfig().fontSize)})`;
+  getWordsInputElement().style.fontSize = `max(16px, ${getWordsFontSize(peekConfig().fontSize)})`;
 
   if (isLanguageRightToLeft()) {
     setClass(getWordsEl(), "rightToLeftTest", true);
@@ -101,14 +101,14 @@ export function updateWordWrapperClasses(): void {
           !className.startsWith("highlight-") &&
           !className.startsWith("typed-effect-"),
       ) ?? [];
-  if (getMutableConfig().highlightMode !== null) {
+  if (peekConfig().highlightMode !== null) {
     existing.push(
-      `highlight-${getMutableConfig().highlightMode.replaceAll("_", "-")}`,
+      `highlight-${peekConfig().highlightMode.replaceAll("_", "-")}`,
     );
   }
-  if (getMutableConfig().typedEffect !== null) {
+  if (peekConfig().typedEffect !== null) {
     existing.push(
-      `typed-effect-${getMutableConfig().typedEffect.replaceAll("_", "-")}`,
+      `typed-effect-${peekConfig().typedEffect.replaceAll("_", "-")}`,
     );
   }
 
@@ -116,7 +116,7 @@ export function updateWordWrapperClasses(): void {
 
   updateWordsWidth();
   updateWordsWrapperHeight(true);
-  if (!getMutableConfig().showAllLines) {
+  if (!peekConfig().showAllLines) {
     void centerActiveLine();
   }
   updateWordsMargin();

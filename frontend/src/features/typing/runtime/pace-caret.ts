@@ -3,7 +3,7 @@ import { createAppOwned } from "../../../app/application";
 import { onCleanup } from "solid-js";
 import { captureTypingRoute } from "../scope";
 import { getTestSession } from "./events/data";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import * as DB from "../../../ts/db";
 import * as Misc from "../../../ts/utils/misc";
 import { configEvent } from "../../../ts/events/config";
@@ -47,7 +47,7 @@ export function setCaret(controller: CaretController): () => void {
 export function getCaret(): CaretController {
   return (state().caret ??= new CaretController(
     getPaceCaretElement(),
-    getMutableConfig().paceCaretStyle,
+    peekConfig().paceCaretStyle,
   ));
 }
 
@@ -56,8 +56,8 @@ export function setLastTestWpm(wpm: number): void {
 }
 
 export function resetCaretPosition(): void {
-  if (getMutableConfig().paceCaret === "off" && !isPaceRepeat()) return;
-  if (getMutableConfig().mode === "zen") return;
+  if (peekConfig().paceCaret === "off" && !isPaceRepeat()) return;
+  if (peekConfig().mode === "zen") return;
 
   getCaret().hide();
   getCaret().stopAllAnimations();
@@ -80,52 +80,52 @@ export async function init(lease = captureTypingRoute()): Promise<void> {
   // the settled account data; never download history to reveal the page.
   if (
     !isStartupFinished() &&
-    ["tagPb", "average", "daily"].includes(getMutableConfig().paceCaret)
+    ["tagPb", "average", "daily"].includes(peekConfig().paceCaret)
   ) {
     setPaceCaretWpm(undefined);
     return;
   }
-  const mode2 = Misc.getMode2(getMutableConfig(), getCurrentQuote());
+  const mode2 = Misc.getMode2(peekConfig(), getCurrentQuote());
   let wpm = 0;
-  if (getMutableConfig().paceCaret === "pb") {
+  if (peekConfig().paceCaret === "pb") {
     wpm =
       DB.getLocalPB(
-        getMutableConfig().mode,
+        peekConfig().mode,
         mode2,
-        getMutableConfig().punctuation,
-        getMutableConfig().numbers,
-        getMutableConfig().language,
-        getMutableConfig().difficulty,
-        getMutableConfig().lazyMode,
+        peekConfig().punctuation,
+        peekConfig().numbers,
+        peekConfig().language,
+        peekConfig().difficulty,
+        peekConfig().lazyMode,
         getActiveFunboxes(),
       )?.wpm ?? 0;
-  } else if (getMutableConfig().paceCaret === "tagPb") {
+  } else if (peekConfig().paceCaret === "tagPb") {
     const { getActiveTagsPB } = await import("../../../data/collections/tags");
     if (!lease.isCurrent()) return;
     wpm = getActiveTagsPB(
-      getMutableConfig().mode,
+      peekConfig().mode,
       mode2,
-      getMutableConfig().punctuation,
-      getMutableConfig().numbers,
-      getMutableConfig().language,
-      getMutableConfig().difficulty,
-      getMutableConfig().lazyMode,
+      peekConfig().punctuation,
+      peekConfig().numbers,
+      peekConfig().language,
+      peekConfig().difficulty,
+      peekConfig().lazyMode,
     );
-  } else if (getMutableConfig().paceCaret === "average") {
+  } else if (peekConfig().paceCaret === "average") {
     const { getUserAverage10Once } =
       await import("../../../data/collections/results");
     wpm = Math.round(
-      (await getUserAverage10Once({ ...getMutableConfig(), mode2 })).wpm,
+      (await getUserAverage10Once({ ...peekConfig(), mode2 })).wpm,
     );
-  } else if (getMutableConfig().paceCaret === "daily") {
+  } else if (peekConfig().paceCaret === "daily") {
     const { getUserDailyBestOnce } =
       await import("../../../data/collections/results");
     wpm = Math.round(
-      (await getUserDailyBestOnce({ ...getMutableConfig(), mode2 })).wpm,
+      (await getUserDailyBestOnce({ ...peekConfig(), mode2 })).wpm,
     );
-  } else if (getMutableConfig().paceCaret === "custom") {
-    wpm = getMutableConfig().paceCaretCustomSpeed;
-  } else if (getMutableConfig().paceCaret === "last" || isPaceRepeat()) {
+  } else if (peekConfig().paceCaret === "custom") {
+    wpm = peekConfig().paceCaretCustomSpeed;
+  } else if (peekConfig().paceCaret === "last" || isPaceRepeat()) {
     wpm = getTestSession().pace.getLastWpm();
   }
   if (!lease.isCurrent()) return;

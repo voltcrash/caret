@@ -16,7 +16,7 @@ vi.mock("../../src/app/audio.client", () => {
 });
 
 import { mountApplication } from "../../src/app/application";
-import { getMutableConfig } from "../../src/ts/config/store";
+import { setConfigStore } from "../../src/ts/config/store";
 import {
   playClick,
   updateCurrentCode,
@@ -34,7 +34,7 @@ it("keeps default-off audio unloaded and never starts work after app disposal", 
   updateCurrentCode(new KeyboardEvent("keydown", { code: "KeyQ" }));
   await playClick();
   expect(audio.loaded).not.toHaveBeenCalled();
-  getMutableConfig().playSoundOnClick = "1";
+  setConfigStore("playSoundOnClick", "1");
   await playClick();
   expect(audio.loaded).toHaveBeenCalledOnce();
   expect(audio.listen).toHaveBeenCalledOnce();
@@ -45,7 +45,7 @@ it("keeps default-off audio unloaded and never starts work after app disposal", 
 
   const next = createTestApplication();
   const releaseNext = mountApplication(next.application);
-  getMutableConfig().playSoundOnClick = "1";
+  setConfigStore("playSoundOnClick", "1");
   const pending = playClick();
   next.dispose();
   releaseNext();

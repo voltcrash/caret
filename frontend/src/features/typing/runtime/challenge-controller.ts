@@ -10,7 +10,7 @@ import * as CustomText from "./content/custom-text";
 import * as Funbox from "./funbox/funbox";
 
 import { setConfig } from "../../../ts/config/setters";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { configEvent } from "../../../ts/events/config";
 
 import { ChallengeName } from "@caret/schemas/challenges";
@@ -37,7 +37,7 @@ function clearActive(): void {
 
 export async function verify(
   result: CompletedEvent,
-  config = { ...getMutableConfig() },
+  config = { ...peekConfig() },
 ): Promise<ChallengeName | null> {
   const loadedChallenge = getLoadedChallenge();
   if (loadedChallenge === null) return null;

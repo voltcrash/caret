@@ -1,4 +1,4 @@
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { logTestEvent } from "../../runtime/events/data";
 import { getTestEventCode } from "../../runtime/events/helpers";
 
@@ -13,7 +13,7 @@ export async function onKeyup(event: KeyboardEvent): Promise<void> {
   });
 
   // allow arrows in arrows funbox
-  const arrowsActive = getMutableConfig().funbox.includes("arrows");
+  const arrowsActive = peekConfig().funbox.includes("arrows");
   if (
     event.key === "Home" ||
     event.key === "End" ||

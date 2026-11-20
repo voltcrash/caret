@@ -241,9 +241,10 @@ it("retains the captured tick/explicit finish clock when acknowledging a deferre
 it("sends custom limits only when their mode or value changes", async () => {
   const CustomText =
     await import("../../../src/features/typing/runtime/content/custom-text");
-  const { getMutableConfig } = await import("../../../src/ts/config/store");
-  const previousMode = getMutableConfig().mode;
-  getMutableConfig().mode = "custom";
+  const { peekConfig, setConfigStore } =
+    await import("../../../src/ts/config/store");
+  const previousMode = peekConfig().mode;
+  setConfigStore("mode", "custom");
   CustomText.setLimitMode("word");
   CustomText.setLimitValue(10);
   try {
@@ -274,6 +275,6 @@ it("sends custom limits only when their mode or value changes", async () => {
     session.command(view);
     expect(limitCommands()).toHaveLength(2);
   } finally {
-    getMutableConfig().mode = previousMode;
+    setConfigStore("mode", previousMode);
   }
 });

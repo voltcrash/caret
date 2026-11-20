@@ -17,7 +17,7 @@ vi.mock("../../../src/ts/controllers/sound-controller", () => ({
   playError: sounds.error,
 }));
 
-import { getMutableConfig } from "../../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   resultState,
@@ -49,7 +49,7 @@ function load(words: string[], events: EventLog["events"]): void {
     version: 1,
     context: {
       targetWords: words,
-      mode: getMutableConfig().mode,
+      mode: peekConfig().mode,
       mode2: String(words.length),
       koreanStatus: false,
       bailedOut: false,
@@ -122,7 +122,7 @@ function remove(
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "performance"] });
   vi.clearAllMocks();
-  Object.assign(getMutableConfig(), getDefaultConfig(), {
+  Object.assign(peekConfig(), getDefaultConfig(), {
     mode: "words",
     words: 3,
   });
@@ -161,7 +161,7 @@ describe("replay", () => {
     `);
     expect(resultState.replay.stats).toBe("0wpm\t0s");
 
-    getMutableConfig().playSoundOnError = "1";
+    setConfigStore("playSoundOnError", "1");
     Replay.togglePlayback();
     expect(resultState.replay.playback).toBe("playing");
     vi.runAllTimers();
@@ -332,7 +332,7 @@ describe("replay", () => {
   });
 
   it("replays zen mode against what was typed", () => {
-    getMutableConfig().mode = "zen";
+    setConfigStore("mode", "zen");
     load(
       [],
       [

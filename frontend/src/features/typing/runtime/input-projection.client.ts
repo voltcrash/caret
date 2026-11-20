@@ -11,7 +11,7 @@ import * as TestWords from "./test/words";
 import * as TestLogic from "./test/logic";
 import * as Composition from "../../../ts/states/composition";
 import * as SlowTimer from "../state/slow-timer";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import {
   getActiveWordIndex,
   setActiveWordIndex,
@@ -155,7 +155,7 @@ export function useEngineInputProjection(): void {
           // Zen has no generated targets. Project the native cursor into an
           // empty display word; backward navigation may have removed that node.
           if (
-            getMutableConfig().mode === "zen" &&
+            peekConfig().mode === "zen" &&
             TestUI.getWordElement(update.state.wordIndex) === null
           ) {
             TestUI.appendEmptyWordElement(update.state.wordIndex);
@@ -169,7 +169,7 @@ export function useEngineInputProjection(): void {
               data.inputType === "insertCompositionText"
             ) {
               setActiveWordIndex(data.wordIndex);
-              if (getMutableConfig().keymapMode === "react") {
+              if (peekConfig().keymapMode === "react") {
                 flash(data.data, data.correct);
               }
               if (
@@ -236,7 +236,7 @@ export function useEngineInputProjection(): void {
               setActiveWordIndex(data.wordIndex);
               TestUI.beforeTestWordChange(
                 "forward",
-                getMutableConfig().mode === "zen" ||
+                peekConfig().mode === "zen" ||
                   session.getInputForWord(data.wordIndex) ===
                     TestWords.words.get(data.wordIndex)?.textWithCommit,
               );
@@ -245,7 +245,7 @@ export function useEngineInputProjection(): void {
               )) {
                 funbox.functions.handleSpace();
               }
-              if (getMutableConfig().liveBurstStyle !== "off") {
+              if (peekConfig().liveBurstStyle !== "off") {
                 lastBurst = session.wordBurst(data.wordIndex, command.now);
               }
             }

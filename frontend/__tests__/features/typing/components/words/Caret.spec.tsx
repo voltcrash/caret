@@ -32,7 +32,7 @@ vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
   requestDebouncedAnimationFrame: vi.fn(),
 }));
 import { Caret } from "../../../../../src/features/typing/components/words/Caret";
-import { getMutableConfig } from "../../../../../src/ts/config/store";
+import { setConfigStore } from "../../../../../src/ts/config/store";
 import { configEvent } from "../../../../../src/ts/events/config";
 
 afterEach(() => {
@@ -42,8 +42,8 @@ afterEach(() => {
 
 describe("Caret ownership", () => {
   it("creates a controller per node and disposes it on unmount", () => {
-    getMutableConfig().caretStyle = "block";
-    getMutableConfig().paceCaretStyle = "underline";
+    setConfigStore("caretStyle", "block");
+    setConfigStore("paceCaretStyle", "underline");
     const mainRef = vi.fn();
     const paceRef = vi.fn();
     const { container, unmount } = render(() => (
@@ -74,8 +74,8 @@ describe("Caret ownership", () => {
   });
 
   it("applies style and smooth caret changes until unmounted", () => {
-    getMutableConfig().caretStyle = "default";
-    getMutableConfig().paceCaretStyle = "default";
+    setConfigStore("caretStyle", "default");
+    setConfigStore("paceCaretStyle", "default");
     const { container, unmount } = render(() => (
       <>
         <Caret ref={vi.fn()} />
@@ -89,24 +89,24 @@ describe("Caret ownership", () => {
         typeof configEvent.dispatch
       >[0]);
 
-    getMutableConfig().caretStyle = "outline";
+    setConfigStore("caretStyle", "outline");
     dispatch("caretStyle");
     expect(main).toHaveClass("outline");
     expect(pace).toHaveClass("default");
     expect(bindings.updatePosition).toHaveBeenCalledWith(true);
 
-    getMutableConfig().paceCaretStyle = "block";
+    setConfigStore("paceCaretStyle", "block");
     dispatch("paceCaretStyle");
     expect(pace).toHaveClass("block");
     expect(main).toHaveClass("outline");
 
-    getMutableConfig().smoothCaret = "off";
+    setConfigStore("smoothCaret", "off");
     dispatch("smoothCaret");
     expect(main.style.animationName.toLowerCase()).toBe("caretflashhard");
     expect(pace.style.animationName).toBe("");
 
     unmount();
-    getMutableConfig().caretStyle = "underline";
+    setConfigStore("caretStyle", "underline");
     dispatch("caretStyle");
     expect(main).toHaveClass("outline");
   });

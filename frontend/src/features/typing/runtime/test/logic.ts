@@ -54,7 +54,7 @@ import { debounce } from "@caret/util/timing";
 import { typedKeys } from "@caret/util/objects";
 import { sharedConfigMetadata } from "@caret/web-shared/config/metadata";
 
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { setConfig } from "../../../../ts/config/setters";
 import { getTestSession, resetTestEvents } from "../events/data";
 
@@ -94,8 +94,8 @@ export function startTest(now: number): boolean {
 
   try {
     if (
-      getMutableConfig().paceCaret !== "off" ||
-      (getMutableConfig().repeatedPace && isPaceRepeat())
+      peekConfig().paceCaret !== "off" ||
+      (peekConfig().repeatedPace && isPaceRepeat())
     ) {
       PaceCaret.start();
     }
@@ -158,11 +158,11 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
       if (decision?.preventDefault) options.event?.preventDefault();
       if (decision?.reason === "longTest") {
         let message = "Use your mouse to confirm.";
-        if (getMutableConfig().quickRestart === "tab") {
+        if (peekConfig().quickRestart === "tab") {
           message = "Press shift + tab or use your mouse to confirm.";
-        } else if (getMutableConfig().quickRestart === "esc") {
+        } else if (peekConfig().quickRestart === "esc") {
           message = "Press shift + escape or use your mouse to confirm.";
-        } else if (getMutableConfig().quickRestart === "enter") {
+        } else if (peekConfig().quickRestart === "enter") {
           message = "Press shift + enter or use your mouse to confirm.";
         }
         showNoticeNotification(
@@ -291,13 +291,13 @@ const zipfCheck = createAppOwned(() => {
   const check = debounce(250, async () => {
     const lease = captureTypingRoute();
     const supports = await JSONData.checkIfLanguageSupportsZipf(
-      getMutableConfig().language,
+      peekConfig().language,
     );
     if (!lease.isCurrent()) return;
     if (supports === "no") {
       showNoticeNotification(
         `${Strings.capitalizeFirstLetter(
-          Strings.getLanguageDisplayString(getMutableConfig().language),
+          Strings.getLanguageDisplayString(peekConfig().language),
         )} does not support Zipf funbox, because the list is not ordered by frequency. Please try another word list.`,
         {
           durationMs: 7000,
@@ -307,7 +307,7 @@ const zipfCheck = createAppOwned(() => {
     if (supports === "unknown") {
       showNoticeNotification(
         `${Strings.capitalizeFirstLetter(
-          Strings.getLanguageDisplayString(getMutableConfig().language),
+          Strings.getLanguageDisplayString(peekConfig().language),
         )} may not support Zipf funbox, because we don't know if it's ordered by frequency or not. If you would like to add this label, please contact us.`,
         {
           durationMs: 7000,
@@ -327,7 +327,7 @@ export function useTestLogicEvents(): void {
     JSON.stringify(
       typedKeys(sharedConfigMetadata)
         .filter((key) => sharedConfigMetadata[key].changeRequiresRestart)
-        .map((key) => getMutableConfig()[key]),
+        .map((key) => peekConfig()[key]),
     );
   let beforeFullConfig: string | undefined;
   onCleanup(
@@ -373,7 +373,7 @@ export function useTestLogicEvents(): void {
       if (
         key === "customLayoutfluid" &&
         beforeFullConfig === undefined &&
-        getMutableConfig().funbox.includes("layoutfluid")
+        peekConfig().funbox.includes("layoutfluid")
       ) {
         void restart();
       }
@@ -381,7 +381,7 @@ export function useTestLogicEvents(): void {
       if (
         key === "keymapMode" &&
         newValue === "next" &&
-        getMutableConfig().mode !== "zen"
+        peekConfig().mode !== "zen"
       ) {
         setTimeout(() => {
           highlight(
@@ -394,13 +394,13 @@ export function useTestLogicEvents(): void {
       }
       if (
         (key === "language" || key === "funbox") &&
-        getMutableConfig().funbox.includes("zipf")
+        peekConfig().funbox.includes("zipf")
       ) {
         zipfCheck()();
       }
     }
     if (key === "lazyMode" && !nosave) {
-      if (getMutableConfig().language.startsWith("arabic")) {
+      if (peekConfig().language.startsWith("arabic")) {
         LazyModeState.setArabicPref(newValue);
       }
     }

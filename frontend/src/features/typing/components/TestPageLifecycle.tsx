@@ -1,6 +1,6 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import {
   getResultVisible,
@@ -16,7 +16,7 @@ export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
     let lostWindowFocus = false;
     const focus = (): void => {
       if (!isInputElementFocused()) return;
-      if (!getResultVisible() && getMutableConfig().showOutOfFocusWarning) {
+      if (!getResultVisible() && peekConfig().showOutOfFocusWarning) {
         setTestFocusState("focused");
       }
       Caret.show(true);
@@ -38,8 +38,7 @@ export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
         refreshWords &&
         !isTestActive() &&
         !getResultVisible() &&
-        (getMutableConfig().mode === "time" ||
-          getMutableConfig().mode === "words")
+        (peekConfig().mode === "time" || peekConfig().mode === "words")
       ) {
         void restart({ noAnim: true });
       }

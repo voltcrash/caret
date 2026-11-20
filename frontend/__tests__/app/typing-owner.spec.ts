@@ -9,7 +9,7 @@ import {
 releaseTestApplication();
 import { getBrowserEngine } from "../../src/ts/engine/owner.client";
 import { projectEngineConfig } from "@caret/typing-engine/config";
-import { getMutableConfig } from "../../src/ts/config/store";
+import { peekConfig } from "../../src/ts/config/store";
 import { encodeText } from "@caret/typing-engine/text";
 
 it("imports typing adapters without a mounted app, then recreates and stops each session on remount", async () => {
@@ -23,7 +23,7 @@ it("imports typing adapters without a mounted app, then recreates and stops each
   const engine = getBrowserEngine();
   await engine.load();
   engine.beginReplacement().prepare({
-    config: projectEngineConfig(getMutableConfig()),
+    config: projectEngineConfig(peekConfig()),
     language: {
       name: "english",
       words: [encodeText("hello")],

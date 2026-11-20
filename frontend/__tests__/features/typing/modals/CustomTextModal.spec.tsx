@@ -71,11 +71,11 @@ vi.mock("../../../../src/ts/utils/bail-out", () => ({
 
 import { CustomTextModal } from "../../../../src/features/typing/modals/CustomTextModal";
 import * as CustomText from "../../../../src/features/typing/runtime/content/custom-text";
-import { getMutableConfig } from "../../../../src/ts/config/store";
+import { setConfigStore } from "../../../../src/ts/config/store";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  getMutableConfig().mode = "words";
+  setConfigStore("mode", "words");
   CustomText.setText(["hello", "world"]);
   CustomText.setMode("repeat");
   CustomText.setPipeDelimiter(false);

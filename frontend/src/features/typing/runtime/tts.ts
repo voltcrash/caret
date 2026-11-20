@@ -1,6 +1,6 @@
 import { onCleanup } from "solid-js";
 import { createTypingOwned, captureTypingRoute } from "../scope";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import * as JSONData from "../../../ts/utils/json-data";
 import { configEvent } from "../../../ts/events/config";
 import { ttsEvent } from "./events/tts";
@@ -9,9 +9,7 @@ function createSpeech(): {
 } {
   let voice: SpeechSynthesisUtterance | undefined;
   let languageRevision = 0;
-  async function setLanguage(
-    lang = getMutableConfig().language,
-  ): Promise<void> {
+  async function setLanguage(lang = peekConfig().language): Promise<void> {
     if (!voice) return;
     const target = voice;
     const revision = ++languageRevision;
@@ -46,7 +44,7 @@ function createSpeech(): {
           clear();
         }
       }
-      if (key === "language" && getMutableConfig().funbox.includes("tts")) {
+      if (key === "language" && peekConfig().funbox.includes("tts")) {
         void setLanguage();
       }
     });

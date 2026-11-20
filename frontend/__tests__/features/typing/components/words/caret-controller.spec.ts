@@ -17,7 +17,7 @@ const config = vi.hoisted(() => ({
   hideExtraLetters: false,
 }));
 vi.mock("../../../../../src/ts/config/store", () => ({
-  getMutableConfig: () => config,
+  peekConfig: () => config,
 }));
 vi.mock("../../../../../src/features/typing/runtime/test/words", () => ({
   words: { get: () => ({ display: "ab" }) },

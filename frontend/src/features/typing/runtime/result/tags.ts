@@ -1,7 +1,7 @@
 import { captureTypingPresentation } from "../../scope";
 import { resultCanGetPb } from "./crown";
 import { currentResult, resultAnnotations } from "./context";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import * as Numbers from "@caret/util/numbers";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
 import type { LabelPosition } from "chartjs-plugin-annotation";
@@ -37,13 +37,13 @@ export async function updateTags(dontSave: boolean): Promise<void> {
   for (const tag of activeTags) {
     const tpb = getLocalTagPB(
       tag._id,
-      getMutableConfig().mode,
+      peekConfig().mode,
       currentResult().mode2,
-      getMutableConfig().punctuation,
-      getMutableConfig().numbers,
-      getMutableConfig().language,
-      getMutableConfig().difficulty,
-      getMutableConfig().lazyMode,
+      peekConfig().punctuation,
+      peekConfig().numbers,
+      peekConfig().language,
+      peekConfig().difficulty,
+      peekConfig().lazyMode,
     );
     const item: ResultTag = {
       id: tag._id,
@@ -52,11 +52,9 @@ export async function updateTags(dontSave: boolean): Promise<void> {
       pb: false,
     };
     items.push(item);
-    const typingSpeedUnit = getTypingSpeedUnit(
-      getMutableConfig().typingSpeedUnit,
-    );
+    const typingSpeedUnit = getTypingSpeedUnit(peekConfig().typingSpeedUnit);
     if (
-      getMutableConfig().mode !== "quote" &&
+      peekConfig().mode !== "quote" &&
       !dontSave &&
       (await resultCanGetPb()).value
     ) {
@@ -64,13 +62,13 @@ export async function updateTags(dontSave: boolean): Promise<void> {
         //new pb for that tag
         saveLocalTagPB(
           tag._id,
-          getMutableConfig().mode,
+          peekConfig().mode,
           currentResult().mode2,
-          getMutableConfig().punctuation,
-          getMutableConfig().numbers,
-          getMutableConfig().language,
-          getMutableConfig().difficulty,
-          getMutableConfig().lazyMode,
+          peekConfig().punctuation,
+          peekConfig().numbers,
+          peekConfig().language,
+          peekConfig().difficulty,
+          peekConfig().lazyMode,
           currentResult().wpm,
           currentResult().acc,
           currentResult().rawWpm,
@@ -93,7 +91,7 @@ export async function updateTags(dontSave: boolean): Promise<void> {
           label: {
             backgroundColor: themecolors.sub,
             font: {
-              family: getMutableConfig().fontFamily.replace(/_/g, " "),
+              family: peekConfig().fontFamily.replace(/_/g, " "),
               size: 11,
               style: "normal",
               weight: Chart.defaults.font.weight,

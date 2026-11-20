@@ -1,7 +1,7 @@
 import { onCleanup } from "solid-js";
 import { createTypingOwned } from "../../scope";
 import type { SessionEvents } from "../session.client";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { setConfig } from "../../../../ts/config/setters";
 import * as TestWords from "./words";
 import {
@@ -42,11 +42,11 @@ function createTiming(): {
     if (timerDebug) console.time("layoutfluid");
 
     if (
-      getMutableConfig().funbox.includes("layoutfluid") &&
-      getMutableConfig().mode === "time"
+      peekConfig().funbox.includes("layoutfluid") &&
+      peekConfig().mode === "time"
     ) {
-      const layouts = getMutableConfig().customLayoutfluid;
-      const switchTime = getMutableConfig().time / layouts.length;
+      const layouts = peekConfig().customLayoutfluid;
+      const switchTime = peekConfig().time / layouts.length;
       const index = Math.floor(time / switchTime);
       const layout = layouts[index];
       const flooredSwitchTimes = [];
@@ -64,7 +64,7 @@ function createTiming(): {
         LayoutfluidFunboxTimer.updateTime(1, layouts[index + 1] as string);
       }
 
-      if (getMutableConfig().layout !== layout && layout !== undefined) {
+      if (peekConfig().layout !== layout && layout !== undefined) {
         LayoutfluidFunboxTimer.hide();
         setConfig("layout", layout as Layout, {
           nosave: true,
@@ -73,7 +73,7 @@ function createTiming(): {
           nosave: true,
         });
 
-        if (getMutableConfig().keymapMode === "next") {
+        if (peekConfig().keymapMode === "next") {
           setTimeout(() => {
             highlight(
               TestWords.words
@@ -93,7 +93,7 @@ function createTiming(): {
 
     if (
       maxTime !== null &&
-      testTime === maxTime - parseInt(getMutableConfig().playTimeWarning, 10)
+      testTime === maxTime - parseInt(peekConfig().playTimeWarning, 10)
     ) {
       void SoundController.playTimeWarning();
     }
@@ -111,7 +111,7 @@ function createTiming(): {
         seconds: tick.seconds,
       });
     }
-    if (getMutableConfig().playTimeWarning !== "off") {
+    if (peekConfig().playTimeWarning !== "off") {
       playTimeWarning(tick.timer);
     }
     layoutfluid(tick.timer);

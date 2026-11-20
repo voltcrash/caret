@@ -11,7 +11,7 @@ import CustomThemesListCommands from "./lists/custom-themes-list";
 import PresetsCommands from "./lists/presets";
 import ThemesCommands from "./lists/themes";
 
-import { getMutableConfig } from "../config/store";
+import { peekConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import { randomizeTheme } from "../controllers/theme-controller";
 import { showModal } from "../states/modals";
@@ -187,7 +187,7 @@ const getCoreCommands = createAccountOwned<
       icon: "fa-random",
       exec: async (): Promise<void> => randomizeTheme(),
       available: (): boolean => {
-        return getMutableConfig().randomTheme !== "off";
+        return peekConfig().randomTheme !== "off";
       },
     },
 
@@ -224,7 +224,7 @@ const getCoreCommands = createAccountOwned<
       alias: "export config",
       input: true,
       defaultValue: (): string => {
-        return JSON.stringify(getMutableConfig());
+        return JSON.stringify(peekConfig());
       },
     },
     {

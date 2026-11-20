@@ -19,7 +19,7 @@ vi.mock("../../src/ts/states/server-configuration", async (original) => ({
 
 import { preferencesReadiness } from "../../src/app/readiness";
 import { updateFromServer } from "../../src/ts/config/remote";
-import { getMutableConfig } from "../../src/ts/config/store";
+import { peekConfig } from "../../src/ts/config/store";
 import { saveToLocalStorage } from "../../src/ts/config/persistence";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
@@ -46,7 +46,7 @@ mockOperation("users.get", async () => {
 beforeEach(async () => {
   setUserId(null);
   vi.clearAllMocks();
-  Object.assign(getMutableConfig(), getDefaultConfig());
+  Object.assign(peekConfig(), getDefaultConfig());
   await preferencesReadiness().start(async () => undefined);
 });
 afterEach(() => {
@@ -95,7 +95,7 @@ it("never applies another actor's delayed preferences or queued config write", a
   });
   await old;
   await vi.advanceTimersByTimeAsync(2000);
-  expect(getMutableConfig().theme).toBe(getDefaultConfig().theme);
+  expect(peekConfig().theme).toBe(getDefaultConfig().theme);
   expect(requests.save).not.toHaveBeenCalled();
 });
 

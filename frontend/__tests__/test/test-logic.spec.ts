@@ -209,13 +209,10 @@ vi.mock("../../src/features/typing/runtime/remember-lazy-mode", () => ({
   setArabicPref: vi.fn(),
 }));
 vi.mock("../../src/ts/config/setters", async () => {
-  const { getMutableConfig } = await import("../../src/ts/config/store");
+  const { peekConfig } = await import("../../src/ts/config/store");
   return {
-    setConfig: (
-      key: keyof ReturnType<typeof getMutableConfig>,
-      value: unknown,
-    ) => {
-      Object.assign(getMutableConfig(), { [key]: value });
+    setConfig: (key: keyof ReturnType<typeof peekConfig>, value: unknown) => {
+      Object.assign(peekConfig(), { [key]: value });
     },
     setQuoteLengthAll: vi.fn(),
     toggleFunbox: (name: string) =>
@@ -269,7 +266,7 @@ vi.mock("../../src/ts/engine/analysis.client", () => ({
   getWordBurstHistory: () => [],
 }));
 
-import { getMutableConfig } from "../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../src/ts/config/store";
 import { configEvent } from "../../src/ts/events/config";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
@@ -318,7 +315,7 @@ beforeEach(() => {
     generatedWords: ["hello ", "world"],
     language: { name: "english", words: ["hello", "world"] },
   });
-  Object.assign(getMutableConfig(), getDefaultConfig(), {
+  Object.assign(peekConfig(), getDefaultConfig(), {
     mode: "words",
     words: 15,
     language: "english",
@@ -355,7 +352,7 @@ describe("test lifecycle state", () => {
     vi.mocked(animateAsync).mockReturnValueOnce(fade.promise);
     resetTypingLifecycle("running");
     const pending = finish();
-    getMutableConfig().words = 100;
+    setConfigStore("words", 100);
     fade.resolve(undefined);
     await pending;
     expect(mocks.complete.mock.calls[0]?.[1].config.words).toBe(15);
@@ -438,12 +435,12 @@ describe("test lifecycle state", () => {
   it.each(["english", "spanish"] as const)(
     "keeps %s words when an account config batch changes only appearance",
     async (language) => {
-      getMutableConfig().language = language;
+      setConfigStore("language", language);
       configEvent.dispatch({ key: "fullConfigChange" });
       // Full config application resets defaults before calling every setter.
-      getMutableConfig().language = "english";
-      getMutableConfig().theme = "serika";
-      getMutableConfig().language = language;
+      setConfigStore("language", "english");
+      setConfigStore("theme", "serika");
+      setConfigStore("language", language);
       configEvent.dispatch({
         key: "language",
         previousValue: "english",
@@ -466,7 +463,7 @@ describe("test lifecycle state", () => {
       nosave: true,
     });
     expect(mocks.engineLoad).not.toHaveBeenCalled();
-    getMutableConfig().words = 25;
+    setConfigStore("words", 25);
     configEvent.dispatch({ key: "fullConfigChangeFinished" });
     await vi.waitFor(() => expect(mocks.uiRestart).toHaveBeenCalledOnce());
     expect(mocks.generate).toHaveBeenCalledOnce();
@@ -578,16 +575,16 @@ describe("test lifecycle state", () => {
 
   it("remembers a lazy-mode notice until lazy mode becomes available", async () => {
     mocks.language.noLazyMode = true;
-    getMutableConfig().lazyMode = true;
+    setConfigStore("lazyMode", true);
     await restart();
-    expect(getMutableConfig().lazyMode).toBe(false);
+    expect(peekConfig().lazyMode).toBe(false);
     expect(mocks.rememberLazy).toBe(true);
-    getMutableConfig().lazyMode = true;
+    setConfigStore("lazyMode", true);
     await restart();
     expect(mocks.notice).toHaveBeenCalledTimes(1);
     mocks.language.noLazyMode = false;
     await restart();
-    expect(getMutableConfig().lazyMode).toBe(true);
+    expect(peekConfig().lazyMode).toBe(true);
     expect(mocks.rememberLazy).toBe(false);
     mocks.language.noLazyMode = true;
     await restart();
@@ -645,8 +642,8 @@ describe("shared test decisions", () => {
   it.each(["off", "typing"] as const)(
     "preserves repeatQuotes=%s on an active quote restart",
     async (repeatQuotes) => {
-      getMutableConfig().mode = "quote";
-      getMutableConfig().repeatQuotes = repeatQuotes;
+      setConfigStore("mode", "quote");
+      setConfigStore("repeatQuotes", repeatQuotes);
       mocks.quote = { language: "english", id: 1 } as QuoteWithTextSplit;
       mocks.restartPolicy.mockReturnValueOnce({
         allowed: true,
@@ -663,8 +660,8 @@ describe("shared test decisions", () => {
   );
 
   it("does not repeat a quote after changing its language", async () => {
-    getMutableConfig().mode = "quote";
-    getMutableConfig().repeatQuotes = "typing";
+    setConfigStore("mode", "quote");
+    setConfigStore("repeatQuotes", "typing");
     mocks.quote = { language: "spanish", id: 1 } as QuoteWithTextSplit;
     resetTypingLifecycle("running");
     await restart();

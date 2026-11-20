@@ -623,6 +623,8 @@ function Picker(props: { color: ColorName }): JSXElement {
 
     updateThemeColor(key, color);
   });
+  // A pending edit must not land after the picker is gone (e.g. on reset).
+  onCleanup(() => debouncedInput.cancel());
 
   return (
     <div

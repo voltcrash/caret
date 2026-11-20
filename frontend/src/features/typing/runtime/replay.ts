@@ -10,7 +10,7 @@ import type {
 import type { ReplayWord } from "../replay-view";
 import { getWpmHistory } from "../../../ts/engine/analysis.client";
 import * as Sound from "../../../ts/controllers/sound-controller";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { buildEventLog, getTestSession } from "./events/data";
 import { resultState, setResultState } from "../state/result";
 
@@ -68,7 +68,7 @@ const playback = createTypingOwned(() => {
     const log = buildEventLog();
     replay = getBrowserEngine()
       .api()
-      .createReplay(toEngineLog(log), getMutableConfig().mode === "zen");
+      .createReplay(toEngineLog(log), peekConfig().mode === "zen");
     times = getTestSession()
       .getReplay()
       .steps.map((step) => step.time);
@@ -77,7 +77,7 @@ const playback = createTypingOwned(() => {
   };
   const sound = (kind: string | null): void => {
     if (kind === null) return;
-    if (kind === "error" && getMutableConfig().playSoundOnError !== "off") {
+    if (kind === "error" && peekConfig().playSoundOnError !== "off") {
       void Sound.playError();
     } else {
       void Sound.playClick();

@@ -1,6 +1,6 @@
 import { captureAccount } from "../../../../app/account-scope";
 import { getAuthenticatedUser } from "../../../../ts/auth-client";
-import { getMutableConfig } from "../../../../ts/config/store";
+import { peekConfig } from "../../../../ts/config/store";
 import { getCustomTextIndicator } from "../../../../ts/states/core";
 import {
   getBailedOut,
@@ -18,11 +18,11 @@ import { words } from "../test/words";
 export function captureCompletionSnapshot(): CompletionSnapshot {
   return {
     eventLog: structuredClone(buildEventLog()),
-    config: structuredClone(getMutableConfig()),
+    config: structuredClone(peekConfig()),
     quote: structuredClone(getCurrentQuote()),
     customText: structuredClone(CustomText.getData()),
     customIndicator: structuredClone(getCustomTextIndicator()),
-    repeated: isRepeated() && getMutableConfig().mode !== "quote",
+    repeated: isRepeated() && peekConfig().mode !== "quote",
     bailedOut: getBailedOut(),
     incompleteTests: structuredClone(getIncompleteTests()),
     incompleteSeconds: getIncompleteSeconds(),
@@ -37,7 +37,7 @@ export function captureCompletionSnapshot(): CompletionSnapshot {
 
 export type CompletionSnapshot = {
   eventLog: ReturnType<typeof buildEventLog>;
-  config: ReturnType<typeof getMutableConfig>;
+  config: ReturnType<typeof peekConfig>;
   quote: ReturnType<typeof getCurrentQuote>;
   customText: ReturnType<typeof CustomText.getData>;
   customIndicator: ReturnType<typeof getCustomTextIndicator>;

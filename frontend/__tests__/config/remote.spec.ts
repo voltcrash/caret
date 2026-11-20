@@ -24,7 +24,7 @@ vi.mock("../../src/ts/config/persistence", () => ({
   saveFullConfigToLocalStorage: state.save,
 }));
 vi.mock("../../src/ts/config/store", () => ({
-  getMutableConfig: (() => {
+  peekConfig: (() => {
     const storedConfig = { theme: "local" };
     return () => storedConfig;
   })(),

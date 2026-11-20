@@ -1,5 +1,5 @@
 import { createBinding } from "../../../app/binding";
-import { getMutableConfig } from "../../../ts/config/store";
+import { peekConfig } from "../../../ts/config/store";
 import { getCurrentInput } from "./events/data";
 import {
   isDirectionReversed,
@@ -40,7 +40,7 @@ export function updatePosition(noAnim = false): void {
     letterIndex: getCurrentInput().length + CompositionState.getData().length,
     isLanguageRightToLeft: isLanguageRightToLeft(),
     isDirectionReversed: isDirectionReversed(),
-    animate: getMutableConfig().smoothCaret !== "off" && !noAnim,
+    animate: peekConfig().smoothCaret !== "off" && !noAnim,
   });
 }
 
@@ -53,7 +53,7 @@ export function getCaret(): CaretController {
   if (current !== undefined) return current;
   const controller = new CaretController(
     getCaretElement(),
-    getMutableConfig().caretStyle,
+    peekConfig().caretStyle,
   );
   caret.bind(controller);
   return controller;
