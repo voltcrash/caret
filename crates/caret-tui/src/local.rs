@@ -19,17 +19,16 @@ pub struct Local {
     captured: bool,
 }
 impl Local {
-    pub fn new(store: Store, preferences: Settings) -> Result<Self> {
-        let pending = store.pending()?;
-        Ok(Self {
+    pub fn new(store: Store, preferences: Settings) -> Self {
+        Self {
             store,
             preferences,
             history: History::default(),
-            pending,
+            pending: vec![],
             latest_result: None,
             replay: None,
             captured: false,
-        })
+        }
     }
     pub fn capture(
         &mut self,

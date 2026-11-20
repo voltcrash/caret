@@ -35,7 +35,7 @@ fn failed_write_queue_retries_the_same_uuid_once_and_history_filters_page() {
         data: temp.path().join("data"),
     };
     let store = Store::open(&paths).unwrap();
-    let mut local = Local::new(store, Settings::default()).unwrap();
+    let mut local = Local::new(store, Settings::default());
     let host = finished();
     let lock = rusqlite::Connection::open(paths.data.join("history.sqlite3")).unwrap();
     lock.execute_batch("BEGIN IMMEDIATE").unwrap();
@@ -53,9 +53,9 @@ fn failed_write_queue_retries_the_same_uuid_once_and_history_filters_page() {
     );
     lock.execute_batch("ROLLBACK").unwrap();
     drop(local);
-    let mut local = Local::new(Store::open(&paths).unwrap(), Settings::default()).unwrap();
-    assert_eq!(local.pending.len(), 1);
-    local.retry().unwrap();
+    let mut store = Store::open(&paths).unwrap();
+    assert!(store.recover_pending().unwrap().is_empty());
+    let mut local = Local::new(store, Settings::default());
     assert!(local.pending.is_empty());
     local.history.refresh(&local.store).unwrap();
     assert_eq!(local.history.rows[0]["id"], id);
@@ -92,4 +92,28 @@ fn replay_requires_opt_in_and_compatible_versions_and_uses_native_steps_and_seek
     let mut future = record;
     future["engineBehaviorVersion"] = serde_json::json!(99);
     assert!(Replay::new(&future).is_err());
+}
+
+#[test]
+fn recovery_preserves_bad_files_and_imports_valid_neighbors() {
+    let temp = tempfile::tempdir().unwrap();
+    let paths = Paths {
+        config: temp.path().join("config"),
+        data: temp.path().join("data"),
+    };
+    let mut store = Store::open(&paths).unwrap();
+    let dir = paths.data.join("pending");
+    std::fs::create_dir(&dir).unwrap();
+    let bad = dir.join("broken.json");
+    std::fs::write(&bad, b"{").unwrap();
+    let id = "valid";
+    let valid = serde_json::json!({"id": id, "createdMs": 1, "config": {"mode": "words"}});
+    let spool = dir.join(format!("{}.json", caret_tui::storage::hash(&id).unwrap()));
+    std::fs::write(&spool, serde_json::to_vec(&valid).unwrap()).unwrap();
+    let warnings = store.recover_pending().unwrap();
+    assert_eq!(warnings.len(), 1);
+    assert!(warnings[0].contains(bad.to_str().unwrap()));
+    assert_eq!(std::fs::read(bad).unwrap(), b"{");
+    assert!(!spool.exists());
+    assert_eq!(store.history(None, 10).unwrap(), vec![valid]);
 }

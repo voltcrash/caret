@@ -28,7 +28,7 @@ fn fixture(config: Config) -> Fixture {
         EngineHost::offline(config.clone(), OfflineContent::bundled().unwrap(), None, 42).unwrap();
     Fixture {
         _temp: temp,
-        local: Local::new(store, preferences).unwrap(),
+        local: Local::new(store, preferences),
         host,
         setup: Setup::new(config, None),
     }

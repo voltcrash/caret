@@ -65,8 +65,11 @@ fn run() -> Result<()> {
         preferences.theme = theme.clone();
     }
     let (config, content, custom) = cli.prepare(preferences.config.clone())?;
-    let mut local = Local::new(store, preferences)?;
-    local.retry()?;
+    let recovery_warnings = store.recover_pending()?;
+    for warning in &recovery_warnings {
+        eprintln!("Pending result recovery failed: {warning}");
+    }
+    let mut local = Local::new(store, preferences);
     let mut setup = Setup::new(config.clone(), custom.as_ref());
     local.configure_setup(&mut setup);
     let mut host = EngineHost::offline(
@@ -88,7 +91,14 @@ fn run() -> Result<()> {
     };
     let origin = Instant::now();
     let mut screen = Screen::Test;
-    let mut notice = String::new();
+    let mut notice = if recovery_warnings.is_empty() {
+        String::new()
+    } else {
+        format!(
+            "Recovery failed for {} pending file(s). See terminal output after quit.",
+            recovery_warnings.len()
+        )
+    };
     let mut last_draw = Instant::now();
     let mut dirty = true;
     let mut caret_theme = String::new();
