@@ -6,7 +6,7 @@ import {
   formatSignificant,
   formatSigmas,
   MISSING_STAT,
-} from "../../../../src/ts/components/modals/event-log-viewer/stat-format";
+} from "../../../../../src/features/typing/modals/event-log-viewer/stat-format";
 
 describe("stat formatters", () => {
   it("formats a correlation with its significance", () => {

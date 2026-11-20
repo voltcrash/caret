@@ -1,4 +1,4 @@
-import type { Mark } from "../../../states/event-log-viewer";
+import type { Mark } from "../../state/event-log-viewer";
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
 import type { TimelineMark, VideoBar } from "./timeline-lanes";
 

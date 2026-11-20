@@ -1,5 +1,5 @@
-import { createAppOwned } from "../../app/application";
-import { appObject, createAppSignal } from "../../app/state";
+import { createAppOwned } from "../../../app/application";
+import { appObject, createAppSignal } from "../../../app/state";
 
 import type { EventLog, TestEventType } from "@caret/web-shared/events/types";
 

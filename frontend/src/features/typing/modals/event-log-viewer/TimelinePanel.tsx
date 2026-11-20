@@ -4,8 +4,8 @@ import type { Playback } from "./createPlayback";
 import type { VideoSync } from "./createVideoSync";
 import type { TimelineSegment } from "./timeline-lanes";
 
-import { getCurrentMs, setCurrentMs } from "../../../states/event-log-viewer";
-import { Button } from "../../common/Button";
+import { Button } from "../../../../ts/components/common/Button";
+import { getCurrentMs, setCurrentMs } from "../../state/event-log-viewer";
 import { DriftChart } from "./DriftChart";
 import { Timeline } from "./Timeline";
 

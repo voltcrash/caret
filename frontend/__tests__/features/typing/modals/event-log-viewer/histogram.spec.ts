@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { browserAudit } from "../../../__harness__/browser-audit";
+import { browserAudit } from "../../../../__harness__/browser-audit";
 
 import {
   bucketIndex,
@@ -12,7 +12,7 @@ import {
   categoryPosition,
   getBucketDivisor,
   histogramTooltipLines,
-} from "../../../../src/ts/components/modals/event-log-viewer/histogram";
+} from "../../../../../src/features/typing/modals/event-log-viewer/histogram";
 
 const absolute: BucketSpec = {
   edges: [0, 10, 20],

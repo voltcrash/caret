@@ -7,14 +7,14 @@ import { createEffect, For, JSXElement } from "solid-js";
 
 import type { VideoSync } from "./createVideoSync";
 
+import { Button } from "../../../../ts/components/common/Button";
+import { cn } from "../../../../ts/utils/cn";
 import {
   EVENT_TYPES,
   getCurrentMs,
   getVisibleTypes,
   setVisibleTypes,
-} from "../../../states/event-log-viewer";
-import { cn } from "../../../utils/cn";
-import { Button } from "../../common/Button";
+} from "../../state/event-log-viewer";
 import { EventMarkSelect } from "./EventMarkSelect";
 import { scrollRowIntoView } from "./scroll-row";
 

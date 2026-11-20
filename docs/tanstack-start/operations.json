@@ -495,7 +495,9 @@
       "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/components/modals/DevOptionsModal.tsx"],
+    "browserCallers": [
+      "frontend/src/features/typing/modals/DevOptionsModal.tsx"
+    ],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1713,7 +1715,7 @@
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/DevOptionsModal.tsx",
+      "frontend/src/features/typing/modals/DevOptionsModal.tsx",
       "frontend/src/ts/components/modals/GoogleSignUpModal.tsx",
       "frontend/src/ts/components/modals/account-settings/UpdateNameModal.tsx"
     ],

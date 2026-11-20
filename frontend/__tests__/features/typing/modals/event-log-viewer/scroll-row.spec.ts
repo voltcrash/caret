@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vite-plus/test";
 
-import { scrollRowIntoView } from "../../../../src/ts/components/modals/event-log-viewer/scroll-row";
+import { scrollRowIntoView } from "../../../../../src/features/typing/modals/event-log-viewer/scroll-row";
 
 const containers: HTMLDivElement[] = [];
 afterEach(() =>

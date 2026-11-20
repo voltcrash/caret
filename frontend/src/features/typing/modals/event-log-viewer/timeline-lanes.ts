@@ -1,10 +1,10 @@
-import type { SyncKind } from "../../../states/event-log-viewer";
+import type { SyncKind } from "../../state/event-log-viewer";
 import type {
   TestEventNoMs,
   TestEventType,
 } from "@caret/web-shared/events/types";
 
-import { EVENT_TYPES } from "../../../states/event-log-viewer";
+import { EVENT_TYPES } from "../../state/event-log-viewer";
 
 export const TIMELINE_TRACK_HEIGHT = 8;
 export const TIMELINE_TRACK_GAP = 2;

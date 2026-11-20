@@ -19,11 +19,11 @@ vi.mock("@solid-devtools/overlay", () => {
   loads.solid();
   return { attachDevtoolsOverlay: vi.fn() };
 });
-vi.mock("../../src/ts/components/modals/DevOptionsModal", () => {
+vi.mock("../../src/features/typing/modals/DevOptionsModal", () => {
   loads.options();
   return { DevOptionsModal: () => <div data-testid="dev-options" /> };
 });
-vi.mock("../../src/ts/components/modals/EventLogViewerModal", () => {
+vi.mock("../../src/features/typing/modals/EventLogViewerModal", () => {
   loads.events();
   return { EventLogViewerModal: () => <div data-testid="event-log" /> };
 });

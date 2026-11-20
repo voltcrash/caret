@@ -10,7 +10,7 @@ import {
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
 import type { VideoSync } from "./createVideoSync";
 
-import { getCurrentMs, setCurrentMs } from "../../../states/event-log-viewer";
+import { getCurrentMs, setCurrentMs } from "../../state/event-log-viewer";
 import { getNextEventMs, getPreviousEventMs } from "./event-log";
 
 export type Playback = {

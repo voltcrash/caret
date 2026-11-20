@@ -2,9 +2,13 @@ import type { EventLog } from "@caret/web-shared/events/types";
 
 import { JSXElement, Show, createSignal, onCleanup } from "solid-js";
 
-import { getInspection } from "../../../features/typing/engine/analysis.client";
-import { getBrowserAudit } from "../../../features/typing/engine/audit.client";
-import { getBrowserEngine } from "../../../features/typing/engine/owner.client";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { hideModal } from "../../../ts/states/modals";
+import { getLastEventLog } from "../../../ts/states/test";
+import { getInspection } from "../engine/analysis.client";
+import { getBrowserAudit } from "../engine/audit.client";
+import { getBrowserEngine } from "../engine/owner.client";
 import {
   getError,
   getEventLog,
@@ -15,11 +19,7 @@ import {
   setEventLog,
   setRaw,
   setStage,
-} from "../../states/event-log-viewer";
-import { hideModal } from "../../states/modals";
-import { getLastEventLog } from "../../states/test";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
+} from "../state/event-log-viewer";
 import { parseContext } from "./event-log-viewer/event-log";
 import { PreviewContent } from "./event-log-viewer/PreviewContent";
 

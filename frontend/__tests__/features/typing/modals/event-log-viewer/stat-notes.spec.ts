@@ -10,7 +10,7 @@ import {
   statBalloon,
   type StatKey,
   SUSPICIOUS,
-} from "../../../../src/ts/components/modals/event-log-viewer/stat-notes";
+} from "../../../../../src/features/typing/modals/event-log-viewer/stat-notes";
 
 const kinds: MetricKind[] = ["spacing", "duration"];
 const stats = Object.keys(STAT_DEFINITIONS) as StatKey[];

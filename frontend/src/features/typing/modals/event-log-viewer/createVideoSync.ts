@@ -23,7 +23,7 @@ import {
   setSyncEnabled,
   setVideoFile,
   type SyncKind,
-} from "../../../states/event-log-viewer";
+} from "../../state/event-log-viewer";
 import {
   assignMark,
   clampVideoSeconds,

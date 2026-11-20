@@ -2,7 +2,7 @@ import { For, JSXElement, Show } from "solid-js";
 
 import type { VideoSync } from "./createVideoSync";
 
-import { Button } from "../../common/Button";
+import { Button } from "../../../../ts/components/common/Button";
 import { unassignedMarks } from "./video-sync";
 
 /**

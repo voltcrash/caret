@@ -3,24 +3,27 @@ import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 
 import { operation } from "../../../data/operations";
-import { toggleCaretDebug } from "../../../features/typing/components/words/caret-controller";
-import { toggleUserFakeChartData } from "../../../features/typing/runtime/result/screen";
-import { disableSlowTimerFail } from "../../../features/typing/runtime/test/timer";
-import { addXp } from "../../db";
-import { getInputElement } from "../../input/input-element";
-import { hideModal, showModal } from "../../states/modals";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { addXp } from "../../../ts/db";
+import { getInputElement } from "../../../ts/input/input-element";
+import { hideModal, showModal } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { showSimpleModal } from "../../states/simple-modal";
-import { FaSolidIcon } from "../../types/font-awesome";
-import { setMediaQueryDebugLevel } from "../../ui";
-import { isProfilerMode, setProfilerMode } from "../../utils/profiler-mode";
-import { remoteValidation } from "../../utils/remote-validation";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
+} from "../../../ts/states/notifications";
+import { showSimpleModal } from "../../../ts/states/simple-modal";
+import { FaSolidIcon } from "../../../ts/types/font-awesome";
+import { setMediaQueryDebugLevel } from "../../../ts/ui";
+import {
+  isProfilerMode,
+  setProfilerMode,
+} from "../../../ts/utils/profiler-mode";
+import { remoteValidation } from "../../../ts/utils/remote-validation";
+import { toggleCaretDebug } from "../components/words/caret-controller";
+import { toggleUserFakeChartData } from "../runtime/result/screen";
+import { disableSlowTimerFail } from "../runtime/test/timer";
 
 const [mediaQueryDebugLevel, setLocalMediaQueryDebugLevel] = createSignal(0);
 

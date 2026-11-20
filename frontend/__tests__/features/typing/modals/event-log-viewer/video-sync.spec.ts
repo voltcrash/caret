@@ -16,8 +16,8 @@ import {
   unassignedMarks,
   unassignMark,
   videoMsToTestMs,
-} from "../../../../src/ts/components/modals/event-log-viewer/video-sync";
-import type { Mark } from "../../../../src/ts/states/event-log-viewer";
+} from "../../../../../src/features/typing/modals/event-log-viewer/video-sync";
+import type { Mark } from "../../../../../src/features/typing/state/event-log-viewer";
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
 
 function event(testMs: number): TestEventNoMs {

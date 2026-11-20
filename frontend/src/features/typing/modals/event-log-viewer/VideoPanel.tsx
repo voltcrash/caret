@@ -2,8 +2,8 @@ import { JSXElement, Show } from "solid-js";
 
 import type { VideoSync } from "./createVideoSync";
 
-import { setCurrentMs } from "../../../states/event-log-viewer";
-import { Button } from "../../common/Button";
+import { Button } from "../../../../ts/components/common/Button";
+import { setCurrentMs } from "../../state/event-log-viewer";
 import { MarksList } from "./MarksList";
 
 /**

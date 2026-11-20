@@ -2,17 +2,17 @@ import type { EventLog } from "@caret/web-shared/events/types";
 
 import { createMemo, JSXElement, Show } from "solid-js";
 
+import { Balloon } from "../../../../ts/components/common/Balloon";
+import { Button } from "../../../../ts/components/common/Button";
 import {
   getKeypressDurations,
   getKeypressSpacing,
-} from "../../../../features/typing/engine/analysis.client";
-import { requireBrowserAudit } from "../../../../features/typing/engine/audit.client";
+} from "../../engine/analysis.client";
+import { requireBrowserAudit } from "../../engine/audit.client";
 import {
   getDistributionOpen,
   setDistributionOpen,
-} from "../../../states/event-log-viewer";
-import { Balloon } from "../../common/Balloon";
-import { Button } from "../../common/Button";
+} from "../../state/event-log-viewer";
 import { DistributionChart } from "./DistributionChart";
 import { Stat } from "./Stat";
 import { formatPercent, formatSignificant, formatSigmas } from "./stat-format";

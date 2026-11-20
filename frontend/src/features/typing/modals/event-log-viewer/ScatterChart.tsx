@@ -3,9 +3,9 @@ import { createMemo, JSXElement, Show } from "solid-js";
 
 import type { ScatterPoint } from "./scatter-points";
 
-import { getTheme } from "../../../states/theme";
-import { Balloon } from "../../common/Balloon";
-import { ChartJs } from "../../common/ChartJs";
+import { Balloon } from "../../../../ts/components/common/Balloon";
+import { ChartJs } from "../../../../ts/components/common/ChartJs";
+import { getTheme } from "../../../../ts/states/theme";
 import "./chart-setup";
 
 const SCATTER_HEIGHT = 170;

@@ -13,12 +13,12 @@ if (import.meta.env.DEV) {
     })),
   );
   const LazyDevOptionsModal = lazy(async () =>
-    import("../ts/components/modals/DevOptionsModal").then((m) => ({
+    import("../features/typing/modals/DevOptionsModal").then((m) => ({
       default: m.DevOptionsModal,
     })),
   );
   const LazyEventLogViewerModal = lazy(async () =>
-    import("../ts/components/modals/EventLogViewerModal").then((m) => ({
+    import("../features/typing/modals/EventLogViewerModal").then((m) => ({
       default: m.EventLogViewerModal,
     })),
   );

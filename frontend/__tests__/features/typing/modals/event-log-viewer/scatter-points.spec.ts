@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { browserAudit } from "../../../__harness__/browser-audit";
+import { browserAudit } from "../../../../__harness__/browser-audit";
 
 import {
   getCharPositionPoints,
@@ -12,7 +12,7 @@ import {
   getPerKeyPoints,
   keyLabel,
   percentileOf,
-} from "../../../../src/ts/components/modals/event-log-viewer/scatter-points";
+} from "../../../../../src/features/typing/modals/event-log-viewer/scatter-points";
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
 
 function keydown(testMs: number, code: string): TestEventNoMs {

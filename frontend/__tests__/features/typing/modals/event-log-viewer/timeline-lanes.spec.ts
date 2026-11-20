@@ -10,8 +10,8 @@ import {
   TIMELINE_PADDING_MS,
   TIMELINE_TRACK_GAP,
   TIMELINE_TRACK_HEIGHT,
-} from "../../../../src/ts/components/modals/event-log-viewer/timeline-lanes";
-import { EVENT_TYPES } from "../../../../src/ts/states/event-log-viewer";
+} from "../../../../../src/features/typing/modals/event-log-viewer/timeline-lanes";
+import { EVENT_TYPES } from "../../../../../src/features/typing/state/event-log-viewer";
 import type {
   TestEventNoMs,
   TestEventType,
