@@ -2,6 +2,11 @@ import type { Mode } from "@caret/schemas/shared";
 import type { Result } from "@caret/schemas/results";
 import { download } from "../../ts/components/common/Download";
 
+function csvField(value: string | number | boolean | undefined): string {
+  const field = String(value ?? "");
+  return /[",\r\n]/.test(field) ? `"${field.replaceAll('"', '""')}"` : field;
+}
+
 export function serializeResultsCsv(array: Result<Mode>[]): string {
   return [
     [
@@ -51,7 +56,7 @@ export function serializeResultsCsv(array: Result<Mode>[]): string {
       item.punctuation,
       item.numbers,
       item.language,
-      item.funbox,
+      item.funbox?.join(","),
       item.difficulty,
       item.lazyMode,
       item.blindMode,
@@ -63,7 +68,7 @@ export function serializeResultsCsv(array: Result<Mode>[]): string {
       item.verification ?? "legacy",
     ]),
   ]
-    .map((e) => e.join(","))
+    .map((row) => row.map(csvField).join(","))
     .join("\n");
 }
 
