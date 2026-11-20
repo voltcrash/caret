@@ -7,23 +7,24 @@ import {
 import { createForm } from "@tanstack/solid-form";
 import { For } from "solid-js";
 
-import { operation } from "../../../data/operations";
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { UserBadge } from "../../../ts/components/common/UserBadge";
-import { Checkbox } from "../../../ts/components/ui/form/Checkbox";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
-import { TextareaField } from "../../../ts/components/ui/form/TextareaField";
-import { fromSchema } from "../../../ts/components/ui/form/utils";
-import { NO_BADGE_ID } from "../../../ts/controllers/badge-controller";
-import { getSnapshot, setSnapshot } from "../../../ts/db";
-import { hideModal } from "../../../ts/states/modals";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { UserBadge } from "#shared/components/common/UserBadge.tsx";
+import { Checkbox } from "#shared/components/ui/form/Checkbox.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { TextareaField } from "#shared/components/ui/form/TextareaField.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
+import { NO_BADGE_ID } from "#shared/controllers/badge-controller.ts";
+import { getSnapshot, setSnapshot } from "#shared/db.ts";
+import { hideModal } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { cn } from "../../../ts/utils/cn";
+} from "#shared/states/notifications.ts";
+import { cn } from "#shared/utils/cn.ts";
+
+import { operation } from "../../../data/operations";
 import { invalidateMyProfile } from "../my-profile.client";
 
 export function EditProfile() {

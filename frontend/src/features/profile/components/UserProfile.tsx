@@ -6,10 +6,11 @@ import {
 import { formatDate } from "date-fns/format";
 import { createMemo, For, JSXElement, Show } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { getFormatting } from "../../../ts/states/core";
-import { showPbTablesModal } from "../../../ts/states/pb-tables-modal";
-import { formatTopPercentage } from "../../../ts/utils/misc";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getFormatting } from "#shared/states/core.ts";
+import { showPbTablesModal } from "#shared/states/pb-tables-modal.ts";
+import { formatTopPercentage } from "#shared/utils/misc.ts";
+
 import { ActivityCalendar } from "./ActivityCalendar";
 import { UserDetails } from "./UserDetails";
 
