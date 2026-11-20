@@ -38,7 +38,6 @@ export type ModalId =
   | "EditProfile"
   | "LastSignedOutResult"
   | "StreakHourOffset"
-  | "GoogleSignup"
   | "UserReport"
   | "EditResultTags"
   | "PractiseWords";

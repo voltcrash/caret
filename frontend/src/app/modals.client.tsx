@@ -92,11 +92,6 @@ const lazyModals = [
       (m) => m.StreakHourOffsetModal,
     ),
   ),
-  lazyModal("GoogleSignup", async () =>
-    import("../ts/components/modals/GoogleSignUpModal").then(
-      (m) => m.GoogleSignupModal,
-    ),
-  ),
   lazyModal("UserReport", async () =>
     import("../ts/components/modals/UserReportModal").then(
       (m) => m.UserReportModal,

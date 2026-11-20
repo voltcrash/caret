@@ -1,6 +1,4 @@
 import { IsValidResponse } from "../types/validation";
-import { AnyFieldApi } from "@tanstack/solid-form";
-import { handleResult } from "../components/ui/form/utils";
 
 type IsValidResponseOrFunction =
   | ((message: string) => IsValidResponse)
@@ -28,49 +26,5 @@ export function remoteValidation<V, T>(
 
     if (typeof handler === "function") return handler(result.message);
     return handler;
-  };
-}
-
-export function remoteValidationForm<V, T>(
-  call: (val: V) => Promise<{ status: number; data?: T; message: string }>,
-  options?: {
-    check?: (data: T) => IsValidResponse;
-    on4xx?: IsValidResponseOrFunction;
-    on5xx?: IsValidResponseOrFunction;
-  },
-): (val: {
-  value: V;
-  fieldApi: AnyFieldApi;
-}) => Promise<undefined | string | string[]> {
-  return async (val: { value: V; fieldApi: AnyFieldApi }) => {
-    let validationResult;
-
-    const result = await call(val.value);
-    if (result.status <= 299) {
-      validationResult = options?.check?.(result.data as T) ?? undefined;
-    } else {
-      let handler: IsValidResponseOrFunction | undefined;
-      if (result.status <= 499) {
-        handler = options?.on4xx ?? ((message) => message);
-      } else {
-        handler =
-          options?.on5xx ?? "Server unavailable. Please try again later.";
-      }
-
-      if (typeof handler === "function") {
-        validationResult = handler(result.message);
-      } else {
-        validationResult = handler;
-      }
-    }
-
-    if (validationResult === true || validationResult === undefined) {
-      return undefined;
-    }
-    if (typeof validationResult === "string") return validationResult;
-
-    return handleResult(val.fieldApi, [
-      { type: "warning", message: validationResult.warning },
-    ]);
   };
 }
