@@ -8,6 +8,7 @@ import {
   createSignal,
   onCleanup,
   onMount,
+  untrack,
 } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
@@ -40,23 +41,26 @@ export function Captcha(props: {
   class?: string;
 }) {
   const [captchaRef, captchaEl] = useRef<HTMLDivElement>();
-  const [error, setError] = createSignal(false);
-  let api: TurnstileApi | undefined;
-  let widget: string | undefined;
-  let token: string | undefined;
-  let disposed = false;
+  const [verification, setVerification] = createSignal<
+    "empty" | "verified" | "error" | "disposed"
+  >("empty");
+  let widget: { api: TurnstileApi; id: string } | undefined;
 
   const clearToken = (): void => {
-    token = undefined;
+    if (untrack(verification) === "verified") setVerification("empty");
     props.field().setValue("");
   };
 
   // Forms clear a consumed token after each request, including failed requests.
   createEffect(() => {
     const value = props.field().state.value as string;
-    if (value === "" && token !== undefined && widget !== undefined) {
-      token = undefined;
-      api?.reset(widget);
+    if (
+      value === "" &&
+      untrack(verification) === "verified" &&
+      widget !== undefined
+    ) {
+      setVerification("empty");
+      widget.api.reset(widget.id);
     }
   });
 
@@ -68,14 +72,14 @@ export function Captcha(props: {
     clearToken();
     let script: HTMLScriptElement | undefined;
     const fail = (): void => {
-      if (disposed) return;
+      if (untrack(verification) === "disposed") return;
       clearToken();
-      setError(true);
+      setVerification("error");
     };
     const timer = window.setTimeout(fail, 15_000);
     const loaded = (): void => {
-      if (disposed || widget !== undefined) return;
-      api = (window as Window & { turnstile?: TurnstileApi }).turnstile;
+      if (untrack(verification) === "disposed" || widget !== undefined) return;
+      const api = (window as Window & { turnstile?: TurnstileApi }).turnstile;
       if (api === undefined) {
         fail();
         return;
@@ -83,27 +87,27 @@ export function Captcha(props: {
       // The script load event supplies readiness. ready() rejects async scripts.
       window.clearTimeout(timer);
       try {
-        widget = api.render(el, {
+        const id = api.render(el, {
           sitekey: envConfig.turnstileSiteKey,
           action,
           theme: "auto",
           size: "flexible",
           "response-field": false,
           callback: (value) => {
-            if (disposed) return;
-            token = value;
-            setError(false);
+            if (untrack(verification) === "disposed") return;
+            setVerification("verified");
             field.setValue(value);
           },
           "expired-callback": () => {
-            if (!disposed) clearToken();
+            if (untrack(verification) !== "disposed") clearToken();
           },
           "timeout-callback": () => {
-            if (!disposed) clearToken();
+            if (untrack(verification) !== "disposed") clearToken();
           },
           "error-callback": fail,
         });
-        if (widget === undefined) fail();
+        if (id === undefined) fail();
+        else widget = { api, id };
       } catch {
         fail();
       }
@@ -128,11 +132,11 @@ export function Captcha(props: {
     }
 
     onCleanup(() => {
-      disposed = true;
+      setVerification("disposed");
       window.clearTimeout(timer);
       script?.removeEventListener("load", loaded);
       script?.removeEventListener("error", fail);
-      if (widget !== undefined) api?.remove(widget);
+      widget?.api.remove(widget.id);
       clearToken();
     });
   });
@@ -140,7 +144,7 @@ export function Captcha(props: {
   return (
     <div class={props.class}>
       <div ref={captchaRef}></div>
-      <Show when={error()}>
+      <Show when={verification() === "error"}>
         <p role="alert" class="text-sm text-error">
           {errorText}
         </p>
