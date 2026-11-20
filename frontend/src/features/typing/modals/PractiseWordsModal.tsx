@@ -1,9 +1,10 @@
 import { For, JSXElement, ParentProps, createSignal } from "solid-js";
 
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { Fa, FaProps } from "../../../ts/components/common/Fa";
-import { hideModalAndClearChain } from "../../../ts/states/modals";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa, FaProps } from "#shared/components/common/Fa.tsx";
+import { hideModalAndClearChain } from "#shared/states/modals.ts";
+
 import { practiceHistory } from "../history/practice.client";
 import * as PractiseWords from "../runtime/content/practise-words";
 import * as TestLogic from "../runtime/test/logic";

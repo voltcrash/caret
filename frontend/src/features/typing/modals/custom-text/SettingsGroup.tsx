@@ -1,8 +1,8 @@
 import { JSXElement } from "solid-js";
 
-import type { FaSolidIcon } from "../../../../ts/types/font-awesome";
+import { Fa } from "#shared/components/common/Fa.tsx";
 
-import { Fa } from "../../../../ts/components/common/Fa";
+import type { FaSolidIcon } from "../../../../ts/types/font-awesome";
 
 export function SettingsGroup(props: {
   title: string;

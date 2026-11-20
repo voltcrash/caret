@@ -2,13 +2,14 @@ import type { EventLog } from "@caret/web-shared/events/types";
 
 import { createMemo, JSXElement, Show } from "solid-js";
 
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { Button } from "../../../../ts/components/common/Button";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
 import {
   getKeypressDurations,
   getKeypressSpacing,
-} from "../../../../ts/engine/analysis.client";
-import { requireBrowserAudit } from "../../../../ts/engine/audit.client";
+} from "#shared/engine/analysis.client.ts";
+import { requireBrowserAudit } from "#shared/engine/audit.client.ts";
+
 import { getScatterOpen, setScatterOpen } from "../../state/event-log-viewer";
 import {
   getCharPositionPoints,

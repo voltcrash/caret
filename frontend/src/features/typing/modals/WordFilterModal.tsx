@@ -11,25 +11,25 @@ import {
   Setter,
 } from "solid-js";
 
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { Separator } from "../../../ts/components/common/Separator";
-import { Checkbox } from "../../../ts/components/ui/form/Checkbox";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { LabeledField } from "../../../ts/components/ui/form/LabeledField";
-import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
-import Select from "../../../ts/components/ui/Select";
-import { LanguageList } from "../../../ts/constants/languages";
-import { LayoutsList } from "../../../ts/constants/layouts";
-import { createDebouncedSignal } from "../../../ts/hooks/createDebouncedSignal";
-import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
-import { hideModal } from "../../../ts/states/modals";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { Checkbox } from "#shared/components/ui/form/Checkbox.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { LabeledField } from "#shared/components/ui/form/LabeledField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import Select from "#shared/components/ui/Select.tsx";
+import { LanguageList } from "#shared/constants/languages.ts";
+import { LayoutsList } from "#shared/constants/layouts.ts";
+import { createDebouncedSignal } from "#shared/hooks/createDebouncedSignal.ts";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
+import { hideModal } from "#shared/states/modals.ts";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../../ts/states/notifications";
-import * as JSONData from "../../../ts/utils/json-data";
-import * as Misc from "../../../ts/utils/misc";
+} from "#shared/states/notifications.ts";
+import * as JSONData from "#shared/utils/json-data.ts";
+import * as Misc from "#shared/utils/misc.ts";
 
 type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (

@@ -1,26 +1,23 @@
 import { CustomTextIncomingData, Mode } from "./types";
 import { createForm } from "@tanstack/solid-form";
 import { batch, createSignal, untrack } from "solid-js";
-import { setConfig } from "../../../../ts/config/setters";
-import { peekConfig } from "../../../../ts/config/store";
-import { restartTest } from "../../../../ts/typing-host";
+import { setConfig } from "#shared/config/setters.ts";
+import { peekConfig } from "#shared/config/store.ts";
+import { restartTest } from "#shared/typing-host.ts";
 import {
   getCustomTextIndicator,
   setCustomTextIndicator,
-} from "../../../../ts/states/core";
-import { hideModalAndClearChain } from "../../../../ts/states/modals";
+} from "#shared/states/core.ts";
+import { hideModalAndClearChain } from "#shared/states/modals.ts";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../../../ts/states/notifications";
-import {
-  getLoadedChallenge,
-  setLoadedChallenge,
-} from "../../../../ts/states/test";
+} from "#shared/states/notifications.ts";
+import { getLoadedChallenge, setLoadedChallenge } from "#shared/states/test.ts";
 import * as CustomText from "../../runtime/content/custom-text";
 import * as PractiseWords from "../../runtime/content/practise-words";
-import { getBailOutHint } from "../../../../ts/utils/bail-out";
-import * as Strings from "../../../../ts/utils/strings";
+import { getBailOutHint } from "#shared/utils/bail-out.ts";
+import * as Strings from "#shared/utils/strings.ts";
 import {
   cleanCustomText,
   replaceCustomTextNewlines,

@@ -4,19 +4,20 @@ import { useQuery } from "@tanstack/solid-query";
 import { format } from "date-fns/format";
 import { JSXElement, createSignal, For, Show } from "solid-js";
 
-import { operation } from "../../../data/operations";
-import { getQueryClient } from "../../../data/queries";
-import { getQuoteSubmissionsQueryOptions } from "../../../data/queries/quotes";
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { Fa } from "../../../ts/components/common/Fa";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { cn } from "../../../ts/utils/cn";
+} from "#shared/states/notifications.ts";
+import { cn } from "#shared/utils/cn.ts";
+
+import { operation } from "../../../data/operations";
+import { getQueryClient } from "../../../data/queries";
+import { getQuoteSubmissionsQueryOptions } from "../../../data/queries/quotes";
 
 function QuoteApproveItem(props: {
   quote: Quote;

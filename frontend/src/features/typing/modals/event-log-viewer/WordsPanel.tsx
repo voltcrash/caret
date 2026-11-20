@@ -1,6 +1,7 @@
 import { createEffect, For, JSXElement } from "solid-js";
 
-import { cn } from "../../../../ts/utils/cn";
+import { cn } from "#shared/utils/cn.ts";
+
 import { visualizeWhitespace } from "./event-log";
 import { scrollRowIntoView } from "./scroll-row";
 

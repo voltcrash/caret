@@ -1,8 +1,9 @@
 import { For, JSXElement, Show } from "solid-js";
 
+import { Button } from "#shared/components/common/Button.tsx";
+
 import type { VideoSync } from "./createVideoSync";
 
-import { Button } from "../../../../ts/components/common/Button";
 import { unassignedMarks } from "./video-sync";
 
 /**

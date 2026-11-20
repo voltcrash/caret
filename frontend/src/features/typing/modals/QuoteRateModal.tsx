@@ -1,20 +1,21 @@
 import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, createSignal, For } from "solid-js";
 
-import { operation } from "../../../data/operations";
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { Fa } from "../../../ts/components/common/Fa";
-import { Separator } from "../../../ts/components/common/Separator";
-import * as DB from "../../../ts/db";
-import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
-import { hideModalAndClearChain } from "../../../ts/states/modals";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import * as DB from "#shared/db.ts";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
+import { hideModalAndClearChain } from "#shared/states/modals.ts";
 import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { cn } from "../../../ts/utils/cn";
+} from "#shared/states/notifications.ts";
+import { cn } from "#shared/utils/cn.ts";
+
+import { operation } from "../../../data/operations";
 import { updateQuoteRating } from "../runtime/result/screen";
 import {
   selectedQuote,

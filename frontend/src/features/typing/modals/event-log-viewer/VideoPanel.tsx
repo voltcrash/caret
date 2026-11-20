@@ -1,8 +1,9 @@
 import { JSXElement, Show } from "solid-js";
 
+import { Button } from "#shared/components/common/Button.tsx";
+
 import type { VideoSync } from "./createVideoSync";
 
-import { Button } from "../../../../ts/components/common/Button";
 import { setCurrentMs } from "../../state/event-log-viewer";
 import { MarksList } from "./MarksList";
 

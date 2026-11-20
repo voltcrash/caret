@@ -2,18 +2,19 @@ import { createForm } from "@tanstack/solid-form";
 import { Accessor, JSXElement } from "solid-js";
 import { z } from "zod";
 
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Checkbox } from "../../../ts/components/ui/form/Checkbox";
-import { InputField } from "../../../ts/components/ui/form/InputField";
-import { SubmitButton } from "../../../ts/components/ui/form/SubmitButton";
-import { fromSchema } from "../../../ts/components/ui/form/utils";
-import { setCustomTextIndicator } from "../../../ts/states/core";
-import { hideModal } from "../../../ts/states/modals";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Checkbox } from "#shared/components/ui/form/Checkbox.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
+import { setCustomTextIndicator } from "#shared/states/core.ts";
+import { hideModal } from "#shared/states/modals.ts";
 import {
   showNoticeNotification,
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
+} from "#shared/states/notifications.ts";
+
 import * as CustomText from "../runtime/content/custom-text";
 
 const nameSchema = z

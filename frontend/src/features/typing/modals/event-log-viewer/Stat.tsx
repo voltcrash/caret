@@ -1,7 +1,7 @@
 import { JSXElement } from "solid-js";
 
-import { Balloon } from "../../../../ts/components/common/Balloon";
-import { cn } from "../../../../ts/utils/cn";
+import { Balloon } from "#shared/components/common/Balloon.tsx";
+import { cn } from "#shared/utils/cn.ts";
 
 export function Stat(props: {
   label: string;

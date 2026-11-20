@@ -1,16 +1,17 @@
 import { createSignal, For, Index, JSXElement, Setter, Show } from "solid-js";
 
-import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
-import { Button } from "../../../ts/components/common/Button";
-import { download } from "../../../ts/components/common/Download";
-import { Separator } from "../../../ts/components/common/Separator";
-import { setCustomTextIndicator } from "../../../ts/states/core";
-import { hideModal } from "../../../ts/states/modals";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { download } from "#shared/components/common/Download.tsx";
+import { Separator } from "#shared/components/common/Separator.tsx";
+import { setCustomTextIndicator } from "#shared/states/core.ts";
+import { hideModal } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showSuccessNotification,
-} from "../../../ts/states/notifications";
-import { showSimpleModal } from "../../../ts/states/simple-modal";
+} from "#shared/states/notifications.ts";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+
 import * as CustomText from "../runtime/content/custom-text";
 
 type CustomTextIncomingData =
