@@ -136,25 +136,28 @@ export function createEngineLoader(): {
   dispose: () => void;
 } {
   const controller = new AbortController();
-  let pending: Promise<Engine> | undefined;
-  let released = false;
+  type LoaderState =
+    | { phase: "idle" | "disposed" }
+    | { phase: "requested"; task: Promise<Engine> };
+  let state: LoaderState = { phase: "idle" };
   return {
     // oxlint-disable-next-line typescript/promise-function-async -- Owners share the exact pending promise.
     load: () => {
-      if (released) {
+      if (state.phase === "disposed") {
         return Promise.reject(disposed("Typing engine loader disposed"));
       }
-      pending ??= loadEngine(controller.signal).catch((error: unknown) => {
-        pending = undefined;
+      if (state.phase === "requested") return state.task;
+      const task = loadEngine(controller.signal).catch((error: unknown) => {
+        if (state.phase !== "disposed") state = { phase: "idle" };
         throw error;
       });
-      return pending;
+      state = { phase: "requested", task };
+      return task;
     },
     dispose: () => {
-      if (released) return;
-      released = true;
+      if (state.phase === "disposed") return;
+      state = { phase: "disposed" };
       controller.abort();
-      pending = undefined;
     },
   };
 }
