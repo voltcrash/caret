@@ -1,6 +1,4 @@
 import { authEvent } from "../ts/events/auth";
-import { googleSignUpEvent } from "../ts/events/google-sign-up";
-import { setPendingGoogleSignUpUser } from "../ts/states/google-sign-up";
 import { showModal } from "../ts/states/modals";
 import { getLastSignedOutResult } from "../ts/states/test";
 
@@ -8,12 +6,6 @@ import { getLastSignedOutResult } from "../ts/states/test";
 // modal chunk loads still open it.
 
 export function useModalTriggers(): void {
-  googleSignUpEvent.useListener((data) => {
-    if (data.signedInUser !== undefined && data.isNewUser) {
-      setPendingGoogleSignUpUser(data.signedInUser);
-      showModal("GoogleSignup");
-    }
-  });
   authEvent.useListener((event) => {
     if (event.type === "snapshotUpdated" && event.data.isInitial) {
       if (getLastSignedOutResult() !== null) {
