@@ -42,7 +42,7 @@ import { configEvent } from "../../../../ts/events/config";
 import * as AnalyticsController from "../../../../ts/controllers/analytics-controller";
 import { preloadResultHasher } from "../result/hash";
 
-import { highlight } from "../../../../ts/events/keymap";
+import { highlight } from "../../../../ts/states/keymap";
 import * as LazyModeState from "../remember-lazy-mode";
 
 import { getActiveFunboxesWithFunction } from "../funbox/list";
