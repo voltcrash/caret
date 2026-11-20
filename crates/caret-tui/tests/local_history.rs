@@ -35,7 +35,7 @@ fn failed_write_queue_retries_the_same_uuid_once_and_history_filters_page() {
         data: temp.path().join("data"),
     };
     let store = Store::open(&paths).unwrap();
-    let mut local = Local::new(store, Settings::default()).unwrap();
+    let mut local = Local::new(store, Settings::default());
     let host = finished();
     let lock = rusqlite::Connection::open(paths.data.join("history.sqlite3")).unwrap();
     lock.execute_batch("BEGIN IMMEDIATE").unwrap();
@@ -53,9 +53,9 @@ fn failed_write_queue_retries_the_same_uuid_once_and_history_filters_page() {
     );
     lock.execute_batch("ROLLBACK").unwrap();
     drop(local);
-    let mut local = Local::new(Store::open(&paths).unwrap(), Settings::default()).unwrap();
-    assert_eq!(local.pending.len(), 1);
-    local.retry().unwrap();
+    let mut store = Store::open(&paths).unwrap();
+    assert!(store.recover_pending().unwrap().is_empty());
+    let mut local = Local::new(store, Settings::default());
     assert!(local.pending.is_empty());
     local.history.refresh(&local.store).unwrap();
     assert_eq!(local.history.rows[0]["id"], id);

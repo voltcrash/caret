@@ -221,21 +221,44 @@ impl Store {
         }
         Ok(())
     }
-    pub fn pending(&self) -> Result<Vec<Value>> {
-        if !self.pending.exists() {
-            return Ok(vec![]);
-        }
-        let mut records = vec![];
-        for entry in fs::read_dir(&self.pending)? {
+    /// Retry each durable record independently, leaving failed files for recovery.
+    pub fn recover_pending(&mut self) -> Result<Vec<String>> {
+        let entries = match fs::read_dir(&self.pending) {
+            Ok(entries) => entries,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(vec![]),
+            Err(error) => return Err(error.into()),
+        };
+        let mut warnings = vec![];
+        for entry in entries {
             let path = entry?.path();
-            if path
+            if !path
                 .extension()
                 .is_some_and(|extension| extension == "json")
             {
-                records.push(serde_json::from_slice(&fs::read(path)?)?);
+                continue;
+            }
+            let bytes = match fs::read(&path) {
+                Ok(bytes) => bytes,
+                // Another instance may already have recovered this file.
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
+                Err(error) => {
+                    warnings.push(format!("{}: {error}", path.display()));
+                    continue;
+                }
+            };
+            let mut recover = || -> Result<()> {
+                let record: Value = serde_json::from_slice(&bytes)?;
+                let id = record["id"].as_str().ok_or("Result missing ID")?;
+                if path != self.pending.join(format!("{}.json", hash(&id)?)) {
+                    return Err("Pending filename does not match result ID".into());
+                }
+                self.save(&record)
+            };
+            if let Err(error) = recover() {
+                warnings.push(format!("{}: {error}", path.display()));
             }
         }
-        Ok(records)
+        Ok(warnings)
     }
     pub fn history(&self, mode: Option<&str>, limit: usize) -> Result<Vec<Value>> {
         self.history_page(mode, limit, 0)
