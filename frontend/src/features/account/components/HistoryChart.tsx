@@ -3,17 +3,17 @@ import { Mode } from "@caret/schemas/shared";
 import { format as dateFormat } from "date-fns/format";
 import { createMemo, JSXElement, Show } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
-import { ChartJs } from "../../../ts/components/common/ChartJs";
-import { setConfig } from "../../../ts/config/setters";
-import { getConfig } from "../../../ts/config/store";
-import { SnapshotResult } from "../../../ts/constants/default-snapshot";
-import { getFormatting } from "../../../ts/states/core";
-import { getTheme } from "../../../ts/states/theme";
-import { blendTwoHexColors } from "../../../ts/utils/colors";
-import { Formatting } from "../../../ts/utils/format";
-import { findLineByLeastSquares } from "../../../ts/utils/numbers";
-import { TypingSpeedUnitSettings } from "../../../ts/utils/typing-speed-units";
+import { Button } from "#shared/components/common/Button.tsx";
+import { ChartJs } from "#shared/components/common/ChartJs.tsx";
+import { setConfig } from "#shared/config/setters.ts";
+import { getConfig } from "#shared/config/store.ts";
+import { SnapshotResult } from "#shared/constants/default-snapshot.ts";
+import { getFormatting } from "#shared/states/core.ts";
+import { getTheme } from "#shared/states/theme.ts";
+import { blendTwoHexColors } from "#shared/utils/colors.ts";
+import { Formatting } from "#shared/utils/format.ts";
+import { findLineByLeastSquares } from "#shared/utils/numbers.ts";
+import { TypingSpeedUnitSettings } from "#shared/utils/typing-speed-units.ts";
 
 export function HistoryChart(props: {
   results: SnapshotResult<Mode>[];

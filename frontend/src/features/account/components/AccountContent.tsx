@@ -1,20 +1,21 @@
 import { Client, Mode } from "@caret/schemas/shared";
 import { createMemo, createSignal, JSXElement, Show } from "solid-js";
 
+import AsyncContent from "#shared/components/common/AsyncContent.tsx";
+import { Button } from "#shared/components/common/Button.tsx";
+import { SnapshotResult } from "#shared/constants/default-snapshot.ts";
+import { createEffectOn } from "#shared/hooks/effects.ts";
+import { useRef } from "#shared/hooks/useRef.ts";
+import { isAuthenticated } from "#shared/states/core.ts";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
+import { showErrorNotification } from "#shared/states/notifications.ts";
+import { filters, setFilters } from "#shared/states/result-filters.ts";
+
 import {
   createResultsQueryState,
   getResultsQueryOnce,
   useResultsLiveQuery,
 } from "../../../data/collections/results";
-import AsyncContent from "../../../ts/components/common/AsyncContent";
-import { Button } from "../../../ts/components/common/Button";
-import { SnapshotResult } from "../../../ts/constants/default-snapshot";
-import { createEffectOn } from "../../../ts/hooks/effects";
-import { useRef } from "../../../ts/hooks/useRef";
-import { isAuthenticated } from "../../../ts/states/core";
-import { hideLoaderBar, showLoaderBar } from "../../../ts/states/loader-bar";
-import { showErrorNotification } from "../../../ts/states/notifications";
-import { filters, setFilters } from "../../../ts/states/result-filters";
 import { downloadResultsCSV } from "../results-csv.client";
 import { Charts } from "./Charts";
 import { Filters } from "./Filters";
