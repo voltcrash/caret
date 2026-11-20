@@ -2,16 +2,18 @@ import { createRoot } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 const logging = vi.hoisted(() => ({ enabled: false }));
-vi.mock("../../../src/ts/utils/logger", () => ({
+vi.mock("../../../../../src/ts/utils/logger", () => ({
   isDebugLogging: () => logging.enabled,
 }));
-vi.mock("../../../src/ts/input/handlers/keydown", () => ({
+vi.mock("../../../../../src/features/typing/input/handlers/keydown", () => ({
   onKeydown: vi.fn(),
 }));
-vi.mock("../../../src/ts/input/handlers/keyup", () => ({ onKeyup: vi.fn() }));
+vi.mock("../../../../../src/features/typing/input/handlers/keyup", () => ({
+  onKeyup: vi.fn(),
+}));
 
-import { bindKeyListeners } from "../../../src/ts/input/listeners/key";
-import { bindMiscListeners } from "../../../src/ts/input/listeners/misc";
+import { bindKeyListeners } from "../../../../../src/features/typing/input/listeners/key";
+import { bindMiscListeners } from "../../../../../src/features/typing/input/listeners/misc";
 
 afterEach(() => {
   logging.enabled = false;

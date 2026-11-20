@@ -1,16 +1,19 @@
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { decodeText, encodeText } from "@caret/typing-engine/text";
-import { getBrowserEngine } from "../../../features/typing/engine/owner.client";
-import { getEngineSession } from "../../../features/typing/runtime/session.client";
-import { getContentHost } from "../../../features/typing/runtime/content/host.client";
-import { getMutableConfig } from "../../config/store";
-import { isTestRestarting, isResultCalculating } from "../../states/test";
+import { getBrowserEngine } from "../../engine/owner.client";
+import { getEngineSession } from "../../runtime/session.client";
+import { getContentHost } from "../../runtime/content/host.client";
+import { getMutableConfig } from "../../../../ts/config/store";
+import {
+  isTestRestarting,
+  isResultCalculating,
+} from "../../../../ts/states/test";
 import { isCorrectShiftUsed } from "../state";
 import {
   getInputElementValue,
   setInputElementValue,
   appendToInputElementValue,
-} from "../input-element";
+} from "../../../../ts/input/input-element";
 import {
   insertionLayout,
   observeInputView,

@@ -13,7 +13,7 @@ import {
 // these tests assert the actual events onInsertText emits.
 const inputEl = vi.hoisted(() => ({ value: " " }));
 
-vi.mock("../../../src/ts/input/input-element", () => ({
+vi.mock("../../../../../src/ts/input/input-element", () => ({
   getInputElementValue: () => ({
     inputValue: inputEl.value.slice(1),
     realInputValue: inputEl.value,
@@ -43,7 +43,7 @@ const native = vi.hoisted(() => ({
     | import("@caret/typing-engine/browser.client").BrowserSession
     | undefined,
 }));
-vi.mock("../../../src/features/typing/engine/owner.client", () => ({
+vi.mock("../../../../../src/features/typing/engine/owner.client", () => ({
   getBrowserEngine: () => ({
     session: () => native.session,
     generation: () => 1,
@@ -51,10 +51,13 @@ vi.mock("../../../src/features/typing/engine/owner.client", () => ({
     captureSession: () => ({ isCurrent: () => true }),
   }),
 }));
-vi.mock("../../../src/features/typing/runtime/content/host.client", () => ({
-  getContentHost: () => ({ supplyActive: vi.fn() }),
-}));
-vi.mock("../../../src/features/typing/runtime/test/words", () => {
+vi.mock(
+  "../../../../../src/features/typing/runtime/content/host.client",
+  () => ({
+    getContentHost: () => ({ supplyActive: vi.fn() }),
+  }),
+);
+vi.mock("../../../../../src/features/typing/runtime/test/words", () => {
   type CommitChar = " " | "\n" | "";
   type Word = { text: string; textWithCommit: string; commit: CommitChar };
   const list: Word[] = [];
@@ -84,7 +87,7 @@ vi.mock("../../../src/features/typing/runtime/test/words", () => {
   };
 });
 
-vi.mock("../../../src/ts/states/test", () => ({
+vi.mock("../../../../../src/ts/states/test", () => ({
   setIsTestRestarting: vi.fn(),
   setTestInitError: vi.fn(),
   setTestActive: vi.fn(),
@@ -98,7 +101,7 @@ vi.mock("../../../src/ts/states/test", () => ({
   getKoreanStatus: () => false,
 }));
 
-vi.mock("../../../src/ts/input/state", () => ({
+vi.mock("../../../../../src/features/typing/input/state", () => ({
   isCorrectShiftUsed: () => mockState.correctShiftUsed,
   getIncorrectShiftsInARow: () => 0,
   incrementIncorrectShiftsInARow: () => undefined,
@@ -106,45 +109,50 @@ vi.mock("../../../src/ts/input/state", () => ({
   isAwaitingNextWord: () => false,
 }));
 
-vi.mock("../../../src/features/typing/runtime/content/custom-text", () => ({
-  getLimit: () => ({ mode: "words", value: 0 }),
-}));
+vi.mock(
+  "../../../../../src/features/typing/runtime/content/custom-text",
+  () => ({
+    getLimit: () => ({ mode: "words", value: 0 }),
+  }),
+);
 
 // peripheral collaborators - none of them feed back into the events we assert
-vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/ui", () => ({
   afterTestTextInput: vi.fn(),
   // words scrolled off the screen are removed from the dom
   getWordElement: vi.fn((index: number) =>
     mockState.wordsScrolledOff.has(index) ? null : {},
   ),
 }));
-vi.mock("../../../src/features/typing/runtime/test/logic", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/logic", () => ({
   startTest: vi.fn(),
   fail: vi.fn(),
   finish: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/ts/events/keymap", () => ({ flash: vi.fn() }));
-vi.mock("../../../src/ts/states/notifications", async (original) => ({
-  ...(await original<typeof import("../../../src/ts/states/notifications")>()),
+vi.mock("../../../../../src/ts/events/keymap", () => ({ flash: vi.fn() }));
+vi.mock("../../../../../src/ts/states/notifications", async (original) => ({
+  ...(await original<
+    typeof import("../../../../../src/ts/states/notifications")
+  >()),
   showNoticeNotification: vi.fn(),
 }));
-vi.mock("../../../src/ts/states/composition", () => ({
+vi.mock("../../../../../src/ts/states/composition", () => ({
   getComposing: () => false,
   getData: () => "",
 }));
-import { onInsertText } from "../../../src/ts/input/handlers/insert-text";
+import { onInsertText } from "../../../../../src/features/typing/input/handlers/insert-text";
 import {
   resetTestEvents,
   getAllTestEvents,
-} from "../../../src/features/typing/runtime/events/data";
+} from "../../../../../src/features/typing/runtime/events/data";
 
 import type { InputEventNoMs } from "@caret/web-shared/events/types";
-import { words as TestWords } from "../../../src/features/typing/runtime/test/words";
-import { __testing } from "../../../src/ts/config/testing";
-import { nativeSession } from "../../__harness__/native-engine";
-import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
-import { getMutableConfig } from "../../../src/ts/config/store";
+import { words as TestWords } from "../../../../../src/features/typing/runtime/test/words";
+import { __testing } from "../../../../../src/ts/config/testing";
+import { nativeSession } from "../../../../__harness__/native-engine";
+import { getEngineSession } from "../../../../../src/features/typing/runtime/session.client";
+import { getMutableConfig } from "../../../../../src/ts/config/store";
 import { decodeText } from "@caret/typing-engine/text";
 let unsubscribe: (() => void) | undefined;
 afterEach(() => {

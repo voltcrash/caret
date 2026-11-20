@@ -1,6 +1,6 @@
-import { getMutableConfig } from "../../config/store";
-import { logTestEvent } from "../../../features/typing/runtime/events/data";
-import { getTestEventCode } from "../../../features/typing/runtime/events/helpers";
+import { getMutableConfig } from "../../../../ts/config/store";
+import { logTestEvent } from "../../runtime/events/data";
+import { getTestEventCode } from "../../runtime/events/helpers";
 
 export async function onKeyup(event: KeyboardEvent): Promise<void> {
   const now = performance.now();

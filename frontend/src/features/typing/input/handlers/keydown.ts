@@ -1,31 +1,31 @@
-import { getMutableConfig } from "../../config/store";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
-import { getCharFromEvent } from "../../../features/typing/runtime/layout-emulator";
+import { getMutableConfig } from "../../../../ts/config/store";
+import * as TestLogic from "../../runtime/test/logic";
+import { getCharFromEvent } from "../../runtime/layout-emulator";
 import { emulateInsertText } from "./insert-text";
 import {
   showNoticeNotification,
   showErrorNotification,
-} from "../../states/notifications";
-import * as KeyConverter from "../../utils/key-converter";
-import * as ShiftTracker from "../../../features/typing/runtime/shift-tracker";
-import { canQuickRestart } from "../../utils/quick-restart";
-import * as CustomText from "../../../features/typing/runtime/content/custom-text";
+} from "../../../../ts/states/notifications";
+import * as KeyConverter from "../../../../ts/utils/key-converter";
+import * as ShiftTracker from "../../runtime/shift-tracker";
+import { canQuickRestart } from "../../../../ts/utils/quick-restart";
+import * as CustomText from "../../runtime/content/custom-text";
 import {
   getLastBailoutAttempt,
   setCorrectShiftUsed,
   setLastBailoutAttempt,
 } from "../state";
-import { getActiveFunboxesWithFunction } from "../../../features/typing/runtime/funbox/list";
-import { Keycode } from "../../constants/keys";
+import { getActiveFunboxesWithFunction } from "../../runtime/funbox/list";
+import { Keycode } from "../../../../ts/constants/keys";
 import {
   setBailedOut,
   waitForKeymapLayout,
   wordsHaveTab,
-} from "../../states/test";
+} from "../../../../ts/states/test";
 
-import { getCustomTextIndicator } from "../../states/core";
-import { logTestEvent } from "../../../features/typing/runtime/events/data";
-import { getTestEventCode } from "../../../features/typing/runtime/events/helpers";
+import { getCustomTextIndicator } from "../../../../ts/states/core";
+import { logTestEvent } from "../../runtime/events/data";
+import { getTestEventCode } from "../../runtime/events/helpers";
 
 async function handleTab(e: KeyboardEvent, now: number): Promise<void> {
   if (wordsHaveTab() && !e.shiftKey) {

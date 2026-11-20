@@ -1,5 +1,5 @@
-import { isDebugLogging } from "../../utils/logger";
-import { useInputListener } from "../../hooks/useInputListener";
+import { isDebugLogging } from "../../../../ts/utils/logger";
+import { useInputListener } from "../../../../ts/hooks/useInputListener";
 import { onDelete } from "../handlers/delete";
 import { onInsertText } from "../handlers/insert-text";
 import { isSupportedInputType } from "../helpers/input-type";
@@ -7,12 +7,15 @@ import {
   getLastInsertCompositionTextData,
   setLastInsertCompositionTextData,
 } from "../state";
-import * as TestUI from "../../../features/typing/runtime/test/ui";
+import * as TestUI from "../../runtime/test/ui";
 import { onBeforeInsertText } from "../handlers/before-insert-text";
 import { onBeforeDelete } from "../handlers/before-delete";
-import * as CompositionState from "../../states/composition";
-import { isTestRestarting, isResultCalculating } from "../../states/test";
-import { getEngineSession } from "../../../features/typing/runtime/session.client";
+import * as CompositionState from "../../../../ts/states/composition";
+import {
+  isTestRestarting,
+  isResultCalculating,
+} from "../../../../ts/states/test";
+import { getEngineSession } from "../../runtime/session.client";
 
 export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "beforeinput", async (event: Event) => {

@@ -15,14 +15,14 @@ const mockState = vi.hoisted(() => ({
   wrapsToNextLine: false,
 }));
 
-vi.mock("../../../src/ts/input/input-element", () => ({
+vi.mock("../../../../../src/ts/input/input-element", () => ({
   getInputElementValue: () => ({
     inputValue: mockState.inputValue,
     realInputValue: ` ${mockState.inputValue}`,
   }),
 }));
 
-vi.mock("../../../src/features/typing/runtime/test/words", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/words", () => ({
   words: {
     getCurrent: () => ({
       textWithCommit: mockState.word,
@@ -45,7 +45,7 @@ const native = vi.hoisted(() => {
   };
   return state;
 });
-vi.mock("../../../src/features/typing/runtime/session.client", () => ({
+vi.mock("../../../../../src/features/typing/runtime/session.client", () => ({
   getEngineSession: () => ({
     isPrepared: () => native.session !== undefined,
     command: (command: import("@caret/typing-engine/browser.client").Command) =>
@@ -53,7 +53,7 @@ vi.mock("../../../src/features/typing/runtime/session.client", () => ({
     preflight: native.preflight,
   }),
 }));
-vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test/ui", () => ({
   lineState: { activeWordTop: 0, activeWordHeight: 10 },
   getPendingWordData: (): undefined => undefined,
   getActiveWordTopAndHeightWithDifferentData: () => ({
@@ -62,32 +62,34 @@ vi.mock("../../../src/features/typing/runtime/test/ui", () => ({
   }),
 }));
 
-vi.mock("../../../src/ts/states/test", () => ({
+vi.mock("../../../../../src/ts/states/test", () => ({
   getActiveWordIndex: () => 0,
   isResultCalculating: () => false,
   isTestRestarting: () => false,
   wordsHaveNewline: () => false,
 }));
 
-vi.mock("../../../src/ts/input/state", () => ({
+vi.mock("../../../../../src/features/typing/input/state", () => ({
   isAwaitingNextWord: () => false,
 }));
 
-vi.mock("../../../src/ts/states/slow-timer", () => ({ get: () => false }));
+vi.mock("../../../../../src/ts/states/slow-timer", () => ({
+  get: () => false,
+}));
 
-vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
+vi.mock("../../../../../src/features/typing/runtime/funbox/list", () => ({
   isFunboxActiveWithProperty: () => false,
 }));
 
-import { onBeforeInsertText } from "../../../src/ts/input/handlers/before-insert-text";
-import { nativeSession } from "../../__harness__/native-engine";
+import { onBeforeInsertText } from "../../../../../src/features/typing/input/handlers/before-insert-text";
+import { nativeSession } from "../../../../__harness__/native-engine";
 import { encodeText } from "@caret/typing-engine/text";
-import { getMutableConfig } from "../../../src/ts/config/store";
+import { getMutableConfig } from "../../../../../src/ts/config/store";
 afterEach(() => {
   native.session?.dispose();
   native.session = undefined;
 });
-import { __testing } from "../../../src/ts/config/testing";
+import { __testing } from "../../../../../src/ts/config/testing";
 
 const { replaceConfig } = __testing;
 

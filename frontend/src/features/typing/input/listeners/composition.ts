@@ -1,17 +1,17 @@
-import { isDebugLogging } from "../../utils/logger";
-import { useInputListener } from "../../hooks/useInputListener";
-import * as CompositionState from "../../states/composition";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
+import { isDebugLogging } from "../../../../ts/utils/logger";
+import { useInputListener } from "../../../../ts/hooks/useInputListener";
+import * as CompositionState from "../../../../ts/states/composition";
+import * as TestLogic from "../../runtime/test/logic";
 import { setLastInsertCompositionTextData } from "../state";
 import { onInsertText } from "../handlers/insert-text";
-import { logTestEvent } from "../../../features/typing/runtime/events/data";
+import { logTestEvent } from "../../runtime/events/data";
 import {
   isTestRestarting,
   getActiveWordIndex,
   isResultCalculating,
   isTestActive,
   setCompositionText,
-} from "../../states/test";
+} from "../../../../ts/states/test";
 
 export function bindCompositionListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "compositionstart", (event) => {

@@ -26,7 +26,7 @@ import {
   incrementIncorrectShiftsInARow,
   resetIncorrectShiftsInARow,
   getIncorrectShiftsInARow,
-} from "../../../ts/input/state";
+} from "../input/state";
 import {
   beginLoaderBar,
   showLoaderBar,

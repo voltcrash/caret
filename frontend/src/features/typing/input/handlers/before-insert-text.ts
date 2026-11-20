@@ -1,15 +1,15 @@
 import type { InsertionLayout } from "@caret/typing-engine/browser.client";
 import { decodeText } from "@caret/typing-engine/text";
-import { getEngineSession } from "../../../features/typing/runtime/session.client";
-import * as TestUI from "../../../features/typing/runtime/test/ui";
-import { getInputElementValue } from "../input-element";
+import { getEngineSession } from "../../runtime/session.client";
+import * as TestUI from "../../runtime/test/ui";
+import { getInputElementValue } from "../../../../ts/input/input-element";
 import { isAwaitingNextWord } from "../state";
-import * as SlowTimer from "../../states/slow-timer";
+import * as SlowTimer from "../../../../ts/states/slow-timer";
 import {
   isTestRestarting,
   getActiveWordIndex,
   isResultCalculating,
-} from "../../states/test";
+} from "../../../../ts/states/test";
 
 /** Only DOM visibility/geometry is observed here; Rust decides its rule effects. */
 export function observeInputView(now: number): void {

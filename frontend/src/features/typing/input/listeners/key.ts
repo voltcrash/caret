@@ -1,5 +1,5 @@
-import { isDebugLogging } from "../../utils/logger";
-import { useInputListener } from "../../hooks/useInputListener";
+import { isDebugLogging } from "../../../../ts/utils/logger";
+import { useInputListener } from "../../../../ts/hooks/useInputListener";
 import { onKeyup } from "../handlers/keyup";
 import { onKeydown } from "../handlers/keydown";
 
