@@ -1,10 +1,10 @@
 import { JSXElement, Setter, Show } from "solid-js";
 import { z } from "zod";
 
-import { Button } from "../../../ts/components/common/Button";
-import { LoadingCircle } from "../../../ts/components/common/LoadingCircle";
-import { showSimpleModal } from "../../../ts/states/simple-modal";
-import { cn } from "../../../ts/utils/cn";
+import { Button } from "#shared/components/common/Button.tsx";
+import { LoadingCircle } from "#shared/components/common/LoadingCircle.tsx";
+import { showSimpleModal } from "#shared/states/simple-modal.ts";
+import { cn } from "#shared/utils/cn.ts";
 
 export function Navigation(props: {
   lastPage: number;

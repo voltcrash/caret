@@ -3,7 +3,8 @@ import { Language } from "@caret/schemas/languages";
 import { Mode } from "@caret/schemas/shared";
 import { Accessor, For, JSXElement, Show } from "solid-js";
 
-import { Button } from "../../../ts/components/common/Button";
+import { Button } from "#shared/components/common/Button.tsx";
+
 import { FaSolidIcon } from "../../../ts/types/font-awesome";
 import { Selection } from "../selection-state";
 
