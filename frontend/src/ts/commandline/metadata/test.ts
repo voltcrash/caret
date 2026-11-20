@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
+import { restartTest } from "../typing-host";
 
 import { isAuthenticated } from "../../states/core";
 
@@ -8,7 +8,7 @@ export const testMetadata = {
     subgroup: {
       options: "fromSchema",
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },
@@ -16,7 +16,7 @@ export const testMetadata = {
     subgroup: {
       options: "fromSchema",
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },
@@ -25,14 +25,14 @@ export const testMetadata = {
     subgroup: {
       options: [10, 25, 50, 100],
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
     input: {
       inputValueConvert: Number,
 
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },
@@ -40,13 +40,13 @@ export const testMetadata = {
     subgroup: {
       options: [15, 30, 60, 120],
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
     input: {
       inputValueConvert: Number,
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },
@@ -54,7 +54,7 @@ export const testMetadata = {
     subgroup: {
       options: "fromSchema",
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },
@@ -71,7 +71,7 @@ export const testMetadata = {
       },
 
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },

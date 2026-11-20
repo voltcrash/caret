@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
+import { restartTest } from "../typing-host";
 
 export const keymapMetadata = {
   keymapMode: {
@@ -33,7 +33,7 @@ export const keymapMetadata = {
       options: "fromSchema",
       alias: (val) => (val === "overrideSync" ? "default" : ""),
 
-      afterExec: () => void TestLogic.restart(),
+      afterExec: () => restartTest(),
     },
   },
   keymapKeys: {

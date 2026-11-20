@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
+import { restartTest } from "../typing-host";
 
 export const inputMetadata = {
   freedomMode: {
@@ -55,14 +55,14 @@ export const inputMetadata = {
   lazyMode: {
     subgroup: {
       options: "fromSchema",
-      afterExec: () => void TestLogic.restart(),
+      afterExec: () => restartTest(),
     },
   },
   layout: {
     subgroup: {
       options: "fromSchema",
 
-      afterExec: () => void TestLogic.restart(),
+      afterExec: () => restartTest(),
     },
   },
   codeUnindentOnBackspace: {

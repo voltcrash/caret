@@ -1,7 +1,7 @@
 import { getCommandlineState } from "../states/commandline";
 import { captureAccount, createAccountOwned } from "../../app/account-scope";
 import { onCleanup } from "solid-js";
-import * as Focus from "../../features/typing/runtime/focus";
+import { blurTest } from "./typing-host";
 import * as CommandlineLists from "./lists";
 
 import { getMutableConfig } from "../config/store";
@@ -118,7 +118,7 @@ export async function prepareCommandline(): Promise<void> {
     commandlineState.usingSingleList = settings.singleListOverride;
   }
   commandlineState.activeCommand = null;
-  Focus.set(false);
+  blurTest();
   CommandlineLists.setStackToDefault();
   await updateInput();
   await filterSubgroup();

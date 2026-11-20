@@ -35,7 +35,7 @@ const offlineTypingModules = [
   "src/features/typing/page.client.tsx",
   "src/features/typing/components/result/Result.tsx",
   "src/features/typing/runtime/completion/completion.client.ts",
-  "src/ts/components/modals/Commandline.tsx",
+  "src/app/commandline.client.tsx",
   "src/features/typing/modals/CustomTextModal.tsx",
   "src/features/typing/modals/CustomTestDurationModal.tsx",
   "src/features/typing/modals/CustomWordAmountModal.tsx",

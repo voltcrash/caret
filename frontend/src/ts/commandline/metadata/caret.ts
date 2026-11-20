@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import * as TestLogic from "../../../features/typing/runtime/test/logic";
+import { restartTest } from "../typing-host";
 import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 
@@ -19,7 +19,7 @@ export const caretMetadata = {
     subgroup: {
       options: ["off", "pb", "tagPb", "last", "average", "daily"],
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
     input: {
@@ -33,7 +33,7 @@ export const caretMetadata = {
         return newVal;
       },
       afterExec: () => {
-        void TestLogic.restart();
+        restartTest();
       },
     },
   },
