@@ -117,20 +117,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
     }
   }
 
-  getMutableConfig()[key] = value;
-  if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
-
-  // The generic key and both values share Config[T]; preserve that pair in the event union.
-  configEvent.dispatch({
-    key: key,
-    newValue: value,
-    nosave: options?.nosave ?? false,
-    previousValue: previousValue,
-  } as ConfigEventData);
-
-  if (!options?.partOfFullConfigChange) {
-    setConfigStore(key, value);
-  }
+  commitConfig(key, value, previousValue, options);
 
   if (metadata.triggerResize && !options?.nosave) {
     window.dispatchEvent(new Event("resize"));
@@ -189,16 +176,30 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
     return false;
   }
 
-  getMutableConfig().funbox = newConfig;
-  saveToLocalStorage("funbox", nosave);
-  configEvent.dispatch({
-    key: "funbox",
-    newValue: getMutableConfig().funbox,
-    nosave,
-    previousValue,
-  });
-
-  setConfigStore("funbox", newConfig);
+  commitConfig("funbox", newConfig, previousValue, { nosave });
 
   return true;
+}
+
+/** The one write path: store the value, persist it and announce the change. */
+function commitConfig<T extends keyof ConfigSchemas.Config>(
+  key: T,
+  value: ConfigSchemas.Config[T],
+  previousValue: ConfigSchemas.Config[T],
+  options?: { nosave?: boolean; partOfFullConfigChange?: boolean },
+): void {
+  getMutableConfig()[key] = value;
+  if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
+
+  // The generic key and both values share Config[T]; preserve that pair in the event union.
+  configEvent.dispatch({
+    key: key,
+    newValue: value,
+    nosave: options?.nosave ?? false,
+    previousValue: previousValue,
+  } as ConfigEventData);
+
+  if (!options?.partOfFullConfigChange) {
+    setConfigStore(key, value);
+  }
 }
