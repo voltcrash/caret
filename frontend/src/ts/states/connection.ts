@@ -7,25 +7,27 @@ import { connectionEvent } from "../events/connection";
 import { addBanner, removeBanner } from "./banners";
 import { isTestActive } from "./test";
 const [getState, setState] = createAppSignal(true);
-const state = createAppOwned(() => ({
-  bannerId: undefined as number | undefined,
-  bannerClosed: false,
+type OfflineBanner =
+  | { phase: "eligible" | "dismissed" }
+  | { phase: "visible"; id: number };
+const state = createAppOwned((): { banner: OfflineBanner } => ({
+  banner: { phase: "eligible" },
 }));
 export function get(): boolean {
   return getState();
 }
 export function showOfflineBanner(): void {
   const current = state();
-  if (current.bannerClosed) return;
-  current.bannerId ??= addBanner({
+  if (current.banner.phase !== "eligible") return;
+  const id = addBanner({
     level: "notice",
     text: "No internet connection",
     icon: "fas fa-exclamation-triangle",
     onClose: () => {
-      current.bannerClosed = true;
-      current.bannerId = undefined;
+      current.banner = { phase: "dismissed" };
     },
   });
+  current.banner = { phase: "visible", id };
 }
 export function useConnectionEvents(): void {
   const current = state();
@@ -34,14 +36,13 @@ export function useConnectionEvents(): void {
   });
   const handleState = debounce(5000, () => {
     if (getState()) {
-      if (current.bannerId !== undefined) {
+      if (current.banner.phase === "visible") {
         showSuccessNotification("You're back online", {
           customTitle: "Connection",
         });
-        removeBanner(current.bannerId);
-        current.bannerId = undefined;
+        removeBanner(current.banner.id);
       }
-      current.bannerClosed = false;
+      current.banner = { phase: "eligible" };
     } else if (!isTestActive()) {
       showOfflineBanner();
     }
