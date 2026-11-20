@@ -1,23 +1,36 @@
 use crate::{Text, random::Random};
 use std::collections::BTreeMap;
 
-#[derive(Default)]
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Foot {
+    Left,
+    Right,
+}
+
 pub struct Arrows {
-    foot: bool,
+    foot: Foot,
     facing: i32,
     facing_count: i32,
     last_left: i32,
     last_right: i32,
     left_count: i32,
     right_count: i32,
-    initialized: bool,
+}
+impl Default for Arrows {
+    fn default() -> Self {
+        Self {
+            foot: Foot::Right,
+            facing: 0,
+            facing_count: 0,
+            last_left: 0,
+            last_right: 3,
+            left_count: 0,
+            right_count: 0,
+        }
+    }
 }
 impl Arrows {
     pub fn word(&mut self, first: bool, random: &mut Random) -> Result<Text, String> {
-        if !self.initialized {
-            self.last_right = 3;
-            self.initialized = true;
-        }
         let mut result = vec![];
         for index in 0..4 {
             self.facing_count -= 1;
@@ -26,10 +39,14 @@ impl Arrows {
             let _ = random.draw()?;
             let value;
             if index == 0 && first {
-                self.foot = crate::js_round(random.draw()?) != 0.0;
-                value = if self.foot { 3 } else { 0 };
+                self.foot = if crate::js_round(random.draw()?) != 0.0 {
+                    Foot::Left
+                } else {
+                    Foot::Right
+                };
+                value = if self.foot == Foot::Left { 3 } else { 0 };
             } else {
-                if self.foot {
+                if self.foot == Foot::Left {
                     self.left_count = if self.last_left == step {
                         self.left_count + 1
                     } else {
@@ -54,7 +71,10 @@ impl Arrows {
                     self.last_right = step;
                     value = 3 - step * (self.facing + 1);
                 }
-                self.foot = !self.foot;
+                self.foot = match self.foot {
+                    Foot::Left => Foot::Right,
+                    Foot::Right => Foot::Left,
+                };
                 if self.facing_count < 0 && step == 0 {
                     self.facing = 1 - self.facing;
                     self.facing_count = random.index(3)? as i32 + 3;
