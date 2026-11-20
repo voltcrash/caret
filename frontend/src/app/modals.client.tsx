@@ -48,12 +48,12 @@ const lazyModals = [
     ),
   ),
   lazyModal("TestDuration", async () =>
-    import("../ts/components/modals/CustomTestDurationModal").then(
+    import("../features/typing/modals/CustomTestDurationModal").then(
       (m) => m.CustomTestDurationModal,
     ),
   ),
   lazyModal("CustomWordAmount", async () =>
-    import("../ts/components/modals/CustomWordAmountModal").then(
+    import("../features/typing/modals/CustomWordAmountModal").then(
       (m) => m.CustomWordAmountModal,
     ),
   ),
@@ -68,7 +68,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("MobileTestConfig", async () =>
-    import("../ts/components/modals/MobileTestConfigModal").then(
+    import("../features/typing/modals/MobileTestConfigModal").then(
       (m) => m.MobileTestConfigModal,
     ),
   ),
@@ -83,7 +83,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("LastSignedOutResult", async () =>
-    import("../ts/components/modals/LastSignedOutResultModal").then(
+    import("../features/typing/modals/LastSignedOutResultModal").then(
       (m) => m.LastSignedOutResultModal,
     ),
   ),

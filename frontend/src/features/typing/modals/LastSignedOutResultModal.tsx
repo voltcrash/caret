@@ -2,28 +2,28 @@ import { CompletedEvent } from "@caret/schemas/results";
 import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { createMemo, JSX } from "solid-js";
 
-import type { SavedResult } from "../../constants/default-snapshot";
+import type { SavedResult } from "../../../ts/constants/default-snapshot";
 
 import { trackResultSave } from "../../../app/update-safety";
 import { operation } from "../../../data/operations";
-import { getAuthenticatedUser } from "../../auth-client";
-import { getConfig } from "../../config/store";
-import { saveLocalResult, SaveLocalResultData } from "../../db";
-import { hideModal } from "../../states/modals";
+import { getAuthenticatedUser } from "../../../ts/auth-client";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Separator } from "../../../ts/components/common/Separator";
+import { getConfig } from "../../../ts/config/store";
+import { saveLocalResult, SaveLocalResultData } from "../../../ts/db";
+import { hideModal } from "../../../ts/states/modals";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../states/notifications";
+} from "../../../ts/states/notifications";
 import {
   getLastSignedOutResult,
   setLastSignedOutResult,
-} from "../../states/test";
-import { cn } from "../../utils/cn";
-import { Formatting } from "../../utils/format";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { Separator } from "../common/Separator";
+} from "../../../ts/states/test";
+import { cn } from "../../../ts/utils/cn";
+import { Formatting } from "../../../ts/utils/format";
 
 const modalId = "LastSignedOutResult";
 

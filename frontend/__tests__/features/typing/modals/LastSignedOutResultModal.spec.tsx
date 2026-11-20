@@ -11,7 +11,7 @@ import {
   vi,
 } from "vite-plus/test";
 
-import { mockHttpFixture } from "../../__harness__/operations";
+import { mockHttpFixture } from "../../../__harness__/operations";
 
 const mocks = vi.hoisted(() => ({
   result: null as CompletedEvent | null,
@@ -22,31 +22,31 @@ const mocks = vi.hoisted(() => ({
   success: vi.fn(),
 }));
 
-vi.mock("../../../src/ts/auth-client", () => ({
+vi.mock("../../../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => ({ uid: "saved-user" }),
 }));
-vi.mock("../../../src/ts/db", () => ({ saveLocalResult: mocks.saveLocal }));
-vi.mock("../../../src/ts/states/modals", () => ({ hideModal: mocks.hide }));
-vi.mock("../../../src/ts/states/test", () => ({
+vi.mock("../../../../src/ts/db", () => ({ saveLocalResult: mocks.saveLocal }));
+vi.mock("../../../../src/ts/states/modals", () => ({ hideModal: mocks.hide }));
+vi.mock("../../../../src/ts/states/test", () => ({
   getLastSignedOutResult: () => mocks.result,
   setLastSignedOutResult: (result: CompletedEvent | null) => {
     mocks.result = result;
   },
 }));
-vi.mock("../../../src/ts/states/notifications", () => ({
+vi.mock("../../../../src/ts/states/notifications", () => ({
   showErrorNotification: mocks.error,
   showNoticeNotification: vi.fn(),
   showSuccessNotification: mocks.success,
 }));
-vi.mock("../../../src/ts/components/common/AnimatedModal", () => ({
+vi.mock("../../../../src/ts/components/common/AnimatedModal", () => ({
   AnimatedModal: (props: ParentProps) => <div>{props.children}</div>,
 }));
 
-import fixture from "../../../../packages/typing-fixtures/reference/keystrokes/words-10-clean.json";
+import fixture from "../../../../../packages/typing-fixtures/reference/keystrokes/words-10-clean.json";
 import {
   LastSignedOutResultModal,
   updateUidAndHash,
-} from "../../../src/ts/components/modals/LastSignedOutResultModal";
+} from "../../../../src/features/typing/modals/LastSignedOutResultModal";
 
 beforeEach(() => {
   vi.clearAllMocks();

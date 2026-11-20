@@ -3,17 +3,20 @@ import type { Mode } from "@caret/schemas/shared";
 
 import { For, JSXElement, ParentProps, Show } from "solid-js";
 
-import { setConfig, setQuoteLengthAll } from "../../config/setters";
-import { getConfig } from "../../config/store";
-import { restartTestEvent } from "../../events/test";
-import { isAuthenticated, showCommandLineForConfig } from "../../states/core";
-import { hideModal, showModal } from "../../states/modals";
-import { areUnsortedArraysEqual } from "../../utils/arrays";
-import { cn } from "../../utils/cn";
-import { getLanguageDisplayString } from "../../utils/strings";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Button } from "../common/Button";
-import { Fa } from "../common/Fa";
+import { AnimatedModal } from "../../../ts/components/common/AnimatedModal";
+import { Button } from "../../../ts/components/common/Button";
+import { Fa } from "../../../ts/components/common/Fa";
+import { setConfig, setQuoteLengthAll } from "../../../ts/config/setters";
+import { getConfig } from "../../../ts/config/store";
+import { restartTestEvent } from "../../../ts/events/test";
+import {
+  isAuthenticated,
+  showCommandLineForConfig,
+} from "../../../ts/states/core";
+import { hideModal, showModal } from "../../../ts/states/modals";
+import { areUnsortedArraysEqual } from "../../../ts/utils/arrays";
+import { cn } from "../../../ts/utils/cn";
+import { getLanguageDisplayString } from "../../../ts/utils/strings";
 
 const modes: Mode[] = ["time", "words", "quote", "zen", "custom"];
 const times = [15, 30, 60, 120];
