@@ -11,6 +11,7 @@ import {
   LanguageObject,
   LanguageObjectSchema,
 } from "@caret/schemas/languages";
+import { ThemeNameSchema } from "@caret/schemas/themes";
 import { Layout, ThemeName } from "@caret/schemas/configs";
 import { LayoutsList } from "../src/ts/constants/layouts";
 import { KnownFontName } from "@caret/schemas/fonts";
@@ -378,7 +379,7 @@ async function validateFonts(): Promise<void> {
 async function validateThemes(): Promise<void> {
   const problems = new Problems<ThemeName, "_additional">("Themes", {
     _additional:
-      "Theme files present but missing in frontend/src/ts/constants/themes.ts",
+      "Theme files present but missing in packages/web-shared/src/theme-palettes.json",
   });
 
   //no missing files
@@ -406,7 +407,11 @@ async function validateThemes(): Promise<void> {
   });
   for (const name of Object.keys(themes)) {
     const theme = themes[name as ThemeName];
-    problems.addValidation(name as ThemeName, ThemeSchema.safeParse(theme));
+    problems.addValidation(name as ThemeName, ThemeNameSchema.safeParse(name));
+    problems.addValidation(
+      name as ThemeName,
+      ThemeSchema.strict().safeParse(theme),
+    );
     problems.addValidation(name as ThemeName, themeNameSchema.safeParse(name));
   }
 
