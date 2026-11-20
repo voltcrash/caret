@@ -121,7 +121,8 @@ Hot paths avoid Neon PostgreSQL where staleness is bounded:
 - Public reads: operations in `policies/edge-cache.ts` are stored in the
   location's Cache API for 30–300s. SSR documents stay `no-store`.
 
-Each invocation owns a lazy Neon HTTP client shared by Drizzle and raw queries.
+Each invocation owns a lazy `pg` pool over Cloudflare Hyperdrive (TCP), shared by
+Drizzle and raw queries and closed when its work completes.
 Reads use the primary. User writes lock a versioned user row and assert its
 version inside a PostgreSQL transaction. Durable receipts recover lost commit
 acknowledgements without duplicate progression. Cron expires receipts after
