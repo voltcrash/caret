@@ -5,6 +5,7 @@ import ResultScreenCommands from "./result-screen";
 import FunboxCommands from "./funbox";
 import LoadChallengeCommands from "./load-challenge";
 import BailOutCommands from "./bail-out";
+import QuoteFavoriteCommands from "./quote-favorites";
 
 /** Adds typing commands to the mounted palette. */
 export function useTypingCommands(): void {
@@ -12,7 +13,7 @@ export function useTypingCommands(): void {
     registerCommands({
       commands: {
         result: ResultScreenCommands,
-        test: BailOutCommands,
+        test: [...QuoteFavoriteCommands, ...BailOutCommands],
         behavior: FunboxCommands,
         other: LoadChallengeCommands,
       },
