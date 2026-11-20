@@ -1,8 +1,5 @@
 import { getEngineSession } from "../../runtime/session.client";
-import {
-  isTestRestarting,
-  isResultCalculating,
-} from "../../../../ts/states/test";
+import { isTestRestarting, isResultCalculating } from "#shared/states/test.ts";
 import { observeInputView } from "./before-insert-text";
 
 export function onBeforeDelete(event: InputEvent): void {

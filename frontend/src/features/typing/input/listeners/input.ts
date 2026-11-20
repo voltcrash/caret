@@ -1,5 +1,5 @@
-import { isDebugLogging } from "../../../../ts/utils/logger";
-import { useInputListener } from "../../../../ts/hooks/useInputListener";
+import { isDebugLogging } from "#shared/utils/logger.ts";
+import { useInputListener } from "#shared/hooks/useInputListener.ts";
 import { onDelete } from "../handlers/delete";
 import { onInsertText } from "../handlers/insert-text";
 import { isSupportedInputType } from "../helpers/input-type";
@@ -10,11 +10,8 @@ import {
 import * as TestUI from "../../runtime/test/ui";
 import { onBeforeInsertText } from "../handlers/before-insert-text";
 import { onBeforeDelete } from "../handlers/before-delete";
-import * as CompositionState from "../../../../ts/states/composition";
-import {
-  isTestRestarting,
-  isResultCalculating,
-} from "../../../../ts/states/test";
+import * as CompositionState from "#shared/states/composition.ts";
+import { isTestRestarting, isResultCalculating } from "#shared/states/test.ts";
 import { getEngineSession } from "../../runtime/session.client";
 
 export function bindInputListeners(inputEl: HTMLTextAreaElement): void {

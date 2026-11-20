@@ -1,4 +1,4 @@
-import { createAppOwned } from "../../../app/application";
+import { createAppOwned } from "#app/application.ts";
 
 const state = createAppOwned(() => ({
   correctShiftUsed: true,
