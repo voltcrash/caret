@@ -130,54 +130,58 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     props.mobileSheet !== false && isSheetViewport();
 
   // swipe the sheet down by its handle to close it, like native sheets
-  let dragStartY: number | undefined;
-  let dragStartTime = 0;
-  let dragOffset = 0;
+  type SheetDrag =
+    | { phase: "tracking"; startY: number; startTime: number; offset: number }
+    | { phase: "released"; offset: number };
+  let drag: SheetDrag | undefined;
 
-  const resetSheetDrag = (): void => {
-    dragStartY = undefined;
+  const resetSheetDrag = (offset: number): void => {
+    drag = undefined;
     animateElement(modalEl(), {
-      translateY: [`${dragOffset}px`, "0px"],
+      translateY: [`${offset}px`, "0px"],
       duration: applyReducedMotion(DEFAULT_ANIMATION_DURATION),
     });
-    dragOffset = 0;
   };
 
   const onHandlePointerDown = (e: PointerEvent): void => {
     if (!usesSheetAnimation() || props.closeOnWrapperClick === false) return;
-    dragStartY = e.clientY;
-    dragStartTime = e.timeStamp;
-    dragOffset = 0;
+    drag = {
+      phase: "tracking",
+      startY: e.clientY,
+      startTime: e.timeStamp,
+      offset: 0,
+    };
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const onHandlePointerMove = (e: PointerEvent): void => {
-    if (dragStartY === undefined) return;
-    dragOffset = Math.max(0, e.clientY - dragStartY);
-    setStyle(modalEl(), { transform: `translateY(${dragOffset}px)` });
+    if (drag?.phase !== "tracking") return;
+    drag.offset = Math.max(0, e.clientY - drag.startY);
+    setStyle(modalEl(), { transform: `translateY(${drag.offset}px)` });
   };
 
   const onHandlePointerUp = (e: PointerEvent): void => {
-    if (dragStartY === undefined) return;
-    dragStartY = undefined;
-    const velocity = dragOffset / Math.max(1, e.timeStamp - dragStartTime);
+    if (drag?.phase !== "tracking") return;
+    const { offset, startTime } = drag;
+    drag = { phase: "released", offset };
+    const velocity = offset / Math.max(1, e.timeStamp - startTime);
     if (
-      dragOffset >= SHEET_DISMISS_DRAG_PX ||
-      (dragOffset >= SHEET_FLICK_MIN_PX && velocity >= SHEET_DISMISS_VELOCITY)
+      offset >= SHEET_DISMISS_DRAG_PX ||
+      (offset >= SHEET_FLICK_MIN_PX && velocity >= SHEET_DISMISS_VELOCITY)
     ) {
       if (props.onBackdropClick) {
         props.onBackdropClick(e);
       } else {
         storeHideModal(props.id);
       }
-      if (visibility()) resetSheetDrag();
+      if (visibility()) resetSheetDrag(offset);
       return;
     }
-    resetSheetDrag();
+    resetSheetDrag(offset);
   };
 
   const onHandlePointerCancel = (): void => {
-    if (dragStartY !== undefined) resetSheetDrag();
+    if (drag?.phase === "tracking") resetSheetDrag(drag.offset);
   };
 
   // Handle open/close with animations
@@ -334,6 +338,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     if (disposed || token !== motionId) return;
 
     const sheet = usesSheetAnimation();
+    const dragOffset = drag?.offset ?? 0;
     // a dragged sheet slides out from where the finger let go
     const motion: ModalMotion =
       sheet && dragOffset > 0
@@ -344,7 +349,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
         : sheet
           ? SHEET_MOTION
           : CARD_MOTION;
-    dragOffset = 0;
+    drag = undefined;
     const modalAnimDuration = applyReducedMotion(
       (props.customAnimations?.hide?.modal?.duration ??
         (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
