@@ -6,7 +6,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use std::collections::{BTreeMap, VecDeque};
+use std::collections::VecDeque;
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -1924,32 +1924,7 @@ impl Session {
     }
 
     fn finalize(&mut self) {
-        let mut down = BTreeMap::new();
-        for event in self.recorder.events() {
-            if event.kind == "keydown" {
-                down.insert(
-                    event.data["code"].as_str().unwrap_or_default().to_owned(),
-                    event.now,
-                );
-            }
-        }
-        let mut durations = vec![];
-        for event in self.recorder.events() {
-            if event.kind != "keyup" {
-                continue;
-            }
-            if let Some(start) = down.remove(event.data["code"].as_str().unwrap_or_default()) {
-                let duration = event.now - start;
-                if duration > 0.0 {
-                    durations.push(duration);
-                }
-            }
-        }
-        let average = if durations.is_empty() {
-            80.0
-        } else {
-            round2(durations.iter().sum::<f64>() / durations.len() as f64)
-        };
+        let average = self.recorder.average_key_duration();
         for (key, now) in self.pressed.clone() {
             let _ = self.observe("keyup", now + average, json!({"code":key,"estimated":true}));
         }

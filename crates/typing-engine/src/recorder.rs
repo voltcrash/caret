@@ -1,6 +1,7 @@
 //! Session event recording: ordered capture and event log materialization.
 use crate::{round2, session::Event};
 use serde_json::Value;
+use std::collections::BTreeMap;
 
 #[derive(Clone)]
 pub(crate) struct Recorded {
@@ -99,6 +100,36 @@ impl Recorder {
         });
         let origin = self.origin();
         events.iter().map(|event| event.at(origin)).collect()
+    }
+
+    /// Mean press duration of matched keydown/keyup pairs; 80 ms without any.
+    pub(crate) fn average_key_duration(&self) -> f64 {
+        let mut down = BTreeMap::new();
+        for event in &self.events {
+            if event.kind == "keydown" {
+                down.insert(
+                    event.data["code"].as_str().unwrap_or_default().to_owned(),
+                    event.now,
+                );
+            }
+        }
+        let mut durations = vec![];
+        for event in &self.events {
+            if event.kind != "keyup" {
+                continue;
+            }
+            if let Some(start) = down.remove(event.data["code"].as_str().unwrap_or_default()) {
+                let duration = event.now - start;
+                if duration > 0.0 {
+                    durations.push(duration);
+                }
+            }
+        }
+        if durations.is_empty() {
+            80.0
+        } else {
+            round2(durations.iter().sum::<f64>() / durations.len() as f64)
+        }
     }
 
     pub(crate) fn events(&self) -> &[Recorded] {
