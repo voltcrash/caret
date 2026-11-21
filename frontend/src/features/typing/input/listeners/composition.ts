@@ -10,8 +10,8 @@ import {
   getActiveWordIndex,
   isResultCalculating,
   isTestActive,
-  setCompositionText,
 } from "#shared/states/test.ts";
+import { setCompositionText } from "#features/typing/state/composition.ts";
 
 export function bindCompositionListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "compositionstart", (event) => {

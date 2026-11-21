@@ -40,12 +40,20 @@ vi.mock("../../../../src/ts/states/test", () => ({
   getResultVisible: () => mocks.resultVisible,
   isTestActive: () => false,
   wordsHaveNewline: () => false,
-  setCompositionText: vi.fn(),
   setCurrentLiveStats: vi.fn(),
   setOutOfFocusMaxHeight: vi.fn(),
   setTestFocusState: vi.fn(),
   setTestInitError: vi.fn(),
 }));
+vi.mock(
+  "../../../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/composition")
+    >()),
+    setCompositionText: vi.fn(),
+  }),
+);
 vi.mock("../../../../src/ts/states/background", () => ({
   getBackground: () => ({ url: "" }),
 }));

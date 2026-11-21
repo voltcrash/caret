@@ -64,14 +64,12 @@ vi.mock("../../../src/ts/states/test", async () => ({
   getActiveWordIndex: () => mocks.wordIndex,
   resetActiveWordIndex: vi.fn(),
   getBailedOut: () => mocks.bailedOut,
-  getKoreanStatus: () => false,
   isPaceRepeat: () => false,
   getIncompleteSeconds: () => 0,
   getIncompleteTests: () => [],
   getRestartCount: () => 0,
   pushIncompleteTest: mocks.incomplete,
   resetIncompleteTests: vi.fn(),
-  setKoreanStatus: vi.fn(),
   setLastEventLog: (log: EventLog) => {
     mocks.lastEventLog = log;
   },
@@ -89,6 +87,16 @@ vi.mock("../../../src/ts/states/test", async () => ({
     mocks.liveStats.push(stats);
   },
 }));
+vi.mock(
+  "../../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/composition")
+    >()),
+    getKoreanStatus: () => false,
+    setKoreanStatus: vi.fn(),
+  }),
+);
 vi.mock("../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => mocks.customIndicator,
   isAuthenticated: () => false,

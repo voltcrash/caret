@@ -22,10 +22,10 @@ import { skipBreakdownEvent } from "#shared/states/header.ts";
 import { getResultElement } from "../../state/result";
 import {
   getActiveWordIndex,
-  setCompositionText,
   setCurrentLiveStats,
   setTestFocusState,
 } from "#shared/states/test.ts";
+import { setCompositionText } from "#features/typing/state/composition.ts";
 import {
   getWordsElement as getWordsEl,
   getTypingTestElement,

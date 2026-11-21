@@ -63,8 +63,6 @@ export const [outOfFocusMaxHeight, setOutOfFocusMaxHeight] = createAppSignal<
   number | undefined
 >(undefined);
 
-// live IME composition text, pushed from the compositionupdate/end events.
-export const [getCompositionText, setCompositionText] = createAppSignal("");
 export const [isTestInvalid, setIsTestInvalid] = createAppSignal(false);
 export const [isLongTest, setIsLongTest] = createAppSignal(false);
 export const [getLastResult, setLastResult] = createAppSignal<Omit<
@@ -135,6 +133,5 @@ export const [isLanguageRightToLeft, setIsLanguageRightToLeft] =
   createAppSignal(false);
 export const [isDirectionReversed, setIsDirectionReversed] =
   createAppSignal(false);
-export const [getKoreanStatus, setKoreanStatus] = createAppSignal(false);
 export const [getLastEventLog, setLastEventLog] =
   createAppSignal<EventLog | null>(null);

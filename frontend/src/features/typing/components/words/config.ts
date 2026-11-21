@@ -5,11 +5,8 @@ import { updateWordJoining } from "./joining";
 import { updateHintsPositionDebounced } from "./hints";
 import { configEvent } from "#shared/events/config.ts";
 import * as CompositionState from "#shared/states/composition.ts";
-import {
-  getActiveWordIndex,
-  setCompositionText,
-  setTestFocusState,
-} from "#shared/states/test.ts";
+import { getActiveWordIndex, setTestFocusState } from "#shared/states/test.ts";
+import { setCompositionText } from "#features/typing/state/composition.ts";
 import {
   areTestElementsMounted,
   getWordsElement as getWordsEl,

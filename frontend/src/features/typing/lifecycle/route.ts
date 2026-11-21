@@ -8,9 +8,9 @@ import { resetModifierState } from "../state/modifiers";
 import {
   resetIncompleteTests,
   setFocus,
-  setCompositionText,
   setTestFocusState,
 } from "#shared/states/test.ts";
+import { setCompositionText } from "#features/typing/state/composition.ts";
 import * as Composition from "#shared/states/composition.ts";
 import {
   cancelPendingAnimationFrame,

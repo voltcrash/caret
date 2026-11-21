@@ -25,7 +25,6 @@ import {
   isAuthenticated,
 } from "#shared/states/core.ts";
 import {
-  setKoreanStatus,
   isTestRestarting,
   isPaceRepeat,
   isTestActive,
@@ -36,6 +35,7 @@ import {
   isResultCalculating,
   setBailedOut,
 } from "#shared/states/test.ts";
+import { setKoreanStatus } from "#features/typing/state/composition.ts";
 import * as TestWords from "./words";
 import { configEvent } from "#shared/events/config.ts";
 import * as AnalyticsController from "#shared/controllers/analytics-controller.ts";

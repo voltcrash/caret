@@ -98,8 +98,16 @@ vi.mock("../../../../../src/ts/states/test", () => ({
   wordsHaveNewline: () => false,
   getCurrentQuote: () => null,
   getBailedOut: () => false,
-  getKoreanStatus: () => false,
 }));
+vi.mock(
+  "../../../../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/composition")
+    >()),
+    getKoreanStatus: () => false,
+  }),
+);
 
 vi.mock("../../../../../src/features/typing/input/state", () => ({
   isCorrectShiftUsed: () => mockState.correctShiftUsed,

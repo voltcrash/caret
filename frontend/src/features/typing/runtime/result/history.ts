@@ -1,10 +1,7 @@
 import { peekConfig } from "#shared/config/store.ts";
 import * as CustomText from "../content/custom-text";
-import {
-  getLastEventLog,
-  getKoreanStatus,
-  getResultVisible,
-} from "#shared/states/test.ts";
+import { getLastEventLog, getResultVisible } from "#shared/states/test.ts";
+import { getKoreanStatus } from "#features/typing/state/composition.ts";
 import {
   getCorrectedWordsHistory,
   getInputHistory,

@@ -1,7 +1,8 @@
 import { Show } from "solid-js";
 
+import { getCompositionText } from "#features/typing/state/composition.ts";
 import { getConfig } from "#shared/config/store.ts";
-import { getCompositionText, testFocusState } from "#shared/states/test.ts";
+import { testFocusState } from "#shared/states/test.ts";
 import { cn } from "#shared/utils/cn.ts";
 
 import { getWordsFontSize } from "./words/font";

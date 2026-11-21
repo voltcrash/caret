@@ -85,9 +85,17 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getLastEventLog: () => [],
   getCurrentQuote: () => null,
   getResultVisible: () => true,
-  getKoreanStatus: () => false,
   isTestInvalid: () => state.testInvalid,
 }));
+vi.mock(
+  "../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/composition")
+    >()),
+    getKoreanStatus: () => false,
+  }),
+);
 vi.mock("../../src/ts/engine/analysis.client", () => ({
   getAccuracy: () => state.accuracy,
   getRawHistory: () => [],

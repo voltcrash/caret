@@ -26,13 +26,13 @@ import { isAuthenticated } from "#shared/states/core.ts";
 import {
   setIsDirectionReversed,
   setIsLanguageRightToLeft,
-  setKoreanStatus,
   getCurrentQuote,
   resetActiveWordIndex,
   setWordsHaveNewline,
   setWordsHaveNumbers,
   setWordsHaveTab,
 } from "#shared/states/test.ts";
+import { setKoreanStatus } from "#features/typing/state/composition.ts";
 
 import * as TestWords from "./test/words";
 

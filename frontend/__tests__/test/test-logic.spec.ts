@@ -82,7 +82,6 @@ vi.mock("../../src/ts/states/test", async () => ({
   getRestartCount: () => 0,
   pushIncompleteTest: mocks.incomplete,
   resetIncompleteTests: vi.fn(),
-  setKoreanStatus: mocks.korean,
   setLastEventLog: vi.fn(),
   setIsPaceRepeat: vi.fn(),
   setIsTestInvalid: vi.fn(),
@@ -95,6 +94,15 @@ vi.mock("../../src/ts/states/test", async () => ({
   setIsDirectionReversed: vi.fn(),
   setIsLanguageRightToLeft: vi.fn(),
 }));
+vi.mock(
+  "../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/composition")
+    >()),
+    setKoreanStatus: mocks.korean,
+  }),
+);
 vi.mock("../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
   isAuthenticated: () => mocks.user !== null,
