@@ -1285,7 +1285,7 @@ impl Session {
             }
         }
         let origin = self.origin();
-        let events = self.recorder.since(before);
+        let events = self.recorder.since(before, origin);
         Ok(Update {
             state: self.state(),
             input_display_value: self.clear_input_display.then(Text::default),
@@ -1728,8 +1728,8 @@ impl Session {
             false,
         );
         if sentinel_removed && !unindent && !input.is_empty() {
-            if let Some(event) = self.recorder.last_mut() {
-                event.data["clearedNextWord"] = json!(true);
+            if let Some(data) = self.recorder.last_data_mut() {
+                data["clearedNextWord"] = json!(true);
             }
             if let Some(input) = self.input.get_mut(self.index + 1) {
                 input.0.clear();

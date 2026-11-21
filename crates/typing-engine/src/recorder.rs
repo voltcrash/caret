@@ -79,9 +79,8 @@ impl Recorder {
             })
     }
 
-    /// Wire events recorded after the first `count`, timed from the current origin.
-    pub(crate) fn since(&self, count: usize) -> Vec<Event> {
-        let origin = self.origin();
+    /// Wire events recorded after the first `count`, timed from `origin`.
+    pub(crate) fn since(&self, count: usize, origin: f64) -> Vec<Event> {
         self.events
             .get(count..)
             .unwrap_or_default()
@@ -136,8 +135,9 @@ impl Recorder {
         &self.events
     }
 
-    pub(crate) fn last_mut(&mut self) -> Option<&mut Recorded> {
-        self.events.last_mut()
+    /// The latest event's data; its kind and time stay fixed for ordering.
+    pub(crate) fn last_data_mut(&mut self) -> Option<&mut Value> {
+        self.events.last_mut().map(|event| &mut event.data)
     }
 
     /// Whether an event arrived out of order since the last [`Self::clear_reordered`].
@@ -261,7 +261,7 @@ mod tests {
                 ("input".into(), 2.0),
             ]
         );
-        assert_eq!(recorder.since(3).len(), 1);
+        assert_eq!(recorder.since(3, recorder.origin()).len(), 1);
     }
 
     #[test]
