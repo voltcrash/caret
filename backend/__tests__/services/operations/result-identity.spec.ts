@@ -25,12 +25,11 @@ describe("result submission identity", () => {
     );
   });
 
-  it("lists the stable hash first, then legacy payload hashes", () => {
+  it("lists the stable hash first, then server-computed legacy hashes", () => {
     const result = completedEvent({ uid: "actor", offline: true });
     const { hash: _hash, ...payload } = result;
     expect(storedSubmissionHashes(result, "actor")).toEqual([
       submissionHash(result, "actor"),
-      result.hash,
       objectHash({ ...payload, offline: false }),
       objectHash(payload),
     ]);

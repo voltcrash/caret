@@ -19,9 +19,10 @@ export function submissionHash(result: CompletedEvent, uid: string): string {
 }
 
 /**
- * Every hash a saved copy of this submission may be stored under, stable
- * first. Retained queues may retry results saved before stable hashes were
- * deployed; those stored the client's online or offline payload hash.
+ * Every server-computed hash a saved copy of this submission may be stored
+ * under, stable first. Retained queues may retry results saved before stable
+ * hashes were deployed; those stored the online or offline payload hash.
+ * Excludes the client-supplied hash: callers must verify it before trusting it.
  */
 export function storedSubmissionHashes(
   result: CompletedEvent,
@@ -30,7 +31,6 @@ export function storedSubmissionHashes(
   const payload = hashedPayload(result, uid);
   return [
     submissionHash(result, uid),
-    result.hash,
     objectHash({ ...payload, offline: false }),
     objectHash({ ...payload, offline: true }),
   ];

@@ -110,8 +110,8 @@ export async function validateSubmission(
   }
 
   // Retained queues may retry results saved under legacy hashes; match those
-  // too, before progression.
-  if (await ResultDAL.hasSubmissionHash(uid, storedHashes)) {
+  // too, before progression. The client hash passed the check above.
+  if (await ResultDAL.hasSubmissionHash(uid, [...storedHashes, resulthash])) {
     const status = ResultStatusCodes.DUPLICATE_RESULT;
     throw new ApiError(status.code, "Duplicate result");
   }

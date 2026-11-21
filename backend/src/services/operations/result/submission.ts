@@ -134,7 +134,7 @@ async function addResultAtomic(
   input: OperationInput<undefined, AddResultRequest>,
 ): Promise<AddResultResponse | ApiError> {
   if (input.body.acknowledgeDuplicate) {
-    // Match every hash validation rejects as a duplicate, legacy included.
+    // Server-computed hashes only: the client hash is not verified yet.
     const saved = await getBySubmissionHash(
       context.actor.uid,
       storedSubmissionHashes(input.body.result, context.actor.uid),
