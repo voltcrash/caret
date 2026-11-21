@@ -62,12 +62,20 @@ vi.mock("../../../src/ts/states/test", async () => ({
   setLastEventLog: (log: EventLog) => {
     mocks.lastEventLog = log;
   },
-  setLastResult: vi.fn(),
   setLastSignedOutResult: vi.fn(),
   setWordsHaveNewline: vi.fn(),
   setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
 }));
+vi.mock(
+  "../../../src/features/typing/state/last-result",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/last-result")
+    >()),
+    setLastResult: vi.fn(),
+  }),
+);
 vi.mock(
   "../../../src/features/typing/state/run-flags",
   async (importOriginal) => ({

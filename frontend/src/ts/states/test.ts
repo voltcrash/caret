@@ -57,10 +57,6 @@ export const [outOfFocusMaxHeight, setOutOfFocusMaxHeight] = createAppSignal<
 >(undefined);
 
 export const [isLongTest, setIsLongTest] = createAppSignal(false);
-export const [getLastResult, setLastResult] = createAppSignal<Omit<
-  CompletedEvent,
-  "hash" | "uid"
-> | null>(null);
 
 export const [getCurrentQuote, setCurrentQuote] =
   createAppSignal<QuoteWithTextSplit | null>(null);

@@ -15,9 +15,9 @@ import * as ChallengeContoller from "../challenge-controller";
 
 import {
   setLastEventLog,
-  setLastResult,
   setLastSignedOutResult,
 } from "#shared/states/test.ts";
+import { setLastResult } from "#features/typing/state/last-result.ts";
 import { setIsTestInvalid } from "#features/typing/state/run-flags.ts";
 import { setIsRepeated } from "#features/typing/state/repeat.ts";
 import {
