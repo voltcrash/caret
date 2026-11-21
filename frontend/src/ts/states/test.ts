@@ -7,7 +7,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { EventLog } from "@caret/web-shared/events/types";
 
 import type { Challenge } from "@caret/challenges";
-import { CompletedEvent, IncompleteTest } from "@caret/schemas/results";
+import { CompletedEvent } from "@caret/schemas/results";
 
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
@@ -69,17 +69,6 @@ export const [getLastResult, setLastResult] = createAppSignal<Omit<
   CompletedEvent,
   "hash" | "uid"
 > | null>(null);
-export const [
-  getIncompleteTests,
-  { push: pushIncompleteTest, reset: resetIncompleteTests },
-] = createAppSignalWithSetters<IncompleteTest[]>([])({
-  push: (set, val: IncompleteTest) => set((arr) => [...arr, val]),
-  reset: (set) => set([]),
-});
-export const getRestartCount = createAppMemo(() => getIncompleteTests().length);
-export const getIncompleteSeconds = createAppMemo(() =>
-  getIncompleteTests().reduce((sum, test) => sum + test.seconds, 0),
-);
 
 export const [isRepeated, setIsRepeated] = createAppSignal(false);
 export const [isPaceRepeat, setIsPaceRepeat] = createAppSignal(false);

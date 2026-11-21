@@ -65,11 +65,6 @@ vi.mock("../../../src/ts/states/test", async () => ({
   resetActiveWordIndex: vi.fn(),
   getBailedOut: () => mocks.bailedOut,
   isPaceRepeat: () => false,
-  getIncompleteSeconds: () => 0,
-  getIncompleteTests: () => [],
-  getRestartCount: () => 0,
-  pushIncompleteTest: mocks.incomplete,
-  resetIncompleteTests: vi.fn(),
   setLastEventLog: (log: EventLog) => {
     mocks.lastEventLog = log;
   },
@@ -84,6 +79,19 @@ vi.mock("../../../src/ts/states/test", async () => ({
   setIsDirectionReversed: vi.fn(),
   setIsLanguageRightToLeft: vi.fn(),
 }));
+vi.mock(
+  "../../../src/features/typing/state/incomplete-tests",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/incomplete-tests")
+    >()),
+    getIncompleteTests: () => [],
+    pushIncompleteTest: mocks.incomplete,
+    resetIncompleteTests: vi.fn(),
+    getRestartCount: () => 0,
+    getIncompleteSeconds: () => 0,
+  }),
+);
 vi.mock(
   "../../../src/features/typing/state/live-stats",
   async (importOriginal) => ({

@@ -15,13 +15,15 @@ import * as ChallengeContoller from "../challenge-controller";
 
 import {
   setLastEventLog,
-  pushIncompleteTest,
-  resetIncompleteTests,
   setIsRepeated,
   setIsTestInvalid,
   setLastResult,
   setLastSignedOutResult,
 } from "#shared/states/test.ts";
+import {
+  pushIncompleteTest,
+  resetIncompleteTests,
+} from "#features/typing/state/incomplete-tests.ts";
 
 import * as AnalyticsController from "#shared/controllers/analytics-controller.ts";
 

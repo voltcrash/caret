@@ -5,11 +5,13 @@ import { getCustomTextIndicator } from "#shared/states/core.ts";
 import {
   getBailedOut,
   getCurrentQuote,
+  isRepeated,
+} from "#shared/states/test.ts";
+import {
   getIncompleteSeconds,
   getIncompleteTests,
   getRestartCount,
-  isRepeated,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/incomplete-tests.ts";
 import { buildEventLog, getTestSession } from "../events/data";
 import * as CustomText from "../content/custom-text";
 import { words } from "../test/words";

@@ -5,11 +5,8 @@ import { setTypingReady } from "#app/startup.ts";
 import { setFocusCursorHidden } from "#shared/states/app.ts";
 import { hideLoaderBar } from "#shared/states/loader-bar.ts";
 import { resetModifierState } from "../state/modifiers";
-import {
-  resetIncompleteTests,
-  setFocus,
-  setTestFocusState,
-} from "#shared/states/test.ts";
+import { setFocus, setTestFocusState } from "#shared/states/test.ts";
+import { resetIncompleteTests } from "#features/typing/state/incomplete-tests.ts";
 import { setCompositionText } from "#features/typing/state/composition.ts";
 import * as Composition from "#shared/states/composition.ts";
 import {
