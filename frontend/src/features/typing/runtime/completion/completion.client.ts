@@ -15,10 +15,10 @@ import * as ChallengeContoller from "../challenge-controller";
 
 import {
   setLastEventLog,
-  setIsTestInvalid,
   setLastResult,
   setLastSignedOutResult,
 } from "#shared/states/test.ts";
+import { setIsTestInvalid } from "#features/typing/state/run-flags.ts";
 import { setIsRepeated } from "#features/typing/state/repeat.ts";
 import {
   pushIncompleteTest,

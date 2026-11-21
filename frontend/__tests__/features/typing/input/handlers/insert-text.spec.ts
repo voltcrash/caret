@@ -96,8 +96,16 @@ vi.mock("../../../../../src/ts/states/test", () => ({
   isTestRestarting: () => false,
   wordsHaveNewline: () => false,
   getCurrentQuote: () => null,
-  getBailedOut: () => false,
 }));
+vi.mock(
+  "../../../../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/run-flags")
+    >()),
+    getBailedOut: () => false,
+  }),
+);
 vi.mock(
   "../../../../../src/features/typing/state/active-word",
   async (importOriginal) => ({

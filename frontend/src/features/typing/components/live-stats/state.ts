@@ -6,12 +6,12 @@ import Format from "#shared/singletons/format.ts";
 import * as CustomText from "../../runtime/content/custom-text";
 import * as TestWords from "../../runtime/test/words";
 import {
-  getBailedOut,
   getCurrentQuote,
   getFocus,
   isResultCalculating,
   isTestActive,
 } from "#shared/states/test.ts";
+import { getBailedOut } from "#features/typing/state/run-flags.ts";
 import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { currentLiveStats } from "#features/typing/state/live-stats.ts";
 

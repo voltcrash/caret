@@ -69,16 +69,24 @@ vi.mock("../../src/ts/states/test", async () => ({
   ...(await import("../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
   getCurrentQuote: () => mocks.quote,
-  getBailedOut: () => false,
   setLastEventLog: vi.fn(),
-  setIsTestInvalid: vi.fn(),
   setLastResult: vi.fn(),
-  setBailedOut: vi.fn(),
   setLastSignedOutResult: mocks.signedOut,
   setWordsHaveNewline: vi.fn(),
   setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
 }));
+vi.mock(
+  "../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/run-flags")
+    >()),
+    getBailedOut: () => false,
+    setBailedOut: vi.fn(),
+    setIsTestInvalid: vi.fn(),
+  }),
+);
 vi.mock(
   "../../src/features/typing/state/direction",
   async (importOriginal) => ({

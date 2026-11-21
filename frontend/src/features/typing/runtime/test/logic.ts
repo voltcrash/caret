@@ -27,10 +27,12 @@ import {
 import {
   isTestRestarting,
   isTestActive,
-  setIsTestInvalid,
   isResultCalculating,
-  setBailedOut,
 } from "#shared/states/test.ts";
+import {
+  setIsTestInvalid,
+  setBailedOut,
+} from "#features/typing/state/run-flags.ts";
 import {
   isPaceRepeat,
   setIsPaceRepeat,

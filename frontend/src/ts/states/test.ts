@@ -22,8 +22,6 @@ export const [wordsHaveNewline, setWordsHaveNewline] = createAppSignal(false);
 export const [wordsHaveTab, setWordsHaveTab] = createAppSignal(false);
 export const [wordsHaveNumbers, setWordsHaveNumbers] = createAppSignal(false);
 
-// Set when the user bails out of a test early; reset by TestLogic.restart().
-export const [getBailedOut, setBailedOut] = createAppSignal(false);
 export const [getFocus, setFocus] = createAppSignal(false);
 // Words blur, composition display and OutOfFocusWarning share delayed input focus.
 const focusTimeouts = createAppOwned(() => {
@@ -58,7 +56,6 @@ export const [outOfFocusMaxHeight, setOutOfFocusMaxHeight] = createAppSignal<
   number | undefined
 >(undefined);
 
-export const [isTestInvalid, setIsTestInvalid] = createAppSignal(false);
 export const [isLongTest, setIsLongTest] = createAppSignal(false);
 export const [getLastResult, setLastResult] = createAppSignal<Omit<
   CompletedEvent,

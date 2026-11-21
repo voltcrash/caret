@@ -85,8 +85,16 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getLastEventLog: () => [],
   getCurrentQuote: () => null,
   getResultVisible: () => true,
-  isTestInvalid: () => state.testInvalid,
 }));
+vi.mock(
+  "../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/run-flags")
+    >()),
+    isTestInvalid: () => state.testInvalid,
+  }),
+);
 vi.mock(
   "../../src/features/typing/state/composition",
   async (importOriginal) => ({

@@ -61,7 +61,8 @@ import { canQuickRestart as canQuickRestartFn } from "../quick-restart";
 import { blurInputElement } from "#shared/input/input-element.ts";
 import * as ConnectionState from "#shared/states/connection.ts";
 
-import { getCurrentQuote, isTestInvalid } from "#shared/states/test.ts";
+import { getCurrentQuote } from "#shared/states/test.ts";
+import { isTestInvalid } from "#features/typing/state/run-flags.ts";
 
 import {
   getResultChart,

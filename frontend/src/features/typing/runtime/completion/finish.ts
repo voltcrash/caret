@@ -4,7 +4,8 @@ import { animateAsync } from "#shared/anim.ts";
 import { updateClassNames } from "#shared/utils/cn.ts";
 import { applyReducedMotion } from "#shared/utils/misc.ts";
 import { getTypingTestElement } from "#shared/states/test-dom.ts";
-import { getBailedOut, isTestActive } from "#shared/states/test.ts";
+import { isTestActive } from "#shared/states/test.ts";
+import { getBailedOut } from "#features/typing/state/run-flags.ts";
 import {
   getTestSession,
   forceReleaseAllKeys,
