@@ -91,7 +91,6 @@ vi.mock("../../../../../src/ts/states/test", () => ({
   setIsTestRestarting: vi.fn(),
   setTestInitError: vi.fn(),
   setTestActive: vi.fn(),
-  getActiveWordIndex: () => mockState.activeWordIndex,
   isTestActive: () => true,
   isResultCalculating: () => false,
   isTestRestarting: () => false,
@@ -99,6 +98,15 @@ vi.mock("../../../../../src/ts/states/test", () => ({
   getCurrentQuote: () => null,
   getBailedOut: () => false,
 }));
+vi.mock(
+  "../../../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => mockState.activeWordIndex,
+  }),
+);
 vi.mock(
   "../../../../../src/features/typing/state/composition",
   async (importOriginal) => ({

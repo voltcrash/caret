@@ -59,8 +59,6 @@ vi.mock("../../../src/ts/states/test", async () => ({
   ...(await import("../../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
   getCurrentQuote: () => null,
-  getActiveWordIndex: () => mocks.wordIndex,
-  resetActiveWordIndex: vi.fn(),
   getBailedOut: () => mocks.bailedOut,
   setLastEventLog: (log: EventLog) => {
     mocks.lastEventLog = log;
@@ -75,6 +73,16 @@ vi.mock("../../../src/ts/states/test", async () => ({
   setIsDirectionReversed: vi.fn(),
   setIsLanguageRightToLeft: vi.fn(),
 }));
+vi.mock(
+  "../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => mocks.wordIndex,
+    resetActiveWordIndex: vi.fn(),
+  }),
+);
 vi.mock(
   "../../../src/features/typing/state/repeat",
   async (importOriginal) => ({

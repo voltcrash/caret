@@ -12,8 +12,8 @@ import {
   isLanguageRightToLeft,
   setIsLanguageRightToLeft,
   setIsDirectionReversed,
-  resetActiveWordIndex,
 } from "../../src/ts/states/test";
+import { resetActiveWordIndex } from "../../src/features/typing/state/active-word";
 
 function createLetters(count = 3): HTMLElement[] {
   return Array.from({ length: count }, (_, index) => {

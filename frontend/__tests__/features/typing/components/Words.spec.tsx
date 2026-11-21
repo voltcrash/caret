@@ -34,7 +34,6 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../../../../src/ts/states/test", () => ({
-  getActiveWordIndex: () => mocks.activeIndex,
   isDirectionReversed: () => mocks.reversed,
   isLanguageRightToLeft: () => mocks.rtl,
   getResultVisible: () => mocks.resultVisible,
@@ -44,6 +43,15 @@ vi.mock("../../../../src/ts/states/test", () => ({
   setTestFocusState: vi.fn(),
   setTestInitError: vi.fn(),
 }));
+vi.mock(
+  "../../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => mocks.activeIndex,
+  }),
+);
 vi.mock(
   "../../../../src/features/typing/state/live-stats",
   async (importOriginal) => ({

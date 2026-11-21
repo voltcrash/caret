@@ -4,7 +4,7 @@ import { outerHeight } from "./dimensions";
 import { getWordElement, getActiveWordElement } from "./elements";
 import { animateAsync } from "#shared/anim.ts";
 import { peekConfig } from "#shared/config/store.ts";
-import { getActiveWordIndex } from "#shared/states/test.ts";
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
 import * as Caret from "../../runtime/caret";
 import * as PaceCaret from "../../runtime/pace-caret";

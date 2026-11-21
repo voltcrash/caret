@@ -1,6 +1,6 @@
 import { createAppOwned } from "#app/application.ts";
 import { appObject } from "#app/state.ts";
-import { getActiveWordIndex } from "#shared/states/test.ts";
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 
 type CommitChar = " " | "\n" | "";
 

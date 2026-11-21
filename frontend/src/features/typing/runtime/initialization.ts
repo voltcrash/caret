@@ -27,11 +27,11 @@ import {
   setIsDirectionReversed,
   setIsLanguageRightToLeft,
   getCurrentQuote,
-  resetActiveWordIndex,
   setWordsHaveNewline,
   setWordsHaveNumbers,
   setWordsHaveTab,
 } from "#shared/states/test.ts";
+import { resetActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { setKoreanStatus } from "#features/typing/state/composition.ts";
 
 import * as TestWords from "./test/words";

@@ -30,10 +30,18 @@ vi.mock("../../src/ts/controllers/sound-controller", () => ({}));
 const testState = vi.hoisted(() => ({ activeWordIndex: 0 }));
 vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  getActiveWordIndex: () => testState.activeWordIndex,
   getResultVisible: () => true,
   getLastEventLog: () => [],
 }));
+vi.mock(
+  "../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => testState.activeWordIndex,
+  }),
+);
 
 import { setTestElements } from "../../src/ts/states/test-dom";
 import { __testing } from "../../src/ts/config/testing";

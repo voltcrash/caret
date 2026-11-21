@@ -6,13 +6,13 @@ import Format from "#shared/singletons/format.ts";
 import * as CustomText from "../../runtime/content/custom-text";
 import * as TestWords from "../../runtime/test/words";
 import {
-  getActiveWordIndex,
   getBailedOut,
   getCurrentQuote,
   getFocus,
   isResultCalculating,
   isTestActive,
 } from "#shared/states/test.ts";
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { currentLiveStats } from "#features/typing/state/live-stats.ts";
 
 function getCustomLimit(): LiveStats.CustomLimit {

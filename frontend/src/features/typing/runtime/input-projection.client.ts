@@ -13,13 +13,15 @@ import * as Composition from "#shared/states/composition.ts";
 import * as SlowTimer from "../state/slow-timer";
 import { peekConfig } from "#shared/config/store.ts";
 import {
-  getActiveWordIndex,
-  setActiveWordIndex,
   setWordsHaveTab,
   setWordsHaveNewline,
   isTestActive,
   isTestRestarting,
 } from "#shared/states/test.ts";
+import {
+  getActiveWordIndex,
+  setActiveWordIndex,
+} from "#features/typing/state/active-word.ts";
 import { setInputElementValue } from "#shared/input/input-element.ts";
 import {
   setAwaitingNextWord,

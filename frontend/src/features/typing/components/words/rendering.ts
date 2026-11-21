@@ -16,7 +16,7 @@ import {
 } from "./elements";
 import { peekConfig } from "#shared/config/store.ts";
 import * as SlowTimer from "../../state/slow-timer";
-import { getActiveWordIndex } from "#shared/states/test.ts";
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
 import * as CustomText from "../../runtime/content/custom-text";
 import { findSingleActiveFunboxWithFunction } from "../../runtime/funbox/list";

@@ -43,11 +43,19 @@ vi.mock("../../../src/ts/states/test", () => ({
   setTestActive: vi.fn(),
   isTestActive: () => mocks.active,
   getResultVisible: () => mocks.resultVisible,
-  getActiveWordIndex: () => mocks.wordIndex,
   isLanguageRightToLeft: () => false,
   isDirectionReversed: () => false,
   getCurrentQuote: () => null,
 }));
+vi.mock(
+  "../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => mocks.wordIndex,
+  }),
+);
 vi.mock(
   "../../../src/features/typing/state/repeat",
   async (importOriginal) => ({
