@@ -17,6 +17,7 @@ pub mod practice;
 pub mod punctuation;
 pub mod quotes;
 pub mod random;
+mod recorder;
 pub mod replay;
 pub mod restart;
 pub mod results;

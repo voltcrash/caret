@@ -1,5 +1,7 @@
 use crate::{
-    EVENT_LOG_VERSION, Text, round2,
+    EVENT_LOG_VERSION, Text,
+    recorder::{Recorded, rank},
+    round2,
     text::{delete_word, is_space, normalize},
 };
 use serde::{Deserialize, Serialize};
@@ -439,13 +441,6 @@ pub struct LiveMetrics {
     pub timer_start_ms: Option<f64>,
     pub time_limit_seconds: Option<f64>,
     pub ms_since_last_input: Option<f64>,
-}
-
-#[derive(Clone)]
-struct Recorded {
-    kind: String,
-    now: f64,
-    data: Value,
 }
 
 struct Checkpoint {
@@ -939,7 +934,7 @@ impl Session {
         crate::funboxes::has_property(&self.config.funbox, "nospace")
     }
     fn record(&mut self, kind: &str, now: f64, data: Value) {
-        let order = (round2(now), Self::rank(kind));
+        let order = (round2(now), rank(kind));
         if let Some(previous) = self.last_event_order {
             let comparison = order
                 .0
@@ -1848,16 +1843,6 @@ impl Session {
         }
     }
 
-    fn rank(kind: &str) -> u8 {
-        match kind {
-            "keyup" => 0,
-            "keydown" => 1,
-            "input" => 2,
-            "composition" => 3,
-            _ => 4,
-        }
-    }
-
     fn observe(
         &mut self,
         kind: &str,
@@ -2043,7 +2028,7 @@ impl Session {
         self.last_event_order = self
             .events
             .iter()
-            .map(|event| (event.now, Self::rank(&event.kind)))
+            .map(|event| (event.now, rank(&event.kind)))
             .max_by(|a, b| a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)));
         self.live = crate::live::Live::default();
         for event in &self.events {
@@ -2081,7 +2066,7 @@ impl Session {
         events.sort_by(|a, b| {
             a.now
                 .total_cmp(&b.now)
-                .then(Self::rank(&a.kind).cmp(&Self::rank(&b.kind)))
+                .then(rank(&a.kind).cmp(&rank(&b.kind)))
         });
         let mode2 = match self.config.mode.as_str() {
             "words" => self.config.words.to_string(),
