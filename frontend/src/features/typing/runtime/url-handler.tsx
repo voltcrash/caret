@@ -21,6 +21,7 @@ import { tryCatchSync } from "@caret/util/trycatch";
 import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
+import { setSelectedQuoteId } from "#features/typing/state/quote-selection.ts";
 import { setConfig } from "#shared/config/setters.ts";
 import { peekConfig } from "#shared/config/store.ts";
 import {
@@ -28,7 +29,6 @@ import {
   showNoticeNotification,
   showSuccessNotification,
 } from "#shared/states/notifications.ts";
-import { setSelectedQuoteId } from "#shared/states/test.ts";
 import * as Misc from "#shared/utils/misc.ts";
 
 import * as ChallengeController from "./challenge-controller";

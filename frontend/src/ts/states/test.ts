@@ -1,9 +1,7 @@
 import { createAppMemo, createAppOwned } from "../../app/application";
-import { createAppSignal, appSignal } from "../../app/state";
+import { createAppSignal } from "../../app/state";
 import { onCleanup } from "solid-js";
-import { z } from "zod";
 import { getConfig } from "../config/store";
-import { useLocalStorage } from "../hooks/useLocalStorage";
 import { EventLog } from "@caret/web-shared/events/types";
 
 import type { Challenge } from "@caret/challenges";
@@ -75,14 +73,6 @@ export const [getCurrentQuote, setCurrentQuote] =
 
 export const [getLastSignedOutResult, setLastSignedOutResult] =
   createAppSignal<CompletedEvent | null>(null);
-
-export const [getSelectedQuoteId, setSelectedQuoteId] = appSignal(() =>
-  useLocalStorage({
-    key: "selectedQuoteId",
-    schema: z.number().int().min(1),
-    fallback: 1,
-  }),
-);
 
 export const [getLastEventLog, setLastEventLog] =
   createAppSignal<EventLog | null>(null);

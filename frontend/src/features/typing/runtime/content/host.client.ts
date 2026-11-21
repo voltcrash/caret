@@ -27,11 +27,8 @@ import { QuoteDataSchema } from "@caret/schemas/quotes";
 import { peekConfig } from "#shared/config/store.ts";
 import { cachedFetchJson, getLanguage } from "#shared/utils/json-data.ts";
 import { removeLanguageSize } from "#shared/utils/strings.ts";
-import {
-  getSelectedQuoteId,
-  setCurrentQuote,
-  getCurrentQuote,
-} from "#shared/states/test.ts";
+import { setCurrentQuote, getCurrentQuote } from "#shared/states/test.ts";
+import { getSelectedQuoteId } from "#features/typing/state/quote-selection.ts";
 import { isRepeated } from "#features/typing/state/repeat.ts";
 import { showNoticeNotification } from "#shared/states/notifications.ts";
 import { getSnapshot } from "#shared/db.ts";
