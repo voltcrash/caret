@@ -1,10 +1,10 @@
 import { isTypingRouteActive } from "../../scope";
 import { peekConfig } from "#shared/config/store.ts";
+import { getResultVisible } from "#shared/states/test.ts";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
-  getResultVisible,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/direction.ts";
 import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
 import * as TestWords from "../../runtime/test/words";
 import * as Misc from "#shared/utils/misc.ts";

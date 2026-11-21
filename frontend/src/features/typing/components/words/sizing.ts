@@ -5,12 +5,14 @@ import { peekConfig } from "#shared/config/store.ts";
 import { getInputElement } from "#shared/input/input-element.ts";
 import { setWordsWrapperVisible } from "#shared/states/funbox.ts";
 import {
-  isDirectionReversed,
-  isLanguageRightToLeft,
   setOutOfFocusMaxHeight,
   wordsHaveNewline,
   getResultVisible,
 } from "#shared/states/test.ts";
+import {
+  isDirectionReversed,
+  isLanguageRightToLeft,
+} from "#features/typing/state/direction.ts";
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,

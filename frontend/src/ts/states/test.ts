@@ -84,9 +84,5 @@ export const [getSelectedQuoteId, setSelectedQuoteId] = appSignal(() =>
   }),
 );
 
-export const [isLanguageRightToLeft, setIsLanguageRightToLeft] =
-  createAppSignal(false);
-export const [isDirectionReversed, setIsDirectionReversed] =
-  createAppSignal(false);
 export const [getLastEventLog, setLastEventLog] =
   createAppSignal<EventLog | null>(null);

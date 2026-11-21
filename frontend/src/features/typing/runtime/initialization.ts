@@ -24,13 +24,15 @@ import * as Funbox from "./funbox/funbox";
 
 import { isAuthenticated } from "#shared/states/core.ts";
 import {
-  setIsDirectionReversed,
-  setIsLanguageRightToLeft,
   getCurrentQuote,
   setWordsHaveNewline,
   setWordsHaveNumbers,
   setWordsHaveTab,
 } from "#shared/states/test.ts";
+import {
+  setIsDirectionReversed,
+  setIsLanguageRightToLeft,
+} from "#features/typing/state/direction.ts";
 import { resetActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { setKoreanStatus } from "#features/typing/state/composition.ts";
 

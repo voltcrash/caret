@@ -12,7 +12,7 @@ import {
   isLanguageRightToLeft,
   setIsLanguageRightToLeft,
   setIsDirectionReversed,
-} from "../../src/ts/states/test";
+} from "../../src/features/typing/state/direction";
 import { resetActiveWordIndex } from "../../src/features/typing/state/active-word";
 
 function createLetters(count = 3): HTMLElement[] {

@@ -70,9 +70,17 @@ vi.mock("../../../src/ts/states/test", async () => ({
   setWordsHaveNewline: vi.fn(),
   setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
-  setIsDirectionReversed: vi.fn(),
-  setIsLanguageRightToLeft: vi.fn(),
 }));
+vi.mock(
+  "../../../src/features/typing/state/direction",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/direction")
+    >()),
+    setIsLanguageRightToLeft: vi.fn(),
+    setIsDirectionReversed: vi.fn(),
+  }),
+);
 vi.mock(
   "../../../src/features/typing/state/active-word",
   async (importOriginal) => ({

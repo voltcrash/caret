@@ -6,11 +6,11 @@ import { getActiveWordElement } from "./elements";
 import { hasClassName } from "#shared/utils/cn.ts";
 import { animate } from "animejs";
 import { peekConfig } from "#shared/config/store.ts";
+import { getResultVisible } from "#shared/states/test.ts";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
-  getResultVisible,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/direction.ts";
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,

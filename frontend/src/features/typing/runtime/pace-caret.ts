@@ -14,12 +14,14 @@ import {
   getPaceCaretElement,
 } from "#shared/states/test-dom.ts";
 import {
-  isDirectionReversed,
-  isLanguageRightToLeft,
   getCurrentQuote,
   getResultVisible,
   isTestActive,
 } from "#shared/states/test.ts";
+import {
+  isDirectionReversed,
+  isLanguageRightToLeft,
+} from "#features/typing/state/direction.ts";
 import {
   isPaceRepeat,
   setPaceCaretWpm,

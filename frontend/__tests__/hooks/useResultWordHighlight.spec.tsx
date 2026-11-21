@@ -9,9 +9,16 @@ import {
   vi,
 } from "vite-plus/test";
 
-vi.mock("../../src/ts/states/test", () => ({
-  isLanguageRightToLeft: () => false,
-}));
+vi.mock("../../src/ts/states/test", () => ({}));
+vi.mock(
+  "../../src/features/typing/state/direction",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/direction")
+    >()),
+    isLanguageRightToLeft: () => false,
+  }),
+);
 
 import { useResultWordHighlight } from "../../src/features/typing/components/hooks/useResultWordHighlight";
 import {
