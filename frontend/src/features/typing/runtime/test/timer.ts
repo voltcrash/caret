@@ -18,7 +18,7 @@ import * as SoundController from "#shared/controllers/sound-controller.ts";
 import { clearLowFpsMode } from "#shared/anim.ts";
 import { createTimerScheduler } from "./timer-scheduler";
 import { getCurrentInput, getTestSession } from "../events/data";
-import { setCurrentLiveStats } from "#shared/states/test.ts";
+import { setCurrentLiveStats } from "#features/typing/state/live-stats.ts";
 function createTiming(): {
   disableSlowTimerFail: typeof disableSlowTimerFail;
   enableTimerDebug: typeof enableTimerDebug;

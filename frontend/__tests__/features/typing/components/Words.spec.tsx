@@ -40,11 +40,19 @@ vi.mock("../../../../src/ts/states/test", () => ({
   getResultVisible: () => mocks.resultVisible,
   isTestActive: () => false,
   wordsHaveNewline: () => false,
-  setCurrentLiveStats: vi.fn(),
   setOutOfFocusMaxHeight: vi.fn(),
   setTestFocusState: vi.fn(),
   setTestInitError: vi.fn(),
 }));
+vi.mock(
+  "../../../../src/features/typing/state/live-stats",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/live-stats")
+    >()),
+    setCurrentLiveStats: vi.fn(),
+  }),
+);
 vi.mock(
   "../../../../src/features/typing/state/composition",
   async (importOriginal) => ({
@@ -143,13 +151,13 @@ import { createNewlineSpacers } from "../../../../src/features/typing/components
 import * as ui from "../../../../src/features/typing/runtime/test/ui";
 import { words } from "../../../../src/features/typing/runtime/test/words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
+import { setCurrentLiveStats } from "../../../../src/features/typing/state/live-stats";
 import {
   getWordsInputStyle,
   getWordsWrapperHeight,
 } from "../../../../src/features/typing/state/words-layout";
 import { peekConfig, setConfigStore } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
-import { setCurrentLiveStats } from "../../../../src/ts/states/test";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
 
 let element: HTMLDivElement;

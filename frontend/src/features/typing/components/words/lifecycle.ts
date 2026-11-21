@@ -20,11 +20,8 @@ import * as CompositionState from "#shared/states/composition.ts";
 import * as ConnectionState from "#shared/states/connection.ts";
 import { skipBreakdownEvent } from "#shared/states/header.ts";
 import { getResultElement } from "../../state/result";
-import {
-  getActiveWordIndex,
-  setCurrentLiveStats,
-  setTestFocusState,
-} from "#shared/states/test.ts";
+import { getActiveWordIndex, setTestFocusState } from "#shared/states/test.ts";
+import { setCurrentLiveStats } from "#features/typing/state/live-stats.ts";
 import { setCompositionText } from "#features/typing/state/composition.ts";
 import {
   getWordsElement as getWordsEl,

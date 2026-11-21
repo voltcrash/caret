@@ -1,5 +1,5 @@
 import { createAppMemo, createAppOwned } from "../../app/application";
-import { createAppStore, createAppSignal, appSignal } from "../../app/state";
+import { createAppSignal, appSignal } from "../../app/state";
 import { onCleanup } from "solid-js";
 import { z } from "zod";
 import { getConfig } from "../config/store";
@@ -106,20 +106,6 @@ export const [
   reset: (set) => set(0),
   fromEngine: (set, index: number) => set(index),
 });
-
-/**
- * Live test stats, rendered by the Solid live stat displays (the mini and text
- * variants and the progress bar). The test engine is still vanilla, so it pushes
- * plain numbers in here as it goes; everything shown on screen is derived below.
- * `undefined` means "no data yet" and is what the displays fall back to defaults on.
- */
-export const [currentLiveStats, setCurrentLiveStats] = createAppStore<{
-  wpm?: number;
-  acc?: number;
-  raw?: number;
-  burst?: number;
-  seconds?: number;
-}>({});
 
 export const [getSelectedQuoteId, setSelectedQuoteId] = appSignal(() =>
   useLocalStorage({

@@ -83,10 +83,18 @@ vi.mock("../../../src/ts/states/test", async () => ({
   setWordsHaveTab: vi.fn(),
   setIsDirectionReversed: vi.fn(),
   setIsLanguageRightToLeft: vi.fn(),
-  setCurrentLiveStats: (stats: Record<string, number | undefined>) => {
-    mocks.liveStats.push(stats);
-  },
 }));
+vi.mock(
+  "../../../src/features/typing/state/live-stats",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/live-stats")
+    >()),
+    setCurrentLiveStats: (stats: Record<string, number | undefined>) => {
+      mocks.liveStats.push(stats);
+    },
+  }),
+);
 vi.mock(
   "../../../src/features/typing/state/composition",
   async (importOriginal) => ({
