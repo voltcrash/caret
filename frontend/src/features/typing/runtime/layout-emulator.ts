@@ -3,7 +3,7 @@ import { appObject } from "#app/state.ts";
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
 import { getCharFromLayout } from "@caret/web-shared/layout-emulator";
 import { showErrorNotification } from "#shared/states/notifications.ts";
-import { waitForInputLayout } from "#shared/states/test.ts";
+import { waitForInputLayout } from "#features/typing/state/input-layout.ts";
 
 const altGr = appObject(createAppOwned(() => ({ pressed: false })));
 export async function getCharFromEvent(

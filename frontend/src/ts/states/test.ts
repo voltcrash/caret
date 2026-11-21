@@ -7,14 +7,10 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 import { EventLog } from "@caret/web-shared/events/types";
 
 import type { Challenge } from "@caret/challenges";
-import { LayoutObject } from "@caret/schemas/layouts";
 import { CompletedEvent, IncompleteTest } from "@caret/schemas/results";
 
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
-import { getLayout } from "../utils/json-data";
-import { mirrorLayoutKeys } from "../utils/key-converter";
-import { useResourceWithPromise } from "../hooks/useResourceWithPromise";
 import { clearTimeouts } from "../utils/misc";
 export {
   isTestActive,
@@ -126,37 +122,6 @@ export const [currentLiveStats, setCurrentLiveStats] = createAppStore<{
   burst?: number;
   seconds?: number;
 }>({});
-
-const getInputLayout = createAppMemo<{
-  layout: string;
-  isMirrored: boolean;
-}>(() => {
-  return {
-    layout: getConfig.layout === "default" ? "qwerty" : getConfig.layout,
-    isMirrored: getConfig.funbox.includes("layout_mirror"),
-  };
-});
-
-const inputLayout = createAppOwned(() =>
-  useResourceWithPromise(getInputLayout, async (layout) => {
-    const result = await getLayout(layout.layout);
-    if (layout.isMirrored) {
-      return mirrorLayoutKeys(result);
-    }
-    return result;
-  }),
-);
-
-const inputLayoutObject = (): LayoutObject | undefined => inputLayout()[0]();
-/** Resolves once the current input layout has loaded. */
-export async function waitForInputLayout(): Promise<LayoutObject> {
-  await inputLayout()[1].promise;
-  const result = inputLayoutObject();
-  if (result === undefined) {
-    throw new Error("Failed to load input layout");
-  }
-  return result;
-}
 
 export const [getSelectedQuoteId, setSelectedQuoteId] = appSignal(() =>
   useLocalStorage({
