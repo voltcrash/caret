@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
-vi.mock("../../src/ts/states/test", () => ({}));
 vi.mock(
   "../../src/features/typing/state/active-word",
   async (importOriginal) => ({
