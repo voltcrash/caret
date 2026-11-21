@@ -15,7 +15,6 @@ import * as ChallengeContoller from "../challenge-controller";
 
 import { setLastSignedOutResult } from "#shared/states/test.ts";
 import { setLastEventLog } from "#features/typing/state/event-log.ts";
-import { setLastResult } from "#features/typing/state/last-result.ts";
 import { setIsTestInvalid } from "#features/typing/state/run-flags.ts";
 import { setIsRepeated } from "#features/typing/state/repeat.ts";
 import {
@@ -158,7 +157,6 @@ export function createCompletion(
 
     once("lastResult", () => {
       setLastEventLog(eventLog);
-      setLastResult(structuredClone(completedEvent));
       setIsRepeated(repeated);
     });
 
