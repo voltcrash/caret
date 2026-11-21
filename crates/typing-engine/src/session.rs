@@ -1928,53 +1928,7 @@ impl Session {
         for (key, now) in self.pressed.clone() {
             let _ = self.observe("keyup", now + average, json!({"code":key,"estimated":true}));
         }
-        let start = self
-            .recorder
-            .events()
-            .iter()
-            .find(|e| e.kind == "timer" && e.data["event"] == "start")
-            .map(|e| e.now);
-        let end = self
-            .recorder
-            .events()
-            .iter()
-            .find(|e| e.kind == "timer" && e.data["event"] == "end")
-            .map(|e| e.now);
-        let last_pre = self
-            .recorder
-            .events()
-            .iter()
-            .enumerate()
-            .filter(|(_, e)| e.kind == "keydown" && start.is_some_and(|start| e.now < start))
-            .map(|(i, _)| i)
-            .next_back();
-        let post_codes: Vec<_> = self
-            .recorder
-            .events()
-            .iter()
-            .filter(|e| e.kind == "keydown" && end.is_some_and(|end| e.now > end))
-            .map(|e| e.data["code"].clone())
-            .collect();
-        let mut index = 0;
-        self.recorder.retain(|e| {
-            let current = index;
-            index += 1;
-            if let Some(start) = start
-                && e.now < start
-                && (e.kind == "keyup" || (e.kind == "keydown" && Some(current) != last_pre))
-            {
-                return false;
-            }
-            if let Some(end) = end
-                && e.now > end
-                && (e.kind == "input"
-                    || e.kind == "keydown"
-                    || (e.kind == "keyup" && post_codes.contains(&e.data["code"])))
-            {
-                return false;
-            }
-            true
-        });
+        self.recorder.trim_to_timer();
         self.live = crate::live::Live::default();
         for event in self.recorder.events() {
             self.live.record(

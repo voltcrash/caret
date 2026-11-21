@@ -155,8 +155,56 @@ impl Recorder {
         self.last_order = None;
     }
 
+    /// Drops key and input events outside the timer: releases and all but the
+    /// last press before the start; input, presses and their releases after the end.
+    pub(crate) fn trim_to_timer(&mut self) {
+        let start = self
+            .events
+            .iter()
+            .find(|e| e.kind == "timer" && e.data["event"] == "start")
+            .map(|e| e.now);
+        let end = self
+            .events
+            .iter()
+            .find(|e| e.kind == "timer" && e.data["event"] == "end")
+            .map(|e| e.now);
+        let last_pre = self
+            .events
+            .iter()
+            .enumerate()
+            .filter(|(_, e)| e.kind == "keydown" && start.is_some_and(|start| e.now < start))
+            .map(|(i, _)| i)
+            .next_back();
+        let post_codes: Vec<_> = self
+            .events
+            .iter()
+            .filter(|e| e.kind == "keydown" && end.is_some_and(|end| e.now > end))
+            .map(|e| e.data["code"].clone())
+            .collect();
+        let mut index = 0;
+        self.retain(|e| {
+            let current = index;
+            index += 1;
+            if let Some(start) = start
+                && e.now < start
+                && (e.kind == "keyup" || (e.kind == "keydown" && Some(current) != last_pre))
+            {
+                return false;
+            }
+            if let Some(end) = end
+                && e.now > end
+                && (e.kind == "input"
+                    || e.kind == "keydown"
+                    || (e.kind == "keyup" && post_codes.contains(&e.data["code"])))
+            {
+                return false;
+            }
+            true
+        });
+    }
+
     /// Keeps the events `keep` accepts, then orders later events after the latest survivor.
-    pub(crate) fn retain(&mut self, keep: impl FnMut(&Recorded) -> bool) {
+    fn retain(&mut self, keep: impl FnMut(&Recorded) -> bool) {
         self.events.retain(keep);
         self.last_order = self
             .events
