@@ -1,6 +1,6 @@
 use crate::{
     EVENT_LOG_VERSION, Text,
-    recorder::{Recorder, rank},
+    recorder::Recorder,
     round2,
     text::{delete_word, is_space, normalize},
 };
@@ -2015,12 +2015,6 @@ impl Session {
         self.recorder.origin()
     }
     pub fn log(&self) -> Value {
-        let mut events = self.recorder.events().to_vec();
-        events.sort_by(|a, b| {
-            a.now
-                .total_cmp(&b.now)
-                .then(rank(&a.kind).cmp(&rank(&b.kind)))
-        });
         let mode2 = match self.config.mode.as_str() {
             "words" => self.config.words.to_string(),
             "time" => self.config.time.to_string(),
@@ -2031,7 +2025,7 @@ impl Session {
             other => other.into(),
         };
         let korean = self.korean;
-        let mut log = json!({"version":EVENT_LOG_VERSION,"events":events.iter().map(|event|event.at(self.origin())).collect::<Vec<_>>(),
+        let mut log = json!({"version":EVENT_LOG_VERSION,"events":self.recorder.log_events(),
             "context":{"targetWords":self.words,"mode":self.config.mode,"mode2":mode2,"koreanStatus":korean,"bailedOut":self.bailed_out,"isFunboxWithNospacePropertyActive":self.nospace()}});
         if let Some(limit) = &self.custom_limit {
             log["context"]["customTextLimitMode"] = json!(limit.mode);

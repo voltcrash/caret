@@ -21,7 +21,7 @@ impl Recorded {
 }
 
 /// Sort rank among events sharing a timestamp: releases before presses before input.
-pub(crate) fn rank(kind: &str) -> u8 {
+fn rank(kind: &str) -> u8 {
     match kind {
         "keyup" => 0,
         "keydown" => 1,
@@ -87,6 +87,18 @@ impl Recorder {
             .iter()
             .map(|event| event.at(origin))
             .collect()
+    }
+
+    /// Every wire event in time order (ties by [`rank`]), timed from the origin.
+    pub(crate) fn log_events(&self) -> Vec<Event> {
+        let mut events = self.events.clone();
+        events.sort_by(|a, b| {
+            a.now
+                .total_cmp(&b.now)
+                .then(rank(&a.kind).cmp(&rank(&b.kind)))
+        });
+        let origin = self.origin();
+        events.iter().map(|event| event.at(origin)).collect()
     }
 
     pub(crate) fn events(&self) -> &[Recorded] {
