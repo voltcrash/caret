@@ -7,6 +7,7 @@ import {
   onMount,
 } from "solid-js";
 
+import { isLanguageRightToLeft } from "#features/typing/state/direction.ts";
 import { createEffectOn } from "#shared/hooks/effects.ts";
 import { getHighlightElementPositions } from "#shared/hooks/result-word-highlight/geometry.ts";
 import { measureWordLines } from "#shared/hooks/result-word-highlight/measurement.ts";
@@ -15,7 +16,6 @@ import {
   type HighlightPosition,
 } from "#shared/hooks/result-word-highlight/types.ts";
 import { ResultWordHighlight } from "#shared/hooks/result-word-highlight/View.tsx";
-import { isLanguageRightToLeft } from "#shared/states/test.ts";
 
 import { resultState, resultWordHighlightEvent } from "../../state/result";
 const TOGGLE_RESULT_WORDS_BUFFER = 250;

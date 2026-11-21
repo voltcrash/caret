@@ -4,7 +4,7 @@ import { afterEach, expect, it, vi } from "vite-plus/test";
 const state = vi.hoisted(() => ({
   setWarning: undefined as ((value: boolean) => void) | undefined,
 }));
-vi.mock("../../src/ts/states/test", async () => {
+vi.mock("../../src/features/typing/state/out-of-focus", async () => {
   const { createSignal } = await import("solid-js");
   const [showOutOfFocusWarning, setWarning] = createSignal(false);
   state.setWarning = setWarning;

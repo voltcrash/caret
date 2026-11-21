@@ -58,37 +58,108 @@ vi.mock("../../../src/ts/engine/owner.client", () => ({
 vi.mock("../../../src/ts/states/test", async () => ({
   ...(await import("../../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
-  isRepeated: () => false,
-  setIsRepeated: vi.fn(),
   getCurrentQuote: () => null,
-  getActiveWordIndex: () => mocks.wordIndex,
-  resetActiveWordIndex: vi.fn(),
-  getBailedOut: () => mocks.bailedOut,
-  getKoreanStatus: () => false,
-  isPaceRepeat: () => false,
-  getIncompleteSeconds: () => 0,
-  getIncompleteTests: () => [],
-  getRestartCount: () => 0,
-  pushIncompleteTest: mocks.incomplete,
-  resetIncompleteTests: vi.fn(),
-  setKoreanStatus: vi.fn(),
-  setLastEventLog: (log: EventLog) => {
-    mocks.lastEventLog = log;
-  },
-  setIsPaceRepeat: vi.fn(),
-  setIsTestInvalid: vi.fn(),
-  setLastResult: vi.fn(),
-  setBailedOut: vi.fn(),
   setLastSignedOutResult: vi.fn(),
   setWordsHaveNewline: vi.fn(),
-  setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
-  setIsDirectionReversed: vi.fn(),
-  setIsLanguageRightToLeft: vi.fn(),
-  setCurrentLiveStats: (stats: Record<string, number | undefined>) => {
-    mocks.liveStats.push(stats);
-  },
 }));
+vi.mock(
+  "../../../src/features/typing/state/words-content",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/words-content")
+    >()),
+    setWordsHaveNumbers: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/event-log",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/event-log")
+    >()),
+    setLastEventLog: (log: EventLog) => {
+      mocks.lastEventLog = log;
+    },
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/run-flags")
+    >()),
+    getBailedOut: () => mocks.bailedOut,
+    setBailedOut: vi.fn(),
+    setIsTestInvalid: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/direction",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/direction")
+    >()),
+    setIsLanguageRightToLeft: vi.fn(),
+    setIsDirectionReversed: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => mocks.wordIndex,
+    resetActiveWordIndex: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/repeat",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/repeat")
+    >()),
+    isRepeated: () => false,
+    setIsRepeated: vi.fn(),
+    isPaceRepeat: () => false,
+    setIsPaceRepeat: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/incomplete-tests",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/incomplete-tests")
+    >()),
+    getIncompleteTests: () => [],
+    pushIncompleteTest: mocks.incomplete,
+    resetIncompleteTests: vi.fn(),
+    getRestartCount: () => 0,
+    getIncompleteSeconds: () => 0,
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/live-stats",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/live-stats")
+    >()),
+    setCurrentLiveStats: (stats: Record<string, number | undefined>) => {
+      mocks.liveStats.push(stats);
+    },
+  }),
+);
+vi.mock(
+  "../../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/composition")
+    >()),
+    getKoreanStatus: () => false,
+    setKoreanStatus: vi.fn(),
+  }),
+);
 vi.mock("../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => mocks.customIndicator,
   isAuthenticated: () => false,

@@ -68,33 +68,93 @@ vi.mock("../../src/ts/engine/owner.client", () => ({
 vi.mock("../../src/ts/states/test", async () => ({
   ...(await import("../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
+  getCurrentQuote: () => mocks.quote,
+  setLastSignedOutResult: mocks.signedOut,
+  setWordsHaveNewline: vi.fn(),
+  setWordsHaveTab: vi.fn(),
+}));
+vi.mock(
+  "../../src/features/typing/state/words-content",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/words-content")
+    >()),
+    setWordsHaveNumbers: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../src/features/typing/state/event-log",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/event-log")
+    >()),
+    setLastEventLog: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/run-flags")
+    >()),
+    getBailedOut: () => false,
+    setBailedOut: vi.fn(),
+    setIsTestInvalid: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../src/features/typing/state/direction",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/direction")
+    >()),
+    setIsLanguageRightToLeft: vi.fn(),
+    setIsDirectionReversed: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => 0,
+    resetActiveWordIndex: vi.fn(),
+  }),
+);
+vi.mock("../../src/features/typing/state/repeat", async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import("../../src/features/typing/state/repeat")
+  >()),
   isRepeated: () => mocks.repeated,
   setIsRepeated: (value: boolean) => {
     mocks.repeated = value;
   },
-  getCurrentQuote: () => mocks.quote,
-  getActiveWordIndex: () => 0,
-  resetActiveWordIndex: vi.fn(),
-  getBailedOut: () => false,
   isPaceRepeat: () => false,
-  getIncompleteSeconds: () => 0,
-  getIncompleteTests: () => [],
-  getRestartCount: () => 0,
-  pushIncompleteTest: mocks.incomplete,
-  resetIncompleteTests: vi.fn(),
-  setKoreanStatus: mocks.korean,
-  setLastEventLog: vi.fn(),
   setIsPaceRepeat: vi.fn(),
-  setIsTestInvalid: vi.fn(),
-  setLastResult: vi.fn(),
-  setBailedOut: vi.fn(),
-  setLastSignedOutResult: mocks.signedOut,
-  setWordsHaveNewline: vi.fn(),
-  setWordsHaveNumbers: vi.fn(),
-  setWordsHaveTab: vi.fn(),
-  setIsDirectionReversed: vi.fn(),
-  setIsLanguageRightToLeft: vi.fn(),
 }));
+vi.mock(
+  "../../src/features/typing/state/incomplete-tests",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/incomplete-tests")
+    >()),
+    getIncompleteTests: () => [],
+    pushIncompleteTest: mocks.incomplete,
+    resetIncompleteTests: vi.fn(),
+    getRestartCount: () => 0,
+    getIncompleteSeconds: () => 0,
+  }),
+);
+vi.mock(
+  "../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/composition")
+    >()),
+    setKoreanStatus: mocks.korean,
+  }),
+);
 vi.mock("../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
   isAuthenticated: () => mocks.user !== null,

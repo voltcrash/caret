@@ -1,4 +1,4 @@
-import { getLastEventLog } from "#shared/states/test.ts";
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 import { getAccuracy } from "#shared/engine/analysis.client.ts";
 
 export function getEventLogAccuracy(): {

@@ -63,11 +63,19 @@ vi.mock("../../../../../src/features/typing/runtime/test/ui", () => ({
 }));
 
 vi.mock("../../../../../src/ts/states/test", () => ({
-  getActiveWordIndex: () => 0,
   isResultCalculating: () => false,
   isTestRestarting: () => false,
   wordsHaveNewline: () => false,
 }));
+vi.mock(
+  "../../../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => 0,
+  }),
+);
 
 vi.mock("../../../../../src/features/typing/input/state", () => ({
   isAwaitingNextWord: () => false,

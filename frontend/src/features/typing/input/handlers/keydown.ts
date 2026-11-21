@@ -17,11 +17,9 @@ import {
 } from "../state";
 import { getActiveFunboxesWithFunction } from "../../runtime/funbox/list";
 import { Keycode } from "#shared/constants/keys.ts";
-import {
-  setBailedOut,
-  waitForKeymapLayout,
-  wordsHaveTab,
-} from "#shared/states/test.ts";
+import { wordsHaveTab } from "#shared/states/test.ts";
+import { setBailedOut } from "#features/typing/state/run-flags.ts";
+import { waitForKeymapLayout } from "#features/typing/state/keymap.ts";
 
 import { getCustomTextIndicator } from "#shared/states/core.ts";
 import { logTestEvent } from "../../runtime/events/data";

@@ -5,11 +5,8 @@ import * as TestUI from "../../runtime/test/ui";
 import { getInputElementValue } from "#shared/input/input-element.ts";
 import { isAwaitingNextWord } from "../state";
 import * as SlowTimer from "../../state/slow-timer";
-import {
-  isTestRestarting,
-  getActiveWordIndex,
-  isResultCalculating,
-} from "#shared/states/test.ts";
+import { isTestRestarting, isResultCalculating } from "#shared/states/test.ts";
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 
 /** Only DOM visibility/geometry is observed here; Rust decides its rule effects. */
 export function observeInputView(now: number): void {

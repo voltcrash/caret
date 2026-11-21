@@ -1,11 +1,12 @@
 import { expect, it } from "vite-plus/test";
 
-import { setConfigStore } from "../../src/ts/config/store";
-import { flash, highlight } from "../../src/ts/states/keymap";
+import { setConfigStore } from "../../../../src/ts/config/store";
 import {
+  flash,
   getKeymapFlashState,
   getKeymapHighlightKey,
-} from "../../src/ts/states/test";
+  highlight,
+} from "../../../../src/features/typing/state/keymap";
 
 it("highlights the next key and flashes typed keys in react mode", () => {
   setConfigStore("keymapMode", "react");

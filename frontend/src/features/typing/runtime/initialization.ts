@@ -24,19 +24,21 @@ import * as Funbox from "./funbox/funbox";
 
 import { isAuthenticated } from "#shared/states/core.ts";
 import {
-  setIsDirectionReversed,
-  setIsLanguageRightToLeft,
-  setKoreanStatus,
   getCurrentQuote,
-  resetActiveWordIndex,
   setWordsHaveNewline,
-  setWordsHaveNumbers,
   setWordsHaveTab,
 } from "#shared/states/test.ts";
+import { setWordsHaveNumbers } from "#features/typing/state/words-content.ts";
+import {
+  setIsDirectionReversed,
+  setIsLanguageRightToLeft,
+} from "#features/typing/state/direction.ts";
+import { resetActiveWordIndex } from "#features/typing/state/active-word.ts";
+import { setKoreanStatus } from "#features/typing/state/composition.ts";
 
 import * as TestWords from "./test/words";
 
-import { highlight } from "#shared/states/keymap.ts";
+import { highlight } from "#features/typing/state/keymap.ts";
 import * as LazyModeState from "./remember-lazy-mode";
 
 import {

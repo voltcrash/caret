@@ -4,13 +4,12 @@ import { getActiveWordElement, setClass } from "./elements";
 import { peekConfig } from "#shared/config/store.ts";
 import { getInputElement } from "#shared/input/input-element.ts";
 import { setWordsWrapperVisible } from "#shared/states/funbox.ts";
+import { wordsHaveNewline, getResultVisible } from "#shared/states/test.ts";
+import { setOutOfFocusMaxHeight } from "#features/typing/state/out-of-focus.ts";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
-  setOutOfFocusMaxHeight,
-  wordsHaveNewline,
-  getResultVisible,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/direction.ts";
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,

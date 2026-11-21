@@ -1,7 +1,7 @@
 import { peekConfig } from "#shared/config/store.ts";
 import { getCustomTextIndicator } from "#shared/states/core.ts";
 import * as CustomText from "../runtime/content/custom-text";
-import { setBailedOut } from "#shared/states/test.ts";
+import { setBailedOut } from "#features/typing/state/run-flags.ts";
 import * as TestLogic from "../runtime/test/logic";
 import { Command, CommandsSubgroup } from "#shared/commandline/types.ts";
 

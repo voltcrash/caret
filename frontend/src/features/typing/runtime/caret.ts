@@ -4,8 +4,8 @@ import { getCurrentInput } from "./events/data";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
-  getActiveWordIndex,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/direction.ts";
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { CaretController } from "../components/words/caret-controller";
 import * as CompositionState from "#shared/states/composition.ts";
 import { getCaretElement } from "#shared/states/test-dom.ts";

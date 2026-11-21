@@ -35,8 +35,16 @@ vi.mock(
 vi.mock("../../../../../src/ts/states/test", async (original) => ({
   ...(await original<typeof import("../../../../../src/ts/states/test")>()),
   getResultVisible: () => true,
-  getLastEventLog: () => [],
 }));
+vi.mock(
+  "../../../../../src/features/typing/state/event-log",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/event-log")
+    >()),
+    getLastEventLog: () => [],
+  }),
+);
 vi.mock("../../../../../src/ts/engine/analysis.client", () => ({
   getInputHistory: () => mocks.inputHistory,
   getMissedWords: () => ({ hello: 1 }),

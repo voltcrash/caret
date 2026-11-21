@@ -25,23 +25,27 @@ import {
   isAuthenticated,
 } from "#shared/states/core.ts";
 import {
-  setKoreanStatus,
   isTestRestarting,
-  isPaceRepeat,
   isTestActive,
-  pushIncompleteTest,
+  isResultCalculating,
+} from "#shared/states/test.ts";
+import {
+  setIsTestInvalid,
+  setBailedOut,
+} from "#features/typing/state/run-flags.ts";
+import {
+  isPaceRepeat,
   setIsPaceRepeat,
   setIsRepeated,
-  setIsTestInvalid,
-  isResultCalculating,
-  setBailedOut,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/repeat.ts";
+import { pushIncompleteTest } from "#features/typing/state/incomplete-tests.ts";
+import { setKoreanStatus } from "#features/typing/state/composition.ts";
 import * as TestWords from "./words";
 import { configEvent } from "#shared/events/config.ts";
 import * as AnalyticsController from "#shared/controllers/analytics-controller.ts";
 import { preloadResultHasher } from "../result/hash";
 
-import { highlight } from "#shared/states/keymap.ts";
+import { highlight } from "#features/typing/state/keymap.ts";
 import * as LazyModeState from "../remember-lazy-mode";
 
 import { getActiveFunboxesWithFunction } from "../funbox/list";

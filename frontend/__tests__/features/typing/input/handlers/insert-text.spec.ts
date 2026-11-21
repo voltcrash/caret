@@ -91,15 +91,39 @@ vi.mock("../../../../../src/ts/states/test", () => ({
   setIsTestRestarting: vi.fn(),
   setTestInitError: vi.fn(),
   setTestActive: vi.fn(),
-  getActiveWordIndex: () => mockState.activeWordIndex,
   isTestActive: () => true,
   isResultCalculating: () => false,
   isTestRestarting: () => false,
   wordsHaveNewline: () => false,
   getCurrentQuote: () => null,
-  getBailedOut: () => false,
-  getKoreanStatus: () => false,
 }));
+vi.mock(
+  "../../../../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/run-flags")
+    >()),
+    getBailedOut: () => false,
+  }),
+);
+vi.mock(
+  "../../../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => mockState.activeWordIndex,
+  }),
+);
+vi.mock(
+  "../../../../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/composition")
+    >()),
+    getKoreanStatus: () => false,
+  }),
+);
 
 vi.mock("../../../../../src/features/typing/input/state", () => ({
   isCorrectShiftUsed: () => mockState.correctShiftUsed,
@@ -130,7 +154,9 @@ vi.mock("../../../../../src/features/typing/runtime/test/logic", () => ({
   finish: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../../../src/ts/states/keymap", () => ({ flash: vi.fn() }));
+vi.mock("../../../../../src/features/typing/state/keymap", () => ({
+  flash: vi.fn(),
+}));
 vi.mock("../../../../../src/ts/states/notifications", async (original) => ({
   ...(await original<
     typeof import("../../../../../src/ts/states/notifications")

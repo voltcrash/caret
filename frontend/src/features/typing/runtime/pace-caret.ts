@@ -14,14 +14,18 @@ import {
   getPaceCaretElement,
 } from "#shared/states/test-dom.ts";
 import {
-  isDirectionReversed,
-  isLanguageRightToLeft,
   getCurrentQuote,
   getResultVisible,
-  isPaceRepeat,
   isTestActive,
-  setPaceCaretWpm,
 } from "#shared/states/test.ts";
+import {
+  isDirectionReversed,
+  isLanguageRightToLeft,
+} from "#features/typing/state/direction.ts";
+import {
+  isPaceRepeat,
+  setPaceCaretWpm,
+} from "#features/typing/state/repeat.ts";
 
 // The session owns pace state; this module schedules steps and renders them.
 const state = createAppOwned(() => {

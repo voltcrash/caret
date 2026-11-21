@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
+import { setSelectedQuoteId } from "#features/typing/state/quote-selection.ts";
 import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
 import { Button } from "#shared/components/common/Button.tsx";
 import { HighlightedText } from "#shared/components/common/HighlightedText.tsx";
@@ -31,7 +32,6 @@ import {
   showErrorNotification,
 } from "#shared/states/notifications.ts";
 import { showSimpleModal } from "#shared/states/simple-modal.ts";
-import { setSelectedQuoteId } from "#shared/states/test.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { getLanguage } from "#shared/utils/json-data.ts";
 import * as Misc from "#shared/utils/misc.ts";

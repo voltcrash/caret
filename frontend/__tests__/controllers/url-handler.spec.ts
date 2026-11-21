@@ -4,7 +4,7 @@ import { compressToURI } from "lz-ts";
 import * as UpdateConfig from "../../src/ts/config/setters";
 import * as Notifications from "../../src/ts/states/notifications";
 import * as TestLogic from "../../src/features/typing/runtime/test/logic";
-import * as TestState from "../../src/ts/states/test";
+import * as QuoteSelection from "../../src/features/typing/state/quote-selection";
 import * as Misc from "../../src/ts/utils/misc";
 import { FunboxName } from "@caret/schemas/configs";
 import { CustomTextSettings } from "@caret/schemas/results";
@@ -20,7 +20,10 @@ describe("url-handler", () => {
     const findGetParameterMock = vi.spyOn(Misc, "findGetParameter");
 
     const setConfigMock = vi.spyOn(UpdateConfig, "setConfig");
-    const setSelectedQuoteIdMock = vi.spyOn(TestState, "setSelectedQuoteId");
+    const setSelectedQuoteIdMock = vi.spyOn(
+      QuoteSelection,
+      "setSelectedQuoteId",
+    );
     const restartTestMock = vi.spyOn(TestLogic, "restart");
     const notifySuccessMock = vi.spyOn(
       Notifications,
@@ -308,5 +311,5 @@ const urlData = (
 // Browser module exports are sealed; register spies before imports run.
 vi.mock("../../src/ts/config/setters", { spy: true });
 vi.mock("../../src/ts/states/notifications", { spy: true });
-vi.mock("../../src/ts/states/test", { spy: true });
+vi.mock("../../src/features/typing/state/quote-selection", { spy: true });
 vi.mock("../../src/ts/utils/misc", { spy: true });

@@ -10,10 +10,8 @@ import { setClass } from "./elements";
 import { peekConfig } from "#shared/config/store.ts";
 import { isInputElementFocused } from "#shared/input/input-element.ts";
 import { setResultState } from "../../state/result";
-import {
-  isLanguageRightToLeft,
-  setTestFocusState,
-} from "#shared/states/test.ts";
+import { setTestFocusState } from "#shared/states/test.ts";
+import { isLanguageRightToLeft } from "#features/typing/state/direction.ts";
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,

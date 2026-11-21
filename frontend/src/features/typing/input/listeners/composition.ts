@@ -7,11 +7,11 @@ import { onInsertText } from "../handlers/insert-text";
 import { logTestEvent } from "../../runtime/events/data";
 import {
   isTestRestarting,
-  getActiveWordIndex,
   isResultCalculating,
   isTestActive,
-  setCompositionText,
 } from "#shared/states/test.ts";
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
+import { setCompositionText } from "#features/typing/state/composition.ts";
 
 export function bindCompositionListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "compositionstart", (event) => {

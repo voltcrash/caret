@@ -10,7 +10,8 @@ import * as Arrays from "#shared/utils/arrays.ts";
 import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";
 import { getActiveFunboxes } from "../funbox/list";
 import { getTheme } from "#shared/states/theme.ts";
-import { getLastEventLog, getResultVisible } from "#shared/states/test.ts";
+import { getResultVisible } from "#shared/states/test.ts";
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 import {
   getRawHistory,
   getTimerBoundaryLabels,

@@ -24,8 +24,16 @@ vi.mock("../../../../src/ts/states/core", () => ({
 vi.mock("../../../../src/ts/states/test", async () => ({
   ...(await import("../../../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
-  setBailedOut: vi.fn(),
 }));
+vi.mock(
+  "../../../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/run-flags")
+    >()),
+    setBailedOut: vi.fn(),
+  }),
+);
 
 vi.mock("../../../../src/features/typing/runtime/content/custom-text", () => ({
   getData: () => ({ limit: { mode: "word", value: 0 } }),

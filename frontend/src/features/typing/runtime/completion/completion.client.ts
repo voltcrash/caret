@@ -13,15 +13,14 @@ import * as DB from "#shared/db.ts";
 import * as TodayTracker from "../today-tracker";
 import * as ChallengeContoller from "../challenge-controller";
 
+import { setLastSignedOutResult } from "#shared/states/test.ts";
+import { setLastEventLog } from "#features/typing/state/event-log.ts";
+import { setIsTestInvalid } from "#features/typing/state/run-flags.ts";
+import { setIsRepeated } from "#features/typing/state/repeat.ts";
 import {
-  setLastEventLog,
   pushIncompleteTest,
   resetIncompleteTests,
-  setIsRepeated,
-  setIsTestInvalid,
-  setLastResult,
-  setLastSignedOutResult,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/incomplete-tests.ts";
 
 import * as AnalyticsController from "#shared/controllers/analytics-controller.ts";
 
@@ -158,7 +157,6 @@ export function createCompletion(
 
     once("lastResult", () => {
       setLastEventLog(eventLog);
-      setLastResult(structuredClone(completedEvent));
       setIsRepeated(repeated);
     });
 

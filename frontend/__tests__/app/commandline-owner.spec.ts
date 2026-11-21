@@ -68,3 +68,30 @@ it("uses the flattened list on the first single-list search", async () => {
     release();
   }
 });
+
+it("lists the typing event log command among the debug commands", async () => {
+  const lists = await import("../../src/ts/commandline/lists");
+  const { useTypingCommands } =
+    await import("../../src/features/typing/commands");
+  const { createRoot } = await import("solid-js");
+  const app = createTestApplication();
+  const release = mountApplication(app.application);
+  const dispose = createRoot((dispose) => {
+    useTypingCommands();
+    return dispose;
+  });
+  lists.setStackToDefault();
+  const ids = lists.getTopOfStack().list.map(({ id }) => id);
+  // Palette search runs the first match, so order decides "stats" and "c".
+  const index = ids.indexOf("copyResultStats");
+  expect(ids.slice(index - 1, index + 2)).toEqual([
+    "getSwCache",
+    "copyResultStats",
+    "fpsCounter",
+  ]);
+  expect(ids).toContain("viewAccount");
+  expect(ids.indexOf("viewAccount")).toBeLessThan(index);
+  dispose();
+  app.dispose();
+  release();
+});

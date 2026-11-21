@@ -2,14 +2,14 @@ import { captureAccount } from "#app/account-scope.ts";
 import { getAuthenticatedUser } from "#shared/auth-client.ts";
 import { peekConfig } from "#shared/config/store.ts";
 import { getCustomTextIndicator } from "#shared/states/core.ts";
+import { getCurrentQuote } from "#shared/states/test.ts";
+import { getBailedOut } from "#features/typing/state/run-flags.ts";
+import { isRepeated } from "#features/typing/state/repeat.ts";
 import {
-  getBailedOut,
-  getCurrentQuote,
   getIncompleteSeconds,
   getIncompleteTests,
   getRestartCount,
-  isRepeated,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/incomplete-tests.ts";
 import { buildEventLog, getTestSession } from "../events/data";
 import * as CustomText from "../content/custom-text";
 import { words } from "../test/words";

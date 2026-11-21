@@ -1,8 +1,10 @@
 import { onCleanup, onMount } from "solid-js";
 
+import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
+
 import { useSoundEvents } from "../../ts/controllers/sound-controller";
 import { getBrowserEngine } from "../../ts/engine/owner.client";
-import { getLastEventLog, getActiveWordIndex } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
 import { useChallengeEvents } from "./runtime/challenge-controller";
 import { usePractiseEvents } from "./runtime/content/practise-words";

@@ -41,9 +41,16 @@ vi.mock("../../../../src/ts/states/modals", () => ({
   showModal: vi.fn(),
   hideModalAndClearChain: vi.fn(),
 }));
-vi.mock("../../../../src/ts/states/test", () => ({
-  setSelectedQuoteId: vi.fn(),
-}));
+vi.mock("../../../../src/ts/states/test", () => ({}));
+vi.mock(
+  "../../../../src/features/typing/state/quote-selection",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/quote-selection")
+    >()),
+    setSelectedQuoteId: vi.fn(),
+  }),
+);
 vi.mock("../../../../src/features/typing/state/quote-report", () => ({
   showQuoteReportModal: vi.fn(),
 }));

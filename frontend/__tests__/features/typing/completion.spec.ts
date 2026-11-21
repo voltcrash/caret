@@ -22,8 +22,16 @@ vi.mock("../../../src/ts/anim", () => ({ animateAsync: mocks.fade }));
 vi.mock("../../../src/ts/states/test", async () => ({
   ...(await import("../../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
-  getBailedOut: () => false,
 }));
+vi.mock(
+  "../../../src/features/typing/state/run-flags",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/run-flags")
+    >()),
+    getBailedOut: () => false,
+  }),
+);
 vi.mock("../../../src/features/typing/runtime/completion/snapshot", () => ({
   captureCompletionSnapshot: mocks.snapshot,
 }));

@@ -34,18 +34,58 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("../../../../src/ts/states/test", () => ({
-  getActiveWordIndex: () => mocks.activeIndex,
-  isDirectionReversed: () => mocks.reversed,
-  isLanguageRightToLeft: () => mocks.rtl,
   getResultVisible: () => mocks.resultVisible,
   isTestActive: () => false,
   wordsHaveNewline: () => false,
-  setCompositionText: vi.fn(),
-  setCurrentLiveStats: vi.fn(),
-  setOutOfFocusMaxHeight: vi.fn(),
   setTestFocusState: vi.fn(),
   setTestInitError: vi.fn(),
 }));
+vi.mock(
+  "../../../../src/features/typing/state/out-of-focus",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/out-of-focus")
+    >()),
+    setOutOfFocusMaxHeight: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../../../src/features/typing/state/direction",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/direction")
+    >()),
+    isLanguageRightToLeft: () => mocks.rtl,
+    isDirectionReversed: () => mocks.reversed,
+  }),
+);
+vi.mock(
+  "../../../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => mocks.activeIndex,
+  }),
+);
+vi.mock(
+  "../../../../src/features/typing/state/live-stats",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/live-stats")
+    >()),
+    setCurrentLiveStats: vi.fn(),
+  }),
+);
+vi.mock(
+  "../../../../src/features/typing/state/composition",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/composition")
+    >()),
+    setCompositionText: vi.fn(),
+  }),
+);
 vi.mock("../../../../src/ts/states/background", () => ({
   getBackground: () => ({ url: "" }),
 }));
@@ -75,7 +115,7 @@ vi.mock("../../../../src/ts/controllers/sound-controller", () => mocks.sound);
 vi.mock("../../../../src/ts/controllers/theme-controller", () => ({
   randomizeTheme: vi.fn(),
 }));
-vi.mock("../../../../src/ts/states/keymap", () => ({
+vi.mock("../../../../src/features/typing/state/keymap", () => ({
   highlight: mocks.highlight,
 }));
 vi.mock(
@@ -135,13 +175,13 @@ import { createNewlineSpacers } from "../../../../src/features/typing/components
 import * as ui from "../../../../src/features/typing/runtime/test/ui";
 import { words } from "../../../../src/features/typing/runtime/test/words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
+import { setCurrentLiveStats } from "../../../../src/features/typing/state/live-stats";
 import {
   getWordsInputStyle,
   getWordsWrapperHeight,
 } from "../../../../src/features/typing/state/words-layout";
 import { peekConfig, setConfigStore } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
-import { setCurrentLiveStats } from "../../../../src/ts/states/test";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
 
 let element: HTMLDivElement;

@@ -11,14 +11,14 @@ import {
 } from "#shared/states/notifications.ts";
 import * as Caret from "../caret";
 import * as SlowTimer from "../../state/slow-timer";
-import { highlight } from "#shared/states/keymap.ts";
+import { highlight } from "#features/typing/state/keymap.ts";
 import * as LayoutfluidFunboxTimer from "../funbox/layoutfluid-funbox-timer";
 import { KeymapLayout, Layout } from "@caret/schemas/configs";
 import * as SoundController from "#shared/controllers/sound-controller.ts";
 import { clearLowFpsMode } from "#shared/anim.ts";
 import { createTimerScheduler } from "./timer-scheduler";
 import { getCurrentInput, getTestSession } from "../events/data";
-import { setCurrentLiveStats } from "#shared/states/test.ts";
+import { setCurrentLiveStats } from "#features/typing/state/live-stats.ts";
 function createTiming(): {
   disableSlowTimerFail: typeof disableSlowTimerFail;
   enableTimerDebug: typeof enableTimerDebug;

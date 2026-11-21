@@ -18,7 +18,6 @@ import { showModal } from "../states/modals";
 import {
   showErrorNotification,
   clearAllNotifications,
-  showSuccessNotification,
 } from "../states/notifications";
 import { Command, CommandlineListKey, CommandsSubgroup } from "./types";
 import { COMMAND_SEPARATOR_HTML, buildCommandForConfigKey } from "./util";
@@ -31,13 +30,15 @@ import {
   showFpsCounter,
 } from "../components/layout/overlays/FpsCounter";
 import { applyConfigFromJson } from "../config/lifecycle";
-import { getLastEventLog } from "../states/test";
 import { commandlineState } from "../states/commandline";
 import { contributedCommands, contributedList } from "./registry";
 
 /** Core commands between the slots features contribute to. */
 const getCoreCommands = createAccountOwned<
-  Record<"testScreen" | "accountAndBehavior" | "settings" | "other", Command[]>
+  Record<
+    "testScreen" | "accountAndBehavior" | "settings" | "other" | "tools",
+    Command[]
+  >
 >(() => ({
   testScreen: [
     //test screen
@@ -256,26 +257,8 @@ const getCoreCommands = createAccountOwned<
         alert(await caches.keys());
       },
     },
-    {
-      id: "copyResultStats",
-      display: "Copy last event log (result data)",
-      alias: "stats events",
-      icon: "fa-cog",
-      visible: false,
-      available: (): boolean => {
-        return getLastEventLog() !== null;
-      },
-      exec: async (): Promise<void> => {
-        navigator.clipboard
-          .writeText(JSON.stringify(getLastEventLog()))
-          .then(() => {
-            showSuccessNotification("Copied to clipboard");
-          })
-          .catch((e: unknown) => {
-            showErrorNotification("Failed to copy to clipboard", { error: e });
-          });
-      },
-    },
+  ],
+  tools: [
     {
       id: "fpsCounter",
       display: "FPS counter...",
@@ -347,6 +330,8 @@ function getCommands(): CommandsSubgroup {
       ...core.settings,
       ...contributedCommands("other"),
       ...core.other,
+      ...contributedCommands("debug"),
+      ...core.tools,
     ],
   };
 }

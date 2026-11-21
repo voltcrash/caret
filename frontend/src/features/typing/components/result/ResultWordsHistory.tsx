@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 import { Balloon } from "#shared/components/common/Balloon.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { setConfig } from "#shared/config/setters.ts";
@@ -30,7 +31,7 @@ import {
   showNoticeNotification,
 } from "#shared/states/notifications.ts";
 import { showSimpleModal } from "#shared/states/simple-modal.ts";
-import { getLastEventLog, getResultVisible } from "#shared/states/test.ts";
+import { getResultVisible } from "#shared/states/test.ts";
 import { getTheme } from "#shared/states/theme.ts";
 import { cn, updateClassNames } from "#shared/utils/cn.ts";
 import { get as getTypingSpeedUnit } from "#shared/utils/typing-speed-units.ts";

@@ -1,8 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
-vi.mock("../../src/ts/states/test", () => ({
-  getActiveWordIndex: () => 0,
-}));
+vi.mock(
+  "../../src/features/typing/state/active-word",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/active-word")
+    >()),
+    getActiveWordIndex: () => 0,
+  }),
+);
 
 import { words } from "../../src/features/typing/runtime/test/words";
 

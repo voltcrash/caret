@@ -1,5 +1,11 @@
 import { createMemo, lazy, Show, Suspense } from "solid-js";
 
+import { getLoadedChallenge } from "#features/typing/state/challenge.ts";
+import {
+  getPaceCaretWpm,
+  isPaceRepeat,
+  isRepeated,
+} from "#features/typing/state/repeat.ts";
 import * as Commandline from "#shared/commandline/open.ts";
 import { Kbd } from "#shared/components/common/Kbd.tsx";
 import { getConfig } from "#shared/config/store.ts";
@@ -12,10 +18,6 @@ import {
 import { hotkeys } from "#shared/states/hotkeys.ts";
 import {
   getFocus,
-  getLoadedChallenge,
-  getPaceCaretWpm,
-  isPaceRepeat,
-  isRepeated,
   wordsHaveNewline,
   wordsHaveTab,
 } from "#shared/states/test.ts";
