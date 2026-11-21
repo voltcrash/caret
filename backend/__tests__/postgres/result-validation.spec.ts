@@ -143,6 +143,34 @@ describe("result submission validation with PostgreSQL", () => {
     });
   });
 
+  it("acknowledges a reconnect retry saved under its legacy payload hash", async () => {
+    const account = await test.account();
+    // The legacy hash covers `offline`; the stable submission hash omits it.
+    const online = scoreEvent(account.uid, 80, 0, {
+      offline: false,
+      timestamp: Date.now(),
+    });
+    const { hash: _hash, ...payload } = online;
+    // Results saved before stable hashes stored the client payload hash.
+    const saved = Object.assign(buildDbResult(online, "Legacy", false), {
+      submissionHash: objectHash(payload),
+    });
+    await withRuntime(
+      test.env,
+      async () => await addResult(account.uid, saved),
+    );
+    // The queue retries after reconnecting: offline, rehashed.
+    const retry = { ...payload, offline: true };
+    const response = await test.request(account, "/results", "POST", {
+      result: { ...retry, hash: objectHash(retry) },
+      acknowledgeDuplicate: true,
+    });
+    expect(response.status, await response.clone().text()).toBe(200);
+    expect(await response.json()).toMatchObject({
+      data: { insertedId: saved._id, alreadySaved: true, xp: 0 },
+    });
+  });
+
   it("rejects a malformed submission before progression", async () => {
     const account = await test.account();
     const response = await test.request(account, "/results", "POST", {

@@ -17,8 +17,7 @@ import type { ServiceContext, OperationInput } from "../../context";
 import { validateSubmission } from "./validation";
 import { applyProgression } from "./progression";
 import { getBySubmissionHash } from "../../../dal/result";
-import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
-import { omit } from "../../../utils/misc";
+import { storedSubmissionHashes } from "./identity";
 import { ApiResponse } from "../../../utils/api-response";
 type RankRead = {
   query: PreparedQuery;
@@ -135,13 +134,11 @@ async function addResultAtomic(
   input: OperationInput<undefined, AddResultRequest>,
 ): Promise<AddResultResponse | ApiError> {
   if (input.body.acknowledgeDuplicate) {
-    const hash = objectHash(
-      omit({ ...input.body.result, uid: context.actor.uid }, [
-        "hash",
-        "offline",
-      ]),
+    // Server-computed hashes only: the client hash is not verified yet.
+    const saved = await getBySubmissionHash(
+      context.actor.uid,
+      storedSubmissionHashes(input.body.result, context.actor.uid),
     );
-    const saved = await getBySubmissionHash(context.actor.uid, hash);
     if (saved !== undefined) {
       return new ApiResponse("Result already saved", {
         verification: saved.verification,
