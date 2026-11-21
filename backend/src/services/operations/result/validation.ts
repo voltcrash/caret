@@ -30,6 +30,7 @@ import { serverAudit } from "@caret/typing-engine/audit.server";
 import { tryCatch } from "@caret/util/trycatch";
 
 import type { ValidatedSubmission } from "./context";
+import { hashedPayload, storedSubmissionHashes } from "./identity";
 export async function validateSubmission(
   context: ServiceContext,
   input: OperationInput<undefined, AddResultRequest>,
@@ -81,10 +82,9 @@ export async function validateSubmission(
   }
 
   const resulthash = completedEvent.hash;
-  const objectToHash = omit(completedEvent, ["hash"]);
-  // Transport state changes on reconnect; submission identity must not.
-  // Compute before server timestamps and anticheat normalization mutate it.
-  const submissionHash = objectHash(omit(objectToHash, ["offline"]));
+  const objectToHash = hashedPayload(input.body.result, uid);
+  const storedHashes = storedSubmissionHashes(input.body.result, uid);
+  const [submissionHash] = storedHashes;
   if (context.configuration.results.objectHashCheckEnabled) {
     const serverhash = objectHash(objectToHash);
     // Older web clients hashed before the client discriminator existed.
@@ -109,16 +109,9 @@ export async function validateSubmission(
     Logger.warning("Object hash check is disabled, skipping hash check");
   }
 
-  // Retained queues may retry results saved before stable hashes were deployed.
-  // Match their original online/offline payload hashes too, before progression.
-  if (
-    await ResultDAL.hasSubmissionHash(uid, [
-      submissionHash,
-      resulthash,
-      objectHash({ ...objectToHash, offline: false }),
-      objectHash({ ...objectToHash, offline: true }),
-    ])
-  ) {
+  // Retained queues may retry results saved under legacy hashes; match those
+  // too, before progression.
+  if (await ResultDAL.hasSubmissionHash(uid, storedHashes)) {
     const status = ResultStatusCodes.DUPLICATE_RESULT;
     throw new ApiError(status.code, "Duplicate result");
   }
