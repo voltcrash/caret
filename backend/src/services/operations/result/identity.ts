@@ -29,9 +29,14 @@ export function storedSubmissionHashes(
   uid: string,
 ): [stable: string, ...legacy: string[]] {
   const payload = hashedPayload(result, uid);
+  // Older web clients hashed before the client discriminator existed.
+  const payloads =
+    result.client === "web" ? [payload, omit(payload, ["client"])] : [payload];
   return [
     submissionHash(result, uid),
-    objectHash({ ...payload, offline: false }),
-    objectHash({ ...payload, offline: true }),
+    ...payloads.flatMap((legacy) => [
+      objectHash({ ...legacy, offline: false }),
+      objectHash({ ...legacy, offline: true }),
+    ]),
   ];
 }

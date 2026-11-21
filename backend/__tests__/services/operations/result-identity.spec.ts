@@ -5,6 +5,7 @@ import {
   submissionHash,
 } from "../../../src/services/operations/result/identity";
 import { completedEvent } from "../../__testData__/completed-event";
+import { omit } from "../../../src/utils/misc";
 
 describe("result submission identity", () => {
   it("binds the hash to the actor, not the client-supplied uid", () => {
@@ -32,6 +33,8 @@ describe("result submission identity", () => {
       submissionHash(result, "actor"),
       objectHash({ ...payload, offline: false }),
       objectHash(payload),
+      objectHash({ ...omit(payload, ["client"]), offline: false }),
+      objectHash(omit(payload, ["client"])),
     ]);
   });
 });
