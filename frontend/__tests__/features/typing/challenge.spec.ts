@@ -11,7 +11,7 @@ import { setConfig } from "../../../src/ts/config/setters";
 import {
   getLoadedChallenge,
   setLoadedChallenge,
-} from "../../../src/ts/states/test";
+} from "../../../src/features/typing/state/challenge";
 import { browserAudit } from "../../__harness__/browser-audit";
 import type { Challenge } from "@caret/challenges";
 import type { CompletedEvent } from "@caret/schemas/results";

@@ -4,7 +4,6 @@ import { onCleanup } from "solid-js";
 import { getConfig } from "../config/store";
 import { EventLog } from "@caret/web-shared/events/types";
 
-import type { Challenge } from "@caret/challenges";
 import { CompletedEvent } from "@caret/schemas/results";
 
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
@@ -23,8 +22,6 @@ export const [wordsHaveNewline, setWordsHaveNewline] = createAppSignal(false);
 export const [wordsHaveTab, setWordsHaveTab] = createAppSignal(false);
 export const [wordsHaveNumbers, setWordsHaveNumbers] = createAppSignal(false);
 
-export const [getLoadedChallenge, setLoadedChallenge] =
-  createAppSignal<Challenge | null>(null);
 // Set when the user bails out of a test early; reset by TestLogic.restart().
 export const [getBailedOut, setBailedOut] = createAppSignal(false);
 export const [getFocus, setFocus] = createAppSignal(false);

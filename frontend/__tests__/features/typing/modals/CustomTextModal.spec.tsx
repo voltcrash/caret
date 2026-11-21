@@ -48,10 +48,17 @@ vi.mock("../../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
   setCustomTextIndicator: vi.fn(),
 }));
-vi.mock("../../../../src/ts/states/test", () => ({
-  getLoadedChallenge: () => null,
-  setLoadedChallenge: vi.fn(),
-}));
+vi.mock("../../../../src/ts/states/test", () => ({}));
+vi.mock(
+  "../../../../src/features/typing/state/challenge",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/challenge")
+    >()),
+    getLoadedChallenge: () => null,
+    setLoadedChallenge: vi.fn(),
+  }),
+);
 vi.mock("../../../../src/ts/states/notifications", () => ({
   showNoticeNotification: mocks.notice,
   showErrorNotification: vi.fn(),

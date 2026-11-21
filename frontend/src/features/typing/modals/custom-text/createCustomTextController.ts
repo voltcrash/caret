@@ -13,7 +13,10 @@ import {
   showNoticeNotification,
   showErrorNotification,
 } from "#shared/states/notifications.ts";
-import { getLoadedChallenge, setLoadedChallenge } from "#shared/states/test.ts";
+import {
+  getLoadedChallenge,
+  setLoadedChallenge,
+} from "#features/typing/state/challenge.ts";
 import * as CustomText from "../../runtime/content/custom-text";
 import * as PractiseWords from "../../runtime/content/practise-words";
 import { getBailOutHint } from "#shared/utils/bail-out.ts";
