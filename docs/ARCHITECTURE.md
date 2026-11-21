@@ -53,6 +53,9 @@ Code used by one feature lives in that feature. Shared code in `src/ts` and
 modules in `typing-public-surface.json`, which also only shrinks. Shared code
 triggers typing (restart, blur, hints, pace caret) and reads route activity
 through `src/ts/typing-host.ts`, which the typing route binds while mounted.
+`src/ts/states/test.ts` keeps only the test state that shared code reads (focus,
+lifecycle, line-break flags, current quote); `shared-test-state.spec.ts`
+rejects an export there that no code outside typing imports.
 
 Typing feature (`frontend/src/features/typing/`):
 
@@ -66,7 +69,7 @@ Typing feature (`frontend/src/features/typing/`):
 | `commands/`, `host.client.ts` | Palette command contributions; the typing host the route binds while mounted |
 | `components/` | Test page, words renderer, result screen and live stats |
 | `input/` | Keystroke, composition and input listeners and handlers |
-| `state/` | Typing-only app state (result, layout, modifiers, quote rating) |
+| `state/` | Typing-only app state (result, layout, keymap, IME composition, live stats, event log, modifiers, quote rating) |
 | `modals/` | Typing modals (custom text, quotes, practice, event log viewer, dev options) |
 | `runtime/test/` | Test logic, timer, words and UI facade |
 | `runtime/content/`, `runtime/completion/`, `runtime/result/` | Content loading, test completion, result screen and saving |
