@@ -9,11 +9,11 @@ import {
   keymapLayoutObject,
   setKeymapFlashState,
 } from "#features/typing/state/keymap.ts";
+import { wordsHaveNumbers } from "#features/typing/state/words-content.ts";
 import { Anime } from "#shared/components/common/anime/index.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { getConfig } from "#shared/config/store.ts";
 import { showCommandLineForConfig } from "#shared/states/core.ts";
-import { wordsHaveNumbers } from "#shared/states/test.ts";
 import { getTheme } from "#shared/states/theme.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { isMacLike } from "#shared/utils/misc.ts";

@@ -26,9 +26,9 @@ import { isAuthenticated } from "#shared/states/core.ts";
 import {
   getCurrentQuote,
   setWordsHaveNewline,
-  setWordsHaveNumbers,
   setWordsHaveTab,
 } from "#shared/states/test.ts";
+import { setWordsHaveNumbers } from "#features/typing/state/words-content.ts";
 import {
   setIsDirectionReversed,
   setIsLanguageRightToLeft,

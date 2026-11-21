@@ -71,9 +71,17 @@ vi.mock("../../src/ts/states/test", async () => ({
   getCurrentQuote: () => mocks.quote,
   setLastSignedOutResult: mocks.signedOut,
   setWordsHaveNewline: vi.fn(),
-  setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
 }));
+vi.mock(
+  "../../src/features/typing/state/words-content",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/words-content")
+    >()),
+    setWordsHaveNumbers: vi.fn(),
+  }),
+);
 vi.mock(
   "../../src/features/typing/state/event-log",
   async (importOriginal) => ({

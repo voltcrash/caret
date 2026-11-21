@@ -18,7 +18,6 @@ export {
 
 export const [wordsHaveNewline, setWordsHaveNewline] = createAppSignal(false);
 export const [wordsHaveTab, setWordsHaveTab] = createAppSignal(false);
-export const [wordsHaveNumbers, setWordsHaveNumbers] = createAppSignal(false);
 
 export const [getFocus, setFocus] = createAppSignal(false);
 // Words blur, composition display and OutOfFocusWarning share delayed input focus.
