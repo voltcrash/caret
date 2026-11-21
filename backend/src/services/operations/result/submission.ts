@@ -134,10 +134,9 @@ async function addResultAtomic(
   input: OperationInput<undefined, AddResultRequest>,
 ): Promise<AddResultResponse | ApiError> {
   if (input.body.acknowledgeDuplicate) {
-    const saved = await getBySubmissionHash(
-      context.actor.uid,
+    const saved = await getBySubmissionHash(context.actor.uid, [
       submissionHash(input.body.result, context.actor.uid),
-    );
+    ]);
     if (saved !== undefined) {
       return new ApiResponse("Result already saved", {
         verification: saved.verification,

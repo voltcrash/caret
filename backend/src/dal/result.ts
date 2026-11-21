@@ -33,15 +33,16 @@ export async function hasSubmissionHash(
   );
 }
 
+/** The saved result stored under any of `hashes`. */
 export async function getBySubmissionHash(
   uid: string,
-  hash: string,
+  hashes: string[],
 ): Promise<DBResult | undefined> {
   const row = (
     await database()
       .select()
       .from(results)
-      .where(and(eq(results.uid, uid), eq(results.submissionHash, hash)))
+      .where(and(eq(results.uid, uid), inArray(results.submissionHash, hashes)))
       .limit(1)
   )[0];
   return row === undefined ? undefined : unpack(row);
