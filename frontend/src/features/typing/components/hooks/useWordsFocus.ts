@@ -1,7 +1,7 @@
 import { areWordsVisible, isReadAheadDisabled } from "#shared/states/funbox.ts";
 import { spread } from "solid-js/web";
 
-import { showOutOfFocusWarning } from "#shared/states/test.ts";
+import { showOutOfFocusWarning } from "#features/typing/state/out-of-focus.ts";
 import { cn } from "#shared/utils/cn.ts";
 
 // Called by TestPage's lifecycle; legacy word/funbox classes still coexist.

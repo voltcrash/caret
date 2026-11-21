@@ -1,7 +1,6 @@
-import { createAppMemo, createAppOwned } from "../../app/application";
+import { createAppOwned } from "../../app/application";
 import { createAppSignal } from "../../app/state";
 import { onCleanup } from "solid-js";
-import { getConfig } from "../config/store";
 import { EventLog } from "@caret/web-shared/events/types";
 
 import { CompletedEvent } from "@caret/schemas/results";
@@ -46,15 +45,6 @@ export const [testFocusState, { setTestFocusState }] =
       }
     },
   });
-
-export const showOutOfFocusWarning = createAppMemo(
-  () => getConfig.showOutOfFocusWarning && testFocusState() !== "focused",
-);
-
-// max-height of the warning, kept in sync with the words wrapper by test-ui.
-export const [outOfFocusMaxHeight, setOutOfFocusMaxHeight] = createAppSignal<
-  number | undefined
->(undefined);
 
 export const [isLongTest, setIsLongTest] = createAppSignal(false);
 

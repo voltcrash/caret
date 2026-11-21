@@ -37,10 +37,18 @@ vi.mock("../../../../src/ts/states/test", () => ({
   getResultVisible: () => mocks.resultVisible,
   isTestActive: () => false,
   wordsHaveNewline: () => false,
-  setOutOfFocusMaxHeight: vi.fn(),
   setTestFocusState: vi.fn(),
   setTestInitError: vi.fn(),
 }));
+vi.mock(
+  "../../../../src/features/typing/state/out-of-focus",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../src/features/typing/state/out-of-focus")
+    >()),
+    setOutOfFocusMaxHeight: vi.fn(),
+  }),
+);
 vi.mock(
   "../../../../src/features/typing/state/direction",
   async (importOriginal) => ({
