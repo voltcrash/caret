@@ -69,7 +69,7 @@ it("uses the flattened list on the first single-list search", async () => {
   }
 });
 
-it("lists the typing event log command after navigation", async () => {
+it("lists the typing event log command among the debug commands", async () => {
   const lists = await import("../../src/ts/commandline/lists");
   const { useTypingCommands } =
     await import("../../src/features/typing/commands");
@@ -82,11 +82,14 @@ it("lists the typing event log command after navigation", async () => {
   });
   lists.setStackToDefault();
   const ids = lists.getTopOfStack().list.map(({ id }) => id);
-  // Searching "stats" runs the first match: the account page, not a copy.
-  expect(ids.indexOf("viewAccount")).toBeGreaterThan(-1);
-  expect(ids.indexOf("copyResultStats")).toBeGreaterThan(
-    ids.indexOf("viewAccount"),
-  );
+  // Palette search runs the first match, so order decides "stats" and "c".
+  const index = ids.indexOf("copyResultStats");
+  expect(ids.slice(index - 1, index + 2)).toEqual([
+    "getSwCache",
+    "copyResultStats",
+    "fpsCounter",
+  ]);
+  expect(ids.indexOf("viewAccount")).toBeLessThan(index);
   dispose();
   app.dispose();
   release();

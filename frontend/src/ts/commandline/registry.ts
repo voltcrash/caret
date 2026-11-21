@@ -2,7 +2,7 @@ import { createAppOwned } from "../../app/application";
 import type { Command, CommandlineListKey, CommandsSubgroup } from "./types";
 
 /** Positions in the root command list where features add commands. */
-export type CommandSlot = "result" | "test" | "behavior" | "other" | "end";
+export type CommandSlot = "result" | "test" | "behavior" | "other" | "debug";
 
 /** Commands a feature adds to the palette while it is registered. */
 export type CommandContribution = {

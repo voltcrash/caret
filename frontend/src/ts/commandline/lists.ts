@@ -35,7 +35,10 @@ import { contributedCommands, contributedList } from "./registry";
 
 /** Core commands between the slots features contribute to. */
 const getCoreCommands = createAccountOwned<
-  Record<"testScreen" | "accountAndBehavior" | "settings" | "other", Command[]>
+  Record<
+    "testScreen" | "accountAndBehavior" | "settings" | "other" | "tools",
+    Command[]
+  >
 >(() => ({
   testScreen: [
     //test screen
@@ -254,6 +257,8 @@ const getCoreCommands = createAccountOwned<
         alert(await caches.keys());
       },
     },
+  ],
+  tools: [
     {
       id: "fpsCounter",
       display: "FPS counter...",
@@ -325,7 +330,8 @@ function getCommands(): CommandsSubgroup {
       ...core.settings,
       ...contributedCommands("other"),
       ...core.other,
-      ...contributedCommands("end"),
+      ...contributedCommands("debug"),
+      ...core.tools,
     ],
   };
 }

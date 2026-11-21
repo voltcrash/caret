@@ -17,8 +17,9 @@ export function useTypingCommands(): void {
         test: [...QuoteFavoriteCommands, ...BailOutCommands],
         behavior: FunboxCommands,
         other: LoadChallengeCommands,
-        // After navigation, so searching "stats" still opens the account page first.
-        end: EventLogCommands,
+        // Keeps its old place among the debug commands: palette search runs
+        // the first match.
+        debug: EventLogCommands,
       },
       lists: {
         loadChallenge: LoadChallengeCommands[0]?.subgroup,
