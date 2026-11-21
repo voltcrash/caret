@@ -7,6 +7,9 @@ import { CompletedEvent } from "@caret/schemas/results";
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
 import { clearTimeouts } from "../utils/misc";
+
+// Test state that shared code reads. Typing-only state lives in
+// features/typing/state (enforced by shared-test-state.spec.ts).
 export {
   isTestActive,
   isTestRestarting,
