@@ -213,3 +213,94 @@ impl Recorder {
             .max_by(|a, b| a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)));
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    fn kinds(recorder: &Recorder) -> Vec<(&str, f64)> {
+        recorder
+            .events()
+            .iter()
+            .map(|event| (event.kind.as_str(), event.now))
+            .collect()
+    }
+
+    #[test]
+    fn flags_events_older_than_the_latest_until_cleared() {
+        let mut recorder = Recorder::default();
+        recorder.push("input", 10.0, json!({}));
+        // Same time, lower rank: a keydown sorts before the input it caused.
+        recorder.push("keydown", 10.0, json!({"code":"KeyA"}));
+        assert!(recorder.reordered());
+        recorder.clear_reordered();
+        recorder.push("input", 10.0, json!({}));
+        assert!(!recorder.reordered());
+    }
+
+    #[test]
+    fn times_wire_events_from_the_timer_start_in_rank_order() {
+        let mut recorder = Recorder::default();
+        recorder.push("keydown", 5.0, json!({"code":"KeyA"}));
+        recorder.push("timer", 10.0, json!({"event":"start"}));
+        recorder.push("input", 12.004, json!({}));
+        recorder.push("keyup", 12.0, json!({"code":"KeyA"}));
+        assert_eq!(recorder.origin(), 10.0);
+        let log: Vec<_> = recorder
+            .log_events()
+            .into_iter()
+            .map(|event| (event.kind, event.test_ms))
+            .collect();
+        assert_eq!(
+            log,
+            [
+                ("keydown".into(), -5.0),
+                ("timer".into(), 0.0),
+                ("keyup".into(), 2.0),
+                ("input".into(), 2.0),
+            ]
+        );
+        assert_eq!(recorder.since(3).len(), 1);
+    }
+
+    #[test]
+    fn averages_matched_presses_with_a_default() {
+        let mut recorder = Recorder::default();
+        assert_eq!(recorder.average_key_duration(), 80.0);
+        recorder.push("keydown", 0.0, json!({"code":"KeyA"}));
+        recorder.push("keyup", 40.0, json!({"code":"KeyA"}));
+        recorder.push("keydown", 50.0, json!({"code":"KeyB"}));
+        recorder.push("keyup", 110.0, json!({"code":"KeyB"}));
+        assert_eq!(recorder.average_key_duration(), 50.0);
+    }
+
+    #[test]
+    fn trims_key_events_outside_the_timer() {
+        let mut recorder = Recorder::default();
+        recorder.push("keydown", 1.0, json!({"code":"KeyA"}));
+        recorder.push("keyup", 2.0, json!({"code":"KeyA"}));
+        recorder.push("keydown", 3.0, json!({"code":"KeyB"}));
+        recorder.push("timer", 4.0, json!({"event":"start"}));
+        recorder.push("input", 5.0, json!({}));
+        recorder.push("timer", 6.0, json!({"event":"end"}));
+        recorder.push("keyup", 7.0, json!({"code":"KeyB"}));
+        recorder.push("keydown", 8.0, json!({"code":"KeyC"}));
+        recorder.push("input", 8.0, json!({}));
+        recorder.push("keyup", 9.0, json!({"code":"KeyC"}));
+        recorder.trim_to_timer();
+        assert_eq!(
+            kinds(&recorder),
+            [
+                ("keydown", 3.0),
+                ("timer", 4.0),
+                ("input", 5.0),
+                ("timer", 6.0),
+                ("keyup", 7.0),
+            ]
+        );
+        // Later events order after the latest survivor, not the trimmed ones.
+        recorder.push("keyup", 8.0, json!({"code":"KeyD"}));
+        assert!(!recorder.reordered());
+    }
+}
