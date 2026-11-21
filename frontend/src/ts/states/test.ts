@@ -26,7 +26,7 @@ const focusTimeouts = createAppOwned(() => {
   onCleanup(() => clearTimeouts(timers));
   return timers;
 });
-export type TestFocusState = "focused" | "unfocused" | "unfocusedWindow";
+type TestFocusState = "focused" | "unfocused" | "unfocusedWindow";
 export const [testFocusState, { setTestFocusState }] =
   createAppSignalWithSetters<TestFocusState>("focused")({
     setTestFocusState: (set, val: TestFocusState) => {
