@@ -17,7 +17,7 @@ import type { ServiceContext, OperationInput } from "../../context";
 import { validateSubmission } from "./validation";
 import { applyProgression } from "./progression";
 import { getBySubmissionHash } from "../../../dal/result";
-import { submissionHash } from "./identity";
+import { storedSubmissionHashes } from "./identity";
 import { ApiResponse } from "../../../utils/api-response";
 type RankRead = {
   query: PreparedQuery;
@@ -134,9 +134,11 @@ async function addResultAtomic(
   input: OperationInput<undefined, AddResultRequest>,
 ): Promise<AddResultResponse | ApiError> {
   if (input.body.acknowledgeDuplicate) {
-    const saved = await getBySubmissionHash(context.actor.uid, [
-      submissionHash(input.body.result, context.actor.uid),
-    ]);
+    // Match every hash validation rejects as a duplicate, legacy included.
+    const saved = await getBySubmissionHash(
+      context.actor.uid,
+      storedSubmissionHashes(input.body.result, context.actor.uid),
+    );
     if (saved !== undefined) {
       return new ApiResponse("Result already saved", {
         verification: saved.verification,
