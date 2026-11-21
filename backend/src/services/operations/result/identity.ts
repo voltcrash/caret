@@ -26,7 +26,7 @@ export function submissionHash(result: CompletedEvent, uid: string): string {
 export function storedSubmissionHashes(
   result: CompletedEvent,
   uid: string,
-): string[] {
+): [stable: string, ...legacy: string[]] {
   const payload = hashedPayload(result, uid);
   return [
     submissionHash(result, uid),
