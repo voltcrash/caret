@@ -2,11 +2,8 @@ import { captureAccount } from "#app/account-scope.ts";
 import { getAuthenticatedUser } from "#shared/auth-client.ts";
 import { peekConfig } from "#shared/config/store.ts";
 import { getCustomTextIndicator } from "#shared/states/core.ts";
-import {
-  getBailedOut,
-  getCurrentQuote,
-  isRepeated,
-} from "#shared/states/test.ts";
+import { getBailedOut, getCurrentQuote } from "#shared/states/test.ts";
+import { isRepeated } from "#features/typing/state/repeat.ts";
 import {
   getIncompleteSeconds,
   getIncompleteTests,

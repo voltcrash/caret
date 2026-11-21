@@ -43,15 +43,23 @@ vi.mock("../../../src/ts/states/test", () => ({
   setTestActive: vi.fn(),
   isTestActive: () => mocks.active,
   getResultVisible: () => mocks.resultVisible,
-  isPaceRepeat: () => mocks.paceRepeat,
   getActiveWordIndex: () => mocks.wordIndex,
   isLanguageRightToLeft: () => false,
   isDirectionReversed: () => false,
   getCurrentQuote: () => null,
-  setPaceCaretWpm: (wpm: number | undefined) => {
-    mocks.paceWpm = wpm;
-  },
 }));
+vi.mock(
+  "../../../src/features/typing/state/repeat",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/repeat")
+    >()),
+    isPaceRepeat: () => mocks.paceRepeat,
+    setPaceCaretWpm: (wpm: number | undefined) => {
+      mocks.paceWpm = wpm;
+    },
+  }),
+);
 vi.mock(
   "../../../src/features/typing/components/words/caret-controller",
   () => ({

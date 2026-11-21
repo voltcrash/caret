@@ -29,10 +29,10 @@ import { cachedFetchJson, getLanguage } from "#shared/utils/json-data.ts";
 import { removeLanguageSize } from "#shared/utils/strings.ts";
 import {
   getSelectedQuoteId,
-  isRepeated,
   setCurrentQuote,
   getCurrentQuote,
 } from "#shared/states/test.ts";
+import { isRepeated } from "#features/typing/state/repeat.ts";
 import { showNoticeNotification } from "#shared/states/notifications.ts";
 import { getSnapshot } from "#shared/db.ts";
 import * as CustomText from "./custom-text";

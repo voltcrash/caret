@@ -18,10 +18,12 @@ import {
   isLanguageRightToLeft,
   getCurrentQuote,
   getResultVisible,
-  isPaceRepeat,
   isTestActive,
-  setPaceCaretWpm,
 } from "#shared/states/test.ts";
+import {
+  isPaceRepeat,
+  setPaceCaretWpm,
+} from "#features/typing/state/repeat.ts";
 
 // The session owns pace state; this module schedules steps and renders them.
 const state = createAppOwned(() => {

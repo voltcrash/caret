@@ -58,17 +58,13 @@ vi.mock("../../../src/ts/engine/owner.client", () => ({
 vi.mock("../../../src/ts/states/test", async () => ({
   ...(await import("../../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
-  isRepeated: () => false,
-  setIsRepeated: vi.fn(),
   getCurrentQuote: () => null,
   getActiveWordIndex: () => mocks.wordIndex,
   resetActiveWordIndex: vi.fn(),
   getBailedOut: () => mocks.bailedOut,
-  isPaceRepeat: () => false,
   setLastEventLog: (log: EventLog) => {
     mocks.lastEventLog = log;
   },
-  setIsPaceRepeat: vi.fn(),
   setIsTestInvalid: vi.fn(),
   setLastResult: vi.fn(),
   setBailedOut: vi.fn(),
@@ -79,6 +75,18 @@ vi.mock("../../../src/ts/states/test", async () => ({
   setIsDirectionReversed: vi.fn(),
   setIsLanguageRightToLeft: vi.fn(),
 }));
+vi.mock(
+  "../../../src/features/typing/state/repeat",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../src/features/typing/state/repeat")
+    >()),
+    isRepeated: () => false,
+    setIsRepeated: vi.fn(),
+    isPaceRepeat: () => false,
+    setIsPaceRepeat: vi.fn(),
+  }),
+);
 vi.mock(
   "../../../src/features/typing/state/incomplete-tests",
   async (importOriginal) => ({

@@ -26,14 +26,16 @@ import {
 } from "#shared/states/core.ts";
 import {
   isTestRestarting,
-  isPaceRepeat,
   isTestActive,
-  setIsPaceRepeat,
-  setIsRepeated,
   setIsTestInvalid,
   isResultCalculating,
   setBailedOut,
 } from "#shared/states/test.ts";
+import {
+  isPaceRepeat,
+  setIsPaceRepeat,
+  setIsRepeated,
+} from "#features/typing/state/repeat.ts";
 import { pushIncompleteTest } from "#features/typing/state/incomplete-tests.ts";
 import { setKoreanStatus } from "#features/typing/state/composition.ts";
 import * as TestWords from "./words";
