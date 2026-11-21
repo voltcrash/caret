@@ -1,6 +1,6 @@
 use crate::{
     EVENT_LOG_VERSION, Text,
-    recorder::{Recorded, rank},
+    recorder::{Recorded, Recorder, rank},
     round2,
     text::{delete_word, is_space, normalize},
 };
@@ -533,9 +533,7 @@ pub struct Session {
     index: usize,
     run: RunState,
     ticks: u32,
-    events: Vec<Recorded>,
-    last_event_order: Option<(f64, u8)>,
-    log_reordered: bool,
+    recorder: Recorder,
     live: crate::live::Live,
     korean: bool,
     indent_pending: bool,
@@ -682,9 +680,7 @@ impl Session {
             index: 0,
             run: RunState::Ready,
             ticks: 0,
-            events: vec![],
-            last_event_order: None,
-            log_reordered: false,
+            recorder: Recorder::default(),
             live: crate::live::Live::default(),
             korean,
             indent_pending: false,
@@ -934,26 +930,8 @@ impl Session {
         crate::funboxes::has_property(&self.config.funbox, "nospace")
     }
     fn record(&mut self, kind: &str, now: f64, data: Value) {
-        let order = (round2(now), rank(kind));
-        if let Some(previous) = self.last_event_order {
-            let comparison = order
-                .0
-                .total_cmp(&previous.0)
-                .then(order.1.cmp(&previous.1));
-            if comparison.is_lt() {
-                self.log_reordered = true;
-            } else {
-                self.last_event_order = Some(order);
-            }
-        } else {
-            self.last_event_order = Some(order);
-        }
         self.live.record(kind, now, &data, &self.words, self.korean);
-        self.events.push(Recorded {
-            kind: kind.into(),
-            now: round2(now),
-            data,
-        });
+        self.recorder.push(kind, now, data);
     }
     fn start(&mut self, now: f64, date: f64) {
         if !matches!(self.run, RunState::Ready)
@@ -1086,12 +1064,12 @@ impl Session {
                 "Session awaits content recovery",
             ));
         }
-        let before = self.events.len();
+        let before = self.recorder.events().len();
         let previous_metadata = self.metadata();
         let previous_origin = self.origin();
         let invalidated = matches!(command, Command::Finalize { .. } | Command::Reset { .. });
         self.word_changes.clear();
-        self.log_reordered = false;
+        self.recorder.clear_reordered();
         self.visual_input_override = None;
         self.last_drift = None;
         match command {
@@ -1255,8 +1233,7 @@ impl Session {
                 self.run = RunState::Ready;
                 self.ticks = 0;
                 self.indent_pending = false;
-                self.events.clear();
-                self.last_event_order = None;
+                self.recorder.clear();
                 self.live = crate::live::Live::default();
                 self.input = vec![Text::default(); self.words.len().max(1)];
                 self.pressed.clear();
@@ -1309,7 +1286,8 @@ impl Session {
         }
         let origin = self.origin();
         let events = self
-            .events
+            .recorder
+            .events()
             .get(before..)
             .unwrap_or_default()
             .iter()
@@ -1323,7 +1301,7 @@ impl Session {
             generation: self.generation,
             automatic_pending: !self.automatic.is_empty(),
             words: self.word_changes.clone(),
-            log_invalidated: invalidated || previous_origin != origin || self.log_reordered,
+            log_invalidated: invalidated || previous_origin != origin || self.recorder.reordered(),
             visual_input_override: self.visual_input_override.clone(),
             content_request: self
                 .generator
@@ -1757,7 +1735,7 @@ impl Session {
             false,
         );
         if sentinel_removed && !unindent && !input.is_empty() {
-            if let Some(event) = self.events.last_mut() {
+            if let Some(event) = self.recorder.last_mut() {
                 event.data["clearedNextWord"] = json!(true);
             }
             if let Some(input) = self.input.get_mut(self.index + 1) {
@@ -1954,7 +1932,7 @@ impl Session {
 
     fn finalize(&mut self) {
         let mut down = BTreeMap::new();
-        for event in &self.events {
+        for event in self.recorder.events() {
             if event.kind == "keydown" {
                 down.insert(
                     event.data["code"].as_str().unwrap_or_default().to_owned(),
@@ -1963,7 +1941,7 @@ impl Session {
             }
         }
         let mut durations = vec![];
-        for event in &self.events {
+        for event in self.recorder.events() {
             if event.kind != "keyup" {
                 continue;
             }
@@ -1983,30 +1961,34 @@ impl Session {
             let _ = self.observe("keyup", now + average, json!({"code":key,"estimated":true}));
         }
         let start = self
-            .events
+            .recorder
+            .events()
             .iter()
             .find(|e| e.kind == "timer" && e.data["event"] == "start")
             .map(|e| e.now);
         let end = self
-            .events
+            .recorder
+            .events()
             .iter()
             .find(|e| e.kind == "timer" && e.data["event"] == "end")
             .map(|e| e.now);
         let last_pre = self
-            .events
+            .recorder
+            .events()
             .iter()
             .enumerate()
             .filter(|(_, e)| e.kind == "keydown" && start.is_some_and(|start| e.now < start))
             .map(|(i, _)| i)
             .next_back();
         let post_codes: Vec<_> = self
-            .events
+            .recorder
+            .events()
             .iter()
             .filter(|e| e.kind == "keydown" && end.is_some_and(|end| e.now > end))
             .map(|e| e.data["code"].clone())
             .collect();
         let mut index = 0;
-        self.events.retain(|e| {
+        self.recorder.retain(|e| {
             let current = index;
             index += 1;
             if let Some(start) = start
@@ -2025,13 +2007,8 @@ impl Session {
             }
             true
         });
-        self.last_event_order = self
-            .events
-            .iter()
-            .map(|event| (event.now, rank(&event.kind)))
-            .max_by(|a, b| a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)));
         self.live = crate::live::Live::default();
-        for event in &self.events {
+        for event in self.recorder.events() {
             self.live.record(
                 &event.kind,
                 event.now,
@@ -2042,12 +2019,14 @@ impl Session {
         }
     }
     fn origin(&self) -> f64 {
-        self.events
+        self.recorder
+            .events()
             .iter()
             .find(|e| e.kind == "timer" && e.data["event"] == "start")
             .map(|e| e.now)
             .unwrap_or_else(|| {
-                self.events
+                self.recorder
+                    .events()
                     .iter()
                     .map(|e| e.now)
                     .reduce(f64::min)
@@ -2062,7 +2041,7 @@ impl Session {
         }
     }
     pub fn log(&self) -> Value {
-        let mut events = self.events.clone();
+        let mut events = self.recorder.events().to_vec();
         events.sort_by(|a, b| {
             a.now
                 .total_cmp(&b.now)
