@@ -41,7 +41,7 @@ import { configEvent } from "#shared/events/config.ts";
 import * as AnalyticsController from "#shared/controllers/analytics-controller.ts";
 import { preloadResultHasher } from "../result/hash";
 
-import { highlight } from "#shared/states/keymap.ts";
+import { highlight } from "#features/typing/state/keymap.ts";
 import * as LazyModeState from "../remember-lazy-mode";
 
 import { getActiveFunboxesWithFunction } from "../funbox/list";

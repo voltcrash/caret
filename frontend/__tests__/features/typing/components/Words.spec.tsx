@@ -75,7 +75,7 @@ vi.mock("../../../../src/ts/controllers/sound-controller", () => mocks.sound);
 vi.mock("../../../../src/ts/controllers/theme-controller", () => ({
   randomizeTheme: vi.fn(),
 }));
-vi.mock("../../../../src/ts/states/keymap", () => ({
+vi.mock("../../../../src/features/typing/state/keymap", () => ({
   highlight: mocks.highlight,
 }));
 vi.mock(

@@ -1,10 +1,6 @@
 import { LayoutObject } from "@caret/schemas/layouts";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 
-import { Anime } from "#shared/components/common/anime/index.ts";
-import { Button } from "#shared/components/common/Button.tsx";
-import { getConfig } from "#shared/config/store.ts";
-import { showCommandLineForConfig } from "#shared/states/core.ts";
 import {
   FlashEntry,
   getKeymapFlashState,
@@ -12,8 +8,12 @@ import {
   getKeymapLayout,
   keymapLayoutObject,
   setKeymapFlashState,
-  wordsHaveNumbers,
-} from "#shared/states/test.ts";
+} from "#features/typing/state/keymap.ts";
+import { Anime } from "#shared/components/common/anime/index.ts";
+import { Button } from "#shared/components/common/Button.tsx";
+import { getConfig } from "#shared/config/store.ts";
+import { showCommandLineForConfig } from "#shared/states/core.ts";
+import { wordsHaveNumbers } from "#shared/states/test.ts";
 import { getTheme } from "#shared/states/theme.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { isMacLike } from "#shared/utils/misc.ts";

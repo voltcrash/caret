@@ -14,7 +14,7 @@ import { animateAsync } from "#shared/anim.ts";
 import { peekConfig } from "#shared/config/store.ts";
 import * as SoundController from "#shared/controllers/sound-controller.ts";
 import * as ThemeController from "#shared/controllers/theme-controller.ts";
-import { highlight } from "#shared/states/keymap.ts";
+import { highlight } from "#features/typing/state/keymap.ts";
 import { isTouchKeyboardFocused } from "#shared/input/input-element.ts";
 import * as CompositionState from "#shared/states/composition.ts";
 import * as ConnectionState from "#shared/states/connection.ts";

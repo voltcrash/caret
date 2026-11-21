@@ -130,7 +130,9 @@ vi.mock("../../../../../src/features/typing/runtime/test/logic", () => ({
   finish: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../../../src/ts/states/keymap", () => ({ flash: vi.fn() }));
+vi.mock("../../../../../src/features/typing/state/keymap", () => ({
+  flash: vi.fn(),
+}));
 vi.mock("../../../../../src/ts/states/notifications", async (original) => ({
   ...(await original<
     typeof import("../../../../../src/ts/states/notifications")

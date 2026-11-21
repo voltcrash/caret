@@ -16,7 +16,7 @@ import {
 import * as TestWords from "../test/words";
 import { getCurrentInput, getInputForWord } from "../events/data";
 import * as LayoutfluidFunboxTimer from "./layoutfluid-funbox-timer";
-import { highlight } from "#shared/states/keymap.ts";
+import { highlight } from "#features/typing/state/keymap.ts";
 import * as MemoryTimer from "./memory-funbox-timer";
 import { getActiveWordIndex } from "#shared/states/test.ts";
 import { FunboxName, KeymapLayout, Layout } from "@caret/schemas/configs";

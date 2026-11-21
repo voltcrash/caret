@@ -11,7 +11,7 @@ import {
 } from "#shared/states/notifications.ts";
 import * as Caret from "../caret";
 import * as SlowTimer from "../../state/slow-timer";
-import { highlight } from "#shared/states/keymap.ts";
+import { highlight } from "#features/typing/state/keymap.ts";
 import * as LayoutfluidFunboxTimer from "../funbox/layoutfluid-funbox-timer";
 import { KeymapLayout, Layout } from "@caret/schemas/configs";
 import * as SoundController from "#shared/controllers/sound-controller.ts";

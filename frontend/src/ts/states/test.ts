@@ -14,7 +14,6 @@ import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
 import { getLayout } from "../utils/json-data";
 import { mirrorLayoutKeys } from "../utils/key-converter";
-import { replaceUnderscoresWithSpaces } from "../utils/strings";
 import { useResourceWithPromise } from "../hooks/useResourceWithPromise";
 import { clearTimeouts } from "../utils/misc";
 export {
@@ -128,53 +127,6 @@ export const [currentLiveStats, setCurrentLiveStats] = createAppStore<{
   seconds?: number;
 }>({});
 
-export const getKeymapLayout = createAppMemo<{
-  layout: string;
-  layoutNameDisplayString: string;
-  isMirrored: boolean;
-}>(() => {
-  const isOverride = getConfig.keymapLayout === "overrideSync";
-  const raw = isOverride ? getConfig.layout : getConfig.keymapLayout;
-
-  const layout = raw === "default" ? "qwerty" : raw;
-  const layoutNameDisplayString = replaceUnderscoresWithSpaces(raw);
-  const isMirrored = getConfig.funbox.includes("layout_mirror");
-
-  return { layout: layout, layoutNameDisplayString, isMirrored };
-});
-
-const [getKeymapHighlightKey, setKeymapHighlightKey] = createAppSignal<
-  string | undefined
->(undefined);
-
-export { getKeymapHighlightKey };
-
-export type FlashEntry = { tick: number; correct: boolean };
-
-const [getKeymapFlashState, setKeymapFlashState] = createAppStore<
-  Record<string, FlashEntry | undefined>
->({});
-
-export { getKeymapFlashState, setKeymapFlashState };
-
-/** Highlights `key` (or, with a flash, clears the highlight) on the keymap. */
-export function showKeymapKey(
-  mode: "highlight" | "flash",
-  key: string,
-  correct?: boolean,
-): void {
-  const mappedKey = key === "" ? " " : key;
-  setKeymapHighlightKey(mode === "highlight" ? mappedKey : undefined);
-
-  if (mode === "flash" && getConfig.keymapMode === "react") {
-    const existing = getKeymapFlashState[mappedKey];
-    setKeymapFlashState(mappedKey, {
-      tick: existing ? existing.tick + 1 : 1,
-      correct: correct ?? true,
-    });
-  }
-}
-
 const getInputLayout = createAppMemo<{
   layout: string;
   isMirrored: boolean;
@@ -195,29 +147,7 @@ const inputLayout = createAppOwned(() =>
   }),
 );
 
-const keymapLayout = createAppOwned(() =>
-  useResourceWithPromise(getKeymapLayout, async (layout) => {
-    const result = await getLayout(layout.layout);
-    if (layout.isMirrored) {
-      return mirrorLayoutKeys(result);
-    }
-    return result;
-  }),
-);
 const inputLayoutObject = (): LayoutObject | undefined => inputLayout()[0]();
-export const keymapLayoutObject = (): LayoutObject | undefined =>
-  keymapLayout()[0]();
-
-/** Resolves once the current keymap layout has loaded. */
-export async function waitForKeymapLayout(): Promise<LayoutObject> {
-  await keymapLayout()[1].promise;
-  const result = keymapLayoutObject();
-  if (result === undefined) {
-    throw new Error("Failed to load keymap layout");
-  }
-  return result;
-}
-
 /** Resolves once the current input layout has loaded. */
 export async function waitForInputLayout(): Promise<LayoutObject> {
   await inputLayout()[1].promise;
