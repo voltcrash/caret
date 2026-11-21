@@ -1,6 +1,6 @@
 use crate::{
     EVENT_LOG_VERSION, Text,
-    recorder::{Recorded, Recorder, rank},
+    recorder::{Recorder, rank},
     round2,
     text::{delete_word, is_space, normalize},
 };
@@ -1285,14 +1285,7 @@ impl Session {
             }
         }
         let origin = self.origin();
-        let events = self
-            .recorder
-            .events()
-            .get(before..)
-            .unwrap_or_default()
-            .iter()
-            .map(|event| Self::event(event, origin))
-            .collect();
+        let events = self.recorder.since(before);
         Ok(Update {
             state: self.state(),
             input_display_value: self.clear_input_display.then(Text::default),
@@ -2019,26 +2012,7 @@ impl Session {
         }
     }
     fn origin(&self) -> f64 {
-        self.recorder
-            .events()
-            .iter()
-            .find(|e| e.kind == "timer" && e.data["event"] == "start")
-            .map(|e| e.now)
-            .unwrap_or_else(|| {
-                self.recorder
-                    .events()
-                    .iter()
-                    .map(|e| e.now)
-                    .reduce(f64::min)
-                    .unwrap_or(0.0)
-            })
-    }
-    fn event(event: &Recorded, origin: f64) -> Event {
-        Event {
-            kind: event.kind.clone(),
-            test_ms: round2(event.now - origin),
-            data: event.data.clone(),
-        }
+        self.recorder.origin()
     }
     pub fn log(&self) -> Value {
         let mut events = self.recorder.events().to_vec();
@@ -2057,7 +2031,7 @@ impl Session {
             other => other.into(),
         };
         let korean = self.korean;
-        let mut log = json!({"version":EVENT_LOG_VERSION,"events":events.iter().map(|event|Self::event(event,self.origin())).collect::<Vec<_>>(),
+        let mut log = json!({"version":EVENT_LOG_VERSION,"events":events.iter().map(|event|event.at(self.origin())).collect::<Vec<_>>(),
             "context":{"targetWords":self.words,"mode":self.config.mode,"mode2":mode2,"koreanStatus":korean,"bailedOut":self.bailed_out,"isFunboxWithNospacePropertyActive":self.nospace()}});
         if let Some(limit) = &self.custom_limit {
             log["context"]["customTextLimitMode"] = json!(limit.mode);

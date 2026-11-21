@@ -1,5 +1,5 @@
 //! Session event recording: ordered capture and event log materialization.
-use crate::round2;
+use crate::{round2, session::Event};
 use serde_json::Value;
 
 #[derive(Clone)]
@@ -7,6 +7,17 @@ pub(crate) struct Recorded {
     pub(crate) kind: String,
     pub(crate) now: f64,
     pub(crate) data: Value,
+}
+
+impl Recorded {
+    /// The wire event, timed from the log's `origin`.
+    pub(crate) fn at(&self, origin: f64) -> Event {
+        Event {
+            kind: self.kind.clone(),
+            test_ms: round2(self.now - origin),
+            data: self.data.clone(),
+        }
+    }
 }
 
 /// Sort rank among events sharing a timestamp: releases before presses before input.
@@ -50,6 +61,32 @@ impl Recorder {
             now: round2(now),
             data,
         });
+    }
+
+    /// The log's time origin: the timer start, else the earliest event.
+    pub(crate) fn origin(&self) -> f64 {
+        self.events
+            .iter()
+            .find(|e| e.kind == "timer" && e.data["event"] == "start")
+            .map(|e| e.now)
+            .unwrap_or_else(|| {
+                self.events
+                    .iter()
+                    .map(|e| e.now)
+                    .reduce(f64::min)
+                    .unwrap_or(0.0)
+            })
+    }
+
+    /// Wire events recorded after the first `count`, timed from the current origin.
+    pub(crate) fn since(&self, count: usize) -> Vec<Event> {
+        let origin = self.origin();
+        self.events
+            .get(count..)
+            .unwrap_or_default()
+            .iter()
+            .map(|event| event.at(origin))
+            .collect()
     }
 
     pub(crate) fn events(&self) -> &[Recorded] {
