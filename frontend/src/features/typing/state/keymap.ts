@@ -37,7 +37,7 @@ const [getKeymapFlashState, setKeymapFlashState] = createAppStore<
 export { getKeymapFlashState, setKeymapFlashState };
 
 /** Highlights `key` (or, with a flash, clears the highlight) on the keymap. */
-export function showKeymapKey(
+function showKeymapKey(
   mode: "highlight" | "flash",
   key: string,
   correct?: boolean,
