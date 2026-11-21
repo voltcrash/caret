@@ -325,6 +325,7 @@ function getCommands(): CommandsSubgroup {
       ...core.settings,
       ...contributedCommands("other"),
       ...core.other,
+      ...contributedCommands("end"),
     ],
   };
 }

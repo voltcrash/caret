@@ -68,3 +68,26 @@ it("uses the flattened list on the first single-list search", async () => {
     release();
   }
 });
+
+it("lists the typing event log command after navigation", async () => {
+  const lists = await import("../../src/ts/commandline/lists");
+  const { useTypingCommands } =
+    await import("../../src/features/typing/commands");
+  const { createRoot } = await import("solid-js");
+  const app = createTestApplication();
+  const release = mountApplication(app.application);
+  const dispose = createRoot((dispose) => {
+    useTypingCommands();
+    return dispose;
+  });
+  lists.setStackToDefault();
+  const ids = lists.getTopOfStack().list.map(({ id }) => id);
+  // Searching "stats" runs the first match: the account page, not a copy.
+  expect(ids.indexOf("viewAccount")).toBeGreaterThan(-1);
+  expect(ids.indexOf("copyResultStats")).toBeGreaterThan(
+    ids.indexOf("viewAccount"),
+  );
+  dispose();
+  app.dispose();
+  release();
+});

@@ -16,7 +16,9 @@ export function useTypingCommands(): void {
         result: ResultScreenCommands,
         test: [...QuoteFavoriteCommands, ...BailOutCommands],
         behavior: FunboxCommands,
-        other: [...LoadChallengeCommands, ...EventLogCommands],
+        other: LoadChallengeCommands,
+        // After navigation, so searching "stats" still opens the account page first.
+        end: EventLogCommands,
       },
       lists: {
         loadChallenge: LoadChallengeCommands[0]?.subgroup,
