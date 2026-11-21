@@ -3,7 +3,7 @@ import {
   showErrorNotification,
   showSuccessNotification,
 } from "#shared/states/notifications.ts";
-import { getLastEventLog } from "#shared/states/test.ts";
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 
 const commands: Command[] = [
   {

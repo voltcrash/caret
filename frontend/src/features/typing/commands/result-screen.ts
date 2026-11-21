@@ -11,7 +11,8 @@ import * as PractiseWords from "../runtime/content/practise-words";
 import { Command, CommandsSubgroup } from "#shared/commandline/types.ts";
 import * as TestScreenshot from "../runtime/test/screenshot";
 import { getInputHistory } from "#shared/engine/analysis.client.ts";
-import { getLastEventLog, getResultVisible } from "#shared/states/test.ts";
+import { getResultVisible } from "#shared/states/test.ts";
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 
 const practiceSubgroup: CommandsSubgroup = {
   title: "Practice words...",

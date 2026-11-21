@@ -2,13 +2,13 @@ import type { EventLog } from "@caret/web-shared/events/types";
 
 import { JSXElement, Show, createSignal, onCleanup } from "solid-js";
 
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
 import { Button } from "#shared/components/common/Button.tsx";
 import { getInspection } from "#shared/engine/analysis.client.ts";
 import { getBrowserAudit } from "#shared/engine/audit.client.ts";
 import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { hideModal } from "#shared/states/modals.ts";
-import { getLastEventLog } from "#shared/states/test.ts";
 
 import {
   getError,

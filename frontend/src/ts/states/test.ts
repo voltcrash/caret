@@ -1,7 +1,6 @@
 import { createAppOwned } from "../../app/application";
 import { createAppSignal } from "../../app/state";
 import { onCleanup } from "solid-js";
-import { EventLog } from "@caret/web-shared/events/types";
 
 import { CompletedEvent } from "@caret/schemas/results";
 
@@ -53,6 +52,3 @@ export const [getCurrentQuote, setCurrentQuote] =
 
 export const [getLastSignedOutResult, setLastSignedOutResult] =
   createAppSignal<CompletedEvent | null>(null);
-
-export const [getLastEventLog, setLastEventLog] =
-  createAppSignal<EventLog | null>(null);

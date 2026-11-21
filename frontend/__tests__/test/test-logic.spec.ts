@@ -69,12 +69,20 @@ vi.mock("../../src/ts/states/test", async () => ({
   ...(await import("../../src/ts/states/test-lifecycle/controller"))
     .lifecycleSelectors,
   getCurrentQuote: () => mocks.quote,
-  setLastEventLog: vi.fn(),
   setLastSignedOutResult: mocks.signedOut,
   setWordsHaveNewline: vi.fn(),
   setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
 }));
+vi.mock(
+  "../../src/features/typing/state/event-log",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/event-log")
+    >()),
+    setLastEventLog: vi.fn(),
+  }),
+);
 vi.mock(
   "../../src/features/typing/state/last-result",
   async (importOriginal) => ({

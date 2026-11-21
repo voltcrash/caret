@@ -31,8 +31,16 @@ const testState = vi.hoisted(() => ({ activeWordIndex: 0 }));
 vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   getResultVisible: () => true,
-  getLastEventLog: () => [],
 }));
+vi.mock(
+  "../../src/features/typing/state/event-log",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../src/features/typing/state/event-log")
+    >()),
+    getLastEventLog: () => [],
+  }),
+);
 vi.mock(
   "../../src/features/typing/state/active-word",
   async (importOriginal) => ({

@@ -16,9 +16,16 @@ vi.mock("../../../../../src/features/typing/runtime/result/screen", () => ({
 vi.mock("../../../../../src/ts/engine/analysis.client", () => ({
   getWordIndexesForSecond: mocks.getWordIndexesForSecond,
 }));
-vi.mock("../../../../../src/ts/states/test", () => ({
-  getLastEventLog: () => [],
-}));
+vi.mock("../../../../../src/ts/states/test", () => ({}));
+vi.mock(
+  "../../../../../src/features/typing/state/event-log",
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import("../../../../../src/features/typing/state/event-log")
+    >()),
+    getLastEventLog: () => [],
+  }),
+);
 vi.mock("../../../../../src/ts/components/common/ChartJs", () => ({
   ChartJs: (props: {
     id: string;

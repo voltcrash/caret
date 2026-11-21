@@ -10,12 +10,12 @@ import { For, JSXElement, onCleanup, Show } from "solid-js";
 
 import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 import { ChartJs } from "#shared/components/common/ChartJs.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { Theme } from "#shared/constants/themes.ts";
 import { getWordIndexesForSecond } from "#shared/engine/analysis.client.ts";
 import { createDebouncedEffectOn } from "#shared/hooks/effects.ts";
-import { getLastEventLog } from "#shared/states/test.ts";
 import { getTheme } from "#shared/states/theme.ts";
 import * as Arrays from "#shared/utils/arrays.ts";
 import { cn } from "#shared/utils/cn.ts";

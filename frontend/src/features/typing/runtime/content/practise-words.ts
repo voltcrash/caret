@@ -12,7 +12,7 @@ import { configEvent } from "#shared/events/config.ts";
 import { Mode } from "@caret/schemas/shared";
 import { CustomTextSettings } from "@caret/schemas/results";
 import { setCustomTextIndicator } from "#shared/states/core.ts";
-import { getLastEventLog } from "#shared/states/test.ts";
+import { getLastEventLog } from "#features/typing/state/event-log.ts";
 import {
   practiceHistory,
   type PracticeWord,
