@@ -89,6 +89,7 @@ it("lists the typing event log command among the debug commands", async () => {
     "copyResultStats",
     "fpsCounter",
   ]);
+  expect(ids).toContain("viewAccount");
   expect(ids.indexOf("viewAccount")).toBeLessThan(index);
   dispose();
   app.dispose();
