@@ -2,7 +2,7 @@ import { applyReducedMotion } from "#shared/utils/misc.ts";
 import { hasClassName } from "#shared/utils/cn.ts";
 import { CaretStyle } from "@caret/schemas/configs";
 import { peekConfig } from "#shared/config/store.ts";
-import { countCodePoints, isWordRightToLeft } from "#shared/utils/strings.ts";
+import { countCodePoints } from "#shared/utils/strings.ts";
 import {
   cancelPendingAnimationFrame,
   requestDebouncedAnimationFrame,
@@ -11,30 +11,23 @@ import { animate, EasingParam, JSAnimation } from "animejs";
 import { caretGlideEasing, linearEasing } from "./caret-easing";
 import { CaretGlide } from "./caret-glide";
 
-import {
-  getWordsElement as getWordsCache,
-  getWordsWrapperElement as getWordsWrapperCache,
-} from "#features/typing/state/test-dom.ts";
 import * as TestWords from "../../runtime/test/words";
 import { getWordElement } from "./elements";
-import { isCaretDebugEnabled } from "./caret/debug";
-import { getTotalInlineMargin, setCaretClass } from "./caret/dom";
+import { setCaretClass } from "./caret/dom";
+import {
+  getCaretTargetPositionAndWidth,
+  isFullWidthCaretStyle,
+  lockedMainCaretInTape,
+} from "./caret/geometry";
 
 export { toggleCaretDebug } from "./caret/debug";
 
-const fullWidthStyles: ReadonlySet<CaretStyle> = new Set([
-  "block",
-  "outline",
-  "underline",
-]);
 const smoothCaretDurations: Readonly<Record<string, number>> = {
   off: 0,
   slow: 150,
   medium: 100,
   fast: 85,
 };
-
-const lockedMainCaretInTape = true;
 
 /** Positions and animates one caret node owned by the Caret component. */
 export class CaretController {
@@ -123,7 +116,7 @@ export class CaretController {
   }
 
   public isFullWidth(): boolean {
-    return fullWidthStyles.has(this.style);
+    return isFullWidthCaretStyle(this.style);
   }
 
   public setPosition(options: {
@@ -327,14 +320,25 @@ export class CaretController {
 
       if (word === null) return;
 
-      const { left, top, width } = this.getTargetPositionAndWidth({
-        word,
-        letterIndex: options.letterIndex,
-        wordText,
-        side,
-        isLanguageRightToLeft: options.isLanguageRightToLeft,
-        isDirectionReversed: options.isDirectionReversed,
-      });
+      const { left, top, width } = getCaretTargetPositionAndWidth(
+        {
+          id: this.id,
+          element: this.element,
+          style: this.style,
+          isMainCaret: this.isMainCaret,
+          wordMargins: this.wordMargins,
+          getWidth: () => this.getWidth(),
+          getHeight: () => this.getHeight(),
+        },
+        {
+          word,
+          letterIndex: options.letterIndex,
+          wordText,
+          side,
+          isLanguageRightToLeft: options.isLanguageRightToLeft,
+          isDirectionReversed: options.isDirectionReversed,
+        },
+      );
 
       // margin animations use inline styles, so its fine to read inline here
       // instead of computed styles which would be much slower
@@ -379,192 +383,5 @@ export class CaretController {
         this.setPosition(animateOrPositionOptions);
       }
     });
-  }
-
-  private getTargetPositionAndWidth(options: {
-    word: HTMLElement;
-    letterIndex: number;
-    wordText: string;
-    side: "beforeLetter" | "afterLetter";
-    isLanguageRightToLeft: boolean;
-    isDirectionReversed: boolean;
-  }): { left: number; top: number; width: number } {
-    // Live collection: indexed reads only, no per-move NodeList copy.
-    const letters = options.word.getElementsByTagName(
-      "letter",
-    ) as HTMLCollectionOf<HTMLElement>;
-
-    if (letters.length === 0) {
-      throw new Error(
-        "Caret getTargetPositionAndWidth: no letters found in word",
-      );
-    }
-
-    // Letters may lag the target index for a frame; clamp to rendered ones.
-    const letterIndex = Math.min(options.letterIndex, letters.length - 1);
-    let letter = letters[letterIndex];
-
-    if (!letter) {
-      throw new Error(
-        `Caret getTargetPositionAndWidth: letter not found for index ${options.letterIndex}`,
-      );
-    }
-
-    if (isCaretDebugEnabled()) {
-      if (this.id === "paceCaret") {
-        for (const l of getWordsCache().querySelectorAll<HTMLElement>(
-          ".word letter",
-        )) {
-          setCaretClass(l, "debugCaretTarget", false);
-          setCaretClass(l, "debugCaretTarget2", false);
-          setCaretClass(l, "debugCaret", true);
-        }
-        setCaretClass(letter, "debugCaretTarget", true);
-        setCaretClass(this.element, "debug", true);
-      }
-    } else {
-      setCaretClass(this.element, "debug", false);
-    }
-
-    // in zen, custom or polyglot mode we need to check per-letter
-    const checkRtlByLetter =
-      peekConfig().mode === "zen" ||
-      peekConfig().mode === "custom" ||
-      peekConfig().funbox.includes("polyglot");
-    const [isWordRTL, isFullMatch] = isWordRightToLeft(
-      checkRtlByLetter ? (letter.textContent ?? "") : options.wordText,
-      options.isLanguageRightToLeft,
-      options.isDirectionReversed,
-    );
-
-    //if the letter is not visible, use the closest visible letter
-    const isLetterVisible = letter.offsetWidth > 0;
-    if (!isLetterVisible) {
-      for (let i = letterIndex - 1; i >= 0; i--) {
-        const loopLetter = letters[i] as HTMLElement;
-
-        // find the closest visible letter before the current letter
-        if (loopLetter.offsetWidth > 0) {
-          letter = loopLetter;
-          break;
-        }
-      }
-      if (isCaretDebugEnabled()) {
-        setCaretClass(letter, "debugCaretTarget2", true);
-      }
-    }
-
-    let spaceWidth = this.wordMargins.get(options.word);
-    if (spaceWidth === undefined) {
-      spaceWidth = getTotalInlineMargin(options.word);
-      this.wordMargins.set(options.word, spaceWidth);
-    }
-    let width = spaceWidth;
-    if (this.isFullWidth() && options.side === "beforeLetter") {
-      width = letter.offsetWidth;
-    }
-
-    let left = 0;
-    let top = 0;
-
-    const tapeOffset =
-      getWordsWrapperCache().offsetWidth * (peekConfig().tapeMargin / 100);
-
-    // yes, this is all super verbose, but its easier to maintain and understand
-    if (isWordRTL) {
-      if (!checkRtlByLetter && isFullMatch) {
-        setCaretClass(options.word, "wordRtl", true);
-      }
-      let afterLetterCorrection = 0;
-      if (options.side === "afterLetter") {
-        if (this.isFullWidth()) {
-          afterLetterCorrection += spaceWidth * -1;
-        } else {
-          afterLetterCorrection += letter.offsetWidth * -1;
-        }
-      }
-      if (peekConfig().tapeMode === "off") {
-        if (!this.isFullWidth()) {
-          left += letter.offsetWidth;
-        }
-        left += letter.offsetLeft;
-        left += options.word.offsetLeft;
-        left += afterLetterCorrection;
-      } else if (peekConfig().tapeMode === "word") {
-        if (!this.isFullWidth()) {
-          left += letter.offsetWidth;
-        }
-        left += options.word.offsetWidth * -1;
-        left += letter.offsetLeft;
-        left += afterLetterCorrection;
-        if (this.isMainCaret && lockedMainCaretInTape) {
-          left += getWordsWrapperCache().offsetWidth - tapeOffset;
-        } else {
-          left += options.word.offsetLeft;
-          left += options.word.offsetWidth;
-        }
-      } else if (peekConfig().tapeMode === "letter") {
-        if (this.isFullWidth()) {
-          left += width * -1;
-        }
-        if (this.isMainCaret && lockedMainCaretInTape) {
-          left += getWordsWrapperCache().offsetWidth - tapeOffset;
-        } else {
-          left += letter.offsetLeft;
-          left += options.word.offsetLeft;
-          left += afterLetterCorrection;
-          left += width;
-        }
-      }
-    } else {
-      let afterLetterCorrection = 0;
-      if (options.side === "afterLetter") {
-        afterLetterCorrection += letter.offsetWidth;
-      }
-      if (peekConfig().tapeMode === "off") {
-        left += letter.offsetLeft;
-        left += options.word.offsetLeft;
-        left += afterLetterCorrection;
-      } else if (peekConfig().tapeMode === "word") {
-        left += letter.offsetLeft;
-        left += afterLetterCorrection;
-        if (this.isMainCaret && lockedMainCaretInTape) {
-          left += tapeOffset;
-        } else {
-          left += options.word.offsetLeft;
-        }
-      } else if (peekConfig().tapeMode === "letter") {
-        if (this.isMainCaret && lockedMainCaretInTape) {
-          left += tapeOffset;
-        } else {
-          left += letter.offsetLeft;
-          left += options.word.offsetLeft;
-          left += afterLetterCorrection;
-        }
-      }
-    }
-
-    //top position
-    top += letter.offsetTop;
-    top += options.word.offsetTop;
-
-    if (this.style === "underline") {
-      // if style is underline, add the height of the letter to the top
-      top += letter.offsetHeight;
-    } else {
-      // else center vertically in the letter
-      top += (letter.offsetHeight - this.getHeight()) / 2;
-    }
-
-    // also center horizontally
-    if (!this.isFullWidth()) {
-      left += (this.getWidth() / 2) * -1;
-    }
-
-    return {
-      left,
-      top,
-      width,
-    };
   }
 }
