@@ -11,7 +11,7 @@ export type DBReport = {
   comment: string;
 };
 
-export type DBQuoteApproval = {
+type DBQuoteApproval = {
   editQuote?: string;
   editSource?: string;
   approvedBy: string;
