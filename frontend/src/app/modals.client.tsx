@@ -57,7 +57,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("PbTables", async () =>
-    import("../ts/components/modals/PbTablesModal").then(
+    import("../features/profile/components/PbTablesModal").then(
       (m) => m.PbTablesModal,
     ),
   ),

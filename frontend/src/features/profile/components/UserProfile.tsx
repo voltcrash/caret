@@ -6,9 +6,9 @@ import {
 import { formatDate } from "date-fns/format";
 import { createMemo, For, JSXElement, Show } from "solid-js";
 
+import { showPbTablesModal } from "#features/profile/state/pb-tables-modal.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { getFormatting } from "#shared/states/core.ts";
-import { showPbTablesModal } from "#shared/states/pb-tables-modal.ts";
 import { formatTopPercentage } from "#shared/utils/misc.ts";
 
 import { ActivityCalendar } from "./ActivityCalendar";

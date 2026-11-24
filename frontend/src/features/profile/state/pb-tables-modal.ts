@@ -1,8 +1,8 @@
-import { createAppSignal } from "../../app/state";
+import { createAppSignal } from "#app/state.ts";
 
 import { Mode, PersonalBests } from "@caret/schemas/shared";
 
-import { showModal } from "./modals";
+import { showModal } from "#shared/states/modals.ts";
 
 const [pbTablesMode, setPbTablesMode] = createAppSignal<Mode>("time");
 const [pbTablesBests, setPbTablesBests] =
