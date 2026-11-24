@@ -18,6 +18,7 @@ import type { PartialConfig } from "@caret/schemas/configs";
 import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
+import type { DBReport } from "./payloads";
 
 const id = () => text("id").primaryKey();
 const json = <T = Record<string, unknown>>(name = "data") =>
@@ -246,7 +247,7 @@ export const reports = pgTable(
     contentId: text("content_id").notNull(),
     type: text("type").notNull(),
     timestamp: integer("timestamp").notNull(),
-    data: json(),
+    data: json<DBReport>(),
   },
   (t) => [
     index("reports_content_idx").on(t.contentId),
