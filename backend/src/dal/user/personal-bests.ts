@@ -128,9 +128,9 @@ export async function getPersonalBests(
   _client: Client = "web",
 ): Promise<PersonalBest> {
   const user = await getUser(uid, "get personal bests");
-  const modeBests: Record<string, PersonalBest[] | undefined> =
+  const modeBests: Record<string, PersonalBest[] | undefined> | undefined =
     user.personalBests[mode];
   return (mode2 === undefined
     ? modeBests
-    : modeBests[mode2]) as unknown as PersonalBest;
+    : modeBests?.[mode2]) as unknown as PersonalBest;
 }
