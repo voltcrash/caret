@@ -204,3 +204,82 @@ impl Config {
         self.language.starts_with("code")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Config;
+
+    #[test]
+    fn default_config_is_valid() {
+        assert!(Config::default().validate().is_ok());
+    }
+
+    #[test]
+    fn validate_rejects_invalid_fields() {
+        let mut config = Config {
+            mode: "invalid".into(),
+            ..Config::default()
+        };
+        assert_eq!(config.validate(), Err("Invalid mode".into()));
+
+        config = Config {
+            time: -1.0,
+            ..Config::default()
+        };
+        assert_eq!(config.validate(), Err("Invalid time limit".into()));
+
+        config = Config {
+            min_acc_custom: 101.0,
+            ..Config::default()
+        };
+        assert_eq!(config.validate(), Err("Invalid minimum threshold".into()));
+
+        config = Config {
+            language: "bad-lang!".into(),
+            ..Config::default()
+        };
+        assert_eq!(config.validate(), Err("Invalid language".into()));
+
+        config = Config {
+            funbox: vec!["nonexistent_funbox".into()],
+            ..Config::default()
+        };
+        assert_eq!(config.validate(), Err("Invalid funbox list".into()));
+
+        config = Config {
+            quote_length: vec![99],
+            ..Config::default()
+        };
+        assert_eq!(
+            config.validate(),
+            Err("Invalid content selection bound".into())
+        );
+    }
+
+    #[test]
+    fn helpers_reflect_mode_language_and_expansions() {
+        let mut config = Config::default();
+        assert!(!config.all_words_generated_initially());
+        assert!(config.monitors_drift());
+        assert!(!config.is_code_language());
+        assert_eq!(config.expansion(0x2026, Some(b'.' as u16)), Some("..."));
+        assert_eq!(config.expansion(0x2026, Some(0x2026)), None);
+        assert_eq!(config.expansion(0x0133, Some(b'i' as u16)), None);
+
+        config.mode = "words".into();
+        config.words = 50;
+        assert!(config.all_words_generated_initially());
+        assert!(config.monitors_drift());
+
+        config.words = 0;
+        assert!(!config.all_words_generated_initially());
+        assert!(!config.monitors_drift());
+
+        config.language = "dutch_1k".into();
+        assert_eq!(config.expansion(0x0133, Some(b'i' as u16)), Some("ij"));
+        assert_eq!(config.expansion(0x0133, Some(0x0133)), None);
+
+        config.language = "code_rust".into();
+        assert!(config.is_code_language());
+    }
+}

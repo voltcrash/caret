@@ -45,3 +45,64 @@ impl DriftTracker {
         false
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::DriftTracker;
+
+    #[test]
+    fn records_last_drift_without_flagging_when_disabled_or_ineligible() {
+        let mut tracker = DriftTracker::default();
+        assert!(!tracker.record(600.0, true));
+        assert_eq!(tracker.last_drift(), Some(600.0));
+        assert!(!tracker.slow_timer());
+
+        tracker.set_monitoring(true);
+        assert!(!tracker.record(600.0, false));
+        assert!(!tracker.slow_timer());
+    }
+
+    #[test]
+    fn flags_slow_timer_above_125ms_and_fails_above_500ms() {
+        let mut tracker = DriftTracker::default();
+        tracker.set_monitoring(true);
+
+        assert!(!tracker.record(125.0, true));
+        assert!(!tracker.slow_timer());
+
+        assert!(!tracker.record(126.0, true));
+        assert!(tracker.slow_timer());
+
+        assert!(tracker.record(501.0, true));
+    }
+
+    #[test]
+    fn fails_after_more_than_five_ticks_above_250ms() {
+        let mut tracker = DriftTracker::default();
+        tracker.set_monitoring(true);
+
+        for _ in 0..5 {
+            assert!(!tracker.record(251.0, true));
+            assert!(tracker.slow_timer());
+        }
+        assert!(tracker.record(251.0, true));
+    }
+
+    #[test]
+    fn reset_run_and_clear_last_clear_only_their_fields() {
+        let mut tracker = DriftTracker::default();
+        tracker.set_monitoring(true);
+        assert!(!tracker.record(260.0, true));
+        assert!(tracker.slow_timer());
+        assert_eq!(tracker.last_drift(), Some(260.0));
+
+        tracker.clear_last();
+        assert_eq!(tracker.last_drift(), None);
+        assert!(tracker.slow_timer());
+
+        tracker.reset_run();
+        assert!(!tracker.slow_timer());
+        // Monitoring setting persists across runs.
+        assert!(tracker.record(501.0, true));
+    }
+}
