@@ -9,9 +9,9 @@ mod result;
 mod settings;
 mod test;
 
-use chrome::{footer, header};
 use crate::theme::Palette;
 use crate::{engine::EngineHost, local::Local, setup::Setup};
+use chrome::{footer, header};
 use ratatui::{
     Frame,
     layout::{Alignment, Constraint, Layout},

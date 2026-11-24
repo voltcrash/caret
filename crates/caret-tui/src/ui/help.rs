@@ -9,12 +9,7 @@ use ratatui::{
 };
 
 /// Keybind reference grouped like web keytips, plus negotiated terminal capabilities.
-pub(super) fn draw(
-    frame: &mut Frame,
-    area: Rect,
-    capabilities: &Capabilities,
-    palette: &Palette,
-) {
+pub(super) fn draw(frame: &mut Frame, area: Rect, capabilities: &Capabilities, palette: &Palette) {
     let area = column(area, 100);
     let groups: [(&str, &[(&str, &str)]); 4] = [
         (

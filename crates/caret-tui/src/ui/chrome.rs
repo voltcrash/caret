@@ -247,7 +247,11 @@ pub(super) fn config_bar(
 }
 
 /// Label over value, as in the web result's small stat groups.
-pub(super) fn stat(label: &str, value: Vec<Line<'static>>, palette: &Palette) -> Paragraph<'static> {
+pub(super) fn stat(
+    label: &str,
+    value: Vec<Line<'static>>,
+    palette: &Palette,
+) -> Paragraph<'static> {
     let mut lines = vec![Line::styled(label.to_string(), Palette::fg(palette.sub))];
     lines.extend(
         value
