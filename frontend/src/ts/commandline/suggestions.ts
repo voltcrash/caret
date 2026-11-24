@@ -12,7 +12,7 @@ import { areUnsortedArraysEqual } from "../utils/arrays";
 
 import { intersect } from "@caret/util/arrays";
 
-import { isInputElementFocused } from "../input/input-element";
+import { isTypingInputFocused } from "../typing-host";
 
 import { setTestFocusState } from "../states/test";
 
@@ -29,7 +29,7 @@ function removeCommandlineBackground(): void {
 export function addCommandlineBackground(): void {
   const commandlineState = getCommandlineState();
   commandlineState.noBackground = false;
-  if (!isInputElementFocused()) {
+  if (!isTypingInputFocused()) {
     setTestFocusState("unfocused");
   }
 }

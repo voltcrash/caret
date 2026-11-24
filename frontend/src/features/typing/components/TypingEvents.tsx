@@ -1,10 +1,10 @@
 import { debounce, throttle } from "@caret/util/timing";
 import { onCleanup, onMount } from "solid-js";
 
+import { isInputElementFocused } from "#features/typing/input/input-element.ts";
 import { peekConfig } from "#shared/config/store.ts";
 import { ModifierKeys } from "#shared/constants/modifier-keys.ts";
 import { updateCurrentCode } from "#shared/controllers/sound-controller.ts";
-import { isInputElementFocused } from "#shared/input/input-element.ts";
 import { getCustomTextIndicator } from "#shared/states/core.ts";
 import { isAnyPopupVisible } from "#shared/states/overlay-visibility.ts";
 import {

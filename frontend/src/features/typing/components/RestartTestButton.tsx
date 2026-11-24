@@ -1,8 +1,8 @@
 import { JSXElement } from "solid-js";
 
+import { focusInputElement } from "#features/typing/input/input-element.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { getConfig } from "#shared/config/store.ts";
-import { focusInputElement } from "#shared/input/input-element.ts";
 import {
   getFocus,
   isResultCalculating,

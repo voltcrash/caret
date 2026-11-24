@@ -1,5 +1,6 @@
 import { bindTypingHost } from "../../ts/typing-host";
 import { updateHintsPositionDebounced } from "./components/words/hints";
+import { isInputElementFocused } from "./input/input-element";
 import * as Focus from "./runtime/focus";
 import * as PaceCaret from "./runtime/pace-caret";
 import { isNoQuitActive } from "./runtime/session.client";
@@ -15,5 +16,6 @@ export function bindTypingRouteHost(): () => void {
     reloadPaceCaret: async () => PaceCaret.init(),
     updateHints: () => void updateHintsPositionDebounced(),
     isNoQuitActive,
+    isInputFocused: isInputElementFocused,
   });
 }

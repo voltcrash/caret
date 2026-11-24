@@ -13,7 +13,7 @@ import {
 // these tests assert the actual events onInsertText emits.
 const inputEl = vi.hoisted(() => ({ value: " " }));
 
-vi.mock("../../../../../src/ts/input/input-element", () => ({
+vi.mock("../../../../../src/features/typing/input/input-element", () => ({
   getInputElementValue: () => ({
     inputValue: inputEl.value.slice(1),
     realInputValue: inputEl.value,

@@ -10,10 +10,10 @@ import {
 
 import type { FaObject } from "#shared/types/font-awesome.d.ts";
 
+import { holdKeyboardForRestart } from "#features/typing/input/input-element.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { getConfig } from "#shared/config/store.ts";
-import { holdKeyboardForRestart } from "#shared/input/input-element.ts";
 import { getIsScreenshotting } from "#shared/states/core.ts";
 import { showModal } from "#shared/states/modals.ts";
 import { showNoticeNotification } from "#shared/states/notifications.ts";

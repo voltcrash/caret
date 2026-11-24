@@ -22,7 +22,7 @@ import {
   getActiveWordIndex,
   setActiveWordIndex,
 } from "#features/typing/state/active-word.ts";
-import { setInputElementValue } from "#shared/input/input-element.ts";
+import { setInputElementValue } from "#features/typing/input/input-element.ts";
 import {
   setAwaitingNextWord,
   incrementIncorrectShiftsInARow,

@@ -15,6 +15,7 @@ export function bindTestTypingHost(
     reloadPaceCaret: vi.fn(async () => undefined),
     updateHints: vi.fn(),
     isNoQuitActive: () => false,
+    isInputFocused: () => false,
     ...overrides,
   });
 }

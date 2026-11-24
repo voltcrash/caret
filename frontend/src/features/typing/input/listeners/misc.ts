@@ -1,6 +1,6 @@
 import { isDebugLogging } from "#shared/utils/logger.ts";
 import { useInputListener } from "#shared/hooks/useInputListener.ts";
-import { moveInputElementCaretToTheEnd } from "#shared/input/input-element.ts";
+import { moveInputElementCaretToTheEnd } from "#features/typing/input/input-element.ts";
 
 export function bindMiscListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "focus", () => {

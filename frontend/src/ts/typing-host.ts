@@ -13,6 +13,7 @@ type TypingHost = {
   reloadPaceCaret: () => Promise<void>;
   updateHints: () => void;
   isNoQuitActive: () => boolean;
+  isInputFocused: () => boolean;
 };
 
 // Reactive so derived state (hotkeys, palette behavior) follows mounts.
@@ -49,4 +50,9 @@ export function updateTestHints(): void {
 /** Whether the running test forbids quitting; false off the typing route. */
 export function isNoQuitActive(): boolean {
   return untrack(getHost)?.isNoQuitActive() ?? false;
+}
+
+/** Whether the typing input element has focus; false off the typing route. */
+export function isTypingInputFocused(): boolean {
+  return untrack(getHost)?.isInputFocused() ?? false;
 }

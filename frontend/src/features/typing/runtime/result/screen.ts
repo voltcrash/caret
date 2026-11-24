@@ -58,7 +58,7 @@ import { CompletedEvent } from "@caret/schemas/results";
 
 import { canQuickRestart as canQuickRestartFn } from "../quick-restart";
 
-import { blurInputElement } from "#shared/input/input-element.ts";
+import { blurInputElement } from "#features/typing/input/input-element.ts";
 import * as ConnectionState from "#shared/states/connection.ts";
 
 import { getCurrentQuote } from "#shared/states/test.ts";

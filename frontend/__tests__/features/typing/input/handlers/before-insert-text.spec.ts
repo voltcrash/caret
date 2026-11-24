@@ -15,7 +15,7 @@ const mockState = vi.hoisted(() => ({
   wrapsToNextLine: false,
 }));
 
-vi.mock("../../../../../src/ts/input/input-element", () => ({
+vi.mock("../../../../../src/features/typing/input/input-element", () => ({
   getInputElementValue: () => ({
     inputValue: mockState.inputValue,
     realInputValue: ` ${mockState.inputValue}`,

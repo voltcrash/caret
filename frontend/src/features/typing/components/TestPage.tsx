@@ -2,10 +2,10 @@ import { createMemo, JSXElement, onCleanup, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
 import { isTypingReady } from "#app/startup.ts";
+import { isInputElementFocused } from "#features/typing/input/input-element.ts";
 import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { getConfig } from "#shared/config/store.ts";
 import { getBrowserEngine } from "#shared/engine/owner.client.ts";
-import { isInputElementFocused } from "#shared/input/input-element.ts";
 import { isWordsWrapperVisible } from "#shared/states/funbox.ts";
 import { setTestElements } from "#shared/states/test-dom.ts";
 import { getTestInitError, isTestRestarting } from "#shared/states/test.ts";

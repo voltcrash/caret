@@ -39,7 +39,7 @@ vi.mock("../../../../src/ts/config/store", () => ({
     return () => storedConfig;
   })(),
 }));
-vi.mock("../../../../src/ts/input/input-element", () => ({
+vi.mock("../../../../src/features/typing/input/input-element", () => ({
   isInputElementFocused: () => state.focused,
 }));
 vi.mock("../../../../src/ts/states/test", () => ({

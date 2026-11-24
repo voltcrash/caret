@@ -1,6 +1,6 @@
 import { encodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "../../runtime/session.client";
-import { getInputElementValue } from "#shared/input/input-element.ts";
+import { getInputElementValue } from "#features/typing/input/input-element.ts";
 import type { DeleteInputType } from "../helpers/input-type";
 import { observeInputView } from "./before-insert-text";
 

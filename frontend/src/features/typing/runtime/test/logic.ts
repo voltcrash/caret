@@ -52,7 +52,7 @@ import { getActiveFunboxesWithFunction } from "../funbox/list";
 
 import * as CompositionState from "#shared/states/composition.ts";
 
-import { setInputElementValue } from "#shared/input/input-element.ts";
+import { setInputElementValue } from "#features/typing/input/input-element.ts";
 import { debounce } from "@caret/util/timing";
 import { typedKeys } from "@caret/util/objects";
 import { sharedConfigMetadata } from "@caret/web-shared/config/metadata";

@@ -4,10 +4,10 @@ import { z } from "zod";
 
 import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
+import { getInputElement } from "#features/typing/input/input-element.ts";
 import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
 import { Button } from "#shared/components/common/Button.tsx";
 import { addXp } from "#shared/db.ts";
-import { getInputElement } from "#shared/input/input-element.ts";
 import { hideModal, showModal } from "#shared/states/modals.ts";
 import {
   showErrorNotification,

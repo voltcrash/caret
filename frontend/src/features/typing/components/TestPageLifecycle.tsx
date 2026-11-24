@@ -1,7 +1,7 @@
 import { onCleanup, onMount } from "solid-js";
 
+import { isInputElementFocused } from "#features/typing/input/input-element.ts";
 import { peekConfig } from "#shared/config/store.ts";
-import { isInputElementFocused } from "#shared/input/input-element.ts";
 import {
   getResultVisible,
   isTestActive,

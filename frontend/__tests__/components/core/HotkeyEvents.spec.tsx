@@ -18,8 +18,8 @@ vi.mock("../../../src/ts/config/store", () => ({
 vi.mock("../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => false,
 }));
-vi.mock("../../../src/ts/input/input-element", () => ({
-  isInputElementFocused: () => false,
+vi.mock("../../../src/ts/typing-host", () => ({
+  isTypingInputFocused: () => false,
 }));
 vi.mock("../../../src/ts/states/composition", () => ({ getData: () => "" }));
 vi.mock("../../../src/app/navigate", () => ({ navigate: vi.fn() }));
