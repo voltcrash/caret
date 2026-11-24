@@ -33,8 +33,7 @@ import type {
 } from "./payloads";
 
 const id = () => text("id").primaryKey();
-const json = <T = Record<string, unknown>>(name = "data") =>
-  jsonb(name).$type<T>().notNull();
+const json = <T>(name = "data") => jsonb(name).$type<T>().notNull();
 const date = (name: string) =>
   timestamp(name, { withTimezone: true, mode: "date", precision: 3 }).notNull();
 const integer = (name: string) => bigint(name, { mode: "number" });
