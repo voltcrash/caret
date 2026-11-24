@@ -1,17 +1,11 @@
-import { Component, For, JSXElement, lazy, Show } from "solid-js";
+import { createMemo, For, JSXElement, Show } from "solid-js";
 
-import { ModalId, getModalVisibility } from "../ts/states/modals";
-
-function lazyModal(
-  id: ModalId,
-  load: () => Promise<Component>,
-): { id: ModalId; Component: ReturnType<typeof lazy<Component>> } {
-  return { id, Component: lazy(async () => ({ default: await load() })) };
-}
+import { getModalVisibility } from "../ts/states/modals";
+import { contributedModals, lazyModal } from "./modal-registry";
 
 // Loaded on first open to keep them out of the
 // startup bundle. Nested modals live in their parent's chunk.
-const lazyModals = [
+const coreModals = [
   lazyModal("Cookies", async () =>
     import("../ts/components/modals/CookiesModal").then((m) => m.CookiesModal),
   ),
@@ -109,8 +103,10 @@ const lazyModals = [
 ];
 
 export function Modals(): JSXElement {
+  const modals = createMemo(() => [...coreModals, ...contributedModals("app")]);
+
   return (
-    <For each={lazyModals}>
+    <For each={modals()}>
       {(modal) => (
         <Show when={getModalVisibility(modal.id) !== null}>
           <modal.Component />
