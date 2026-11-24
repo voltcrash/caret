@@ -366,6 +366,122 @@ describe("Better Auth social-only HTTP flow", () => {
     });
     expect(response.status).toBe(404);
   });
+  it("encrypts OAuth access and refresh tokens and drops ID tokens on sign-in", async () => {
+    const tokens = {
+      accessToken: "ya29.plaintext-access-token",
+      refreshToken: "1//plaintext-refresh-token",
+      idToken: "eyJhbGciOiJSUzI1NiJ9.plaintext-id-token.sig",
+    };
+    const { cookie } = await signInWithOAuth(auth, app, {
+      provider: "google",
+      tokens,
+    });
+    expect(cookie).not.toContain("account_data=");
+    const account = store["authAccounts"]?.[0] as
+      | {
+          id?: string;
+          accessToken?: string | null;
+          refreshToken?: string | null;
+          idToken?: string | null;
+        }
+      | undefined;
+    expect(account?.id).toBeTruthy();
+    expect(account?.accessToken).toBeTruthy();
+    expect(account?.accessToken).not.toBe(tokens.accessToken);
+    expect(account?.accessToken).not.toContain("plaintext-access-token");
+    expect(account?.refreshToken).toBeTruthy();
+    expect(account?.refreshToken).not.toBe(tokens.refreshToken);
+    expect(account?.refreshToken).not.toContain("plaintext-refresh-token");
+    expect(account?.idToken).toBeNull();
+    const resolved = await auth.api.getAccessToken({
+      body: { accountId: account?.id ?? "" },
+      headers: new Headers({ cookie }),
+    });
+    expect(resolved.accessToken).toBe(tokens.accessToken);
+  });
+  it("encrypts OAuth tokens and drops ID tokens when linking an additional provider", async () => {
+    await signInWithOAuth(auth, app, {
+      provider: "google",
+      tokens: {
+        accessToken: "google-plaintext-access",
+        refreshToken: "google-plaintext-refresh",
+        idToken: "google.plaintext.idtoken",
+      },
+    });
+    const { cookie } = await signInWithOAuth(auth, app, {
+      provider: "github",
+      tokens: {
+        accessToken: "gho_plaintext_access",
+        refreshToken: "ghr_plaintext_refresh",
+        idToken: "github.plaintext.idtoken",
+      },
+    });
+    expect(store["authAccounts"]).toHaveLength(2);
+    const github = (
+      store["authAccounts"] as Array<{
+        id?: string;
+        providerId?: string;
+        accessToken?: string | null;
+        refreshToken?: string | null;
+        idToken?: string | null;
+      }>
+    ).find((row) => row.providerId === "github");
+    expect(github?.id).toBeTruthy();
+    expect(github?.accessToken).toBeTruthy();
+    expect(github?.accessToken).not.toBe("gho_plaintext_access");
+    expect(github?.refreshToken).toBeTruthy();
+    expect(github?.refreshToken).not.toBe("ghr_plaintext_refresh");
+    expect(github?.idToken).toBeNull();
+    const resolved = await auth.api.getAccessToken({
+      body: { accountId: github?.id ?? "" },
+      headers: new Headers({ cookie }),
+    });
+    expect(resolved.accessToken).toBe("gho_plaintext_access");
+  });
+  it("stays compatible with legacy plaintext rows and re-encrypts them on sign-in", async () => {
+    const { cookie } = await signInWithOAuth(auth, app, { provider: "google" });
+    const stored = store["authAccounts"]?.[0] as {
+      id?: string;
+      accessToken?: string | null;
+      refreshToken?: string | null;
+      idToken?: string | null;
+    };
+    stored.accessToken = "legacy-plaintext-access";
+    stored.refreshToken = "legacy-plaintext-refresh";
+    stored.idToken = "legacy.plaintext.idtoken";
+    const legacy = await auth.api.getAccessToken({
+      body: { accountId: stored.id ?? "" },
+      headers: new Headers({ cookie }),
+    });
+    expect(legacy.accessToken).toBe("legacy-plaintext-access");
+
+    const { cookie: refreshedCookie } = await signInWithOAuth(auth, app, {
+      provider: "google",
+      tokens: {
+        accessToken: "fresh-plaintext-access",
+        refreshToken: "fresh-plaintext-refresh",
+        idToken: "fresh.plaintext.idtoken",
+      },
+    });
+    const updated = store["authAccounts"]?.[0] as {
+      id?: string;
+      accessToken?: string | null;
+      refreshToken?: string | null;
+      idToken?: string | null;
+    };
+    expect(updated.accessToken).toBeTruthy();
+    expect(updated.accessToken).not.toBe("fresh-plaintext-access");
+    expect(updated.accessToken).not.toBe("legacy-plaintext-access");
+    expect(updated.refreshToken).toBeTruthy();
+    expect(updated.refreshToken).not.toBe("fresh-plaintext-refresh");
+    expect(updated.refreshToken).not.toBe("legacy-plaintext-refresh");
+    expect(updated.idToken).toBeNull();
+    const fresh = await auth.api.getAccessToken({
+      body: { accountId: updated.id ?? "" },
+      headers: new Headers({ cookie: refreshedCookie }),
+    });
+    expect(fresh.accessToken).toBe("fresh-plaintext-access");
+  });
   it("requires production secrets and a public auth URL", () => {
     vi.stubEnv("MODE", "prod");
     vi.stubEnv("FRONTEND_URL", "http://localhost:3000");

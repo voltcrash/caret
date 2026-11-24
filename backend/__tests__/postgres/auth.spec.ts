@@ -211,4 +211,107 @@ describe("Better Auth PostgreSQL adapter", () => {
       ).toBe(user.id);
     });
   });
+
+  it("encrypts OAuth access and refresh tokens and clears ID tokens in PostgreSQL", async () => {
+    const oauthEnv = {
+      ...test.env,
+      GOOGLE_CLIENT_ID: "pg-google-client",
+      GOOGLE_CLIENT_SECRET: "pg-google-secret",
+    };
+    const tokens = {
+      accessToken: "ya29.pg-plaintext-access",
+      refreshToken: "1//pg-plaintext-refresh",
+      idToken: "eyJhbGciOiJSUzI1NiJ9.pg-plaintext-id.sig",
+    };
+    await withRuntime(oauthEnv, async () => {
+      const auth = getAuth();
+      const context = await auth.$context;
+      const provider = context.socialProviders.find((it) => it.id === "google");
+      if (!provider) throw new Error("Missing google test provider");
+      const validateSpy = vi
+        .spyOn(provider, "validateAuthorizationCode")
+        .mockResolvedValue(tokens);
+      const userInfoSpy = vi.spyOn(provider, "getUserInfo").mockResolvedValue({
+        user: {
+          name: "TokenUser",
+          email: "tokenuser@example.com",
+          emailVerified: true,
+        },
+        data: { sub: "pg-google-sub", id: "pg-google-sub" },
+      });
+      try {
+        const callbackURL = "http://localhost:3000/oauth-callback?requestId=pg";
+        const executionContext = {
+          waitUntil: () => undefined,
+        } as unknown as ExecutionContext;
+        const start = await Worker.fetch(
+          new Request("http://localhost:5005/api/auth/sign-in/social", {
+            method: "POST",
+            headers: {
+              origin: "http://localhost:3000",
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({
+              provider: "google",
+              callbackURL,
+              disableRedirect: true,
+            }),
+          }),
+          oauthEnv,
+          executionContext,
+        );
+        expect(start.status).toBe(200);
+        const startBody = (await start.json()) as { url: string };
+        const state = new URL(startBody.url).searchParams.get("state");
+        expect(state).toBeTruthy();
+        const startCookie = start.headers
+          .getSetCookie()
+          .map((value) => value.split(";")[0])
+          .join("; ");
+        const callback = await Worker.fetch(
+          new Request(
+            `http://localhost:5005/api/auth/callback/google?code=pg-code&state=${state}`,
+            { headers: { cookie: startCookie } },
+          ),
+          oauthEnv,
+          executionContext,
+        );
+        expect(callback.status).toBe(302);
+        const sessionCookie = callback.headers
+          .getSetCookie()
+          .map((value) => value.split(";")[0])
+          .join("; ");
+        expect(sessionCookie).not.toContain("account_data=");
+
+        const row = await test.db
+          .prepare(
+            "SELECT id, access_token, refresh_token, id_token FROM auth_accounts WHERE provider_id=? AND account_id=?",
+          )
+          .bind("google", "pg-google-sub")
+          .first<{
+            id: string;
+            access_token: string | null;
+            refresh_token: string | null;
+            id_token: string | null;
+          }>();
+        expect(row).not.toBeNull();
+        expect(row?.access_token).toBeTruthy();
+        expect(row?.access_token).not.toBe(tokens.accessToken);
+        expect(row?.access_token).not.toContain("pg-plaintext-access");
+        expect(row?.refresh_token).toBeTruthy();
+        expect(row?.refresh_token).not.toBe(tokens.refreshToken);
+        expect(row?.refresh_token).not.toContain("pg-plaintext-refresh");
+        expect(row?.id_token).toBeNull();
+
+        const resolved = await auth.api.getAccessToken({
+          body: { accountId: row?.id ?? "" },
+          headers: new Headers({ cookie: sessionCookie }),
+        });
+        expect(resolved.accessToken).toBe(tokens.accessToken);
+      } finally {
+        validateSpy.mockRestore();
+        userInfoSpy.mockRestore();
+      }
+    });
+  });
 });

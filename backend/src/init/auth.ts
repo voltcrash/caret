@@ -93,6 +93,7 @@ export function createAuth(
     },
     account: {
       modelName: "authAccounts",
+      encryptOAuthTokens: true,
       accountLinking: { enabled: true, allowDifferentEmails: false },
     },
     session: {
@@ -155,6 +156,16 @@ export function createAuth(
       }),
     },
     databaseHooks: {
+      account: {
+        // Better Auth encrypts access/refresh tokens under encryptOAuthTokens
+        // but persists idToken in plaintext; Caret does not use OIDC ID tokens.
+        create: {
+          before: async () => ({ data: { idToken: null } }),
+        },
+        update: {
+          before: async () => ({ data: { idToken: null } }),
+        },
+      },
       session: {
         create: {
           before: async (session, ctx) => {
