@@ -1,11 +1,14 @@
+mod text;
 mod types;
 
+pub(crate) use text::case;
 pub use types::{Assets, CustomLimit, CustomText, Generated, GenerationConfig, Language, NextWord};
 
 use crate::error::{EngineError, ErrorCode, Recovery};
 use crate::{Text, random::Random};
 use serde::Deserialize;
 use std::collections::VecDeque;
+use text::{clean_previous, collapse_spaces, replace_eszett};
 use ts_rs::TS;
 use types::{Batch, BatchState};
 
@@ -34,59 +37,6 @@ pub struct Generator {
     section_queue: Option<crate::content::Queue>,
     batch: BatchState,
     pub(crate) prepared_generation: u32,
-}
-pub(crate) fn case(text: &Text, upper: bool) -> Text {
-    let mut output = vec![];
-    let mut valid = String::new();
-    fn flush(valid: &mut String, output: &mut Vec<u16>, upper: bool) {
-        let transformed = if upper {
-            valid.to_uppercase()
-        } else {
-            valid.to_lowercase()
-        };
-        output.extend(transformed.encode_utf16());
-        valid.clear();
-    }
-    for value in char::decode_utf16(text.0.iter().copied()) {
-        match value {
-            Ok(value) => valid.push(value),
-            Err(error) => {
-                flush(&mut valid, &mut output, upper);
-                output.push(error.unpaired_surrogate());
-            }
-        }
-    }
-    flush(&mut valid, &mut output, upper);
-    Text(output)
-}
-fn clean_previous(text: &Text, apostrophe: bool) -> Text {
-    case(
-        &Text(
-            text.0
-                .iter()
-                .copied()
-                .filter(|unit| {
-                    ![46, 63, 33, 34, 58, 45, 44].contains(unit) && !(apostrophe && *unit == 39)
-                })
-                .collect(),
-        ),
-        false,
-    )
-}
-fn collapse_spaces(text: Text) -> Text {
-    let mut result = vec![];
-    for unit in text.0 {
-        if unit != 32 || result.last() != Some(&32) {
-            result.push(unit);
-        }
-    }
-    if result.first() == Some(&32) {
-        result.remove(0);
-    }
-    if result.last() == Some(&32) {
-        result.pop();
-    }
-    Text(result)
 }
 impl Generator {
     /// Effective rule reads are live; prepared assets, RNG and learning keep their owner lifetime.
@@ -875,15 +825,7 @@ impl Generator {
         word = collapse_spaces(word);
         word = self.lazy(word);
         if self.config.language.starts_with("swiss_german") {
-            let mut out = vec![];
-            for unit in word.0 {
-                if unit == 0xdf {
-                    out.extend([115, 115]);
-                } else {
-                    out.push(unit);
-                }
-            }
-            word = Text(out);
+            word = replace_eszett(word);
         }
         if self.config.punctuation
             && !self.language.original_punctuation
