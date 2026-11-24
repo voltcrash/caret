@@ -1,7 +1,5 @@
-import { createAppOwned } from "#app/application.ts";
-import { appObject } from "#app/state.ts";
 import { applyReducedMotion } from "#shared/utils/misc.ts";
-import { hasClassName, updateClassNames } from "#shared/utils/cn.ts";
+import { hasClassName } from "#shared/utils/cn.ts";
 import { CaretStyle } from "@caret/schemas/configs";
 import { peekConfig } from "#shared/config/store.ts";
 import { countCodePoints, isWordRightToLeft } from "#shared/utils/strings.ts";
@@ -19,6 +17,10 @@ import {
 } from "#features/typing/state/test-dom.ts";
 import * as TestWords from "../../runtime/test/words";
 import { getWordElement } from "./elements";
+import { isCaretDebugEnabled } from "./caret/debug";
+import { getTotalInlineMargin, setCaretClass } from "./caret/dom";
+
+export { toggleCaretDebug } from "./caret/debug";
 
 const fullWidthStyles: ReadonlySet<CaretStyle> = new Set([
   "block",
@@ -33,26 +35,6 @@ const smoothCaretDurations: Readonly<Record<string, number>> = {
 };
 
 const lockedMainCaretInTape = true;
-const debug = appObject(createAppOwned(() => ({ enabled: false })));
-
-export function toggleCaretDebug(): void {
-  debug.enabled = !debug.enabled;
-  if (!debug.enabled) {
-    for (const l of getWordsCache().querySelectorAll<HTMLElement>(
-      ".word letter",
-    )) {
-      setClass(l, "debugCaret", false);
-      setClass(l, "debugCaretTarget", false);
-      setClass(l, "debugCaretTarget2", false);
-    }
-  } else {
-    for (const l of getWordsCache().querySelectorAll<HTMLElement>(
-      ".word letter",
-    )) {
-      setClass(l, "debugCaret", true);
-    }
-  }
-}
 
 /** Positions and animates one caret node owned by the Caret component. */
 export class CaretController {
@@ -90,7 +72,7 @@ export class CaretController {
   public setStyle(style: CaretStyle): void {
     this.style = style;
     this.resetWidth();
-    setClass(
+    setCaretClass(
       this.element,
       [
         "off",
@@ -104,16 +86,16 @@ export class CaretController {
       ],
       false,
     );
-    setClass(this.element, style === "monkey" ? "default" : style, true);
+    setCaretClass(this.element, style === "monkey" ? "default" : style, true);
   }
 
   public show(): void {
-    setClass(this.element, "hidden", false);
+    setCaretClass(this.element, "hidden", false);
     Object.assign(this.element.style, { display: "" });
   }
 
   public hide(): void {
-    setClass(this.element, "hidden", true);
+    setCaretClass(this.element, "hidden", true);
   }
 
   public isHidden(): boolean {
@@ -428,20 +410,20 @@ export class CaretController {
       );
     }
 
-    if (debug.enabled) {
+    if (isCaretDebugEnabled()) {
       if (this.id === "paceCaret") {
         for (const l of getWordsCache().querySelectorAll<HTMLElement>(
           ".word letter",
         )) {
-          setClass(l, "debugCaretTarget", false);
-          setClass(l, "debugCaretTarget2", false);
-          setClass(l, "debugCaret", true);
+          setCaretClass(l, "debugCaretTarget", false);
+          setCaretClass(l, "debugCaretTarget2", false);
+          setCaretClass(l, "debugCaret", true);
         }
-        setClass(letter, "debugCaretTarget", true);
-        setClass(this.element, "debug", true);
+        setCaretClass(letter, "debugCaretTarget", true);
+        setCaretClass(this.element, "debug", true);
       }
     } else {
-      setClass(this.element, "debug", false);
+      setCaretClass(this.element, "debug", false);
     }
 
     // in zen, custom or polyglot mode we need to check per-letter
@@ -467,8 +449,8 @@ export class CaretController {
           break;
         }
       }
-      if (debug.enabled) {
-        setClass(letter, "debugCaretTarget2", true);
+      if (isCaretDebugEnabled()) {
+        setCaretClass(letter, "debugCaretTarget2", true);
       }
     }
 
@@ -491,7 +473,7 @@ export class CaretController {
     // yes, this is all super verbose, but its easier to maintain and understand
     if (isWordRTL) {
       if (!checkRtlByLetter && isFullMatch) {
-        setClass(options.word, "wordRtl", true);
+        setCaretClass(options.word, "wordRtl", true);
       }
       let afterLetterCorrection = 0;
       if (options.side === "afterLetter") {
@@ -585,26 +567,4 @@ export class CaretController {
       width,
     };
   }
-}
-
-function setClass(
-  element: HTMLElement | undefined | null,
-  names: string | string[],
-  enabled: boolean,
-): void {
-  if (element) {
-    const next = updateClassNames(
-      element.className,
-      Array.isArray(names) ? names.join(" ") : names,
-      enabled,
-    );
-    if (element.className !== next) element.className = next;
-  }
-}
-
-function getTotalInlineMargin(element: HTMLElement): number {
-  const computedStyle = window.getComputedStyle(element);
-  return (
-    parseInt(computedStyle.marginRight) + parseInt(computedStyle.marginLeft)
-  );
 }
