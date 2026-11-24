@@ -210,3 +210,97 @@ impl Generator {
         result
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::generation::{Assets, CustomLimit, CustomText, GenerationConfig, Language};
+    use crate::quotes::{Quote, QuoteAsset};
+
+    fn texts(words: &[&str]) -> Vec<Text> {
+        words.iter().copied().map(Text::from).collect()
+    }
+
+    fn strings(words: &[Text]) -> Vec<String> {
+        words
+            .iter()
+            .map(|word| String::from_utf16(&word.0).unwrap())
+            .collect()
+    }
+
+    fn language() -> Language {
+        Language {
+            name: "english".into(),
+            words: texts(&["alpha", "beta", "gamma", "delta", "epsilon", "zeta"]),
+            ..Language::default()
+        }
+    }
+
+    fn custom(mode: &str) -> CustomText {
+        CustomText {
+            text: texts(&["one", "two", "three", "four"]),
+            mode: mode.into(),
+            limit: CustomLimit {
+                mode: "word".into(),
+                value: 6.0,
+            },
+            pipe_delimiter: false,
+        }
+    }
+
+    fn generate(mode: &str, custom: Option<CustomText>, assets: &mut Assets) -> Vec<String> {
+        let config = GenerationConfig {
+            mode: mode.into(),
+            words: 8,
+            quote_length: vec![0],
+            ..GenerationConfig::default()
+        };
+        let mut generator =
+            Generator::with_assets(config, language(), custom, Random::seeded(42), assets).unwrap();
+        let generated = generator.generate(false).unwrap();
+        assert_eq!(generated.section_indexes.len(), generated.words.len());
+        assert!(generator.all_generated());
+        strings(&generated.words)
+    }
+
+    #[test]
+    fn seeded_generation_snapshots() {
+        let mut assets = Assets::default();
+        assert_eq!(
+            generate("words", None, &mut assets),
+            vec![
+                "delta ", "gamma ", "zeta ", "epsilon ", "beta ", "delta ", "zeta ", "gamma "
+            ]
+        );
+        assert_eq!(
+            generate("custom", Some(custom("shuffle")), &mut assets),
+            vec!["two ", "three ", "four ", "one ", "four ", "two "]
+        );
+        assert_eq!(
+            generate("custom", Some(custom("repeat")), &mut assets),
+            vec!["one ", "two ", "three ", "four ", "one ", "two "]
+        );
+
+        let mut assets = Assets {
+            quote_asset: Some(QuoteAsset {
+                language: "english".into(),
+                groups: vec![(0, 100)],
+                quotes: vec![Quote {
+                    text: Text::from("the quick brown fox jumps"),
+                    british_text: None,
+                    source: "test".into(),
+                    length: 25,
+                    id: 1,
+                    group: 0,
+                    language: "english".into(),
+                    text_split: vec![],
+                }],
+            }),
+            ..Assets::default()
+        };
+        assert_eq!(
+            generate("quote", None, &mut assets),
+            vec!["the ", "quick ", "brown ", "fox ", "jumps "]
+        );
+    }
+}
