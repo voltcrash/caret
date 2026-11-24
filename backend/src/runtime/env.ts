@@ -181,3 +181,9 @@ export function background(task: Promise<unknown>): void {
   );
   execution?.waitUntil(handled);
 }
+
+export {
+  devModeViolationResponse,
+  isAllowedDevRequest,
+  isLoopbackHost,
+} from "./dev-guard";
