@@ -7,7 +7,7 @@ import {
 } from "../../src/features/typing/components/words/hints";
 import * as TestWords from "../../src/features/typing/runtime/test/words";
 import { setConfigStore } from "../../src/ts/config/store";
-import { setTestElements } from "../../src/ts/states/test-dom";
+import { setTestElements } from "../../src/features/typing/state/test-dom";
 import {
   isLanguageRightToLeft,
   setIsLanguageRightToLeft,

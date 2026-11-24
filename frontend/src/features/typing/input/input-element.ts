@@ -2,8 +2,8 @@ import {
   areTestElementsMounted,
   getKeyboardProxyElement,
   getWordsInputElement,
-} from "../states/test-dom";
-import { isCoarsePointer } from "../utils/pointer";
+} from "#features/typing/state/test-dom.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
 
 export function getInputElement(): HTMLTextAreaElement {
   return getWordsInputElement();

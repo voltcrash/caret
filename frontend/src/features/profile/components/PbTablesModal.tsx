@@ -2,16 +2,20 @@ import { Mode2, Mode, PersonalBest } from "@caret/schemas/shared";
 import { format as formatDate } from "date-fns/format";
 import { createMemo, createSignal, JSXElement } from "solid-js";
 
-import { getConfig } from "../../config/store";
-import * as DB from "../../db";
-import { pbTablesMode, pbTablesBests } from "../../states/pb-tables-modal";
-import { cn } from "../../utils/cn";
-import { Formatting } from "../../utils/format";
-import { getLanguageDisplayString } from "../../utils/strings";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Fa } from "../common/Fa";
-import { DataTable, DataTableColumnDef } from "../ui/table/DataTable";
-import { createDataTableColumnHelper as createColumnHelper } from "../ui/table/features";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Fa } from "#shared/components/common/Fa.tsx";
+import {
+  DataTable,
+  DataTableColumnDef,
+} from "#shared/components/ui/table/DataTable.tsx";
+import { createDataTableColumnHelper as createColumnHelper } from "#shared/components/ui/table/features.ts";
+import { getConfig } from "#shared/config/store.ts";
+import * as DB from "#shared/db.ts";
+import { cn } from "#shared/utils/cn.ts";
+import { Formatting } from "#shared/utils/format.ts";
+import { getLanguageDisplayString } from "#shared/utils/strings.ts";
+
+import { pbTablesMode, pbTablesBests } from "../state/pb-tables-modal";
 
 type PBWithMode2 = PersonalBest & {
   mode2: Mode2<Mode>;

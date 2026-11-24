@@ -1,4 +1,4 @@
-import { createAppOwned } from "../../app/application";
+import { createAppOwned } from "#app/application.ts";
 type TestElements = {
   words: HTMLDivElement;
   wordsWrapper: HTMLDivElement;

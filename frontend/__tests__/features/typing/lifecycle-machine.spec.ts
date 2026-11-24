@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vite-plus/test";
-import { createLifecycleController } from "../../../src/ts/states/test-lifecycle/controller";
+import { createLifecycleController } from "../../../src/features/typing/state/test-lifecycle/controller";
 import {
   initialLifecycle,
   transitionLifecycle,
-} from "../../../src/ts/states/test-lifecycle/machine";
+} from "../../../src/features/typing/state/test-lifecycle/machine";
 
 function ready(): ReturnType<typeof createLifecycleController> {
   const controller = createLifecycleController();

@@ -143,7 +143,7 @@ it.each([
 });
 
 it.each([
-  "frontend/src/ts/input/input-element.ts",
+  "frontend/src/features/typing/input/input-element.ts",
   "frontend/src/features/typing/input/listeners/input.ts",
   "frontend/src/features/typing/runtime/test/logic.ts",
   "packages/web-shared/src/layout-emulator.ts",

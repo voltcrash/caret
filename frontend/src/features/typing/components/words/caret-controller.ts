@@ -16,7 +16,7 @@ import { CaretGlide } from "./caret-glide";
 import {
   getWordsElement as getWordsCache,
   getWordsWrapperElement as getWordsWrapperCache,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import * as TestWords from "../../runtime/test/words";
 import { getWordElement } from "./elements";
 

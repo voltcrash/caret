@@ -10,6 +10,11 @@ import { z } from "zod";
 
 import { replaceUrl } from "#app/navigate.ts";
 import { serialize } from "#app/url-search-params.ts";
+import {
+  getHighlightedSetting,
+  setHighlightedSetting,
+  registerSettingHighlight,
+} from "#features/settings/state/settings-highlight.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { FaProps } from "#shared/components/common/Fa.tsx";
 import { H3 } from "#shared/components/common/Headers.tsx";
@@ -18,11 +23,6 @@ import {
   showErrorNotification,
   showSuccessNotification,
 } from "#shared/states/notifications.ts";
-import {
-  getHighlightedSetting,
-  setHighlightedSetting,
-  registerSettingHighlight,
-} from "#shared/states/settings-highlight.ts";
 import { cn } from "#shared/utils/cn.ts";
 
 import { SettingsSectionContext } from "./settings-section-context";

@@ -58,7 +58,7 @@ vi.mock("../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../src/features/typing/runtime/funbox/funbox", () => ({
   clear: vi.fn(),
 }));
-vi.mock("../../src/ts/input/input-element", () => ({
+vi.mock("../../src/features/typing/input/input-element", () => ({
   blurInputElement: vi.fn(),
 }));
 vi.mock("../../src/ts/states/connection", () => ({

@@ -12,7 +12,7 @@ import { CaretController } from "../components/words/caret-controller";
 import {
   areTestElementsMounted,
   getPaceCaretElement,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import {
   getCurrentQuote,
   getResultVisible,

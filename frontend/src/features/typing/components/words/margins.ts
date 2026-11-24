@@ -1,6 +1,6 @@
 import { scrollTape } from "./tape";
 import { peekConfig } from "#shared/config/store.ts";
-import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
+import { getWordsElement as getWordsEl } from "#features/typing/state/test-dom.ts";
 
 export function updateWordsMargin(): void {
   if (peekConfig().tapeMode !== "off") {

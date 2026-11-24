@@ -6,7 +6,7 @@ import {
   createHotkey as registerHotkey,
 } from "@tanstack/solid-hotkeys";
 import { isAnyPopupVisible } from "../../states/overlay-visibility";
-import { isInputElementFocused } from "../input-element";
+import { isTypingInputFocused } from "../../typing-host";
 import * as CompositionState from "../../states/composition";
 
 export const NoKey = "" as HotkeyChord;
@@ -48,7 +48,7 @@ export function createHotkey(
 }
 
 function isInteractiveElementFocused(): boolean {
-  if (isInputElementFocused()) return false;
+  if (isTypingInputFocused()) return false;
 
   return (
     document.activeElement?.tagName === "A" ||
@@ -76,7 +76,7 @@ function handleHotkeyOnInteractiveElement(
     return true;
   } else if (
     hotkey === "Escape" &&
-    isInputElementFocused() &&
+    isTypingInputFocused() &&
     CompositionState.getData() !== ""
   ) {
     return true;

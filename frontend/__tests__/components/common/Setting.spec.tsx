@@ -5,7 +5,7 @@ import { Setting } from "../../../src/features/settings/components/Setting";
 import {
   highlightSetting,
   setHighlightedSetting,
-} from "../../../src/ts/states/settings-highlight";
+} from "../../../src/features/settings/state/settings-highlight";
 afterEach(() => {
   cleanup();
   setHighlightedSetting(null);

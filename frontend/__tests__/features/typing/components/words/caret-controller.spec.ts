@@ -34,7 +34,7 @@ vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
 
 import { CaretController } from "../../../../../src/features/typing/components/words/caret-controller";
 import { caretGlideEasing } from "../../../../../src/features/typing/components/words/caret-easing";
-import { setTestElements } from "../../../../../src/ts/states/test-dom";
+import { setTestElements } from "../../../../../src/features/typing/state/test-dom";
 
 let element: HTMLDivElement;
 let wordsElement: HTMLDivElement;

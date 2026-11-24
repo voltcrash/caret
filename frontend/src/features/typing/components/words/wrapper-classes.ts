@@ -8,7 +8,7 @@ import {
 import { updateHintsPositionDebounced } from "./hints";
 import { setClass } from "./elements";
 import { peekConfig } from "#shared/config/store.ts";
-import { isInputElementFocused } from "#shared/input/input-element.ts";
+import { isInputElementFocused } from "#features/typing/input/input-element.ts";
 import { setResultState } from "../../state/result";
 import { setTestFocusState } from "#shared/states/test.ts";
 import { isLanguageRightToLeft } from "#features/typing/state/direction.ts";
@@ -19,7 +19,7 @@ import {
   getCaretElement,
   getPaceCaretElement,
   getTypingTestElement,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import * as Caret from "../../runtime/caret";
 import { getWordsFontSize } from "./font";
 

@@ -1,9 +1,9 @@
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { JSXElement, Show } from "solid-js";
 
+import { getTypingLifecycle } from "#features/typing/state/test-lifecycle/controller.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { getBrowserEngine } from "#shared/engine/owner.client.ts";
-import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
 import { getTestInitError } from "#shared/states/test.ts";
 import { cn } from "#shared/utils/cn.ts";
 

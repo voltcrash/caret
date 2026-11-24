@@ -2,7 +2,7 @@ import type { InsertionLayout } from "@caret/typing-engine/browser.client";
 import { decodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "../../runtime/session.client";
 import * as TestUI from "../../runtime/test/ui";
-import { getInputElementValue } from "#shared/input/input-element.ts";
+import { getInputElementValue } from "#features/typing/input/input-element.ts";
 import { isAwaitingNextWord } from "../state";
 import * as SlowTimer from "../../state/slow-timer";
 import { isTestRestarting, isResultCalculating } from "#shared/states/test.ts";

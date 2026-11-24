@@ -15,7 +15,7 @@ import { peekConfig } from "#shared/config/store.ts";
 import * as SoundController from "#shared/controllers/sound-controller.ts";
 import * as ThemeController from "#shared/controllers/theme-controller.ts";
 import { highlight } from "#features/typing/state/keymap.ts";
-import { isTouchKeyboardFocused } from "#shared/input/input-element.ts";
+import { isTouchKeyboardFocused } from "#features/typing/input/input-element.ts";
 import * as CompositionState from "#shared/states/composition.ts";
 import * as ConnectionState from "#shared/states/connection.ts";
 import { skipBreakdownEvent } from "#shared/states/header.ts";
@@ -27,7 +27,7 @@ import { setCompositionText } from "#features/typing/state/composition.ts";
 import {
   getWordsElement as getWordsEl,
   getTypingTestElement,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import { setWordsInputStyle } from "../../state/words-layout";
 import * as Caret from "../../runtime/caret";
 import { getCurrentInput } from "../../runtime/events/data";

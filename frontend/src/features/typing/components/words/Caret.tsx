@@ -1,8 +1,8 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
+import { areTestElementsMounted } from "#features/typing/state/test-dom.ts";
 import { peekConfig } from "#shared/config/store.ts";
 import { configEvent } from "#shared/events/config.ts";
-import { areTestElementsMounted } from "#shared/states/test-dom.ts";
 import { cn } from "#shared/utils/cn.ts";
 
 import {

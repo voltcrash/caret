@@ -50,7 +50,7 @@ import { tryCatch } from "@caret/util/trycatch";
 import * as Sentry from "#shared/sentry.ts";
 import { showLoaderBar, hideLoaderBar } from "#shared/states/loader-bar.ts";
 
-import { getTypingTestElement } from "#shared/states/test-dom.ts";
+import { getTypingTestElement } from "#features/typing/state/test-dom.ts";
 
 import { peekConfig } from "#shared/config/store.ts";
 import { setQuoteLengthAll, setConfig } from "#shared/config/setters.ts";

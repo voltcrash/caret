@@ -1,8 +1,8 @@
 import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
+import { getCaretElement } from "#features/typing/state/test-dom.ts";
 import { peekConfig } from "#shared/config/store.ts";
-import { getCaretElement } from "#shared/states/test-dom.ts";
 import { getTheme } from "#shared/states/theme.ts";
 import { requestDebouncedAnimationFrame } from "#shared/utils/debounced-animation-frame.ts";
 

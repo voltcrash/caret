@@ -9,7 +9,7 @@ import { setSettingsSearch } from "../../../../src/features/settings/search-stat
 import {
   highlightSetting,
   setHighlightedSetting,
-} from "../../../../src/ts/states/settings-highlight";
+} from "../../../../src/features/settings/state/settings-highlight";
 import { createSectionHost } from "../../../__harness__/settings-section-host";
 
 const host = createSectionHost();

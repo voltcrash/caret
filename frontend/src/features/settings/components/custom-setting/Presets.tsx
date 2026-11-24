@@ -1,8 +1,8 @@
 import { JSXElement, For } from "solid-js";
 
+import { showEditPresetModal } from "#features/settings/state/edit-preset-modal.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { apply } from "#shared/controllers/preset-controller.ts";
-import { showEditPresetModal } from "#shared/states/edit-preset-modal.ts";
 import { showModal } from "#shared/states/modals.ts";
 import { showSimpleModal } from "#shared/states/simple-modal.ts";
 

@@ -14,7 +14,7 @@ import {
 import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import * as Caret from "../../runtime/caret";
 import { getCurrentInput } from "../../runtime/events/data";
 import * as PaceCaret from "../../runtime/pace-caret";

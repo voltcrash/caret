@@ -34,9 +34,6 @@ vi.mock("../../../src/ts/states/test", async () => {
 vi.mock("../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => mocks.popup,
 }));
-vi.mock("../../../src/ts/input/input-element", () => ({
-  isInputElementFocused: () => document.activeElement?.id === "wordsInput",
-}));
 vi.mock("../../../src/ts/states/composition", () => ({ getData: () => "" }));
 vi.mock("../../../src/app/navigate", () => ({
   navigate: mocks.navigate,
@@ -71,6 +68,7 @@ beforeEach(() => {
   unbind = bindTestTypingHost({
     isRouteActive: typingRoute,
     restart: mocks.restart,
+    isInputFocused: () => document.activeElement?.id === "wordsInput",
   });
   mocks.popup = false;
   setConfigStore("quickRestart", "tab");

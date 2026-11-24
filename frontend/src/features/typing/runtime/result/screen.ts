@@ -1,5 +1,5 @@
 import { captureTypingPresentation } from "../../scope";
-import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
+import { getTypingLifecycle } from "#features/typing/state/test-lifecycle/controller.ts";
 import { updateTags } from "./tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./tags";
 import { updateResultChartDataVisibility } from "./chart-visibility";
@@ -58,7 +58,7 @@ import { CompletedEvent } from "@caret/schemas/results";
 
 import { canQuickRestart as canQuickRestartFn } from "../quick-restart";
 
-import { blurInputElement } from "#shared/input/input-element.ts";
+import { blurInputElement } from "#features/typing/input/input-element.ts";
 import * as ConnectionState from "#shared/states/connection.ts";
 
 import { getCurrentQuote } from "#shared/states/test.ts";

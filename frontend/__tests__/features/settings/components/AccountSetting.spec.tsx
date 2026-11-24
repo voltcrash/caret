@@ -10,8 +10,8 @@ import {
   getSearchMatchCounts,
   setSettingsSearch,
 } from "../../../../src/features/settings/search-state";
+import { highlightSetting } from "../../../../src/features/settings/state/settings-highlight";
 import { setUserId } from "../../../../src/ts/states/core";
-import { highlightSetting } from "../../../../src/ts/states/settings-highlight";
 import { createSectionHost } from "../../../__harness__/settings-section-host";
 
 const host = createSectionHost();

@@ -51,7 +51,7 @@ vi.mock(
   }),
 );
 
-import { setTestElements } from "../../src/ts/states/test-dom";
+import { setTestElements } from "../../src/features/typing/state/test-dom";
 import { __testing } from "../../src/ts/config/testing";
 import type { Config as ConfigType } from "@caret/schemas/configs";
 import { words as TestWords } from "../../src/features/typing/runtime/test/words";

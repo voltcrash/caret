@@ -57,7 +57,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("PbTables", async () =>
-    import("../ts/components/modals/PbTablesModal").then(
+    import("../features/profile/components/PbTablesModal").then(
       (m) => m.PbTablesModal,
     ),
   ),
@@ -77,7 +77,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("EditPresetModal", async () =>
-    import("../ts/components/modals/preset/EditPresetModal").then(
+    import("../features/settings/components/EditPresetModal").then(
       (m) => m.EditPresetModal,
     ),
   ),
@@ -92,7 +92,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("UserReport", async () =>
-    import("../ts/components/modals/UserReportModal").then(
+    import("../features/profile/components/UserReportModal").then(
       (m) => m.UserReportModal,
     ),
   ),

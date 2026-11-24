@@ -2,7 +2,7 @@ import { setClass } from "./elements";
 import { hasClassName } from "#shared/utils/cn.ts";
 import { peekConfig } from "#shared/config/store.ts";
 import { setResultState } from "../../state/result";
-import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
+import { getWordsElement as getWordsEl } from "#features/typing/state/test-dom.ts";
 
 export function setJoiningClass(isEnabled: boolean): void {
   const joiningScript =

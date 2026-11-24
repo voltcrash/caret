@@ -10,7 +10,7 @@ import {
   getInputElementValue,
   setInputElementValue,
   appendToInputElementValue,
-} from "#shared/input/input-element.ts";
+} from "#features/typing/input/input-element.ts";
 import {
   insertionLayout,
   observeInputView,

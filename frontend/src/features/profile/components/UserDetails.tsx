@@ -15,6 +15,7 @@ import { formatDate } from "date-fns/format";
 import { formatDistanceToNowStrict } from "date-fns/formatDistanceToNowStrict";
 import { For, JSXElement, Show } from "solid-js";
 
+import { setUserToReport } from "#features/profile/state/user-report.ts";
 import { AutoShrink } from "#shared/components/common/AutoShrink.tsx";
 import { Balloon, BalloonProps } from "#shared/components/common/Balloon.tsx";
 import { Bar } from "#shared/components/common/Bar.tsx";
@@ -28,7 +29,6 @@ import { getUserId, isAuthenticated } from "#shared/states/core.ts";
 import { showModal } from "#shared/states/modals.ts";
 import { showNoticeNotification } from "#shared/states/notifications.ts";
 import { getLastResult } from "#shared/states/snapshot.ts";
-import { setUserToReport } from "#shared/states/user-report.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { secondsToString } from "#shared/utils/date-and-time.ts";
 import { formatXp, getXpDetails } from "#shared/utils/levels.ts";

@@ -1,6 +1,6 @@
 import { batch } from "solid-js";
-import { getTypingLifecycle } from "../../src/ts/states/test-lifecycle/controller";
-import type { LifecyclePhase } from "../../src/ts/states/test-lifecycle/machine";
+import { getTypingLifecycle } from "../../src/features/typing/state/test-lifecycle/controller";
+import type { LifecyclePhase } from "../../src/features/typing/state/test-lifecycle/machine";
 
 /** Reach a state through real transitions instead of independently setting flags. */
 export function resetTypingLifecycle(phase: LifecyclePhase = "ready"): void {

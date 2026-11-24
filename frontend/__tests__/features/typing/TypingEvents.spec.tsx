@@ -59,7 +59,7 @@ vi.mock("../../../src/ts/states/test", () => ({
   getFocus: () => state.focus,
   isTestActive: () => state.active,
 }));
-vi.mock("../../../src/ts/input/input-element", () => ({
+vi.mock("../../../src/features/typing/input/input-element", () => ({
   isInputElementFocused: () => state.inputFocused,
 }));
 vi.mock("../../../src/ts/states/overlay-visibility", () => ({

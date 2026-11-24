@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vite-plus/test";
 import {
   bindTypingHost,
   blurTest,
+  isTypingInputFocused,
   isTypingRouteActive,
   reloadPaceCaret,
   restartTest,
@@ -18,12 +19,14 @@ function host(): Parameters<typeof bindTypingHost>[0] {
     reloadPaceCaret: vi.fn(async () => undefined),
     updateHints: vi.fn(),
     isNoQuitActive: () => false,
+    isInputFocused: () => true,
   };
 }
 
 describe("typing host", () => {
   it("does nothing while no typing route is bound", async () => {
     expect(isTypingRouteActive()).toBe(false);
+    expect(isTypingInputFocused()).toBe(false);
     expect(() => restartTest()).not.toThrow();
     expect(() => blurTest()).not.toThrow();
     expect(() => updateTestHints()).not.toThrow();
@@ -40,6 +43,7 @@ describe("typing host", () => {
     updateTestHints();
 
     expect(isTypingRouteActive()).toBe(true);
+    expect(isTypingInputFocused()).toBe(true);
     expect(bound.updateHints).toHaveBeenCalledOnce();
     expect(bound.restart).toHaveBeenCalledOnce();
     expect(bound.blur).toHaveBeenCalledOnce();
@@ -47,6 +51,7 @@ describe("typing host", () => {
 
     release();
     expect(isTypingRouteActive()).toBe(false);
+    expect(isTypingInputFocused()).toBe(false);
   });
 
   it("lets derived state follow route mounts", () => {
