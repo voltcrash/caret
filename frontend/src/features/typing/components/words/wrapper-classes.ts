@@ -19,7 +19,7 @@ import {
   getCaretElement,
   getPaceCaretElement,
   getTypingTestElement,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import * as Caret from "../../runtime/caret";
 import { getWordsFontSize } from "./font";
 

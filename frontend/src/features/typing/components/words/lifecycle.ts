@@ -27,7 +27,7 @@ import { setCompositionText } from "#features/typing/state/composition.ts";
 import {
   getWordsElement as getWordsEl,
   getTypingTestElement,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import { setWordsInputStyle } from "../../state/words-layout";
 import * as Caret from "../../runtime/caret";
 import { getCurrentInput } from "../../runtime/events/data";

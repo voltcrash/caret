@@ -5,7 +5,7 @@ import {
   isDirectionReversed,
   isLanguageRightToLeft,
 } from "#features/typing/state/direction.ts";
-import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
+import { getWordsElement as getWordsEl } from "#features/typing/state/test-dom.ts";
 import * as TestWords from "../../runtime/test/words";
 import * as Misc from "#shared/utils/misc.ts";
 import * as Strings from "#shared/utils/strings.ts";

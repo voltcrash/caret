@@ -1,6 +1,6 @@
 import { createAppOwned } from "#app/application.ts";
 import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
-import { getWordsElement as getWordsEl } from "#shared/states/test-dom.ts";
+import { getWordsElement as getWordsEl } from "#features/typing/state/test-dom.ts";
 import { hasClassName, updateClassNames } from "#shared/utils/cn.ts";
 
 // Main/pace carets and input handlers repeatedly read the same few words.

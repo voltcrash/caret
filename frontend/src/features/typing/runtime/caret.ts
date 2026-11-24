@@ -8,7 +8,7 @@ import {
 import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { CaretController } from "../components/words/caret-controller";
 import * as CompositionState from "#shared/states/composition.ts";
-import { getCaretElement } from "#shared/states/test-dom.ts";
+import { getCaretElement } from "#features/typing/state/test-dom.ts";
 
 export function stopAnimation(): void {
   getCaret().stopBlinking();

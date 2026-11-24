@@ -11,7 +11,7 @@ import { setCompositionText } from "#features/typing/state/composition.ts";
 import {
   areTestElementsMounted,
   getWordsElement as getWordsEl,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import { getCurrentInput } from "../../runtime/events/data";
 
 export function onWordsConfigChange({

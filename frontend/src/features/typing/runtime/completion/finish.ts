@@ -3,7 +3,7 @@ import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts"
 import { animateAsync } from "#shared/anim.ts";
 import { updateClassNames } from "#shared/utils/cn.ts";
 import { applyReducedMotion } from "#shared/utils/misc.ts";
-import { getTypingTestElement } from "#shared/states/test-dom.ts";
+import { getTypingTestElement } from "#features/typing/state/test-dom.ts";
 import { isTestActive } from "#shared/states/test.ts";
 import { getBailedOut } from "#features/typing/state/run-flags.ts";
 import {

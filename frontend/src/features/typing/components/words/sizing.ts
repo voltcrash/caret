@@ -14,7 +14,7 @@ import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,
   getTypingTestElement,
-} from "#shared/states/test-dom.ts";
+} from "#features/typing/state/test-dom.ts";
 import {
   setWordsInputStyle,
   setWordsWrapperHeight,

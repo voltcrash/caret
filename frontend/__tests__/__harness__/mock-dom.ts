@@ -1,4 +1,4 @@
-import { setTestElements } from "../../src/ts/states/test-dom";
+import { setTestElements } from "../../src/features/typing/state/test-dom";
 
 // Stand in for TestPage refs in logic-only tests. DOM fixtures may replace these.
 setTestElements({

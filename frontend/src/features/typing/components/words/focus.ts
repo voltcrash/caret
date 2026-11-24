@@ -4,7 +4,7 @@ import {
   focusInputElement,
 } from "#features/typing/input/input-element.ts";
 import { isTestActive } from "#shared/states/test.ts";
-import { getTypingTestElement } from "#shared/states/test-dom.ts";
+import { getTypingTestElement } from "#features/typing/state/test-dom.ts";
 import { centerWordsInputEvent } from "../../state/words-layout";
 
 export function focusWords(force = false): void {
