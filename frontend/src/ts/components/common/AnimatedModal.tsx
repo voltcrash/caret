@@ -26,6 +26,7 @@ import {
   ModalMotion,
   setStyle,
 } from "./animated-modal/motion";
+import { createSheetDrag } from "./animated-modal/sheet-drag";
 
 type AnimatedModalProps = ParentProps<{
   id: ModalId;
@@ -60,12 +61,6 @@ type AnimatedModalProps = ParentProps<{
   wrapperClass?: string;
 }>;
 
-// how far a sheet has to be dragged down by its handle to close
-const SHEET_DISMISS_DRAG_PX = 80;
-// or flicked down faster than this (px per ms), past tap jitter
-const SHEET_DISMISS_VELOCITY = 0.5;
-const SHEET_FLICK_MIN_PX = 16;
-
 export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   onMount(() => onCleanup(registerModalHost(props.id)));
   // Refs are assigned by SolidJS via the ref attribute
@@ -86,60 +81,18 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   const usesSheetAnimation = (): boolean =>
     props.mobileSheet !== false && isSheetViewport();
 
-  // swipe the sheet down by its handle to close it, like native sheets
-  type SheetDrag =
-    | { phase: "tracking"; startY: number; startTime: number; offset: number }
-    | { phase: "released"; offset: number };
-  let drag: SheetDrag | undefined;
-
-  const resetSheetDrag = (offset: number): void => {
-    drag = undefined;
-    animateElement(modalEl(), {
-      translateY: [`${offset}px`, "0px"],
-      duration: applyReducedMotion(DEFAULT_ANIMATION_DURATION),
-    });
-  };
-
-  const onHandlePointerDown = (e: PointerEvent): void => {
-    if (!usesSheetAnimation() || props.closeOnWrapperClick === false) return;
-    drag = {
-      phase: "tracking",
-      startY: e.clientY,
-      startTime: e.timeStamp,
-      offset: 0,
-    };
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  };
-
-  const onHandlePointerMove = (e: PointerEvent): void => {
-    if (drag?.phase !== "tracking") return;
-    drag.offset = Math.max(0, e.clientY - drag.startY);
-    setStyle(modalEl(), { transform: `translateY(${drag.offset}px)` });
-  };
-
-  const onHandlePointerUp = (e: PointerEvent): void => {
-    if (drag?.phase !== "tracking") return;
-    const { offset, startTime } = drag;
-    drag = { phase: "released", offset };
-    const velocity = offset / Math.max(1, e.timeStamp - startTime);
-    if (
-      offset >= SHEET_DISMISS_DRAG_PX ||
-      (offset >= SHEET_FLICK_MIN_PX && velocity >= SHEET_DISMISS_VELOCITY)
-    ) {
+  const sheetDrag = createSheetDrag({
+    modal: modalEl,
+    canDrag: () => usesSheetAnimation() && props.closeOnWrapperClick !== false,
+    isOpen: visibility,
+    dismiss: (e) => {
       if (props.onBackdropClick) {
         props.onBackdropClick(e);
       } else {
         storeHideModal(props.id);
       }
-      if (visibility()) resetSheetDrag(offset);
-      return;
-    }
-    resetSheetDrag(offset);
-  };
-
-  const onHandlePointerCancel = (): void => {
-    if (drag?.phase === "tracking") resetSheetDrag(drag.offset);
-  };
+    },
+  });
 
   // Handle open/close with animations
   createEffectOn(
@@ -273,9 +226,8 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     if (disposed || token !== motionId) return;
 
     const sheet = usesSheetAnimation();
-    const dragOffset = drag?.offset ?? 0;
+    const dragOffset = sheetDrag.release();
     const motion: ModalMotion = getHideMotion(sheet, dragOffset);
-    drag = undefined;
     const modalAnimDuration = getModalAnimationDuration(
       props.customAnimations?.hide?.modal?.duration,
       sheet,
@@ -482,10 +434,10 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
             <div
               aria-hidden="true"
               class="-mx-4 -mt-4 -mb-2 grid shrink-0 touch-none place-items-center py-3 sm:hidden"
-              onPointerDown={onHandlePointerDown}
-              onPointerMove={onHandlePointerMove}
-              onPointerUp={onHandlePointerUp}
-              onPointerCancel={onHandlePointerCancel}
+              onPointerDown={sheetDrag.onPointerDown}
+              onPointerMove={sheetDrag.onPointerMove}
+              onPointerUp={sheetDrag.onPointerUp}
+              onPointerCancel={sheetDrag.onPointerCancel}
             >
               <div class="h-1.5 w-10 rounded-full bg-sub-alt"></div>
             </div>
