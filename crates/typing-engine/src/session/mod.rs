@@ -1,7 +1,9 @@
 mod config;
+mod drift;
 mod types;
 
 pub use config::Config;
+use drift::DriftTracker;
 pub(crate) use types::Retained;
 use types::{Checkpoint, ContentState, DeferredInput, RunState};
 pub use types::{
@@ -53,10 +55,7 @@ pub struct Session {
     content_state: ContentState,
     deferred_input: Option<DeferredInput>,
     defer_finish: bool,
-    monitor_render_drift: bool,
-    slow_timer: bool,
-    slow_timer_count: u8,
-    last_drift: Option<f64>,
+    drift: DriftTracker,
 }
 
 impl Session {
@@ -198,10 +197,7 @@ impl Session {
             content_state: ContentState::Available,
             deferred_input: None,
             defer_finish: false,
-            monitor_render_drift: false,
-            slow_timer: false,
-            slow_timer_count: 0,
-            last_drift: None,
+            drift: DriftTracker::default(),
         })
     }
 
@@ -265,7 +261,7 @@ impl Session {
         let display_length = target.len() - usize::from(target.0.last() == Some(&32));
         let measure_overflow = !blocked
             && !layout.slow_timer
-            && !self.slow_timer
+            && !self.drift.slow_timer()
             && observation.data.len() == 1
             && !self.config.blind_mode
             && !self.config.hide_extra_letters
@@ -423,8 +419,7 @@ impl Session {
             return;
         }
         self.run = RunState::Running { start: now };
-        self.slow_timer = false;
-        self.slow_timer_count = 0;
+        self.drift.reset_run();
         self.pace.start(now);
         self.record(
             "timer",
@@ -451,8 +446,7 @@ impl Session {
             return;
         };
         self.run = RunState::Ended { start, reason };
-        self.slow_timer = false;
-        self.slow_timer_count = 0;
+        self.drift.reset_run();
 
         self.content_state = ContentState::Available;
         self.deferred_input = None;
@@ -554,7 +548,7 @@ impl Session {
         self.word_changes.clear();
         self.recorder.clear_reordered();
         self.visual_input_override = None;
-        self.last_drift = None;
+        self.drift.clear_last();
         match command {
             Command::Insert {
                 data,
@@ -587,7 +581,7 @@ impl Session {
                             .cloned(),
                         awaiting_content: matches!(self.content_state, ContentState::Waiting(_)),
                         finish: self.run.pending_finish().cloned(),
-                        slow_timer: self.slow_timer,
+                        slow_timer: self.drift.slow_timer(),
                         drift: None,
                     });
                 }
@@ -711,8 +705,7 @@ impl Session {
                 self.content_state = ContentState::Available;
                 self.deferred_input = None;
 
-                self.slow_timer = false;
-                self.slow_timer_count = 0;
+                self.drift.reset_run();
                 self.run = RunState::Ready;
                 self.ticks = 0;
                 self.indent_pending = false;
@@ -752,7 +745,7 @@ impl Session {
                     self.defer_finish = defer;
                 }
                 if let Some(monitor) = monitor_render_drift {
-                    self.monitor_render_drift = monitor;
+                    self.drift.set_monitoring(monitor);
                 }
             }
             Command::FlushAutomatic { generation, .. } => {
@@ -786,8 +779,8 @@ impl Session {
                 .cloned(),
             awaiting_content: matches!(self.content_state, ContentState::Waiting(_)),
             finish: self.run.pending_finish().cloned(),
-            slow_timer: self.slow_timer,
-            drift: self.last_drift,
+            slow_timer: self.drift.slow_timer(),
+            drift: self.drift.last_drift(),
         })
     }
 
@@ -1232,24 +1225,15 @@ impl Session {
         if drift < 0.0 {
             return;
         }
-        self.last_drift = Some(drift);
-        if self.monitor_render_drift && self.config.monitors_drift() {
-            if drift > 125.0 {
-                self.slow_timer = true;
-            }
-            if drift > 250.0 {
-                self.slow_timer_count = self.slow_timer_count.saturating_add(1);
-            }
-            if drift > 500.0 || self.slow_timer_count > 5 {
-                self.finish(now, date, Some("slow timer".into()));
-                return;
-            }
+        if self.drift.record(drift, self.config.monitors_drift()) {
+            self.finish(now, date, Some("slow timer".into()));
+            return;
         }
         let due = ((now - start) / 1000.0).floor() as u32;
         while self.run.active() && self.run.pending_finish().is_none() && self.ticks < due {
             self.ticks += 1;
             let mut data = json!({"event":"step","timer":self.ticks});
-            if self.slow_timer {
+            if self.drift.slow_timer() {
                 data["slowTimer"] = json!(true);
             }
             if self.ticks < due {
