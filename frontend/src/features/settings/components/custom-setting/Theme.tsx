@@ -1,7 +1,5 @@
-import { CustomTheme, CustomThemeNameSchema } from "@caret/schemas/users";
-import { debounce } from "@caret/util/timing";
-import { For, JSXElement, onCleanup, Show, untrack } from "solid-js";
-import { z } from "zod";
+import { CustomTheme } from "@caret/schemas/users";
+import { For, JSXElement, onCleanup, Show } from "solid-js";
 
 import { AnimeMatch } from "#shared/components/common/anime/AnimeMatch.tsx";
 import { AnimeSwitch } from "#shared/components/common/anime/index.ts";
@@ -11,11 +9,7 @@ import { Separator } from "#shared/components/common/Separator.tsx";
 import { configMetadata } from "#shared/config/metadata.tsx";
 import { setConfig } from "#shared/config/setters.ts";
 import { getConfig } from "#shared/config/store.ts";
-import {
-  ColorName,
-  ThemesList,
-  ThemeWithName,
-} from "#shared/constants/themes.ts";
+import { ThemesList, ThemeWithName } from "#shared/constants/themes.ts";
 import {
   clearPreview,
   convertCustomColorsToTheme,
@@ -29,22 +23,22 @@ import {
   showNoticeNotification,
   showSuccessNotification,
 } from "#shared/states/notifications.ts";
-import { showSimpleModal } from "#shared/states/simple-modal.ts";
-import { getTheme, setTheme, updateThemeColor } from "#shared/states/theme.ts";
+import { getTheme, setTheme } from "#shared/states/theme.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { hexToHSL } from "#shared/utils/colors.ts";
-import {
-  normalizeName,
-  replaceUnderscoresWithSpaces,
-} from "#shared/utils/strings.ts";
+import { replaceUnderscoresWithSpaces } from "#shared/utils/strings.ts";
 
 import {
   addCustomTheme,
-  deleteCustomTheme,
-  editCustomTheme,
   useCustomThemesLiveQuery,
 } from "../../../../data/collections/custom-themes";
 import { SearchableSetting } from "../SearchableSetting";
+import { ColorPicker } from "./theme/ColorPicker";
+import {
+  openDeleteCustomThemeModal,
+  openEditCustomThemeModal,
+  openShareCustomThemeModal,
+} from "./theme/theme-modals";
 
 // darkest background first
 const sortedThemes: ThemeWithName[] = [...ThemesList].sort((a, b) => {
@@ -106,19 +100,19 @@ export function Theme(): JSXElement {
         </div>
       </Show>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Picker color="bg" />
-        <Picker color="main" />
-        <Picker color="sub" />
-        <Picker color="text" />
-        <Picker color="caret" />
-        <Picker color="subAlt" />
-        <Picker color="error" />
-        <Picker color="errorExtra" />
+        <ColorPicker color="bg" />
+        <ColorPicker color="main" />
+        <ColorPicker color="sub" />
+        <ColorPicker color="text" />
+        <ColorPicker color="caret" />
+        <ColorPicker color="subAlt" />
+        <ColorPicker color="error" />
+        <ColorPicker color="errorExtra" />
         <div class="col-span-1 text-sub md:col-span-2">
           when colorful mode is enabled:
         </div>
-        <Picker color="colorfulError" />
-        <Picker color="colorfulErrorExtra" />
+        <ColorPicker color="colorfulError" />
+        <ColorPicker color="colorfulErrorExtra" />
       </div>
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
         <Button
@@ -136,85 +130,7 @@ export function Theme(): JSXElement {
             }
           }}
         />
-        <Button
-          text="share"
-          onClick={() => {
-            showSimpleModal({
-              title: "Share custom theme",
-              schema: z.object({ includeBackground: z.boolean().optional() }),
-              inputs: {
-                includeBackground: {
-                  label: "Include background link, size and filters",
-                  type: "checkbox",
-                },
-              },
-              buttonText: "copy link to clipboard",
-              buttonAlwaysEnabled: true,
-              execFn: async ({ includeBackground }) => {
-                const newTheme: {
-                  c: string[]; //colors
-                  i?: string; //image
-                  s?: string; //size
-                  f?: object; //filter
-                } = {
-                  c: convertThemeToCustomColors(getTheme()),
-                };
-
-                if (includeBackground) {
-                  newTheme.i = getConfig.customBackground;
-                  newTheme.s = getConfig.customBackgroundSize;
-                  newTheme.f = getConfig.customBackgroundFilter;
-                }
-
-                const link = `${window.location.origin}?customTheme=${btoa(
-                  JSON.stringify(newTheme),
-                )}`;
-
-                try {
-                  await navigator.clipboard.writeText(link);
-                  showSuccessNotification("URL Copied to clipboard");
-                } catch (e) {
-                  showNoticeNotification(
-                    "Looks like we couldn't copy the link straight to your clipboard. Please copy it manually.",
-                    {
-                      durationMs: 5000,
-                    },
-                  );
-
-                  setTimeout(() => {
-                    showSimpleModal({
-                      title: "Custom theme URL",
-                      class: "max-w-2xl",
-                      schema: z.object({ url: z.string() }),
-                      inputs: {
-                        url: {
-                          type: "textarea",
-                          placeholder: "URL",
-                          initVal: link,
-                          clickToSelect: true,
-                          readOnly: true,
-                          class: "h-50",
-                        },
-                      },
-                      execFn: async () => {
-                        return {
-                          status: "success",
-                          showNotification: false,
-                        };
-                      },
-                    });
-                  }, 250);
-                  // this is flaky, no chaining for simple modals
-                }
-
-                return {
-                  status: "success",
-                  showNotification: false,
-                };
-              },
-            });
-          }}
-        />
+        <Button text="share" onClick={openShareCustomThemeModal} />
         <Show when={isAuthenticated()}>
           <Button
             text="save as new"
@@ -364,55 +280,7 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
         )}
         onClick={(e) => {
           e.stopPropagation();
-          showSimpleModal({
-            title: "Update custom theme",
-            schema: z.object({
-              name: CustomThemeNameSchema,
-              updateColors: z.boolean(),
-            }),
-            inputs: {
-              name: {
-                type: "text",
-                initVal: replaceUnderscoresWithSpaces(props.theme.name),
-                preprocess: normalizeName,
-              },
-              updateColors: {
-                type: "checkbox",
-                label: "Update custom theme to current colors",
-              },
-            },
-            buttonText: "update",
-            execFn: async ({ name, updateColors }) => {
-              if (name === undefined) {
-                return {
-                  status: "error",
-                  message: "Name is required",
-                };
-              }
-              editCustomTheme({
-                themeId: props.theme._id,
-                name,
-                colors: updateColors
-                  ? convertThemeToCustomColors(untrack(() => getTheme()))
-                  : untrack(() => props.theme.colors),
-              })
-                .then(() => {
-                  showSuccessNotification("Updated");
-                })
-                .catch(() => {
-                  showErrorNotification(
-                    e instanceof Error
-                      ? e.message
-                      : "Failed to update custom theme",
-                  );
-                });
-
-              return {
-                status: "success",
-                showNotification: false,
-              };
-            },
-          });
+          openEditCustomThemeModal(props.theme);
         }}
       />
       <Button
@@ -439,20 +307,7 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
         )}
         onClick={(e) => {
           e.stopPropagation();
-          showSimpleModal({
-            title: "Delete custom theme",
-            text: `Are you sure you want to delete the custom theme "${replaceUnderscoresWithSpaces(props.theme.name)}"? This action cannot be undone.`,
-            buttonText: "delete",
-            execFn: async () => {
-              void deleteCustomTheme({
-                themeId: props.theme._id,
-              });
-              return {
-                status: "success",
-                message: "Custom theme deleted",
-              };
-            },
-          });
+          openDeleteCustomThemeModal(props.theme);
         }}
       />
     </div>
@@ -579,114 +434,6 @@ function ThemeButton(props: { theme: ThemeWithName }): JSXElement {
           <div class="h-4 w-4 rounded-full bg-(--sub)"></div>
           <div class="h-4 w-4 rounded-full bg-(--text)"></div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function Picker(props: { color: ColorName }): JSXElement {
-  let colorInputRef: HTMLInputElement | undefined = undefined;
-
-  const text = () => {
-    if (props.color === "bg") return "background";
-    if (props.color === "main") return "main";
-    if (props.color === "sub") return "sub";
-    if (props.color === "subAlt") return "sub alt";
-    if (props.color === "caret") return "caret";
-    if (props.color === "text") return "text";
-    if (props.color === "error") return "error";
-    if (props.color === "errorExtra") return "extra error";
-    if (props.color === "colorfulError") return "error";
-    if (props.color === "colorfulErrorExtra") return "extra error";
-    return "unknown";
-  };
-
-  const _classes = [
-    "bg-(--picker-bg)",
-    "bg-(--picker-main)",
-    "bg-(--picker-caret)",
-    "bg-(--picker-sub)",
-    "bg-(--picker-subAlt)",
-    "bg-(--picker-text)",
-    "bg-(--picker-error)",
-    "bg-(--picker-errorExtra)",
-    "bg-(--picker-colorfulError)",
-    "bg-(--picker-colorfulErrorExtra)",
-  ];
-  const debouncedInput = debounce(125, (e: InputEvent) => {
-    const target = e.target as HTMLInputElement;
-    const color = target.value;
-    const key = untrack(() => props.color);
-
-    updateThemeColor(key, color);
-  });
-  // A pending edit must not land after the picker is gone (e.g. on reset).
-  onCleanup(() => debouncedInput.cancel());
-
-  return (
-    <div
-      class="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,1fr)_min-content] items-center gap-2"
-      style={{
-        "--picker-bg": getTheme().bg,
-        "--picker-main": getTheme().main,
-        "--picker-caret": getTheme().caret,
-        "--picker-sub": getTheme().sub,
-        "--picker-subAlt": getTheme().subAlt,
-        "--picker-text": getTheme().text,
-        "--picker-error": getTheme().error,
-        "--picker-errorExtra": getTheme().errorExtra,
-        "--picker-colorfulError": getTheme().colorfulError,
-        "--picker-colorfulErrorExtra": getTheme().colorfulErrorExtra,
-      }}
-    >
-      <div>{text()}</div>
-      <input
-        aria-label={`${props.color} color value`}
-        class="w-full"
-        type="text"
-        value={getTheme()[props.color]}
-        onChange={(e) => {
-          const value = e.currentTarget.value;
-          if (!/^#([0-9A-Fa-f]{3}){1,2}$/.test(value)) {
-            // invalid hex color
-            e.currentTarget.value = getTheme()[props.color];
-            return;
-          }
-          updateThemeColor(props.color, value);
-        }}
-      />
-      <div class="grid">
-        <input
-          aria-label={`${props.color} color picker`}
-          ref={(el) => (colorInputRef = el)}
-          type="color"
-          value={getTheme()[props.color]}
-          onInput={debouncedInput}
-          class="pointer-events-none col-[1/1] row-[1/1] m-0 h-full w-0 p-0 opacity-0"
-          // onChange={(e) => {
-          //   const current = [...getConfig.customThemeColors];
-          //   current[colorIndex()] = e.currentTarget.value;
-          //   setConfig(
-          //     "customThemeColors",
-          //     current as typeof getConfig.customThemeColors,
-          //   );
-          // }}
-        />
-        <Button
-          aria-label={`Choose ${props.color} color`}
-          class={cn(
-            `col-[1/1] row-[1/1]`,
-            `bg-(--picker-${props.color}) text-(--picker-bg)`,
-            `hover:bg-(--picker-text)`,
-            props.color === "bg" && "bg-(--picker-subAlt) text-(--picker-text)",
-            props.color === "subAlt" && "text-(--picker-text)",
-          )}
-          fa={{
-            icon: "fa-palette",
-            fixedWidth: true,
-          }}
-          onClick={() => colorInputRef?.click()}
-        />
       </div>
     </div>
   );
