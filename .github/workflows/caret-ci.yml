@@ -53,7 +53,7 @@ jobs:
       # PRs read changed files from the API, so no checkout is needed.
       - name: Detect changes
         if: github.event_name == 'pull_request'
-        uses: dorny/paths-filter@v4.0.3
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: filter
         with:
           # A file counts when it matches a pattern and none of the filter's exclusions.
@@ -228,7 +228,7 @@ jobs:
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
         with:
           rust: "true"
@@ -241,7 +241,7 @@ jobs:
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-chromium
       - name: Browser Wasm parity
@@ -253,7 +253,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -303,7 +303,7 @@ jobs:
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -325,7 +325,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -346,7 +346,7 @@ jobs:
       matrix:
         shard: [1, 2]
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -359,7 +359,7 @@ jobs:
 
       - name: Upload frontend browser failure evidence
         if: failure()
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: frontend-browser-failures-${{ matrix.shard }}
           path: frontend/.vitest/attachments
@@ -374,7 +374,7 @@ jobs:
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -394,7 +394,7 @@ jobs:
         run: vp run --filter @caret/frontend dry-run:start
 
       - name: Share Start Worker
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: start-worker
           path: frontend/dist/start
@@ -409,7 +409,7 @@ jobs:
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
         with:
           task-cache: start-runtime-build
@@ -418,7 +418,7 @@ jobs:
           CARET_BUILD_ID: ci-fixture
         run: vp -C frontend exec vpx ./scripts/ci-build.ts --mode runtime-test
       - name: Share runtime-test Worker
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: start-runtime-worker
           path: frontend/dist/start-test
@@ -437,7 +437,7 @@ jobs:
       matrix:
         shard: [1, 2, 3]
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -446,13 +446,13 @@ jobs:
         run: vp -C backend exec vpx ./scripts/migration-inventory.ts --check && vp -C frontend exec vpx ./scripts/generate-operations.ts --check
 
       - name: Download Start Worker
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: start-worker
           path: frontend/dist/start
 
       - name: Download runtime-test Worker
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: start-runtime-worker
           path: frontend/dist/start-test
@@ -471,13 +471,13 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
 
       - name: Download Start Worker
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: start-worker
           path: frontend/dist/start
@@ -492,7 +492,7 @@ jobs:
 
       - name: Upload browser timings
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: start-browser-timings-${{ matrix.shard }}
           path: frontend/.reports/start-browser.json
@@ -501,7 +501,7 @@ jobs:
 
       - name: Upload browser traces
         if: failure()
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: start-browser-traces-${{ matrix.shard }}
           path: frontend/test-results
@@ -520,7 +520,7 @@ jobs:
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -532,7 +532,7 @@ jobs:
 
       - name: Upload update traces
         if: failure()
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: start-update-traces
           path: frontend/test-results
@@ -546,7 +546,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
@@ -567,7 +567,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
