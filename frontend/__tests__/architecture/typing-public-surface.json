@@ -2,8 +2,6 @@
   "commands",
   "initial/default",
   "modals",
-  "modals/DevOptionsModal",
-  "modals/EventLogViewerModal",
   "page",
   "page.client",
   "runtime/funbox/list",

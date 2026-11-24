@@ -46,3 +46,18 @@ export function useTypingModals(): void {
     ]),
   );
 }
+
+/** Contributes lazy typing dev modals to the mounted dev-tools host. */
+export function useTypingDevModals(): void {
+  if (!import.meta.env.DEV) return;
+  onCleanup(
+    registerModals("dev", [
+      lazyModal("DevOptions", async () =>
+        import("./DevOptionsModal").then((m) => m.DevOptionsModal),
+      ),
+      lazyModal("EventLogViewer", async () =>
+        import("./EventLogViewerModal").then((m) => m.EventLogViewerModal),
+      ),
+    ]),
+  );
+}
