@@ -18,6 +18,7 @@ import { edgeCacheControl } from "../policies/edge-cache";
 import ApiError from "../utils/error";
 import { createETagGenerator } from "../utils/etag";
 import { getFrontendUrl } from "../utils/misc";
+import { devModeViolationResponse } from "../runtime/dev-guard";
 import { isCustomCode } from "../constants/result-status-codes";
 import { getVersion } from "../version";
 
@@ -126,6 +127,22 @@ async function handle(
     body: unknown,
   ) => Promise<Response>,
 ): Promise<Response> {
+  const devViolation = devModeViolationResponse(
+    request,
+    input.runtime.env.MODE,
+  );
+  if (devViolation !== undefined) {
+    return new Response(
+      JSON.stringify({ message: await devViolation.text(), data: null }),
+      {
+        status: devViolation.status,
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "cache-control": "no-store",
+        },
+      },
+    );
+  }
   const headers = new Headers({
     [COMPATIBILITY_CHECK_HEADER]: String(COMPATIBILITY_CHECK),
   });
