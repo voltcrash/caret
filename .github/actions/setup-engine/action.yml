@@ -13,13 +13,13 @@ runs:
     # restore only costs a rebuild. A hit skips the toolchain, cargo and wasm-opt.
     - name: Restore generated bindings
       id: bindings
-      uses: actions/cache@v6.1.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: packages/typing-engine/generated
         key: engine-bindings-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml', 'package.json', 'scripts/engine.ts', '.cargo/**', 'crates/typing-engine/Cargo.toml', 'crates/typing-engine/build.rs', 'crates/typing-engine/src/**', 'crates/typing-engine/data/**', 'crates/typing-engine-wasm/**', 'crates/typing-audit-wasm/**') }}
     - name: Restore Rust build cache
       if: steps.bindings.outputs.cache-hit != 'true' || inputs.rust == 'true'
-      uses: actions/cache@v6.1.0
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           ~/.cargo/registry
