@@ -1,5 +1,6 @@
 import { createMemo, For, JSXElement, Show } from "solid-js";
 
+import { useTypingModals } from "../features/typing/modals";
 import { getModalVisibility } from "../ts/states/modals";
 import { contributedModals, lazyModal } from "./modal-registry";
 
@@ -20,49 +21,9 @@ const coreModals = [
       (m) => m.ImportSettingsModal,
     ),
   ),
-  lazyModal("CustomText", async () =>
-    import("../features/typing/modals/CustomTextModal").then(
-      (m) => m.CustomTextModal,
-    ),
-  ),
-  lazyModal("QuoteRate", async () =>
-    import("../features/typing/modals/QuoteRateModal").then(
-      (m) => m.QuoteRateModal,
-    ),
-  ),
-  lazyModal("QuoteReport", async () =>
-    import("../features/typing/modals/QuoteReportModal").then(
-      (m) => m.QuoteReportModal,
-    ),
-  ),
-  lazyModal("QuoteSearch", async () =>
-    import("../features/typing/modals/QuoteSearchModal").then(
-      (m) => m.QuoteSearchModal,
-    ),
-  ),
-  lazyModal("TestDuration", async () =>
-    import("../features/typing/modals/CustomTestDurationModal").then(
-      (m) => m.CustomTestDurationModal,
-    ),
-  ),
-  lazyModal("CustomWordAmount", async () =>
-    import("../features/typing/modals/CustomWordAmountModal").then(
-      (m) => m.CustomWordAmountModal,
-    ),
-  ),
   lazyModal("PbTables", async () =>
     import("../ts/components/modals/PbTablesModal").then(
       (m) => m.PbTablesModal,
-    ),
-  ),
-  lazyModal("ShareTestSettings", async () =>
-    import("../features/typing/modals/ShareTestSettings").then(
-      (m) => m.ShareTestSettings,
-    ),
-  ),
-  lazyModal("MobileTestConfig", async () =>
-    import("../features/typing/modals/MobileTestConfigModal").then(
-      (m) => m.MobileTestConfigModal,
     ),
   ),
   lazyModal("AddPresetModal", async () =>
@@ -75,11 +36,6 @@ const coreModals = [
       (m) => m.EditPresetModal,
     ),
   ),
-  lazyModal("LastSignedOutResult", async () =>
-    import("../features/typing/modals/LastSignedOutResultModal").then(
-      (m) => m.LastSignedOutResultModal,
-    ),
-  ),
   lazyModal("StreakHourOffset", async () =>
     import("../ts/components/modals/StreakHourOffsetModal").then(
       (m) => m.StreakHourOffsetModal,
@@ -90,19 +46,10 @@ const coreModals = [
       (m) => m.UserReportModal,
     ),
   ),
-  lazyModal("EditResultTags", async () =>
-    import("../features/typing/modals/EditResultTagsModal").then(
-      (m) => m.EditResultTagsModal,
-    ),
-  ),
-  lazyModal("PractiseWords", async () =>
-    import("../features/typing/modals/PractiseWordsModal").then(
-      (m) => m.PractiseWordsModal,
-    ),
-  ),
 ];
 
 export function Modals(): JSXElement {
+  useTypingModals();
   const modals = createMemo(() => [...coreModals, ...contributedModals("app")]);
 
   return (
