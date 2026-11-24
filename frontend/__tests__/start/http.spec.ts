@@ -30,34 +30,73 @@ describe("declared Start HTTP protocols without Hono", () => {
       expect(await script.text()).toContain(
         'fetch("/api/configuration/schema")',
       );
-      expect(
-        (await worker.fetch("http://localhost:3000/api/docs")).status,
-      ).toBe(404);
-      expect(
-        (await worker.fetch("http://localhost:3000/api/V1/DOCS/PUBLIC")).status,
-      ).toBe(200);
-      expect(
-        (await worker.fetch("http://localhost:3000/api/v1/docs/internal.json"))
-          .status,
-      ).toBe(200);
-      expect(
-        (await worker.fetch("http://localhost:3000/api/configuration")).status,
-      ).toBe(200);
-      expect(
-        (await worker.fetch("http://localhost:3000/api/v1/configuration"))
-          .status,
-      ).toBe(404);
-      // Development mode never serves a public host.
+      for (const [path, status] of [
+        ["/api/docs", 404],
+        ["/api/V1/DOCS/PUBLIC", 200],
+        ["/api/v1/docs/internal.json", 200],
+        ["/api/configuration", 200],
+        ["/api/v1/configuration", 404],
+      ] as const) {
+        const response = await worker.fetch(`http://localhost:3000${path}`);
+        expect(response.status, path).toBe(status);
+        await response.arrayBuffer();
+      }
+      // Development mode never serves a public host or non-loopback origin.
       const remote = await worker.fetch(
-        "https://caret.example/api/configuration",
+        "https://caret-start-migration.voltcrash.workers.dev/api/configuration",
       );
       expect(remote.status).toBe(403);
-      expect(
-        (await worker.fetch("http://127.0.0.1:3000/api/configuration")).status,
-      ).toBe(200);
+      expect(remote.headers.get("cache-control")).toBe("no-store");
+      expect(await remote.text()).toContain("loopback");
+      const remoteUid = await worker.fetch("https://caret.example/api/users", {
+        headers: { authorization: "Uid admin|admin@example.test" },
+      });
+      expect(remoteUid.status).toBe(403);
+      await remoteUid.arrayBuffer();
+      const foreignOrigin = await worker.fetch(
+        "http://localhost:3000/api/configuration",
+        {
+          method: "PATCH",
+          headers: {
+            origin: "https://attacker.example",
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({ configuration: {} }),
+        },
+      );
+      expect(foreignOrigin.status).toBe(403);
+      await foreignOrigin.arrayBuffer();
+      const ipv4 = await worker.fetch(
+        "http://127.0.0.1:3000/api/configuration",
+      );
+      expect(ipv4.status).toBe(200);
+      await ipv4.arrayBuffer();
+      const ipv6 = await worker.fetch("http://[::1]:3000/api/configuration");
+      expect(ipv6.status).toBe(200);
+      await ipv6.arrayBuffer();
     } finally {
       await dev.dispose();
     }
+  });
+
+  it("keeps production and staging hosts unaffected by the dev loopback guard", async () => {
+    const worker = await mf.getWorker("a");
+    const stagingHost = await worker.fetch(
+      "https://caret-api-staging.voltcrash.workers.dev/api",
+    );
+    expect(stagingHost.status).toBe(200);
+    await stagingHost.arrayBuffer();
+    const uidAttempt = await worker.fetch(
+      "https://caret-api-staging.voltcrash.workers.dev/api/users",
+      { headers: { authorization: "Uid admin|admin@example.test" } },
+    );
+    expect(uidAttempt.status).toBe(401);
+    await uidAttempt.arrayBuffer();
+    const editorAttempt = await worker.fetch(
+      "https://caret-api-staging.voltcrash.workers.dev/api/configure",
+    );
+    expect(editorAttempt.status).toBe(404);
+    await editorAttempt.arrayBuffer();
   });
 
   it("dispatches every ledger operation to a JSON service/policy response", async () => {

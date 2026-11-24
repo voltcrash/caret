@@ -10,6 +10,10 @@ const files = [
   "wrangler.production.json",
 ];
 type Deployment = {
+  workers_dev?: boolean;
+  preview_urls?: boolean;
+  routes?: unknown[];
+  vars?: { MODE?: string };
   hyperdrive: { binding: string; id: string }[];
   secrets?: { required: string[] };
   ratelimits: {
@@ -43,6 +47,12 @@ describe.each(configs)("$file", ({ config }) => {
   });
   it("runs each scheduled job on its own trigger", () => {
     expect(config.triggers.crons).toEqual([LEADERBOARD_CRON, MAINTENANCE_CRON]);
+  });
+  it("never publishes a public workers.dev or preview endpoint in dev mode", () => {
+    if (config.vars?.MODE !== "dev") return;
+    expect(config.workers_dev).toBe(false);
+    expect(config.preview_urls).toBe(false);
+    expect(config.routes ?? []).toHaveLength(0);
   });
 });
 
