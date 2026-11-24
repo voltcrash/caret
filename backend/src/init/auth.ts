@@ -93,6 +93,7 @@ export function createAuth(
     },
     account: {
       modelName: "authAccounts",
+      encryptOAuthTokens: true,
       accountLinking: { enabled: true, allowDifferentEmails: false },
     },
     session: {
