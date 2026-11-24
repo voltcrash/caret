@@ -118,6 +118,13 @@ Features add commands at named slots through `registry.ts` while the palette is
 mounted (`app/commandline.client.tsx`); shared commands reach typing only
 through `typing-host.ts`.
 
+Modals: `app/modals.client.tsx` and `app/dev-tools.client.tsx` host lazy modals
+for the app and dev-tools slots. Features register lazy modal entries through
+`app/modal-registry.ts` (`registerModals` / `lazyModal`) from a single feature
+entry (for example, `features/typing/modals/index.ts`) so modals stay
+code-split and reachable from any route without exposing individual modal
+modules.
+
 Tailwind CSS supplies utilities and theme colors; compatibility CSS keeps
 theme/funbox selectors. Icons use `Fa`. `AnimatedModal` uses `hidden open:flex`:
 never add `hidden` imperatively, or a closed dialog can intercept clicks.
