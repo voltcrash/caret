@@ -210,3 +210,104 @@ impl Content {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn sample_prepare(mode: &str) -> Prepare {
+        let config = GenerationConfig {
+            mode: mode.into(),
+            words: 5,
+            ..GenerationConfig::default()
+        };
+        Prepare {
+            config,
+            language: Language {
+                name: "english".into(),
+                words: vec!["alpha", "beta", "gamma", "delta", "epsilon"]
+                    .into_iter()
+                    .map(Text::from)
+                    .collect(),
+                ..Language::default()
+            },
+            custom: None,
+            random: Random::seeded(42),
+            quotes: None,
+            polyglot: vec![],
+            selected_quote_id: 0,
+            favorite_quote_ids: vec![],
+            sections: vec![],
+        }
+    }
+
+    #[test]
+    fn unprepared_content_rejects_accessors_and_start() {
+        let mut content = Content::default();
+        assert!(content.prepared_generator().is_err());
+        assert!(content.generator().is_err());
+        assert!(content.generate(false).is_err());
+        assert!(content.preview(1).is_err());
+        assert!(content.start_session(false).is_err());
+    }
+
+    #[test]
+    fn preview_preserves_cached_output_while_mutable_generator_invalidates_it() {
+        let mut content = Content::default();
+        content.prepare(sample_prepare("words")).unwrap();
+
+        let generated = content.generate(false).unwrap();
+        let preview = content.preview(7).unwrap();
+        assert_eq!(preview.len(), 5);
+        let words = &content.prepared_generator().unwrap().language.words;
+        assert!(preview.iter().all(|word| {
+            let trimmed = Text(word.0.strip_suffix(&[32]).unwrap_or(&word.0).to_vec());
+            words.contains(&trimmed)
+        }));
+        assert_eq!(content.preview(7).unwrap(), preview);
+        let Preparation::Prepared {
+            output: Some((false, cached)),
+            ..
+        } = &content.preparation
+        else {
+            panic!("preview dropped prepared output");
+        };
+        assert_eq!(cached.words, generated.words);
+
+        let _ = content.generator().unwrap();
+        assert!(matches!(
+            content.preparation,
+            Preparation::Prepared { output: None, .. }
+        ));
+
+        let regenerated = content.generate(false).unwrap();
+        let session = content.start_session(false).unwrap();
+        assert_eq!(session.snapshot().words.len(), regenerated.words.len());
+        assert_eq!(generated.words.len(), 5);
+        assert!(content.prepared_generator().is_err());
+    }
+
+    #[test]
+    fn prepare_increments_generation_and_recycles_session_learning() {
+        let mut content = Content::default();
+        content.prepare(sample_prepare("words")).unwrap();
+        assert_eq!(content.prepared_generator().unwrap().prepared_generation, 0);
+
+        let session = content.start_session(false).unwrap();
+        content.recycle_session(session);
+        assert!(content.prepared_generator().is_err());
+
+        content.prepare(sample_prepare("words")).unwrap();
+        assert_eq!(content.prepared_generator().unwrap().prepared_generation, 1);
+        assert!(!content.prepared_generator().unwrap().previous.is_empty());
+    }
+
+    #[test]
+    fn prepare_repeating_quote_requires_previous_quote() {
+        let mut content = Content::default();
+        let error = content
+            .prepare_repeating(sample_prepare("quote"), true)
+            .unwrap_err();
+        assert_eq!(error.message, "Missing previous quote");
+    }
+}

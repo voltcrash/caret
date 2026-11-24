@@ -67,3 +67,53 @@ pub(super) fn replace_eszett(word: Text) -> Text {
     }
     Text(out)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn case_converts_unicode_and_preserves_unpaired_surrogates() {
+        assert_eq!(
+            case(&Text::from("Hello Café"), false),
+            Text::from("hello café")
+        );
+        assert_eq!(
+            case(&Text::from("hello café"), true),
+            Text::from("HELLO CAFÉ")
+        );
+
+        let with_surrogate = Text(vec![b'A' as u16, 0xD800, b'b' as u16]);
+        assert_eq!(
+            case(&with_surrogate, false),
+            Text(vec![b'a' as u16, 0xD800, b'b' as u16])
+        );
+        assert_eq!(
+            case(&with_surrogate, true),
+            Text(vec![b'A' as u16, 0xD800, b'B' as u16])
+        );
+    }
+
+    #[test]
+    fn clean_previous_strips_punctuation_and_optional_apostrophe() {
+        let word = Text::from("\"Don't-Stop?!,.:");
+        assert_eq!(clean_previous(&word, false), Text::from("don'tstop"));
+        assert_eq!(clean_previous(&word, true), Text::from("dontstop"));
+    }
+
+    #[test]
+    fn collapse_spaces_deduplicates_and_trims() {
+        assert_eq!(
+            collapse_spaces(Text::from("  alpha   beta  gamma ")),
+            Text::from("alpha beta gamma")
+        );
+        assert_eq!(collapse_spaces(Text::from("   ")), Text::from(""));
+        assert_eq!(collapse_spaces(Text::from("")), Text::from(""));
+    }
+
+    #[test]
+    fn replace_eszett_expands_sharp_s() {
+        assert_eq!(replace_eszett(Text::from("straße")), Text::from("strasse"));
+        assert_eq!(replace_eszett(Text::from("plain")), Text::from("plain"));
+    }
+}
