@@ -13,6 +13,8 @@ import {
   primaryKey,
   check,
 } from "drizzle-orm/pg-core";
+import type { PartialConfiguration } from "@caret/contracts/configuration";
+import type { PartialConfig } from "@caret/schemas/configs";
 import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
@@ -126,7 +128,7 @@ const owner = () =>
 export const configs = pgTable("configs", {
   uid: owner().primaryKey(),
   id: text("id").notNull(),
-  data: json(),
+  data: json<PartialConfig>(),
 });
 export const presets = pgTable(
   "presets",
@@ -175,7 +177,7 @@ export const adminUids = pgTable("admin_uids", {
 export const configuration = pgTable("configuration", {
   id: text("id").primaryKey(),
   version: integer("version").notNull().default(0),
-  data: json(),
+  data: json<PartialConfiguration>(),
 });
 export const psas = pgTable("psas", {
   id: id(),
