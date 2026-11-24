@@ -19,7 +19,11 @@ import type { Language } from "@caret/schemas/languages";
 import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
-import type { DBQuoteSubmissionData, DBReport } from "./payloads";
+import type {
+  DBAuditLogData,
+  DBQuoteSubmissionData,
+  DBReport,
+} from "./payloads";
 
 const id = () => text("id").primaryKey();
 const json = <T = Record<string, unknown>>(name = "data") =>
@@ -263,7 +267,7 @@ export const logs = pgTable(
     event: text("event").notNull(),
     timestamp: integer("timestamp").notNull(),
     important: boolean("important").notNull().default(false),
-    data: json(),
+    data: json<DBAuditLogData>(),
   },
   (t) => [
     index("audit_logs_owner_idx").on(t.uid, t.timestamp),

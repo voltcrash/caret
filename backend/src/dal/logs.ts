@@ -1,5 +1,6 @@
 import { and, count, desc, eq, gte, lt } from "drizzle-orm";
 import { database, encode, statement } from "../db/client";
+import type { DBAuditLogData } from "../db/payloads";
 import { logs } from "../db/schema";
 import { stage } from "../db/mutation";
 import { runtime } from "../runtime/env";
@@ -69,11 +70,9 @@ export type AuditLog = {
   timestamp: number;
   message: Record<string, unknown>;
 };
-function message(data: Record<string, unknown>): Record<string, unknown> {
-  const value = data["message"];
-  return typeof value === "object" && value !== null
-    ? (value as Record<string, unknown>)
-    : { value };
+function message(data: DBAuditLogData): Record<string, unknown> {
+  const value = data.message;
+  return typeof value === "object" && value !== null ? value : { value };
 }
 export async function getLogs(options: {
   event: string;

@@ -21,3 +21,8 @@ export type DBQuoteApproval = {
 export type DBQuoteSubmissionData = Quote & {
   approval?: DBQuoteApproval;
 };
+
+export type DBAuditLogData = {
+  message: string | Record<string, unknown>;
+  requestId?: string;
+};
