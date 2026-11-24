@@ -18,6 +18,11 @@ export async function signInWithOAuth(
     email?: string;
     frontendUrl?: string;
     headers?: Record<string, string>;
+    tokens?: {
+      accessToken?: string;
+      refreshToken?: string;
+      idToken?: string;
+    };
   } = {},
 ): Promise<{ cookie: string; response: Response }> {
   const providerId = options.provider ?? "google";
@@ -28,7 +33,13 @@ export async function signInWithOAuth(
   const provider = context.socialProviders.find((it) => it.id === providerId);
   if (!provider) throw new Error(`Missing ${providerId} test provider`);
   vi.spyOn(provider, "validateAuthorizationCode").mockResolvedValue({
-    accessToken: "test-access-token",
+    accessToken: options.tokens?.accessToken ?? "test-access-token",
+    ...(options.tokens?.refreshToken !== undefined
+      ? { refreshToken: options.tokens.refreshToken }
+      : {}),
+    ...(options.tokens?.idToken !== undefined
+      ? { idToken: options.tokens.idToken }
+      : {}),
   });
   vi.spyOn(provider, "getUserInfo").mockResolvedValue({
     user: { name: "NewUser", email, emailVerified: true },
