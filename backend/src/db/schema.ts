@@ -13,6 +13,7 @@ import {
   primaryKey,
   check,
 } from "drizzle-orm/pg-core";
+import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
 
 const id = () => text("id").primaryKey();
@@ -175,7 +176,10 @@ export const configuration = pgTable("configuration", {
   version: integer("version").notNull().default(0),
   data: json(),
 });
-export const psas = pgTable("psas", { id: id(), data: json() });
+export const psas = pgTable("psas", {
+  id: id(),
+  data: json<Omit<PSA, "_id">>(),
+});
 export const publicStats = pgTable("public_stats", {
   id: text("id").primaryKey(),
   testsCompleted: integer("tests_completed").notNull().default(0),
