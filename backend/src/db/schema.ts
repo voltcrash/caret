@@ -19,6 +19,7 @@ import type { Language } from "@caret/schemas/languages";
 import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
+import type { DBResult } from "../utils/result";
 import type {
   DBAuditLogData,
   DBQuoteSubmissionData,
@@ -160,7 +161,7 @@ export const results = pgTable(
     acc: doublePrecision("acc").notNull(),
     client: text("client").$type<"web">().notNull().default("web"),
     submissionHash: text("submission_hash"),
-    data: json(),
+    data: json<DBResult>(),
   },
   (t) => [
     index("results_client_time_idx").on(t.uid, t.client, t.timestamp, t.id),

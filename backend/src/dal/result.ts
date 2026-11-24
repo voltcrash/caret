@@ -14,7 +14,7 @@ function unpack(
     _id: row.id,
     uid: row.uid,
     client: row.client,
-  } as DBResult);
+  });
 }
 export async function hasSubmissionHash(
   uid: string,
@@ -68,7 +68,7 @@ export async function addResult(
       result.wpm,
       result.acc,
       result.client ?? "web",
-      (result as DBResult & { submissionHash?: string }).submissionHash ?? null,
+      result.submissionHash ?? null,
       encode(result),
     ),
   );

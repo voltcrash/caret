@@ -218,8 +218,7 @@ export async function applyProgression(
 
   const dbresult = buildDbResult(completedEvent, user.name, isPb);
   dbresult.verification = submission.verification;
-  (dbresult as typeof dbresult & { submissionHash: string }).submissionHash =
-    submissionHash;
+  dbresult.submissionHash = submissionHash;
   if (keySpacingStats !== undefined) {
     dbresult.keySpacingStats = keySpacingStats;
   }
