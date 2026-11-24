@@ -1,4 +1,3 @@
-import { animate, AnimationParams as AnimeParams } from "animejs";
 import { JSXElement, ParentProps, Show, onCleanup, onMount } from "solid-js";
 
 import { createEffectOn } from "../../hooks/effects";
@@ -14,18 +13,19 @@ import {
 import { registerOverlayVisibility } from "../../states/overlay-visibility";
 import { cn } from "../../utils/cn";
 import { applyReducedMotion } from "../../utils/misc";
-
-type AnimationParams = {
-  opacity?: number | [number, number];
-  marginTop?: string | [string, string];
-  marginRight?: string | [string, string];
-  duration?: number;
-};
-
-type AnimationConfig = {
-  wrapper?: AnimationParams;
-  modal?: AnimationParams;
-};
+import {
+  AnimationConfig,
+  animateElement,
+  DEFAULT_ANIMATION_DURATION,
+  getEnterAnimation,
+  getExitAnimationParams,
+  getHideMotion,
+  getModalAnimationDuration,
+  getShowMotion,
+  isSheetViewport,
+  ModalMotion,
+  setStyle,
+} from "./animated-modal/motion";
 
 type AnimatedModalProps = ParentProps<{
   id: ModalId;
@@ -60,54 +60,11 @@ type AnimatedModalProps = ParentProps<{
   wrapperClass?: string;
 }>;
 
-function setStyle(
-  element: HTMLElement | undefined,
-  style: Record<string, string>,
-): void {
-  if (element) Object.assign(element.style, style);
-}
-
-function animateElement(
-  element: HTMLElement | undefined,
-  options: AnimeParams,
-): void {
-  if (element) animate(element, options);
-}
-
-const DEFAULT_ANIMATION_DURATION = 125;
-const SHEET_ANIMATION_DURATION = 200;
-const MODAL_ONLY_ANIMATION_MULTIPLIER = 0.75;
-const SHEET_MEDIA_QUERY = "(max-width: 720.98px)";
 // how far a sheet has to be dragged down by its handle to close
 const SHEET_DISMISS_DRAG_PX = 80;
 // or flicked down faster than this (px per ms), past tap jitter
 const SHEET_DISMISS_VELOCITY = 0.5;
 const SHEET_FLICK_MIN_PX = 16;
-
-type ModalMotion = {
-  enter: { style: Record<string, string>; params: Record<string, unknown> };
-  exit: Record<string, unknown>;
-};
-
-const CARD_MOTION: ModalMotion = {
-  enter: {
-    style: { opacity: "0", marginTop: "1rem" },
-    params: { opacity: [0, 1], marginTop: ["1rem", "0"] },
-  },
-  exit: { opacity: [1, 0], marginTop: ["0", "1rem"] },
-};
-
-const SHEET_MOTION: ModalMotion = {
-  enter: {
-    style: { transform: "translateY(100%)" },
-    params: { translateY: ["100%", "0%"] },
-  },
-  exit: { translateY: ["0%", "100%"] },
-};
-
-function isSheetViewport(): boolean {
-  return matchMedia?.(SHEET_MEDIA_QUERY)?.matches;
-}
 
 export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   onMount(() => onCleanup(registerModalHost(props.id)));
@@ -235,11 +192,11 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     }
 
     const sheet = usesSheetAnimation();
-    const motion = sheet ? SHEET_MOTION : CARD_MOTION;
-    const modalAnimDuration = applyReducedMotion(
-      (props.customAnimations?.show?.modal?.duration ??
-        (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
-        (isChained ? MODAL_ONLY_ANIMATION_MULTIPLIER : 1),
+    const motion = getShowMotion(sheet);
+    const modalAnimDuration = getModalAnimationDuration(
+      props.customAnimations?.show?.modal?.duration,
+      sheet,
+      isChained,
     );
 
     const animMode = isChained ? "modalOnly" : (props.animationMode ?? "both");
@@ -262,32 +219,10 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
       // Modal animation
       if (animMode !== "none") {
-        const customModal = props.customAnimations?.show?.modal;
-        const initialStyle: Record<string, string> = {
-          ...motion.enter.style,
-        };
-        const animParams: Record<string, unknown> = {
-          ...motion.enter.params,
-        };
-        if (customModal) {
-          if (customModal.opacity !== undefined) {
-            const v = customModal.opacity;
-            initialStyle["opacity"] = String(Array.isArray(v) ? v[0] : v);
-            animParams["opacity"] = v;
-          }
-          if (customModal.marginTop !== undefined) {
-            const v = customModal.marginTop;
-            initialStyle["marginTop"] = Array.isArray(v) ? v[0] : v;
-            animParams["marginTop"] = v;
-          }
-          if (customModal.marginRight !== undefined) {
-            const v = customModal.marginRight;
-            initialStyle["marginRight"] = Array.isArray(v) ? v[0] : v;
-            animParams["marginRight"] = v;
-            delete initialStyle["marginTop"];
-            delete animParams["marginTop"];
-          }
-        }
+        const { initialStyle, animParams } = getEnterAnimation(
+          motion,
+          props.customAnimations?.show?.modal,
+        );
         setStyle(modalEl(), initialStyle);
 
         animateElement(modalEl(), {
@@ -339,21 +274,12 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
     const sheet = usesSheetAnimation();
     const dragOffset = drag?.offset ?? 0;
-    // a dragged sheet slides out from where the finger let go
-    const motion: ModalMotion =
-      sheet && dragOffset > 0
-        ? {
-            ...SHEET_MOTION,
-            exit: { translateY: [`${dragOffset}px`, "100%"] },
-          }
-        : sheet
-          ? SHEET_MOTION
-          : CARD_MOTION;
+    const motion: ModalMotion = getHideMotion(sheet, dragOffset);
     drag = undefined;
-    const modalAnimDuration = applyReducedMotion(
-      (props.customAnimations?.hide?.modal?.duration ??
-        (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
-        (isChained ? MODAL_ONLY_ANIMATION_MULTIPLIER : 1),
+    const modalAnimDuration = getModalAnimationDuration(
+      props.customAnimations?.hide?.modal?.duration,
+      sheet,
+      isChained,
     );
 
     const animMode = isChained ? "modalOnly" : (props.animationMode ?? "both");
@@ -366,22 +292,10 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
       // Modal animation
       if (animMode !== "none") {
-        const customModal = props.customAnimations?.hide?.modal;
-        const hideAnimParams: Record<string, unknown> = {
-          ...motion.exit,
-        };
-        if (customModal) {
-          if (customModal.opacity !== undefined) {
-            hideAnimParams["opacity"] = customModal.opacity;
-          }
-          if (customModal.marginTop !== undefined) {
-            hideAnimParams["marginTop"] = customModal.marginTop;
-          }
-          if (customModal.marginRight !== undefined) {
-            hideAnimParams["marginRight"] = customModal.marginRight;
-            delete hideAnimParams["marginTop"];
-          }
-        }
+        const hideAnimParams = getExitAnimationParams(
+          motion,
+          props.customAnimations?.hide?.modal,
+        );
         animateElement(modalEl(), {
           ...hideAnimParams,
           duration: modalAnimDuration,
