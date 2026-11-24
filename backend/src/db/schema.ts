@@ -18,7 +18,7 @@ import type { PartialConfig } from "@caret/schemas/configs";
 import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
-import type { DBReport } from "./payloads";
+import type { DBQuoteSubmissionData, DBReport } from "./payloads";
 
 const id = () => text("id").primaryKey();
 const json = <T = Record<string, unknown>>(name = "data") =>
@@ -207,7 +207,7 @@ export const quoteSubmissions = pgTable(
     submittedBy: text("submitted_by").notNull(),
     timestamp: integer("timestamp").notNull(),
     approved: boolean("approved").notNull().default(false),
-    data: json(),
+    data: json<DBQuoteSubmissionData>(),
   },
   (t) => [
     index("quote_submissions_review_idx").on(

@@ -107,7 +107,7 @@ export async function get(language: Language | "all"): Promise<DBNewQuote[]> {
       )
       .orderBy(asc(quoteSubmissions.timestamp))
       .limit(10)
-  ).map((row) => ({ ...row.data, _id: row.id }) as DBNewQuote);
+  ).map((row) => ({ ...row.data, _id: row.id }));
 }
 /** Language of a pending submission; undefined once it has been reviewed. */
 export async function getLanguage(
@@ -158,16 +158,7 @@ export async function approve(
     {
       quoteId,
       quote: row.data,
-      ...(
-        row.data as {
-          approval: {
-            editQuote?: string;
-            editSource?: string;
-            approvedBy: string;
-            repository?: string;
-          };
-        }
-      ).approval,
+      ...row.data.approval,
     },
     `quote:${quoteId}`,
   );

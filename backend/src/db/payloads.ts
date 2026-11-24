@@ -1,3 +1,5 @@
+import type { Quote } from "@caret/schemas/quotes";
+
 export type DBReport = {
   _id: string;
   id: string;
@@ -7,4 +9,15 @@ export type DBReport = {
   contentId: string;
   reason: string;
   comment: string;
+};
+
+export type DBQuoteApproval = {
+  editQuote?: string;
+  editSource?: string;
+  approvedBy: string;
+  repository?: string;
+};
+
+export type DBQuoteSubmissionData = Quote & {
+  approval?: DBQuoteApproval;
 };
