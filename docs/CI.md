@@ -79,7 +79,8 @@ trailing comment (for example, `actions/checkout@<sha> # v7.0.1`).
 ## Security scans
 
 [Security scans](../.github/workflows/security.yml) runs on pull requests to
-`main`/`stack/**`, pushes to `main`, weekly on Mondays, and manual dispatch:
+`main`/`stack/**`/`t3/rust-engine-migration`, pushes to `main`, weekly on
+Mondays, and manual dispatch:
 
 - `dependency-audit`: gates on production JS advisories (`vp pm audit -- --prod`)
   and publishes the full workspace advisory table (including dev dependencies)
