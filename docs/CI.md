@@ -72,6 +72,23 @@ same PR so reviewers see the growth.
 Add new paths to the matching `changes` filter with a routing spec case, and
 new jobs to `ci-ok`'s `needs`. Share build output before adding shards; each shard keeps its own fixture Worker and PostgreSQL databases.
 
+Pin every third-party GitHub Action in `.github/workflows/` and
+`.github/actions/` to a full 40-character commit SHA with the version tag as a
+trailing comment (for example, `actions/checkout@<sha> # v7.0.1`).
+
+## Security scans
+
+[Security scans](../.github/workflows/security.yml) runs on pull requests to
+`main`/`stack/**`, pushes to `main`, weekly on Mondays, and manual dispatch:
+
+- `dependency-audit`: gates on production JS advisories (`vp pm audit -- --prod`)
+  and publishes the full workspace advisory table (including dev dependencies)
+  as a job summary and downloadable artifact.
+- `cargo-audit`: audits `Cargo.lock` against RustSec advisories on same-repo runs.
+- `secret-scan`: runs `vp run security:secret-scan` (`scripts/secret-scan.ts`)
+  over tracked text files for known credential and private-key formats without
+  printing matched values.
+
 ## Test structure
 
 `vp test run` runs backend, frontend and packages in one workspace runner.
