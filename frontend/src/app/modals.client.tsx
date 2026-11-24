@@ -92,7 +92,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("UserReport", async () =>
-    import("../ts/components/modals/UserReportModal").then(
+    import("../features/profile/components/UserReportModal").then(
       (m) => m.UserReportModal,
     ),
   ),

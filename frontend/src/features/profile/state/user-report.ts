@@ -1,4 +1,4 @@
-import { createAppSignal } from "../../app/state";
+import { createAppSignal } from "#app/state.ts";
 import { UserProfile } from "@caret/schemas/users";
 
 export const [getUserToReport, setUserToReport] =

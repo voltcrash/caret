@@ -4,22 +4,26 @@ import {
 } from "@caret/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
-import { operation } from "../../../data/operations";
-import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
-import { hideModal } from "../../states/modals";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { Captcha } from "#shared/components/ui/form/Captcha.tsx";
+import { LabeledField } from "#shared/components/ui/form/LabeledField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { TextareaField } from "#shared/components/ui/form/TextareaField.tsx";
+import {
+  allFieldsMandatory,
+  fromSchema,
+} from "#shared/components/ui/form/utils.ts";
+import Select from "#shared/components/ui/Select.tsx";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
+import { hideModal } from "#shared/states/modals.ts";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
-} from "../../states/notifications";
-import { getUserToReport, setUserToReport } from "../../states/user-report";
-import { AnimatedModal } from "../common/AnimatedModal";
-import { Captcha } from "../ui/form/Captcha";
-import { LabeledField } from "../ui/form/LabeledField";
-import { SubmitButton } from "../ui/form/SubmitButton";
-import { TextareaField } from "../ui/form/TextareaField";
-import { allFieldsMandatory, fromSchema } from "../ui/form/utils";
-import Select from "../ui/Select";
+} from "#shared/states/notifications.ts";
+
+import { operation } from "../../../data/operations";
+import { getUserToReport, setUserToReport } from "../state/user-report";
 
 export function UserReportModal() {
   const form = createForm(() => ({
