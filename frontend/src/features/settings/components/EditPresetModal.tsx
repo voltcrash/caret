@@ -3,28 +3,29 @@ import { PresetNameSchema, PresetType } from "@caret/schemas/presets";
 import { createForm } from "@tanstack/solid-form";
 import { createSignal, JSXElement, Show } from "solid-js";
 
-import { editPreset, getPreset } from "../../../../data/collections/presets";
-import { createEffectOn } from "../../../hooks/effects";
-import { editPresetData } from "../../../states/edit-preset-modal";
-import { hideLoaderBar, showLoaderBar } from "../../../states/loader-bar";
-import { hideModal, isModalOpen } from "../../../states/modals";
-import {
-  showErrorNotification,
-  showNoticeNotification,
-  showSuccessNotification,
-} from "../../../states/notifications";
-import { normalizeName } from "../../../utils/strings";
-import { AnimatedModal } from "../../common/AnimatedModal";
-import { Checkbox } from "../../ui/form/Checkbox";
-import { InputField } from "../../ui/form/InputField";
-import { SubmitButton } from "../../ui/form/SubmitButton";
-import { fromSchema } from "../../ui/form/utils";
-import { FullOrPartial } from "./FullOrPartial";
+import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
+import { FullOrPartial } from "#shared/components/modals/preset/FullOrPartial.tsx";
 import {
   getActiveSettingGroups,
   getCheckboxes,
   getConfigChanges,
-} from "./preset-modal-utils";
+} from "#shared/components/modals/preset/preset-modal-utils.ts";
+import { Checkbox } from "#shared/components/ui/form/Checkbox.tsx";
+import { InputField } from "#shared/components/ui/form/InputField.tsx";
+import { SubmitButton } from "#shared/components/ui/form/SubmitButton.tsx";
+import { fromSchema } from "#shared/components/ui/form/utils.ts";
+import { createEffectOn } from "#shared/hooks/effects.ts";
+import { hideLoaderBar, showLoaderBar } from "#shared/states/loader-bar.ts";
+import { hideModal, isModalOpen } from "#shared/states/modals.ts";
+import {
+  showErrorNotification,
+  showNoticeNotification,
+  showSuccessNotification,
+} from "#shared/states/notifications.ts";
+import { normalizeName } from "#shared/utils/strings.ts";
+
+import { editPreset, getPreset } from "../../../data/collections/presets";
+import { editPresetData } from "../state/edit-preset-modal";
 
 export function EditPresetModal(): JSXElement {
   const [presetType, setPresetType] = createSignal<PresetType>("full");

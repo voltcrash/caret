@@ -1,6 +1,6 @@
-import { createAppSignal } from "../../app/state";
+import { createAppSignal } from "#app/state.ts";
 
-import { showModal } from "./modals";
+import { showModal } from "#shared/states/modals.ts";
 
 export type EditPresetData = {
   presetId: string;

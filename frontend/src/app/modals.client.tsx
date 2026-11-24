@@ -77,7 +77,7 @@ const lazyModals = [
     ),
   ),
   lazyModal("EditPresetModal", async () =>
-    import("../ts/components/modals/preset/EditPresetModal").then(
+    import("../features/settings/components/EditPresetModal").then(
       (m) => m.EditPresetModal,
     ),
   ),
