@@ -1,3 +1,7 @@
+mod config;
+
+pub use config::Config;
+
 use crate::{
     EVENT_LOG_VERSION, Text,
     recorder::Recorder,
@@ -8,180 +12,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::collections::VecDeque;
 use ts_rs::TS;
-
-#[derive(Clone, Debug, Deserialize, Serialize, TS)]
-#[serde(default, rename_all = "camelCase")]
-pub struct Config {
-    pub mode: String,
-    pub words: u32,
-    pub time: f64,
-    pub language: String,
-    pub difficulty: String,
-    pub strict_space: bool,
-    pub stop_on_error: String,
-    pub delete_on_error: String,
-    pub quick_end: bool,
-    pub repeat_quotes: String,
-    pub result_saving: bool,
-    pub repeated_pace: bool,
-    pub freedom_mode: bool,
-    pub confidence_mode: String,
-    pub blind_mode: bool,
-    pub hide_extra_letters: bool,
-    pub code_unindent_on_backspace: bool,
-    pub funbox: Vec<String>,
-    pub show_all_lines: bool,
-    pub punctuation: bool,
-    pub numbers: bool,
-    pub lazy_mode: bool,
-    pub british_english: bool,
-    pub quote_length: Vec<i32>,
-    pub custom_polyglot: Vec<String>,
-    pub min_burst: String,
-    pub min_burst_custom_speed: f64,
-    pub min_wpm: String,
-    pub min_wpm_custom_speed: f64,
-    pub min_acc: String,
-    pub min_acc_custom: f64,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            mode: "time".into(),
-            words: 50,
-            time: 30.0,
-            language: "english".into(),
-            difficulty: "normal".into(),
-            strict_space: false,
-            stop_on_error: "off".into(),
-            delete_on_error: "off".into(),
-            quick_end: false,
-            repeat_quotes: "off".into(),
-            result_saving: true,
-            repeated_pace: true,
-            freedom_mode: false,
-            confidence_mode: "off".into(),
-            blind_mode: false,
-            hide_extra_letters: false,
-            code_unindent_on_backspace: false,
-            funbox: vec![],
-            show_all_lines: false,
-            punctuation: false,
-            numbers: false,
-            lazy_mode: false,
-            british_english: false,
-            quote_length: vec![1],
-            custom_polyglot: vec![
-                "english".into(),
-                "spanish".into(),
-                "french".into(),
-                "german".into(),
-            ],
-            min_burst: "off".into(),
-            min_burst_custom_speed: 100.0,
-            min_wpm: "off".into(),
-            min_wpm_custom_speed: 100.0,
-            min_acc: "off".into(),
-            min_acc_custom: 90.0,
-        }
-    }
-}
-
-impl Config {
-    pub fn validate(&self) -> Result<(), String> {
-        for (name, value, allowed) in [
-            (
-                "mode",
-                self.mode.as_str(),
-                &["time", "words", "quote", "custom", "zen"][..],
-            ),
-            (
-                "difficulty",
-                self.difficulty.as_str(),
-                &["normal", "expert", "master"][..],
-            ),
-            (
-                "stopOnError",
-                self.stop_on_error.as_str(),
-                &["off", "word", "letter"][..],
-            ),
-            (
-                "deleteOnError",
-                self.delete_on_error.as_str(),
-                &["off", "word", "letter", "word_hard", "letter_hard"][..],
-            ),
-            (
-                "confidenceMode",
-                self.confidence_mode.as_str(),
-                &["off", "on", "max"][..],
-            ),
-            (
-                "minBurst",
-                self.min_burst.as_str(),
-                &["off", "fixed", "flex"][..],
-            ),
-            ("minWpm", self.min_wpm.as_str(), &["off", "custom"][..]),
-            ("minAcc", self.min_acc.as_str(), &["off", "custom"][..]),
-            (
-                "repeatQuotes",
-                self.repeat_quotes.as_str(),
-                &["off", "typing"][..],
-            ),
-        ] {
-            if !allowed.contains(&value) {
-                return Err(format!("Invalid {name}"));
-            }
-        }
-        if self.words > crate::validation::MAX_WORDS as u32
-            || self
-                .quote_length
-                .iter()
-                .any(|length| ![-3, -2, 0, 1, 2, 3].contains(length))
-            || self
-                .custom_polyglot
-                .iter()
-                .any(|language| language.len() > 128)
-        {
-            return Err("Invalid content selection bound".into());
-        }
-        if !self.time.is_finite() || self.time < 0.0 {
-            return Err("Invalid time limit".into());
-        }
-        if [
-            self.min_burst_custom_speed,
-            self.min_wpm_custom_speed,
-            self.min_acc_custom,
-        ]
-        .iter()
-        .any(|value| !value.is_finite() || *value < 0.0)
-            || self.min_acc_custom > 100.0
-        {
-            return Err("Invalid minimum threshold".into());
-        }
-        if self.language.is_empty()
-            || self.language.len() > 128
-            || !self
-                .language
-                .bytes()
-                .all(|c| c.is_ascii_alphanumeric() || c == b'_')
-        {
-            return Err("Invalid language".into());
-        }
-        if self.funbox.len() > 64
-            || self
-                .funbox
-                .iter()
-                .any(|name| crate::funboxes::get(name).is_none())
-        {
-            return Err("Invalid funbox list".into());
-        }
-        if self.quote_length.len() > 64 || self.custom_polyglot.len() > 64 {
-            return Err("Content selection exceeds bound".into());
-        }
-        Ok(())
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(tag = "op", rename_all = "camelCase")]
@@ -664,9 +494,7 @@ impl Session {
             crate::error::EngineError::new(crate::error::ErrorCode::InvalidConfig, message)
         })?;
         crate::validation::words(&words)?;
-        let all_generated = config.mode != "time"
-            && config.mode != "zen"
-            && !(config.mode == "words" && config.words == 0);
+        let all_generated = config.all_words_generated_initially();
         let sections = (1..=words.len()).collect();
         let has_tab = words.iter().any(|word| word.0.contains(&9));
         let has_newline = words.iter().any(|word| word.0.contains(&10));
@@ -744,16 +572,7 @@ impl Session {
         Ok(session)
     }
     fn expansion(&self, unit: u16, target: Option<u16>) -> Option<&'static str> {
-        if unit == 0x2026 && target != Some(unit) {
-            Some("...")
-        } else if unit == 0x0133
-            && crate::text::base_language(&self.config.language) == "dutch"
-            && target != Some(unit)
-        {
-            Some("ij")
-        } else {
-            None
-        }
+        self.config.expansion(unit, target)
     }
     pub fn preflight(&self, data: Text, layout: &InsertionLayout) -> Preflight {
         let target = self.target();
@@ -927,7 +746,7 @@ impl Session {
         self.words.get(self.index).cloned().unwrap_or_default()
     }
     fn nospace(&self) -> bool {
-        crate::funboxes::has_property(&self.config.funbox, "nospace")
+        self.config.nospace()
     }
     fn record(&mut self, kind: &str, now: f64, data: Value) {
         self.live.record(kind, now, &data, &self.words, self.korean);
@@ -1585,7 +1404,7 @@ impl Session {
         }
         if !self.run.ended()
             && correct
-            && self.config.language.starts_with("code")
+            && self.config.is_code_language()
             && self.target().0.first() == Some(&9)
             && self.target().0.get(self.current().len()) == Some(&9)
         {
@@ -1690,7 +1509,7 @@ impl Session {
                 Text(input.0[..input.len().saturating_sub(1)].to_vec())
             }
         });
-        let unindent = self.config.language.starts_with("code")
+        let unindent = self.config.is_code_language()
             && self.config.code_unindent_on_backspace
             && !input.is_empty()
             && input.0.iter().all(|c| *c == 9)
@@ -1750,12 +1569,7 @@ impl Session {
             return;
         }
         self.last_drift = Some(drift);
-        if self.monitor_render_drift
-            && ((self.config.mode == "time" && self.config.time > 0.0 && self.config.time < 130.0)
-                || (self.config.mode == "words"
-                    && self.config.words > 0
-                    && self.config.words < 250))
-        {
+        if self.monitor_render_drift && self.config.monitors_drift() {
             if drift > 125.0 {
                 self.slow_timer = true;
             }
