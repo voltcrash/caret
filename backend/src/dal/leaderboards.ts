@@ -22,7 +22,7 @@ function unpack(row: {
   data: string;
 }): DBLeaderboardEntry {
   return {
-    ...(JSON.parse(row.data) as Omit<LeaderboardEntry, "_id">),
+    ...(JSON.parse(row.data) as Omit<LeaderboardEntry, "rank">),
     _id: row.uid,
     rank: row.rank,
   };

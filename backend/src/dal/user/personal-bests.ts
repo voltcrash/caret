@@ -123,17 +123,14 @@ export async function checkIfTagPb(
 }
 export async function getPersonalBests(
   uid: string,
-  mode: string,
+  mode: Mode,
   mode2?: string,
   _client: Client = "web",
 ): Promise<PersonalBest> {
   const user = await getUser(uid, "get personal bests");
-  const profile = user;
+  const modeBests: Record<string, PersonalBest[] | undefined> | undefined =
+    user.personalBests[mode];
   return (mode2 === undefined
-    ? (profile.personalBests as Record<string, Record<string, PersonalBest[]>>)[
-        mode
-      ]
-    : (profile.personalBests as Record<string, Record<string, PersonalBest[]>>)[
-        mode
-      ]?.[mode2]) as unknown as PersonalBest;
+    ? modeBests
+    : modeBests?.[mode2]) as unknown as PersonalBest;
 }

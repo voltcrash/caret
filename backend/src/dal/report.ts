@@ -2,17 +2,10 @@ import { inArray } from "drizzle-orm";
 import { database, statement, encode, isUniqueViolation } from "../db/client";
 import { reports } from "../db/schema";
 import { commitBatch } from "../db/commit";
+import type { DBReport } from "../db/payloads";
 import ApiError from "../utils/error";
-export type DBReport = {
-  _id: string;
-  id: string;
-  type: "quote" | "user";
-  timestamp: number;
-  uid: string;
-  contentId: string;
-  reason: string;
-  comment: string;
-};
+
+export type { DBReport };
 export async function getReports(ids: string[]): Promise<DBReport[]> {
   if (!ids.length) return [];
   return (
@@ -20,7 +13,7 @@ export async function getReports(ids: string[]): Promise<DBReport[]> {
       .select()
       .from(reports)
       .where(inArray(reports.reportId, ids))
-  ).map((row) => ({ ...row.data, _id: row.id, id: row.reportId }) as DBReport);
+  ).map((row) => ({ ...row.data, _id: row.id, id: row.reportId }));
 }
 export async function deleteReports(ids: string[]): Promise<void> {
   if (ids.length) {

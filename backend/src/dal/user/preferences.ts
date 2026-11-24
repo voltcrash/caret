@@ -3,6 +3,7 @@ import { newId } from "../../utils/id";
 
 import { mutateUser } from "../../db/mutation";
 
+import type { Language } from "@caret/schemas/languages";
 import type {
   CustomTheme,
   UserInventory,
@@ -94,7 +95,7 @@ export async function getFavoriteQuotes(
 }
 export async function addFavoriteQuote(
   uid: string,
-  language: string,
+  language: Language,
   quoteId: string,
   maxQuotes: number,
 ): Promise<void> {
@@ -108,23 +109,19 @@ export async function addFavoriteQuote(
     ) {
       throw new ApiError(409, "Maximum number of favorite quotes reached");
     }
-    const quotes = ((favorites as Record<string, string[]>)[language] ??= []);
+    const quotes = (favorites[language] ??= []);
     if (!quotes.includes(quoteId)) quotes.push(quoteId);
   });
 }
 export async function removeFavoriteQuote(
   uid: string,
-  language: string,
+  language: Language,
   quoteId: string,
 ): Promise<void> {
   await mutateUser(uid, (user) => {
-    if (
-      user.favoriteQuotes !== undefined &&
-      (user.favoriteQuotes as Record<string, string[]>)[language] !== undefined
-    ) {
-      (user.favoriteQuotes as Record<string, string[]>)[language] = (
-        (user.favoriteQuotes as Record<string, string[]>)[language] ?? []
-      ).filter((id) => id !== quoteId);
+    const quotes = user.favoriteQuotes?.[language];
+    if (user.favoriteQuotes !== undefined && quotes !== undefined) {
+      user.favoriteQuotes[language] = quotes.filter((id) => id !== quoteId);
     }
   });
 }

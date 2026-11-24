@@ -10,6 +10,7 @@ import { FunboxName } from "@caret/schemas/configs";
 
 export type DBResult = Result<Mode> & {
   stopOnLetter?: boolean;
+  submissionHash?: string;
   //legacy values
   correctChars?: number;
   incorrectChars?: number;

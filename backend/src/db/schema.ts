@@ -13,11 +13,27 @@ import {
   primaryKey,
   check,
 } from "drizzle-orm/pg-core";
+import type { PartialConfiguration } from "@caret/contracts/configuration";
+import type { PartialConfig } from "@caret/schemas/configs";
+import type { Language } from "@caret/schemas/languages";
+import type {
+  DailyLeaderboardEntry,
+  LeaderboardEntry,
+  XpLeaderboardProfile,
+} from "@caret/schemas/leaderboards";
+import type { Preset } from "@caret/schemas/presets";
+import type { PSA } from "@caret/schemas/psas";
+import type { PersonalBest } from "@caret/schemas/shared";
 import type { DBUser } from "../dal/user/types";
+import type { DBResult } from "../utils/result";
+import type {
+  DBAuditLogData,
+  DBQuoteSubmissionData,
+  DBReport,
+} from "./payloads";
 
 const id = () => text("id").primaryKey();
-const json = <T = Record<string, unknown>>(name = "data") =>
-  jsonb(name).$type<T>().notNull();
+const json = <T>(name = "data") => jsonb(name).$type<T>().notNull();
 const date = (name: string) =>
   timestamp(name, { withTimezone: true, mode: "date", precision: 3 }).notNull();
 const integer = (name: string) => bigint(name, { mode: "number" });
@@ -124,7 +140,7 @@ const owner = () =>
 export const configs = pgTable("configs", {
   uid: owner().primaryKey(),
   id: text("id").notNull(),
-  data: json(),
+  data: json<PartialConfig>(),
 });
 export const presets = pgTable(
   "presets",
@@ -132,7 +148,7 @@ export const presets = pgTable(
     id: id(),
     uid: owner(),
     timestamp: integer("timestamp").notNull(),
-    data: json(),
+    data: json<Omit<Preset, "_id">>(),
   },
   (t) => [index("presets_owner_idx").on(t.uid, t.timestamp)],
 );
@@ -150,7 +166,7 @@ export const results = pgTable(
     acc: doublePrecision("acc").notNull(),
     client: text("client").$type<"web">().notNull().default("web"),
     submissionHash: text("submission_hash"),
-    data: json(),
+    data: json<DBResult>(),
   },
   (t) => [
     index("results_client_time_idx").on(t.uid, t.client, t.timestamp, t.id),
@@ -173,9 +189,12 @@ export const adminUids = pgTable("admin_uids", {
 export const configuration = pgTable("configuration", {
   id: text("id").primaryKey(),
   version: integer("version").notNull().default(0),
-  data: json(),
+  data: json<PartialConfiguration>(),
 });
-export const psas = pgTable("psas", { id: id(), data: json() });
+export const psas = pgTable("psas", {
+  id: id(),
+  data: json<Omit<PSA, "_id">>(),
+});
 export const publicStats = pgTable("public_stats", {
   id: text("id").primaryKey(),
   testsCompleted: integer("tests_completed").notNull().default(0),
@@ -199,7 +218,7 @@ export const quoteSubmissions = pgTable(
     submittedBy: text("submitted_by").notNull(),
     timestamp: integer("timestamp").notNull(),
     approved: boolean("approved").notNull().default(false),
-    data: json(),
+    data: json<DBQuoteSubmissionData>(),
   },
   (t) => [
     index("quote_submissions_review_idx").on(
@@ -213,7 +232,7 @@ export const quoteRatings = pgTable(
   "quote_ratings",
   {
     id: text("id").notNull(),
-    language: text("language").notNull(),
+    language: text("language").$type<Language>().notNull(),
     quoteId: integer("quote_id").notNull(),
     ratings: integer("ratings").notNull().default(0),
     totalRating: doublePrecision("total_rating").notNull().default(0),
@@ -239,7 +258,7 @@ export const reports = pgTable(
     contentId: text("content_id").notNull(),
     type: text("type").notNull(),
     timestamp: integer("timestamp").notNull(),
-    data: json(),
+    data: json<DBReport>(),
   },
   (t) => [
     index("reports_content_idx").on(t.contentId),
@@ -254,7 +273,7 @@ export const logs = pgTable(
     event: text("event").notNull(),
     timestamp: integer("timestamp").notNull(),
     important: boolean("important").notNull().default(false),
-    data: json(),
+    data: json<DBAuditLogData>(),
   },
   (t) => [
     index("audit_logs_owner_idx").on(t.uid, t.timestamp),
@@ -271,7 +290,7 @@ export const leaderboardBests = pgTable(
     wpm: doublePrecision("wpm").notNull(),
     acc: doublePrecision("acc").notNull(),
     timestamp: integer("timestamp").notNull(),
-    data: json(),
+    data: json<PersonalBest>(),
   },
   (t) => [
     primaryKey({ columns: [t.board, t.uid] }),
@@ -293,7 +312,7 @@ export const leaderboardSnapshots = pgTable(
     board: text("board").notNull(),
     uid: owner(),
     rank: integer("rank").notNull(),
-    data: json(),
+    data: json<Omit<LeaderboardEntry, "rank">>(),
   },
   (t) => [
     primaryKey({ columns: [t.generation, t.board, t.uid] }),
@@ -313,7 +332,7 @@ export const dailyEntries = pgTable(
     uid: owner(),
     score: integer("score").notNull(),
     expiresAt: integer("expires_at").notNull(),
-    data: json(),
+    data: json<DailyLeaderboardEntry>(),
   },
   (t) => [
     primaryKey({ columns: [t.board, t.period, t.uid] }),
@@ -337,7 +356,7 @@ export const weeklyEntries = pgTable(
     xp: integer("xp").notNull(),
     timeTypedSeconds: doublePrecision("time_typed_seconds").notNull(),
     expiresAt: integer("expires_at").notNull(),
-    data: json(),
+    data: json<XpLeaderboardProfile>(),
   },
   (t) => [
     primaryKey({ columns: [t.client, t.period, t.uid] }),

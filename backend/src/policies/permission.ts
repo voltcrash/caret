@@ -50,7 +50,7 @@ const permissionChecks: Record<PermissionId, PermissionCheck> = {
     ["quoteMod"],
     (user) =>
       user.quoteMod === true ||
-      (typeof user.quoteMod === "string" && (user.quoteMod as string) !== ""),
+      (typeof user.quoteMod === "string" && user.quoteMod.length > 0),
   ),
   canReport: buildUserPermission(
     ["canReport"],
