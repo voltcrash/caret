@@ -14,6 +14,11 @@ import { registerOverlayVisibility } from "../../states/overlay-visibility";
 import { cn } from "../../utils/cn";
 import { applyReducedMotion } from "../../utils/misc";
 import {
+  focusModalContent,
+  restoreModalFocus,
+  trapModalTabFocus,
+} from "./animated-modal/focus";
+import {
   AnimationConfig,
   animateElement,
   DEFAULT_ANIMATION_DURATION,
@@ -289,13 +294,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     if (disposed || token !== motionId) return;
     dialogEl()?.close();
     await handleAfterHide();
-    if (
-      !isChained &&
-      returnFocus?.isConnected &&
-      document.querySelector("dialog[open]") === null
-    ) {
-      returnFocus.focus({ preventScroll: true });
-    }
+    restoreModalFocus(returnFocus, isChained);
   };
 
   const handleAfterShow = async (): Promise<void> => {
@@ -305,26 +304,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   const focusFirstInput = (): void => {
     if (modalEl() === undefined || dialogEl() === undefined) return;
     if (!visibility() || !dialogEl()?.open) return;
-    if (props.focusFirstInput === undefined) {
-      // Native modal dialogs select their initial focus. Keep it unless the
-      // content contains no focusable control; then focus its owned container.
-      if (!modalEl()?.contains(document.activeElement)) modalEl()?.focus();
-      return;
-    }
-
-    const input = modalEl()?.querySelector<
-      HTMLInputElement | HTMLTextAreaElement
-    >(
-      "input:not([type=hidden]):not([disabled]):not(.hidden), textarea:not([disabled]):not(.hidden)",
-    );
-    if (input) {
-      if (props.focusFirstInput === true) {
-        input.focus();
-      } else if (props.focusFirstInput === "focusAndSelect") {
-        input.focus();
-        input.select();
-      }
-    }
+    focusModalContent(modalEl(), props.focusFirstInput);
   };
 
   const handleKeyDown = (e: KeyboardEvent): void => {
@@ -334,32 +314,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       visibility() &&
       props.mode !== "dialog"
     ) {
-      const focusable = Array.from(
-        modalEl()?.querySelectorAll<HTMLElement>(
-          "button, a[href], input, textarea, select, [tabindex]",
-        ) ?? [],
-      ).filter(
-        (element) =>
-          element.tabIndex >= 0 &&
-          !element.hasAttribute("disabled") &&
-          element.getClientRects().length > 0,
-      );
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (first === undefined) {
-        e.preventDefault();
-        modalEl()?.focus();
-      } else if (
-        e.shiftKey &&
-        (document.activeElement === first ||
-          document.activeElement === modalEl())
-      ) {
-        e.preventDefault();
-        last?.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
+      trapModalTabFocus(e, modalEl());
     }
     if (e.key === "Escape" && visibility()) {
       if (props.closeOnEscape === false) return;
