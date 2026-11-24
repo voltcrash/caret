@@ -15,6 +15,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { PartialConfiguration } from "@caret/contracts/configuration";
 import type { PartialConfig } from "@caret/schemas/configs";
+import type { Language } from "@caret/schemas/languages";
 import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
@@ -221,7 +222,7 @@ export const quoteRatings = pgTable(
   "quote_ratings",
   {
     id: text("id").notNull(),
-    language: text("language").notNull(),
+    language: text("language").$type<Language>().notNull(),
     quoteId: integer("quote_id").notNull(),
     ratings: integer("ratings").notNull().default(0),
     totalRating: doublePrecision("total_rating").notNull().default(0),

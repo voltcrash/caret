@@ -40,12 +40,12 @@ export async function get(
       .limit(1)
   )[0];
   return row
-    ? ({
+    ? {
         ...row,
         _id: row.id,
         average: row.ratings
           ? Math.round((row.totalRating / row.ratings) * 10) / 10
           : 0,
-      } as DBQuoteRating)
+      }
     : null;
 }
