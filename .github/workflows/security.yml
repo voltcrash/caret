@@ -1,0 +1,108 @@
+name: Security scans
+
+on:
+  pull_request:
+    branches: [main, "stack/**", "t3/rust-engine-migration"]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  dependency-audit:
+    name: dependency-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Vite+
+        uses: voidzero-dev/setup-vp@cab1ab9eaff52d4857875f4f2c016e36af8f2c76 # v1.22.0
+        with:
+          node-version-file: .node-version
+          run-install: false
+
+      - name: Audit production dependencies
+        run: vp pm audit -- --prod
+
+      - name: Report all workspace advisories
+        run: |
+          vp pm audit --json > dependency-audit.json || true
+          node --input-type=module <<'NODE'
+          import { appendFileSync, readFileSync } from "node:fs";
+
+          const raw = readFileSync("dependency-audit.json", "utf8").trim();
+          const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+          if (!raw || !summaryPath) process.exit(0);
+
+          const report = JSON.parse(raw);
+          const counts = report.metadata?.vulnerabilities ?? {};
+          const advisories = Object.values(report.advisories ?? {});
+
+          const lines = [
+            "## JS dependency advisory report (including dev dependencies)",
+            "",
+            "| Severity | Count |",
+            "| --- | ---: |",
+            `| critical | ${counts.critical ?? 0} |`,
+            `| high | ${counts.high ?? 0} |`,
+            `| moderate | ${counts.moderate ?? 0} |`,
+            `| low | ${counts.low ?? 0} |`,
+            `| info | ${counts.info ?? 0} |`,
+            "",
+          ];
+
+          if (advisories.length > 0) {
+            lines.push(
+              "| Advisory | Package | Severity | Patched |",
+              "| --- | --- | --- | --- |",
+            );
+            for (const item of advisories) {
+              const id = item.github_advisory_id ?? String(item.id ?? "unknown");
+              const url = item.url ? `[${id}](${item.url})` : id;
+              lines.push(
+                `| ${url} | \`${item.module_name ?? "unknown"}\` | ${item.severity ?? "unknown"} | \`${item.patched_versions ?? "none"}\` |`,
+              );
+            }
+            lines.push("");
+          }
+
+          appendFileSync(summaryPath, `${lines.join("\n")}\n`);
+          NODE
+
+      - name: Upload dependency audit report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dependency-audit-report
+          path: dependency-audit.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+  cargo-audit:
+    name: cargo-audit
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Audit Cargo lockfile
+        uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998 # v2.0.0
+        with:
+          token: ${{ github.token }}
