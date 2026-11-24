@@ -16,8 +16,14 @@ import {
 import type { PartialConfiguration } from "@caret/contracts/configuration";
 import type { PartialConfig } from "@caret/schemas/configs";
 import type { Language } from "@caret/schemas/languages";
+import type {
+  DailyLeaderboardEntry,
+  LeaderboardEntry,
+  XpLeaderboardProfile,
+} from "@caret/schemas/leaderboards";
 import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
+import type { PersonalBest } from "@caret/schemas/shared";
 import type { DBUser } from "../dal/user/types";
 import type { DBResult } from "../utils/result";
 import type {
@@ -285,7 +291,7 @@ export const leaderboardBests = pgTable(
     wpm: doublePrecision("wpm").notNull(),
     acc: doublePrecision("acc").notNull(),
     timestamp: integer("timestamp").notNull(),
-    data: json(),
+    data: json<PersonalBest>(),
   },
   (t) => [
     primaryKey({ columns: [t.board, t.uid] }),
@@ -307,7 +313,7 @@ export const leaderboardSnapshots = pgTable(
     board: text("board").notNull(),
     uid: owner(),
     rank: integer("rank").notNull(),
-    data: json(),
+    data: json<Omit<LeaderboardEntry, "rank">>(),
   },
   (t) => [
     primaryKey({ columns: [t.generation, t.board, t.uid] }),
@@ -327,7 +333,7 @@ export const dailyEntries = pgTable(
     uid: owner(),
     score: integer("score").notNull(),
     expiresAt: integer("expires_at").notNull(),
-    data: json(),
+    data: json<DailyLeaderboardEntry>(),
   },
   (t) => [
     primaryKey({ columns: [t.board, t.period, t.uid] }),
@@ -351,7 +357,7 @@ export const weeklyEntries = pgTable(
     xp: integer("xp").notNull(),
     timeTypedSeconds: doublePrecision("time_typed_seconds").notNull(),
     expiresAt: integer("expires_at").notNull(),
-    data: json(),
+    data: json<XpLeaderboardProfile>(),
   },
   (t) => [
     primaryKey({ columns: [t.client, t.period, t.uid] }),
