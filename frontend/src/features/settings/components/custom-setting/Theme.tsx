@@ -1,10 +1,8 @@
-import { CustomTheme } from "@caret/schemas/users";
 import { For, JSXElement, onCleanup, Show } from "solid-js";
 
 import { AnimeMatch } from "#shared/components/common/anime/AnimeMatch.tsx";
 import { AnimeSwitch } from "#shared/components/common/anime/index.ts";
 import { Button } from "#shared/components/common/Button.tsx";
-import { Fa } from "#shared/components/common/Fa.tsx";
 import { Separator } from "#shared/components/common/Separator.tsx";
 import { configMetadata } from "#shared/config/metadata.tsx";
 import { setConfig } from "#shared/config/setters.ts";
@@ -14,7 +12,6 @@ import {
   clearPreview,
   convertCustomColorsToTheme,
   convertThemeToCustomColors,
-  preview,
 } from "#shared/controllers/theme-controller.ts";
 import { createEffectOn } from "#shared/hooks/effects.ts";
 import { isAuthenticated } from "#shared/states/core.ts";
@@ -24,9 +21,7 @@ import {
   showSuccessNotification,
 } from "#shared/states/notifications.ts";
 import { getTheme, setTheme } from "#shared/states/theme.ts";
-import { cn } from "#shared/utils/cn.ts";
 import { hexToHSL } from "#shared/utils/colors.ts";
-import { replaceUnderscoresWithSpaces } from "#shared/utils/strings.ts";
 
 import {
   addCustomTheme,
@@ -34,11 +29,9 @@ import {
 } from "../../../../data/collections/custom-themes";
 import { SearchableSetting } from "../SearchableSetting";
 import { ColorPicker } from "./theme/ColorPicker";
-import {
-  openDeleteCustomThemeModal,
-  openEditCustomThemeModal,
-  openShareCustomThemeModal,
-} from "./theme/theme-modals";
+import { CustomThemeButton } from "./theme/CustomThemeButton";
+import { openShareCustomThemeModal } from "./theme/theme-modals";
+import { ThemeButton } from "./theme/ThemeButton";
 
 // darkest background first
 const sortedThemes: ThemeWithName[] = [...ThemesList].sort((a, b) => {
@@ -243,198 +236,5 @@ export function Theme(): JSXElement {
         </AnimeSwitch>
       }
     />
-  );
-}
-
-function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
-  const themeColors = () => convertCustomColorsToTheme(props.theme.colors);
-
-  return (
-    <div
-      style={{
-        "--bg": themeColors().bg,
-        "--main": themeColors().main,
-        "--sub": themeColors().sub,
-        "--text": themeColors().text,
-      }}
-      class={cn(
-        "group/theme grid grid-cols-[auto_1fr_auto] justify-between p-0 ring-4 ring-transparent",
-        "pointer-coarse:min-h-11",
-        "bg-(--bg) text-(--main)",
-        "hover:ring-(--main)",
-        "transition-[opacity,color,background,box-shadow] duration-125",
-      )}
-      data-theme-id={props.theme._id}
-    >
-      <Button
-        aria-label={`Edit theme ${props.theme.name}`}
-        variant="text"
-        fa={{
-          icon: "fa-pen",
-          fixedWidth: true,
-        }}
-        class={cn(
-          "mx-1 p-2",
-          "[--themable-button-hover-text:var(--main)] [--themable-button-text:var(--sub)]",
-          "opacity-0 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
-        )}
-        onClick={(e) => {
-          e.stopPropagation();
-          openEditCustomThemeModal(props.theme);
-        }}
-      />
-      <Button
-        variant="text"
-        aria-label={`Apply theme ${props.theme.name}`}
-        class="min-w-0 p-2 [--themable-button-text:var(--main)] [--themable-button-hover-text:var(--text)]"
-        onClick={() => setConfig("customThemeColors", props.theme.colors)}
-      >
-        <span class="min-w-0 truncate">
-          {replaceUnderscoresWithSpaces(props.theme.name)}
-        </span>
-      </Button>
-      <Button
-        aria-label={`Delete theme ${props.theme.name}`}
-        variant="text"
-        fa={{
-          icon: "fa-trash",
-          fixedWidth: true,
-        }}
-        class={cn(
-          "mx-1 p-2",
-          "[--themable-button-hover-text:var(--main)] [--themable-button-text:var(--sub)]",
-          "opacity-0 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
-        )}
-        onClick={(e) => {
-          e.stopPropagation();
-          openDeleteCustomThemeModal(props.theme);
-        }}
-      />
-    </div>
-  );
-}
-
-function ThemeButton(props: { theme: ThemeWithName }): JSXElement {
-  const isActive = () => getConfig.theme === props.theme.name;
-  const isFav = () => getConfig.favThemes.includes(props.theme.name);
-
-  const select = (): void => {
-    if (isActive()) return;
-    setConfig("theme", props.theme.name);
-  };
-
-  const toggleFavorite = (): void => {
-    if (isFav()) {
-      setConfig(
-        "favThemes",
-        getConfig.favThemes.filter((t) => t !== props.theme.name),
-      );
-    } else {
-      setConfig("favThemes", [...getConfig.favThemes, props.theme.name]);
-    }
-  };
-
-  // not a <button>: many theme css files style button:hover (colors,
-  // animations, gradients) outside of the tailwind layers. while previewing
-  // one of those themes it would restyle these cards, so avoid matching it
-  return (
-    <div
-      style={{
-        "--bg": props.theme.bg,
-        "--main": props.theme.main,
-        "--sub": props.theme.sub,
-        "--text": props.theme.text,
-      }}
-      class={cn(
-        "group/theme relative grid cursor-pointer place-items-center overflow-hidden rounded px-1 py-2 leading-[1.25] ring-4 ring-transparent select-none",
-        "pointer-coarse:min-h-11",
-        "focus-visible:shadow-control-focus focus-visible:outline-none",
-        "bg-(--bg) text-(--main)",
-        // "hover:bg-(--text) hover:text-(--bg)",
-        "hover:ring-(--main)",
-        "transition-[opacity,color,background,box-shadow] duration-125",
-        isActive() && "ring-4 ring-(--main)",
-      )}
-      onMouseEnter={() => {
-        if (isActive()) {
-          void clearPreview();
-        } else {
-          preview(props.theme.name);
-        }
-      }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) select();
-      }}
-    >
-      {/* the name spans the whole button on one line; the star and colors
-          overlay its ends and fade it out instead of squeezing it */}
-      <div
-        role="button"
-        tabIndex={0}
-        aria-label={`Apply theme ${replaceUnderscoresWithSpaces(props.theme.name)}`}
-        aria-pressed={isActive()}
-        class="w-full px-2 text-center whitespace-nowrap focus-visible:shadow-control-focus"
-        onClick={select}
-        onKeyDown={(e) => {
-          if (e.key !== "Enter" && e.key !== " ") return;
-          e.preventDefault();
-          select();
-        }}
-      >
-        {replaceUnderscoresWithSpaces(props.theme.name)}
-      </div>
-      <div
-        class={cn(
-          "absolute inset-y-0 left-0 flex items-center pr-6 pl-1",
-          "bg-linear-to-r from-(--bg) from-60% to-transparent",
-          "opacity-0 transition-[opacity,color,background] duration-125 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
-          isFav() && "opacity-100",
-        )}
-      >
-        <div
-          role="button"
-          tabIndex={0}
-          aria-label={`Favorite theme ${replaceUnderscoresWithSpaces(props.theme.name)}`}
-          aria-pressed={isFav()}
-          onKeyDown={(e) => {
-            if (e.key !== "Enter" && e.key !== " ") return;
-            e.preventDefault();
-            e.stopPropagation();
-            toggleFavorite();
-          }}
-          class={cn(
-            "grid justify-center",
-            "rounded-full p-1",
-            "transition-[opacity,color,background] duration-125",
-            "hover:text-(--text)",
-          )}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite();
-          }}
-        >
-          <Fa
-            icon="fa-star"
-            variant={isFav() ? "solid" : "regular"}
-            fixedWidth
-            class="transition-[opacity,color,background] duration-125"
-          />
-        </div>
-      </div>
-      <div
-        class={cn(
-          "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1.5 pl-8",
-          "bg-linear-to-l from-(--bg) from-70% to-transparent",
-          "opacity-0 transition-opacity duration-125 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
-          isActive() && "opacity-100",
-        )}
-      >
-        <div class="grid shrink-0 grid-cols-3 gap-2">
-          <div class="h-4 w-4 rounded-full bg-(--main)"></div>
-          <div class="h-4 w-4 rounded-full bg-(--sub)"></div>
-          <div class="h-4 w-4 rounded-full bg-(--text)"></div>
-        </div>
-      </div>
-    </div>
   );
 }
