@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 type SecretPattern = {
@@ -53,7 +53,10 @@ let textFilesScanned = 0;
 const findings: Finding[] = [];
 
 for (const file of trackedFiles) {
-  const buffer = readFileSync(resolve(root, file));
+  const absPath = resolve(root, file);
+  if (!existsSync(absPath)) continue;
+
+  const buffer = readFileSync(absPath);
   if (buffer.includes(0)) continue;
 
   textFilesScanned += 1;
