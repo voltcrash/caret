@@ -1,5 +1,5 @@
-import { createAppOwned } from "../../app/application";
-import { createAppSignal } from "../../app/state";
+import { createAppOwned } from "#app/application.ts";
+import { createAppSignal } from "#app/state.ts";
 
 export const [getHighlightedSetting, setHighlightedSetting] = createAppSignal<
   string | null

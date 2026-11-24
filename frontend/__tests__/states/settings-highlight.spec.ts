@@ -2,7 +2,7 @@ import { afterEach, expect, it, vi } from "vite-plus/test";
 import {
   highlightSetting,
   registerSettingHighlight,
-} from "../../src/ts/states/settings-highlight";
+} from "../../src/features/settings/state/settings-highlight";
 
 afterEach(() => highlightSetting(null));
 
