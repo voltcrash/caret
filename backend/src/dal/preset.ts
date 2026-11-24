@@ -14,7 +14,7 @@ export async function getPresets(uid: string): Promise<DBConfigPreset[]> {
       .from(presets)
       .where(eq(presets.uid, uid))
       .orderBy(desc(presets.timestamp))
-  ).map((row) => ({ ...row.data, _id: row.id, uid }) as DBConfigPreset);
+  ).map((row) => ({ ...row.data, _id: row.id, uid }));
 }
 export async function addPreset(
   uid: string,
@@ -58,11 +58,11 @@ export async function editPreset(
     if (!row) return;
     const data = { ...row.data };
     if (preset.settingGroups !== undefined) {
-      data["settingGroups"] = preset.settingGroups;
+      data.settingGroups = preset.settingGroups;
     }
-    if (preset.name !== undefined) data["name"] = preset.name;
+    if (preset.name !== undefined) data.name = preset.name;
     if (preset.config !== undefined && Object.keys(preset.config).length > 0) {
-      data["config"] = preset.config;
+      data.config = preset.config;
     }
     await stage(
       statement(

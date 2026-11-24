@@ -13,6 +13,7 @@ import {
   primaryKey,
   check,
 } from "drizzle-orm/pg-core";
+import type { Preset } from "@caret/schemas/presets";
 import type { PSA } from "@caret/schemas/psas";
 import type { DBUser } from "../dal/user/types";
 
@@ -133,7 +134,7 @@ export const presets = pgTable(
     id: id(),
     uid: owner(),
     timestamp: integer("timestamp").notNull(),
-    data: json(),
+    data: json<Omit<Preset, "_id">>(),
   },
   (t) => [index("presets_owner_idx").on(t.uid, t.timestamp)],
 );
