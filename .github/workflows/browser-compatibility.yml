@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ vars.CARET_PERFORMANCE_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-chromium
       - run: vp -C frontend exec vpx ./scripts/ci-build.ts
@@ -25,7 +25,7 @@ jobs:
           ENGINE_WEBSITE_SOAK_OUTPUT: .reports/soak.json
           CARET_PERFORMANCE_OUTPUT: .reports/startup.json
           ENGINE_ENFORCE_PERFORMANCE: ${{ vars.CARET_ENFORCE_PERFORMANCE || 'false' }}
-      - uses: actions/upload-artifact@v7.0.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: typing-performance
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
       # Keep the Worker fixture on the runner. Browsers share its loopback network.
       - name: Start browsers with their bundled system libraries
@@ -52,7 +52,7 @@ jobs:
           curl --fail --silent --show-error --retry 10 --retry-connrefused --retry-delay 1 \
             http://127.0.0.1:3000/ || { docker logs playwright; exit 1; }
       - if: github.event_name == 'pull_request'
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: start-worker
           path: frontend/dist/start
@@ -61,7 +61,7 @@ jobs:
       - run: vp -C frontend exec playwright test --config playwright.cross-browser.config.ts
         env:
           PW_TEST_CONNECT_WS_ENDPOINT: ws://127.0.0.1:3000/
-      - uses: actions/upload-artifact@v7.0.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
           name: cross-browser-evidence
