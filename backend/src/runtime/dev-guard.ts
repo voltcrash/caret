@@ -2,7 +2,12 @@ const IPV4_LOOPBACK = /^127\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
 
 function isValidOctet(part: string): boolean {
   const value = Number(part);
-  return Number.isInteger(value) && value >= 0 && value <= 255 && String(value) === part;
+  return (
+    Number.isInteger(value) &&
+    value >= 0 &&
+    value <= 255 &&
+    String(value) === part
+  );
 }
 
 /**
