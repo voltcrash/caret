@@ -2,7 +2,7 @@ import { onCleanup } from "solid-js";
 import { createAppOwned } from "#app/application.ts";
 import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { EngineFailure } from "@caret/typing-engine/failure";
-import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
+import { getTypingLifecycle } from "#features/typing/state/test-lifecycle/controller.ts";
 import { isUpdateReserved } from "#app/update-safety.ts";
 import {
   engineConfigMatches,

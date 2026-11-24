@@ -18,7 +18,8 @@ vi.mock("../../../src/ts/config/store", () => ({
 vi.mock("../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => false,
 }));
-vi.mock("../../../src/ts/typing-host", () => ({
+vi.mock("../../../src/ts/typing-host", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../../src/ts/typing-host")>()),
   isTypingInputFocused: () => false,
 }));
 vi.mock("../../../src/ts/states/composition", () => ({ getData: () => "" }));

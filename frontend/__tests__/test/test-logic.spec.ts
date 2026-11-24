@@ -66,7 +66,7 @@ vi.mock("../../src/ts/engine/owner.client", () => ({
 }));
 
 vi.mock("../../src/ts/states/test", async () => ({
-  ...(await import("../../src/ts/states/test-lifecycle/controller"))
+  ...(await import("../../src/features/typing/state/test-lifecycle/controller"))
     .lifecycleSelectors,
   getCurrentQuote: () => mocks.quote,
   setLastSignedOutResult: mocks.signedOut,

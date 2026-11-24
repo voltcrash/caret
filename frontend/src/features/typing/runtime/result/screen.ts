@@ -1,5 +1,5 @@
 import { captureTypingPresentation } from "../../scope";
-import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
+import { getTypingLifecycle } from "#features/typing/state/test-lifecycle/controller.ts";
 import { updateTags } from "./tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./tags";
 import { updateResultChartDataVisibility } from "./chart-visibility";

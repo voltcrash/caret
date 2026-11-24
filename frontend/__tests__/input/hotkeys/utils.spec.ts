@@ -26,7 +26,8 @@ vi.mock("@tanstack/solid-hotkeys", () => ({
 vi.mock("../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => mocks.popup,
 }));
-vi.mock("../../../src/ts/typing-host", () => ({
+vi.mock("../../../src/ts/typing-host", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../../src/ts/typing-host")>()),
   isTypingInputFocused: () => mocks.inputFocused,
 }));
 vi.mock("../../../src/ts/states/composition", () => ({

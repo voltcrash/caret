@@ -1,4 +1,4 @@
-import { getTypingLifecycle } from "#shared/states/test-lifecycle/controller.ts";
+import { getTypingLifecycle } from "#features/typing/state/test-lifecycle/controller.ts";
 import { isUpdateReserved } from "#app/update-safety.ts";
 import { captureTypingRoute, isTypingRouteActive } from "../../scope";
 import { hideLoaderBar } from "#shared/states/loader-bar.ts";

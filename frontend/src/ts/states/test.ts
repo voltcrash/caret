@@ -17,7 +17,7 @@ export {
   isResultLoading,
   getResultVisible,
   getTestInitError,
-} from "./test-lifecycle/controller";
+} from "../typing-host";
 
 export const [wordsHaveNewline, setWordsHaveNewline] = createAppSignal(false);
 export const [wordsHaveTab, setWordsHaveTab] = createAppSignal(false);

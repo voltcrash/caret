@@ -12,7 +12,10 @@ import * as TypingHost from "../../src/ts/typing-host";
 import * as Tags from "../../src/data/collections/tags";
 import * as Presets from "../../src/data/collections/presets";
 
-vi.mock("../../src/ts/typing-host", () => ({ restartTest: vi.fn() }));
+vi.mock("../../src/ts/typing-host", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../src/ts/typing-host")>()),
+  restartTest: vi.fn(),
+}));
 
 describe("PresetController", () => {
   describe("apply", () => {

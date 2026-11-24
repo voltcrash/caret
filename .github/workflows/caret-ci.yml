@@ -139,7 +139,6 @@ jobs:
               - 'frontend/src/ts/utils/key-converter.ts'
               - 'frontend/src/ts/hooks/{useInputListener,useWordsInputScroll}.ts'
               - 'frontend/src/ts/states/{composition,test}.ts'
-              - 'frontend/src/ts/states/test-lifecycle/**'
               - 'frontend/src/styles/{caret,test}.css'
               - 'frontend/static/layouts/**'
               - 'frontend/vite-plugins/typing-engine.ts'

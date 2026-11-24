@@ -22,8 +22,9 @@ vi.mock("../../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
 }));
 vi.mock("../../../../src/ts/states/test", async () => ({
-  ...(await import("../../../../src/ts/states/test-lifecycle/controller"))
-    .lifecycleSelectors,
+  ...(
+    await import("../../../../src/features/typing/state/test-lifecycle/controller")
+  ).lifecycleSelectors,
 }));
 vi.mock(
   "../../../../src/features/typing/state/run-flags",

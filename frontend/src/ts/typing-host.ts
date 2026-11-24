@@ -1,5 +1,6 @@
 import { untrack } from "solid-js";
 
+import { currentApplication } from "../app/application";
 import { createAppSignal } from "../app/state";
 
 /**
@@ -56,3 +57,41 @@ export function isNoQuitActive(): boolean {
 export function isTypingInputFocused(): boolean {
   return untrack(getHost)?.isInputFocused() ?? false;
 }
+
+type TestLifecycleSelectors = {
+  isTestActive: () => boolean;
+  isTestRestarting: () => boolean;
+  isResultCalculating: () => boolean;
+  isResultLoading: () => boolean;
+  getResultVisible: () => boolean;
+  getTestInitError: () => { message: string | undefined } | null;
+};
+
+const [getLifecycleSelectors, setLifecycleSelectors] =
+  createAppSignal<TestLifecycleSelectors>();
+
+/** Publishes typing lifecycle selectors; the returned release clears them if still current. */
+export function bindTestLifecycle(
+  selectors: TestLifecycleSelectors,
+): () => void {
+  setLifecycleSelectors(() => selectors);
+  return () => {
+    if (currentApplication() === undefined) return;
+    if (untrack(getLifecycleSelectors) === selectors) {
+      setLifecycleSelectors(undefined);
+    }
+  };
+}
+
+export const isTestActive = (): boolean =>
+  getLifecycleSelectors()?.isTestActive() ?? false;
+export const isTestRestarting = (): boolean =>
+  getLifecycleSelectors()?.isTestRestarting() ?? false;
+export const isResultCalculating = (): boolean =>
+  getLifecycleSelectors()?.isResultCalculating() ?? false;
+export const isResultLoading = (): boolean =>
+  getLifecycleSelectors()?.isResultLoading() ?? false;
+export const getResultVisible = (): boolean =>
+  getLifecycleSelectors()?.getResultVisible() ?? false;
+export const getTestInitError = (): { message: string | undefined } | null =>
+  getLifecycleSelectors()?.getTestInitError() ?? null;

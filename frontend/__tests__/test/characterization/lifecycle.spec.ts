@@ -56,8 +56,9 @@ vi.mock("../../../src/ts/engine/owner.client", () => ({
 }));
 
 vi.mock("../../../src/ts/states/test", async () => ({
-  ...(await import("../../../src/ts/states/test-lifecycle/controller"))
-    .lifecycleSelectors,
+  ...(
+    await import("../../../src/features/typing/state/test-lifecycle/controller")
+  ).lifecycleSelectors,
   getCurrentQuote: () => null,
   setLastSignedOutResult: vi.fn(),
   setWordsHaveNewline: vi.fn(),

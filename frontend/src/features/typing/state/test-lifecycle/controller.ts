@@ -1,5 +1,6 @@
 import { createSignal, onCleanup, type Accessor } from "solid-js";
 import { createAppOwned } from "#app/application.ts";
+import { bindTestLifecycle } from "#shared/typing-host.ts";
 import {
   initialLifecycle,
   isCompleting,
@@ -112,7 +113,11 @@ export function createLifecycleController(): LifecycleController {
 
 export const getTypingLifecycle = createAppOwned(() => {
   const controller = createLifecycleController();
-  onCleanup(() => controller.send({ type: "DISPOSE" }));
+  const release = bindTestLifecycle(lifecycleSelectors);
+  onCleanup(() => {
+    controller.send({ type: "DISPOSE" });
+    release();
+  });
   return controller;
 });
 
