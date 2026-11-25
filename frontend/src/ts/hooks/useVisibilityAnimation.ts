@@ -28,9 +28,9 @@ export function useVisibilityAnimation(options: {
   // every keystroke); only a change should restart an animation.
   const isVisible = createMemo(() => options.isVisible());
 
-  const stopActive = (el: HTMLElement): void => {
+  const stopActive = (commit: boolean): void => {
     if (activeAnimation === undefined) return;
-    if (activeAnimation.playState !== "finished") {
+    if (commit && activeAnimation.playState !== "finished") {
       try {
         activeAnimation.commitStyles();
       } catch {
@@ -39,17 +39,22 @@ export function useVisibilityAnimation(options: {
     }
     activeAnimation.cancel();
     activeAnimation = undefined;
-    // Keep inline opacity readable if commitStyles wrote it on `el`.
-    void el;
   };
+
+  onCleanup(() => {
+    stopActive(false);
+  });
 
   createEffect(() => {
     const el = options.element();
     const visible = isVisible();
 
-    if (!el) return;
+    if (!el) {
+      stopActive(false);
+      return;
+    }
 
-    stopActive(el);
+    stopActive(true);
 
     const animOptions = visible
       ? options.showAnimationOptions
@@ -114,10 +119,5 @@ export function useVisibilityAnimation(options: {
         );
       }
     }
-
-    onCleanup(() => {
-      activeAnimation?.cancel();
-      activeAnimation = undefined;
-    });
   });
 }

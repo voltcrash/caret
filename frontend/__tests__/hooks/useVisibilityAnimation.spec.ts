@@ -36,4 +36,38 @@ describe("useVisibilityAnimation", () => {
     dispose();
     element.remove();
   });
+
+  it("commits in-flight opacity when visibility reverses mid-animation", () => {
+    const element = document.createElement("div");
+    document.body.append(element);
+    const [visible, setVisible] = createSignal(true);
+    const dispose = createRoot((dispose) => {
+      useVisibilityAnimation({
+        element: () => element,
+        isVisible: visible,
+        showAnimationOptions: { duration: 100 },
+        hideAnimationOptions: { duration: 100 },
+      });
+      return dispose;
+    });
+
+    element.getAnimations().forEach((anim) => anim.finish());
+
+    setVisible(false);
+    const hideAnim = element.getAnimations()[0];
+    expect(hideAnim).toBeDefined();
+    if (hideAnim) hideAnim.currentTime = 50;
+
+    setVisible(true);
+    const showAnim = element.getAnimations()[0];
+    expect(showAnim).toBeDefined();
+    const effect = showAnim?.effect as KeyframeEffect;
+    const fromOpacity = Number(effect.getKeyframes()[0]?.["opacity"]);
+    expect(fromOpacity).toBeGreaterThan(0);
+    expect(fromOpacity).toBeLessThan(1);
+
+    dispose();
+    expect(element.getAnimations()).toHaveLength(0);
+    element.remove();
+  });
 });

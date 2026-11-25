@@ -23,6 +23,7 @@ export function FadeSwitch<T>(props: {
 
   let el: HTMLDivElement | undefined;
   let animation: Animation | undefined;
+  let exiting = false;
   let token = 0;
 
   const cancelAnimation = (commit: boolean): void => {
@@ -38,21 +39,57 @@ export function FadeSwitch<T>(props: {
     animation = undefined;
   };
 
+  const startEnter = (
+    node: HTMLDivElement,
+    from: string,
+    duration: number,
+  ): void => {
+    node.style.opacity = "1";
+    const enterAnim = node.animate(
+      { opacity: [from, "1"] },
+      { duration, easing: "ease-out" },
+    );
+    animation = enterAnim;
+    void enterAnim.finished.then(
+      () => {
+        if (animation === enterAnim) animation = undefined;
+      },
+      () => undefined,
+    );
+  };
+
   createEffect(
     on(
       () => props.value,
       (next) => {
-        if (Object.is(next, displayed())) return;
+        const matchesDisplayed = Object.is(next, displayed());
+        if (matchesDisplayed && !exiting) return;
+
         const myToken = ++token;
         const duration = applyReducedMotion(props.duration ?? 125);
 
+        if (matchesDisplayed) {
+          exiting = false;
+          if (!el || duration <= 0) {
+            cancelAnimation(false);
+            if (el) el.style.opacity = "1";
+            return;
+          }
+          cancelAnimation(true);
+          const from = el.style.opacity || getComputedStyle(el).opacity || "0";
+          startEnter(el, from, duration);
+          return;
+        }
+
         if (!el || duration <= 0) {
+          exiting = false;
           cancelAnimation(false);
           setDisplayed(() => next);
           if (el) el.style.opacity = "1";
           return;
         }
 
+        exiting = true;
         cancelAnimation(true);
         const from = el.style.opacity || getComputedStyle(el).opacity || "1";
         el.style.opacity = "0";
@@ -65,21 +102,11 @@ export function FadeSwitch<T>(props: {
         void exitAnim.finished.then(
           () => {
             if (token !== myToken || animation !== exitAnim) return;
+            exiting = false;
             animation = undefined;
             setDisplayed(() => next);
             if (!el) return;
-            el.style.opacity = "1";
-            const enterAnim = el.animate(
-              { opacity: ["0", "1"] },
-              { duration, easing: "ease-out" },
-            );
-            animation = enterAnim;
-            void enterAnim.finished.then(
-              () => {
-                if (animation === enterAnim) animation = undefined;
-              },
-              () => undefined,
-            );
+            startEnter(el, "0", duration);
           },
           () => undefined,
         );
@@ -90,6 +117,7 @@ export function FadeSwitch<T>(props: {
 
   onCleanup(() => {
     token++;
+    exiting = false;
     cancelAnimation(false);
   });
 

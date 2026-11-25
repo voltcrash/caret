@@ -64,4 +64,43 @@ describe("FadeSwitch", () => {
     expect(screen.queryByTestId("view-a")).not.toBeInTheDocument();
     expect(screen.getByTestId("view-b")).toBeInTheDocument();
   });
+
+  it("cancels a pending exit and fades back in when value reverts mid-exit", async () => {
+    const [tab, setTab] = createSignal<"a" | "b">("a");
+    const { container } = render(() => (
+      <FadeSwitch value={tab()} class="switch-box">
+        {(current) => (
+          <Show
+            when={current() === "a"}
+            fallback={<div data-testid="view-b">B</div>}
+          >
+            <div data-testid="view-a">A</div>
+          </Show>
+        )}
+      </FadeSwitch>
+    ));
+
+    const wrapper = container.querySelector(".switch-box") as HTMLElement;
+    setTab("b");
+    const exitAnim = wrapper.getAnimations()[0];
+    expect(exitAnim).toBeDefined();
+    const exitFinished = exitAnim?.finished;
+    if (exitAnim) exitAnim.currentTime = 60;
+
+    setTab("a");
+    await exitFinished?.catch(() => undefined);
+    await Promise.resolve();
+
+    expect(screen.getByTestId("view-a")).toBeInTheDocument();
+    expect(screen.queryByTestId("view-b")).not.toBeInTheDocument();
+    expect(wrapper.style.opacity).toBe("1");
+
+    const reenterAnim = wrapper.getAnimations()[0];
+    expect(reenterAnim).toBeDefined();
+    const effect = reenterAnim?.effect as KeyframeEffect;
+    const fromOpacity = Number(effect.getKeyframes()[0]?.["opacity"]);
+    expect(fromOpacity).toBeGreaterThan(0);
+    expect(fromOpacity).toBeLessThan(1);
+    reenterAnim?.finish();
+  });
 });
