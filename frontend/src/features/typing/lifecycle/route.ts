@@ -14,6 +14,7 @@ import {
   cancelPendingAnimationFramesStartingWith,
 } from "#shared/utils/debounced-animation-frame.ts";
 import { isCoarsePointer } from "#shared/utils/pointer.ts";
+import { areTestElementsMounted } from "#features/typing/state/test-dom.ts";
 import { captureTypingMount } from "../scope";
 import { getTestSession } from "../runtime/events/data";
 import { getBrowserEngine } from "#shared/engine/owner.client.ts";
@@ -61,7 +62,7 @@ export async function enterTypingRoute(): Promise<void> {
     // release the startup cover over a replacement typing route.
     if (mount.isCurrent()) {
       setTypingReady(true);
-      if (initialized) {
+      if (initialized && areTestElementsMounted()) {
         if (early.replayed) {
           if (!isCoarsePointer() || early.tapped) {
             TestUI.focusWords(true);

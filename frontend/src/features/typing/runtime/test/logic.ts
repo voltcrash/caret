@@ -267,10 +267,8 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
       return;
     }
 
-    if (peekConfig().paceCaret !== "off" || isPaceRepeat()) {
-      await operation.wait(PaceCaret.init({ isCurrent: current }));
-      if (!current()) return;
-    }
+    await operation.wait(PaceCaret.init({ isCurrent: current }));
+    if (!current()) return;
 
     for (const fb of getActiveFunboxesWithFunction("restart")) {
       fb.functions.restart();

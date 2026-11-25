@@ -63,13 +63,14 @@ export function Theme(): JSXElement {
     applyColors(colors, previous !== undefined);
   });
 
+  const mayHaveDecoration = (current: ReturnType<typeof getTheme>): boolean =>
+    current.name !== "custom" &&
+    current.name !== "azure" &&
+    current.hasCss !== false;
+
   createEffect(() => {
     const current = getTheme();
-    if (
-      current.name === "custom" ||
-      current.hasCss !== true ||
-      decorationLookup() !== undefined
-    ) {
+    if (!mayHaveDecoration(current) || decorationLookup() !== undefined) {
       return;
     }
     let disposed = false;
@@ -85,7 +86,7 @@ export function Theme(): JSXElement {
 
   const decoration = createMemo(() => {
     const current = getTheme();
-    if (current.name === "custom" || current.hasCss !== true) return "";
+    if (!mayHaveDecoration(current)) return "";
     return decorationLookup()?.(current.name) ?? "";
   });
 

@@ -115,7 +115,11 @@ class FileStorage {
     if (isKnownEmpty()) return undefined;
     const db = await this.database();
     const value = await db.get("files", filename);
-    if (value === undefined && (await db.count("files")) === 0) {
+    if (
+      value === undefined &&
+      typeof db.count === "function" &&
+      (await db.count("files")) === 0
+    ) {
       setKnownEmpty(true);
     }
     return value;
@@ -124,7 +128,9 @@ class FileStorage {
   async deleteFile(filename: Filename): Promise<void> {
     const db = await this.database();
     await db.delete("files", filename);
-    if ((await db.count("files")) === 0) setKnownEmpty(true);
+    if (typeof db.count === "function" && (await db.count("files")) === 0) {
+      setKnownEmpty(true);
+    }
     this.notify(filename);
   }
 
