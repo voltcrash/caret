@@ -25,7 +25,7 @@ official Playwright image matching the installed client version.
 
 | Job | Runs | Checks |
 | --- | --- | --- |
-| `quality` | Every change | Whole-repo format check; Knip unless docs/assets-only; Stylelint and asset validation when `frontend/static`, CSS, runtime packages or asset validator inputs change |
+| `quality` | Every change | Whole-repo format check; Knip unless docs/assets-only; asset validation when `frontend/static`, runtime packages or asset validator inputs change |
 | `ci-be` | Backend, its tests, runtime packages, lint config | Lint, unit and PostgreSQL tests |
 | `ci-fe` | Frontend, any frontend tests, backend, runtime packages, lint config | Lint, circular imports |
 | `ci-fe-test` (2 shards) | Frontend, unit or Start tests, backend, runtime packages | Vitest |
