@@ -1,6 +1,10 @@
 #[cfg(unix)]
+mod emulator;
+#[cfg(unix)]
 mod pty;
 mod screen;
+#[cfg(unix)]
+mod x11;
 
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
@@ -25,12 +29,36 @@ enum Command {
         #[arg(long)]
         release: bool,
     },
+    /// Run real Linux X11 emulator checks via XTest in a private Xvfb display.
+    #[cfg(unix)]
+    Emulator {
+        #[arg(long, value_enum)]
+        emulator: emulator::EmulatorKind,
+        #[arg(long)]
+        command: PathBuf,
+        #[arg(long, default_value = "target/debug/caret")]
+        binary: PathBuf,
+        #[arg(long, default_value = "xdotool")]
+        xdotool: String,
+        #[arg(long, default_value = "Xvfb")]
+        xvfb: String,
+        #[arg(long)]
+        evidence: Option<PathBuf>,
+    },
     /// Internal session leader helper for PTY checks.
     #[command(hide = true)]
     Keeper {
         /// Command and arguments to run inside the kept PTY session.
         #[arg(trailing_var_arg = true, allow_hyphen_values = true, required = true)]
         args: Vec<String>,
+    },
+    /// Internal PTY recorder invoked inside the tested emulator window.
+    #[cfg(unix)]
+    #[command(hide = true)]
+    Record {
+        binary: PathBuf,
+        profile: PathBuf,
+        keyboard: String,
     },
     /// Dump the parsed VT100 screen text of stdin (diagnostic helper).
     Screen,
@@ -50,6 +78,22 @@ fn main() {
                 Err("PTY harness requires Unix".into())
             }
         }
+        #[cfg(unix)]
+        Command::Emulator {
+            emulator,
+            command,
+            binary,
+            xdotool,
+            xvfb,
+            evidence,
+        } => emulator::check(&emulator::EmulatorArgs {
+            emulator,
+            command,
+            binary,
+            xdotool,
+            xvfb,
+            evidence,
+        }),
         Command::Keeper { args } => {
             #[cfg(unix)]
             {
@@ -61,6 +105,12 @@ fn main() {
                 Err("PTY keeper requires Unix".into())
             }
         }
+        #[cfg(unix)]
+        Command::Record {
+            binary,
+            profile,
+            keyboard,
+        } => emulator::record(&binary, &profile, &keyboard),
         Command::Screen => {
             use std::io::Read;
             let mut bytes = Vec::new();
