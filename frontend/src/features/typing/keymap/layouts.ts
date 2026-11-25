@@ -1,22 +1,34 @@
-import { KeymapStyle } from "@caret/schemas/configs";
-import { LayoutObject } from "@caret/schemas/layouts";
-import {
-  FormatDisplayOptions,
-  formatForDisplay,
-} from "@tanstack/solid-hotkeys";
-import { OneOf } from "#shared/utils/types.ts";
+import type { KeymapStyle } from "@caret/schemas/configs";
+import type { LayoutObject } from "@caret/schemas/layouts";
+import type { OneOf } from "#shared/utils/types.ts";
 
-const options = { parts: false } satisfies FormatDisplayOptions;
-export const Ctrl = formatForDisplay("Control", options);
-export const Shift = formatForDisplay("Shift", { platform: "mac" });
-export const Alt = formatForDisplay("Alt", options);
+function detectPlatform(): "mac" | "windows" | "linux" {
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
+    return "linux";
+  }
+  const platform = navigator.platform?.toLowerCase() ?? "";
+  const agent = navigator.userAgent?.toLowerCase() ?? "";
+  if (platform.includes("mac") || agent.includes("mac")) return "mac";
+  if (platform.includes("win") || agent.includes("win")) return "windows";
+  return "linux";
+}
+
+const currentPlatform = detectPlatform();
+export const Ctrl = currentPlatform === "mac" ? "⌃" : "Ctrl";
+export const Shift = "⇧";
+export const Alt = currentPlatform === "mac" ? "⌥" : "Alt";
 export const Hyper = "Monke";
 export const HyperShort = "";
 const Backspace = "Backspace";
-export const BackspaceShort = formatForDisplay("Backspace", options);
-export const Meta = formatForDisplay("Meta", options);
+export const BackspaceShort = "⌫";
+export const Meta =
+  currentPlatform === "mac"
+    ? "⌘"
+    : currentPlatform === "windows"
+      ? "Win"
+      : "Super";
 const Enter = "Enter";
-export const EnterShort = formatForDisplay("Enter", { platform: "mac" });
+export const EnterShort = "↵";
 
 export type KeyDefinition = {
   legends: string[];
