@@ -1,4 +1,4 @@
-import { openDB, DBSchema, IDBPDatabase } from "idb";
+import type { DBSchema, IDBPDatabase } from "idb";
 import { createSignal, onCleanup } from "solid-js";
 import { createAppOwned } from "../../app/application";
 
@@ -11,9 +11,29 @@ type FileDB = DBSchema & {
 
 type Filename = "LocalBackgroundFile" | "LocalFontFamilyFile";
 
+const EMPTY_HINT_KEY = "caret_local_files_empty";
+
+function isKnownEmpty(): boolean {
+  try {
+    return localStorage.getItem(EMPTY_HINT_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function setKnownEmpty(empty: boolean): void {
+  try {
+    if (empty) localStorage.setItem(EMPTY_HINT_KEY, "1");
+    else localStorage.removeItem(EMPTY_HINT_KEY);
+  } catch {
+    // storage may be unavailable
+  }
+}
+
 class FileStorage {
   private dbPromise: Promise<IDBPDatabase<FileDB>> | undefined;
   private closed = false;
+  private mutationVersion = 0;
   private signals = new Map<
     Filename,
     [get: () => number, set: (v: number | ((prev: number) => number)) => void]
@@ -23,24 +43,29 @@ class FileStorage {
     if (this.closed) {
       throw new DOMException("Application disposed", "AbortError");
     }
-    this.dbPromise ??= openDB<FileDB>("file-storage-db", 1, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains("files")) {
-          db.createObjectStore("files");
-        }
-      },
-      blocking: () => {
-        const pending = this.dbPromise;
+    this.dbPromise ??= import("idb")
+      .then(
+        async ({ openDB }) =>
+          await openDB<FileDB>("file-storage-db", 1, {
+            upgrade(db) {
+              if (!db.objectStoreNames.contains("files")) {
+                db.createObjectStore("files");
+              }
+            },
+            blocking: () => {
+              const pending = this.dbPromise;
+              this.dbPromise = undefined;
+              void pending?.then((db) => db.close()).catch(() => undefined);
+            },
+            terminated: () => {
+              this.dbPromise = undefined;
+            },
+          }),
+      )
+      .catch((error: unknown) => {
         this.dbPromise = undefined;
-        void pending?.then((db) => db.close()).catch(() => undefined);
-      },
-      terminated: () => {
-        this.dbPromise = undefined;
-      },
-    }).catch((error: unknown) => {
-      this.dbPromise = undefined;
-      throw error;
-    });
+        throw error;
+      });
     const db = await this.dbPromise;
     if (this.closed) {
       throw new DOMException("Application disposed", "AbortError");
@@ -81,28 +106,58 @@ class FileStorage {
   }
 
   async storeFile(filename: Filename, dataUrl: string): Promise<void> {
+    this.mutationVersion++;
+    setKnownEmpty(false);
     const db = await this.database();
     await db.put("files", dataUrl, filename);
     this.notify(filename);
   }
 
   async getFile(filename: Filename): Promise<string | undefined> {
+    if (isKnownEmpty()) return undefined;
+    const version = this.mutationVersion;
     const db = await this.database();
-    return db.get("files", filename);
+    const value = await db.get("files", filename);
+    if (
+      value === undefined &&
+      this.mutationVersion === version &&
+      typeof db.count === "function" &&
+      (await db.count("files")) === 0 &&
+      this.mutationVersion === version
+    ) {
+      setKnownEmpty(true);
+    }
+    return value;
   }
 
   async deleteFile(filename: Filename): Promise<void> {
+    const version = ++this.mutationVersion;
     const db = await this.database();
     await db.delete("files", filename);
+    if (
+      this.mutationVersion === version &&
+      typeof db.count === "function" &&
+      (await db.count("files")) === 0 &&
+      this.mutationVersion === version
+    ) {
+      setKnownEmpty(true);
+    }
     this.notify(filename);
   }
 
   async listFilenames(): Promise<Filename[]> {
+    if (isKnownEmpty()) return [];
+    const version = this.mutationVersion;
     const db = await this.database();
-    return db.getAllKeys("files") as Promise<Filename[]>;
+    const keys = (await db.getAllKeys("files")) as Filename[];
+    if (keys.length === 0 && this.mutationVersion === version) {
+      setKnownEmpty(true);
+    }
+    return keys;
   }
 
   async hasFile(filename: Filename): Promise<boolean> {
+    if (isKnownEmpty()) return false;
     const db = await this.database();
     return (await db.getKey("files", filename)) !== undefined;
   }

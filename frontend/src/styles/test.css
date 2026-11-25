@@ -7,7 +7,8 @@
 #words .afterNewline {
   @apply inline-block;
 }
-#words {
+#words,
+[data-initial-words] {
   --correct-letter-color: var(--text-color);
   --correct-letter-animation: none;
   --untyped-letter-color: var(--sub-color);
@@ -17,7 +18,8 @@
   --extra-letter-color: var(--error-extra-color);
   --extra-letter-animation: none;
 }
-#words .word letter {
+#words .word letter,
+[data-initial-words] .word letter {
   @apply text-letter-untyped;
   animation: var(--untyped-letter-animation);
   @apply [border-bottom-style:solid] border-b-[0.05em] border-b-transparent;
@@ -42,7 +44,8 @@
 #words .word letter.debugCaretTarget2 {
   @apply outline-2 outline-solid outline-debug-target-secondary;
 }
-#words .word letter.correct {
+#words .word letter.correct,
+[data-initial-words] .word letter.correct {
   @apply text-letter-correct;
   animation: var(--correct-letter-animation);
 }
@@ -54,11 +57,13 @@
 #words .word letter.extraCorrected {
   @apply border-r-[2px] [border-right-style:dotted] border-r-main;
 }
-#words .word letter.incorrect {
+#words .word letter.incorrect,
+[data-initial-words] .word letter.incorrect {
   @apply text-letter-incorrect;
   animation: var(--incorrect-letter-animation);
 }
-#words .word letter.incorrect.extra {
+#words .word letter.incorrect.extra,
+[data-initial-words] .word letter.incorrect.extra {
   @apply text-letter-extra;
   animation: var(--extra-letter-animation);
 }

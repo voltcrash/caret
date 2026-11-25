@@ -37,16 +37,14 @@ export function fontStyles(): Plugin {
   font-display: swap;
   src: url(${JSON.stringify(file)}) format("woff2");
 }`;
+      const startupFontNames = new Set(["Roboto_Mono", "Lexend_Deca"]);
       const faces = [face("Vazirharf", "/webfonts/Vazirharf-NL-Regular.woff2")];
       for (const [name, font] of Object.entries(Fonts).sort(([a], [b]) =>
         a.localeCompare(b),
       )) {
-        if (font.systemFont) continue;
+        if (font.systemFont || !startupFontNames.has(name)) continue;
         const family = name.replaceAll("_", " ");
         faces.push(face(family, `/webfonts/${font.fileName}`, font.weight));
-        faces.push(
-          face(`${family} Preview`, `/webfonts/${font.fileName}`, font.weight),
-        );
       }
       writeIfChanged(imports["caret-fonts.css"], faces.join("\n"));
 

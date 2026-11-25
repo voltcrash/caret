@@ -3,7 +3,7 @@ import { initialTyping } from "virtual:initial-typing";
 import {
   previewSettings,
   type InitialTypingSnapshot,
-} from "#shared/config/typing-preview.ts";
+} from "#shared/config/typing-preview-settings.ts";
 
 export function defaultInitialTyping(): InitialTypingSnapshot {
   return {

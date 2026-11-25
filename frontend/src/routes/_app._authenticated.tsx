@@ -3,14 +3,16 @@ import { type JSXElement, Show } from "solid-js";
 
 import { RoutePending } from "../components/route-pending";
 import { AccountSkeleton } from "../features/account/skeleton";
-import { requireSession } from "../features/auth/guard";
 
 /** Private layout: registered accounts only; never cached HTML. */
 export const Route = createFileRoute("/_app/_authenticated")({
   head: () => ({ meta: [{ name: "robots", content: "noindex,follow" }] }),
-  beforeLoad: async ({ context, location }) => ({
-    user: await requireSession(context.queryClient, location.href),
-  }),
+  beforeLoad: async ({ context, location }) => {
+    const { requireSession } = await import("../features/auth/guard");
+    return {
+      user: await requireSession(context.queryClient, location.href),
+    };
+  },
   pendingComponent: Pending,
   component: Outlet,
 });

@@ -8,7 +8,10 @@ export async function preloadStartup(pathname: string): Promise<void> {
   if (pathname === "/") {
     pending.push(
       import("../features/typing/page.client"),
-      import("@caret/typing-engine/browser.client"),
+      import("@caret/typing-engine/browser.client").then((module) => {
+        void module.warmupEngineWasm().catch(() => undefined);
+        return undefined;
+      }),
     );
   }
   await Promise.all(pending);

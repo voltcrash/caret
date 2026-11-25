@@ -1,9 +1,17 @@
 import { Meta, MetaProvider, Style } from "@solidjs/meta";
-import { createMemo, JSXElement, untrack } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  JSXElement,
+  onCleanup,
+  untrack,
+} from "solid-js";
 
 import { toThemeVars } from "#app/theme-vars.ts";
 
-import { Theme as ThemeColors, themes } from "../../constants/themes";
+import type { Theme as ThemeColors } from "../../constants/themes";
+
 import { createEffectOn } from "../../hooks/effects";
 import { useRef } from "../../hooks/useRef";
 import { getTheme } from "../../states/theme";
@@ -13,16 +21,7 @@ import { FavIcon } from "./FavIcon";
 const THEME_COLORS_KEY = "themeColors";
 const BOOTSTRAP_STYLE_ID = "themeBootstrap";
 
-// All 52 decorations total ~48 KB before compression. Keep them ready so a
-// hover never waits for a stylesheet request or paints with the previous one.
-const themeStyles = import.meta.glob<string>(
-  "../../../../static/themes/*.css",
-  {
-    query: "?raw",
-    import: "default",
-    eager: true,
-  },
-);
+type DecorationLookup = (name: string) => string;
 
 function toCss(colors: ThemeColors): string {
   const vars = Object.entries(toThemeVars(colors))
@@ -34,6 +33,8 @@ function toCss(colors: ThemeColors): string {
 export function Theme(): JSXElement {
   // Refs are assigned by SolidJS via the ref attribute
   const [styleRef, styleEl] = useRef<HTMLStyleElement>();
+  const [decorationLookup, setDecorationLookup] =
+    createSignal<DecorationLookup>();
   // Browser chrome and the reload palette follow selection, not hover.
   const committedTheme = createMemo<ReturnType<typeof getTheme>>(
     (previous) => (getTheme().preview ? previous : getTheme()),
@@ -62,11 +63,31 @@ export function Theme(): JSXElement {
     applyColors(colors, previous !== undefined);
   });
 
+  const mayHaveDecoration = (current: ReturnType<typeof getTheme>): boolean =>
+    current.name !== "custom" &&
+    current.name !== "azure" &&
+    current.hasCss !== false;
+
+  createEffect(() => {
+    const current = getTheme();
+    if (!mayHaveDecoration(current) || decorationLookup() !== undefined) {
+      return;
+    }
+    let disposed = false;
+    onCleanup(() => {
+      disposed = true;
+    });
+    void import("../../constants/theme-decorations")
+      .then((module) => {
+        if (!disposed) setDecorationLookup(() => module.getThemeDecoration);
+      })
+      .catch(() => undefined);
+  });
+
   const decoration = createMemo(() => {
-    const name = getTheme().name;
-    return name !== "custom" && themes[name]?.hasCss
-      ? (themeStyles[`../../../../static/themes/${name}.css`] ?? "")
-      : "";
+    const current = getTheme();
+    if (!mayHaveDecoration(current)) return "";
+    return decorationLookup()?.(current.name) ?? "";
   });
 
   return (

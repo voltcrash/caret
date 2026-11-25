@@ -20,6 +20,7 @@ export {
   highlightBadWord,
   highlightAllLettersAsCorrect,
   getActiveWordTopAndHeightWithDifferentData,
+  syncReplayedWords,
 } from "../../components/words/rendering";
 export {
   updateWordsInputPosition,

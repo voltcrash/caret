@@ -80,6 +80,16 @@ export async function activate(
   if (!lease.isCurrent()) return false;
   funbox ??= getActiveFunboxNames();
 
+  if (funbox.length === 0) {
+    if (peekConfig().funbox.length !== 0) setConfigStore("funbox", []);
+    MemoryTimer.reset();
+    setBodyClasses([]);
+    setFunboxStylesheets([]);
+    setWordsWrapperVisible(true);
+    setFunboxReducedMotionIgnored(false);
+    return true;
+  }
+
   // The configuration might be edited with dev tools, so check the list
   // before publishing it.
   if (!checkCompatibility(funbox)) {

@@ -1,7 +1,28 @@
 import type { UserProfile } from "@caret/schemas/users";
 
-import { formatDate } from "date-fns/format";
 import { For, type JSXElement, Show } from "solid-js";
+
+const shortMonths = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
+
+function formatJoinedDate(timestamp: number): string {
+  const date = new Date(timestamp);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = shortMonths[date.getMonth()] ?? "";
+  return `${day} ${month} ${date.getFullYear()}`;
+}
 
 /**
  * Server-rendered public profile summary. The interactive profile (badges,
@@ -17,7 +38,7 @@ export function ProfileSummary(props: { profile: UserProfile }): JSXElement {
     <section class="grid gap-4" aria-label="Profile summary">
       <h1 class="text-4xl text-text">{props.profile.name}</h1>
       <div class="text-sub">
-        Joined {formatDate(props.profile.addedAt, "dd MMM yyyy")}
+        Joined {formatJoinedDate(props.profile.addedAt)}
       </div>
       <Show when={props.profile.details?.bio}>{(bio) => <p>{bio()}</p>}</Show>
       <dl class="grid grid-cols-2 gap-4 sm:grid-cols-4">

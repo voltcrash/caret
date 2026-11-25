@@ -1,11 +1,52 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
-/** Generate only the audited application/Storybook subset, including data-driven names. */
-export function generateIconData(): string {
+const startupIconNames: Record<string, readonly string[]> = {
+  solid: [
+    "fa-at",
+    "fa-bullhorn",
+    "fa-chart-line",
+    "fa-check",
+    "fa-circle-info",
+    "fa-circle-notch",
+    "fa-clock",
+    "fa-cog",
+    "fa-crown",
+    "fa-exclamation",
+    "fa-exclamation-triangle",
+    "fa-font",
+    "fa-globe-americas",
+    "fa-hand-pointer",
+    "fa-hashtag",
+    "fa-heart",
+    "fa-home",
+    "fa-info-circle",
+    "fa-keyboard",
+    "fa-lock",
+    "fa-mountain",
+    "fa-mouse-pointer",
+    "fa-quote-left",
+    "fa-redo-alt",
+    "fa-search",
+    "fa-share",
+    "fa-sign-out-alt",
+    "fa-star",
+    "fa-tag",
+    "fa-tags",
+    "fa-terminal",
+    "fa-times",
+    "fa-tools",
+    "fa-user",
+    "fa-wrench",
+  ],
+  regular: ["fa-star", "fa-user"],
+  brand: ["fa-github"],
+};
+
+function renderIconModule(
+  selection: Record<string, Record<string, string>>,
+  exportName: string,
+): string {
   const root = new URL("../icons/", import.meta.url);
-  const selection = JSON.parse(
-    readFileSync(new URL("selection.json", root), "utf8"),
-  ) as Record<string, Record<string, string>>;
   const definitions = new Map<string, string>();
   const lines = [
     "/*! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com",
@@ -32,7 +73,7 @@ export function generateIconData(): string {
       );
     }
   }
-  lines.push("export const icons = {");
+  lines.push(`export const ${exportName} = {`);
   for (const [variant, files] of Object.entries(selection)) {
     lines.push(`  ${variant}: {`);
     for (const [name, file] of Object.entries(files)) {
@@ -41,13 +82,40 @@ export function generateIconData(): string {
     lines.push("  },");
   }
   lines.push("} as const;", "");
-  const output = lines.join("\n");
-  return output;
+  return lines.join("\n");
 }
 
-export function writeIconData(): void {
-  const target = new URL("../src/components/icons/data.ts", import.meta.url);
-  const output = generateIconData();
+function readSelection(): Record<string, Record<string, string>> {
+  const root = new URL("../icons/", import.meta.url);
+  return JSON.parse(
+    readFileSync(new URL("selection.json", root), "utf8"),
+  ) as Record<string, Record<string, string>>;
+}
+
+/** Generate only the audited application/Storybook subset, including data-driven names. */
+export function generateIconData(): string {
+  return renderIconModule(readSelection(), "icons");
+}
+
+/** Generate the critical startup icon subset bundled with the initial document JS. */
+export function generateStartupIconData(): string {
+  const full = readSelection();
+  const subset: Record<string, Record<string, string>> = {};
+  for (const [variant, names] of Object.entries(startupIconNames)) {
+    const source = full[variant] ?? {};
+    subset[variant] = {};
+    for (const name of names) {
+      const file = source[name];
+      if (file === undefined) {
+        throw new Error(`Missing startup icon ${variant}:${name}`);
+      }
+      subset[variant][name] = file;
+    }
+  }
+  return renderIconModule(subset, "startupIcons");
+}
+
+function writeIfChanged(target: URL, output: string): void {
   let current: string | undefined;
   try {
     current = readFileSync(target, "utf8");
@@ -55,4 +123,15 @@ export function writeIconData(): void {
     /* First generation. */
   }
   if (current !== output) writeFileSync(target, output);
+}
+
+export function writeIconData(): void {
+  writeIfChanged(
+    new URL("../src/components/icons/data.ts", import.meta.url),
+    generateIconData(),
+  );
+  writeIfChanged(
+    new URL("../src/components/icons/startup.ts", import.meta.url),
+    generateStartupIconData(),
+  );
 }

@@ -1,4 +1,4 @@
-import { For, JSXElement, Show } from "solid-js";
+import { For, JSXElement, onMount, Show } from "solid-js";
 
 import { Separator } from "#shared/components/common/Separator.tsx";
 import { getConfig } from "#shared/config/store.ts";
@@ -16,6 +16,11 @@ const sortedThemes: ThemeWithName[] = [...ThemesList].sort((a, b) => {
 });
 
 export function PresetThemes(): JSXElement {
+  onMount(() => {
+    void import("#shared/constants/theme-decorations.ts").catch(
+      () => undefined,
+    );
+  });
   return (
     <div class="grid gap-4" onMouseLeave={() => void clearPreview()}>
       <Show when={getConfig.favThemes.length > 0}>

@@ -1,7 +1,7 @@
 import { onCleanup } from "solid-js";
 import { createAccountOwned, captureAccount } from "../../app/account-scope";
 import { Config as ConfigSchema } from "@caret/schemas/configs";
-import { saveConfig } from "./sync";
+import { isAuthenticated } from "../states/core";
 import { trackAccountWork } from "../states/header";
 import { peekConfig } from "./store";
 import * as ConfigSchemas from "@caret/schemas/configs";
@@ -27,12 +27,14 @@ const pendingSync = createAccountOwned(() => {
 });
 
 function persist(config: Partial<ConfigSchemas.Config>): void {
+  if (!isAuthenticated()) return;
   const lease = captureAccount();
-  void trackAccountWork(async () => await saveConfig(config)).catch(
-    (error: unknown) => {
-      if (lease.isCurrent()) console.error("Failed to save config", error);
-    },
-  );
+  void trackAccountWork(async () => {
+    const { saveConfig } = await import("./sync");
+    await saveConfig(config);
+  }).catch((error: unknown) => {
+    if (lease.isCurrent()) console.error("Failed to save config", error);
+  });
 }
 
 export const configLS = new LocalStorageWithSchema({

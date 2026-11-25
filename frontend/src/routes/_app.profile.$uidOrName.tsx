@@ -1,23 +1,20 @@
+import type { Client } from "@caret/schemas/shared";
 import type { UserProfile } from "@caret/schemas/users";
 import type { JSXElement } from "solid-js";
 
-import { ClientSchema } from "@caret/schemas/shared";
 import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { isServer } from "solid-js/web";
-import { z } from "zod";
 
-import { urlSearch } from "../app/search";
 import { pageHead } from "../app/seo";
 import { ProfileMissing } from "../features/profile/missing";
-import {
-  ProfilePage,
-  profileFrame,
-  preloadProfile,
-} from "../features/profile/page";
-import { isUserNotFound, profileOptions } from "../features/profile/queries";
+import { ProfilePage, profileFrame } from "../features/profile/page";
 import { ProfileSkeleton } from "../features/profile/skeleton";
 
-const SearchSchema = z.object({ client: ClientSchema.optional() }).partial();
+function parseClientSearch(search: Record<string, unknown>): {
+  client?: Client;
+} {
+  return { client: search["client"] === "web" ? "web" : undefined };
+}
 
 /** Index profiles with authored text or a personal best visible in the SSR summary. */
 function hasProfileContent(profile: UserProfile): boolean {
@@ -31,13 +28,16 @@ function hasProfileContent(profile: UserProfile): boolean {
 }
 
 export const Route = createFileRoute("/_app/profile/$uidOrName")({
-  validateSearch: (search: Record<string, unknown>) =>
-    urlSearch(SearchSchema)(search),
+  validateSearch: parseClientSearch,
   loaderDeps: ({ search }) => ({ client: search.client ?? "web" }),
   loader: async ({ context, params, deps }) => {
+    const { isUserNotFound, profileOptions } =
+      await import("../features/profile/queries");
     const options = profileOptions(params.uidOrName, deps.client);
     if (!isServer) {
-      void preloadProfile().catch(() => undefined);
+      void import("../features/profile/page")
+        .then(async (m) => m.preloadProfile())
+        .catch(() => undefined);
       const cached = context.queryClient.getQueryData(options.queryKey);
       if (cached !== undefined) {
         void context.queryClient.query(options).catch(() => undefined);

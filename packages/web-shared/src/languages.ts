@@ -58,7 +58,7 @@ export function memoizeAsync<Args extends unknown[], R>(
 export type LanguageLoaderOptions = AsyncCacheOptions & {
   fetchJson: FetchJson;
   /** Where to load a language from. Defaults to `/languages/<name>.json`. */
-  getUrl?: (language: Language) => string;
+  getUrl?: (language: Language) => string | Promise<string>;
   /** Throws if the loaded language must not be used (integrity checks). */
   verify?: (language: Language, loaded: LanguageObject) => Promise<void>;
 };
@@ -79,7 +79,7 @@ export function createLanguageLoader(
   const cachedFetchLanguage = memoizeAsync(
     async (language: Language): Promise<LanguageObject> => {
       const loaded = (await options.fetchJson(
-        getUrl(language),
+        await getUrl(language),
       )) as LanguageObject;
       await options.verify?.(language, loaded);
       return loaded;

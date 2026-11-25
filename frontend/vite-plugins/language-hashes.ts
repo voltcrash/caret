@@ -5,6 +5,8 @@ import { createHash } from "crypto";
 
 const virtualModuleId = "virtual:language-hashes";
 const resolvedVirtualModuleId = `\0${virtualModuleId}`;
+const englishVirtualModuleId = "virtual:english-hash";
+const resolvedEnglishVirtualModuleId = `\0${englishVirtualModuleId}`;
 
 function calcHash(file: string): string {
   const currentLanguage = JSON.stringify(
@@ -45,9 +47,14 @@ export function languageHashes(options?: { skip: boolean }): Plugin {
     name: "virtual-language-hashes",
     resolveId(id) {
       if (id === virtualModuleId) return resolvedVirtualModuleId;
+      if (id === englishVirtualModuleId) return resolvedEnglishVirtualModuleId;
       return;
     },
     load(id) {
+      if (id === resolvedEnglishVirtualModuleId) {
+        const hash = options?.skip ? undefined : languageHash("english");
+        return `export const englishHash = ${JSON.stringify(hash)};`;
+      }
       if (id === resolvedVirtualModuleId) {
         if (options?.skip) {
           console.log("Skipping language hashing.");

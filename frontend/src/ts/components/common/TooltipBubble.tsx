@@ -1,12 +1,5 @@
-import {
-  autoUpdate,
-  computePosition,
-  flip,
-  hide,
-  offset,
-  shift,
-  type Placement,
-} from "@floating-ui/dom";
+import type { Placement } from "@floating-ui/dom";
+
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { isServer, Portal } from "solid-js/web";
 
@@ -163,38 +156,46 @@ function Bubble(props: {
     const placement = placements[props.position];
     let disposed = false;
     let revision = 0;
-    const update = async (): Promise<void> => {
-      const current = ++revision;
-      if (
-        !reference.isConnected ||
-        !reference.checkVisibility() ||
-        reference.closest(".noBalloons")
-      ) {
-        props.onClose();
-        return;
-      }
-      const { x, y, middlewareData } = await computePosition(
-        reference,
-        element,
-        {
-          strategy: "fixed",
-          placement,
-          middleware: [
-            offset(8),
-            flip({ padding: 8 }),
-            shift({ padding: 8, crossAxis: true }),
-            hide(),
-          ],
-        },
-      );
-      if (disposed || current !== revision) return;
-      if (middlewareData.hide?.referenceHidden) props.onClose();
-      else setCoordinates({ x, y });
-    };
-    const stop = autoUpdate(reference, element, () => void update());
+    let stop: (() => void) | undefined;
+    void import("@floating-ui/dom")
+      .then(({ autoUpdate, computePosition, flip, hide, offset, shift }) => {
+        if (disposed) return;
+        const update = async (): Promise<void> => {
+          const current = ++revision;
+          if (
+            !reference.isConnected ||
+            !reference.checkVisibility() ||
+            reference.closest(".noBalloons")
+          ) {
+            props.onClose();
+            return;
+          }
+          const { x, y, middlewareData } = await computePosition(
+            reference,
+            element,
+            {
+              strategy: "fixed",
+              placement,
+              middleware: [
+                offset(8),
+                flip({ padding: 8 }),
+                shift({ padding: 8, crossAxis: true }),
+                hide(),
+              ],
+            },
+          );
+          if (disposed || current !== revision) return;
+          if (middlewareData.hide?.referenceHidden) props.onClose();
+          else setCoordinates({ x, y });
+        };
+        stop = autoUpdate(reference, element, () => void update());
+      })
+      .catch(() => {
+        if (!disposed) props.onClose();
+      });
     onCleanup(() => {
       disposed = true;
-      stop();
+      stop?.();
     });
   });
   return (

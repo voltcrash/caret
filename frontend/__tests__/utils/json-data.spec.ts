@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 
+vi.mock("virtual:english-hash", () => ({
+  englishHash: "0123456789abcdef0123456789abcdef",
+}));
 vi.mock("virtual:language-hashes", () => ({
   languageHashes: { english: "0123456789abcdef0123456789abcdef" },
 }));

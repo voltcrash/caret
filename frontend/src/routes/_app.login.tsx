@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/solid-router";
 
 import { pageHead } from "../app/seo";
 import { AuthPage } from "../features/auth/page";
-import { getSessionState } from "../functions/session";
-import { authRedirect } from "../ts/session/session";
+import { authRedirect } from "../ts/session/redirect";
 export const Route = createFileRoute("/_app/login")({
   validateSearch: (search) => ({
     redirect:
@@ -11,7 +10,7 @@ export const Route = createFileRoute("/_app/login")({
         ? authRedirect(search["redirect"])
         : undefined,
   }),
-  loader: async () => await getSessionState(),
+  loader: async () => (await import("../functions/session")).getSessionState(),
   head: () => pageHead("Sign in | Caret", "Sign in on Caret.", "/login", false),
   component: Login,
 });

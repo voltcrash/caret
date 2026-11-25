@@ -20,7 +20,7 @@ import { configEvent } from "../events/config";
 import { migrateConfig } from "./utils";
 import { isObject } from "../utils/misc";
 import { setConfig } from "./setters";
-import { deleteConfig } from "./sync";
+import { isAuthenticated } from "../states/core";
 import { typedKeys } from "@caret/util/objects";
 import { lastConfigsToApply } from "@caret/web-shared/config/apply-order";
 
@@ -149,6 +149,9 @@ export async function applyConfig(
 export async function resetConfig(): Promise<void> {
   resetPendingConfigSync({});
   await applyConfig(getDefaultConfig());
-  await deleteConfig();
+  if (isAuthenticated()) {
+    const { deleteConfig } = await import("./sync");
+    await deleteConfig();
+  }
   saveFullConfigToLocalStorage(true);
 }

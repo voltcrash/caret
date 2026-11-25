@@ -1,44 +1,20 @@
 import { z } from "zod";
-import { ConfigSchema, type Config } from "@caret/schemas/configs";
-import type { LayoutObject } from "@caret/schemas/layouts";
+import { ConfigSchema } from "@caret/schemas/configs";
 import { getDefaultConfig } from "@caret/web-shared/config/default-config";
+import {
+  initialTypingCookie,
+  previewKeys,
+  previewSettings,
+  type InitialTypingSnapshot,
+} from "./typing-preview-settings";
 
-export const initialTypingCookie = "caret_typing_preview";
-const previewKeys = [
-  "mode",
-  "time",
-  "words",
-  "quoteLength",
-  "punctuation",
-  "numbers",
-  "language",
-  "fontSize",
-  "fontFamily",
-  "quickRestart",
-  "showTestModesNotice",
-  "tapeMode",
-  "maxLineWidth",
-  "timerStyle",
-  "timerOpacity",
-  "timerColor",
-  "highlightMode",
-  "flipTestColors",
-  "colorfulMode",
-  "showAllLines",
-  "keymapMode",
-  "keymapLayout",
-  "keymapStyle",
-  "keymapLegendStyle",
-  "keymapKeys",
-  "keymapSize",
-  "layout",
-] as const;
+export { initialTypingCookie, previewSettings, type InitialTypingSnapshot };
+
 const settingsSchema = ConfigSchema.pick(
   Object.fromEntries(previewKeys.map((key) => [key, true])) as {
     [K in (typeof previewKeys)[number]]: true;
   },
 );
-export type PreviewSettings = Pick<Config, (typeof previewKeys)[number]>;
 const snapshotSchema = z.object({
   // v1 cached the test just played; v2 prepares an unplayed next paragraph.
   version: z.union([z.literal(1), z.literal(2)]),
@@ -67,13 +43,6 @@ const snapshotSchema = z.object({
     layout: ConfigSchema.shape.layout.default("default"),
   }),
 });
-export type InitialTypingSnapshot = Omit<
-  z.infer<typeof snapshotSchema>,
-  "settings"
-> & {
-  settings: PreviewSettings;
-  keymapLayout?: LayoutObject;
-};
 
 /** Keep preferences on engine upgrades without painting incompatible words. */
 export function selectTypingPreview(
@@ -83,12 +52,6 @@ export function selectTypingPreview(
   if (cached === undefined) return fallback;
   if (cached.engineHash === fallback.engineHash) return cached;
   return { ...fallback, version: 1, settings: cached.settings };
-}
-
-export function previewSettings(config: Config): PreviewSettings {
-  return Object.fromEntries(
-    previewKeys.map((key) => [key, config[key]]),
-  ) as PreviewSettings;
 }
 
 /** Untrusted display data. Only a matching v2 seed may regenerate engine words. */

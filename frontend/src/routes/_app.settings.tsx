@@ -3,20 +3,18 @@ import type { JSXElement } from "solid-js";
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { urlSearch } from "../app/search";
 import { pageHead } from "../app/seo";
 import { onlyCachedOnServer } from "../data/prefetch";
 import { SettingsPage } from "../features/settings/page";
 import {
+  parseSettingsSearch,
   sectionForTab,
-  SettingsUrlParamsSchema,
-} from "../features/settings/tabs";
+} from "../features/settings/search";
 import { sessionOptions } from "../ts/session/session";
 
 export const Route = createFileRoute("/_app/settings")({
   staticData: { fixedHeader: true },
-  validateSearch: (search: Record<string, unknown>) =>
-    urlSearch(SettingsUrlParamsSchema)(search),
+  validateSearch: parseSettingsSearch,
   head: () =>
     pageHead(
       "Settings | Caret",

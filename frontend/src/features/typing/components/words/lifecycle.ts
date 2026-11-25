@@ -38,6 +38,7 @@ import * as TestWords from "../../runtime/test/words";
 import { cancelPendingAnimationFramesStartingWith } from "#shared/utils/debounced-animation-frame.ts";
 import * as Misc from "#shared/utils/misc.ts";
 import { isCoarsePointer } from "#shared/utils/pointer.ts";
+import { isReplayingEarlyTyping } from "../../state/early-replay";
 import * as MonkeyPower from "../MonkeyPower";
 
 // this means input, delete or composition
@@ -45,18 +46,20 @@ function afterAnyTestInput(
   type: "textInput" | "delete" | "compositionUpdate",
   correctInput: boolean | null,
 ): void {
-  if (type === "textInput" || type === "compositionUpdate") {
-    if (
-      correctInput === true ||
-      peekConfig().playSoundOnError === "off" ||
-      peekConfig().blindMode
-    ) {
+  if (!isReplayingEarlyTyping()) {
+    if (type === "textInput" || type === "compositionUpdate") {
+      if (
+        correctInput === true ||
+        peekConfig().playSoundOnError === "off" ||
+        peekConfig().blindMode
+      ) {
+        void SoundController.playClick();
+      } else {
+        void SoundController.playError();
+      }
+    } else if (type === "delete") {
       void SoundController.playClick();
-    } else {
-      void SoundController.playError();
     }
-  } else if (type === "delete") {
-    void SoundController.playClick();
   }
 
   const acc = Numbers.roundTo2(getLiveCachedAccuracy());
@@ -209,20 +212,31 @@ export async function fadeOutForRestart(
 ): Promise<void> {
   const el =
     source === "resultPage" ? getResultElement() : getTypingTestElement();
+  const duration = getRestartAnimationTime(noAnim);
+  if (duration === 0) {
+    if (el !== undefined) el.style.opacity = "0";
+    return;
+  }
   await animateAsync(el, {
     opacity: 0,
-    duration: getRestartAnimationTime(noAnim),
+    duration,
   });
 }
 
 export async function fadeInAfterRestart(noAnim: boolean): Promise<void> {
   const typingTestEl = getTypingTestElement();
+  const duration = getRestartAnimationTime(noAnim);
+  if (duration === 0) {
+    setClass(typingTestEl, "hidden", false);
+    typingTestEl.style.opacity = "1";
+    return;
+  }
   await animateAsync(typingTestEl, {
     opacity: [0, 1],
     onBegin: () => {
       setClass(typingTestEl, "hidden", false);
     },
-    duration: getRestartAnimationTime(noAnim),
+    duration,
   });
 }
 

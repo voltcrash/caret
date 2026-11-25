@@ -88,6 +88,7 @@ function update(themes: ThemeWithName[]): void {
 export default commands;
 
 export function useThemeCommandEvents(): void {
+  void import("../../constants/theme-decorations").catch(() => undefined);
   configEvent.useListener(({ key }) => {
     if (key === "favThemes") {
       // update themes list when favorites change

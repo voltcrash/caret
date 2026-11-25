@@ -1,20 +1,25 @@
+import type { Client } from "@caret/schemas/shared";
 import type { JSXElement } from "solid-js";
 
-import { ClientSchema } from "@caret/schemas/shared";
 import { createFileRoute } from "@tanstack/solid-router";
-import { z } from "zod";
 
-import { urlSearch } from "../app/search";
-import { AccountPage, preloadAccount } from "../features/account/page";
+import { AccountPage } from "../features/account/page";
 
-const SearchSchema = z.object({ client: ClientSchema.optional() }).partial();
+function parseClientSearch(search: Record<string, unknown>): {
+  client?: Client;
+} {
+  return { client: search["client"] === "web" ? "web" : undefined };
+}
 
 export const Route = createFileRoute("/_app/_authenticated/account")({
   loader: () => {
-    if (!import.meta.env.SSR) void preloadAccount().catch(() => undefined);
+    if (!import.meta.env.SSR) {
+      void import("../features/account/page")
+        .then(async (m) => m.preloadAccount())
+        .catch(() => undefined);
+    }
   },
-  validateSearch: (search: Record<string, unknown>) =>
-    urlSearch(SearchSchema)(search),
+  validateSearch: parseClientSearch,
   head: () => ({
     meta: [
       { title: "Account | Caret" },

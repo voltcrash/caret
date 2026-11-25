@@ -89,6 +89,18 @@ export default defineConfig(async ({ mode, command }) => {
                     name: "platform",
                     test: /[/\\]app[/\\]platform-runtime\.client\.tsx$/,
                   },
+                  // Coalesce static typing core modules to cut Slow 4G request fan-out
+                  // while preserving lazy result/completion/modal/notice chunks.
+                  {
+                    name: "typing-core",
+                    includeDependenciesRecursively: false,
+                    test: (id: string) =>
+                      /[/\\]features[/\\]typing[/\\](?:input|lifecycle|state|components[/\\]words|runtime)[/\\]/.test(
+                        id,
+                      ) &&
+                      !/[/\\](?:completion|result|modals)[/\\]/.test(id) &&
+                      !id.endsWith("screenshot.ts"),
+                  },
                 ],
               },
             },

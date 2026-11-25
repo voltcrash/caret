@@ -253,8 +253,10 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     operation.send("EXIT_DONE");
     setInputElementValue("");
 
-    await operation.wait(Funbox.rememberSettings());
-    if (!current()) return;
+    if (peekConfig().funbox.length > 0) {
+      await operation.wait(Funbox.rememberSettings());
+      if (!current()) return;
+    }
 
     const initResult = await operation.wait(
       init({ isCurrent: current, signal: operation.signal }),
