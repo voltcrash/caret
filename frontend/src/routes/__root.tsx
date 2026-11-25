@@ -94,13 +94,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           href: "/images/icons/caret-180.png",
         },
         { rel: "manifest", href: "/manifest.json" },
-        ...["RobotoMono-Regular", "LexendDeca-Regular"].map((font) => ({
+        {
           rel: "preload",
-          href: `/webfonts/${font}.woff2`,
+          href: "/webfonts/RobotoMono-Regular.woff2",
           as: "font" as const,
           type: "font/woff2",
           crossorigin: "anonymous" as const,
-        })),
+        },
       ],
     }),
     shellComponent: Document,
