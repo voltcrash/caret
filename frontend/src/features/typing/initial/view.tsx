@@ -183,11 +183,7 @@ export function InitialTypingView(props: {
               {(word) => (
                 <div class="word">
                   <For each={Array.from(word)}>
-                    {(letter) => (
-                      <letter class="inline-block border-b-[0.05em] [border-bottom-style:solid] border-b-transparent">
-                        {letter}
-                      </letter>
-                    )}
+                    {(letter) => <letter>{letter}</letter>}
                   </For>
                 </div>
               )}

@@ -7,7 +7,8 @@
 #words .afterNewline {
   @apply inline-block;
 }
-#words {
+#words,
+[data-initial-words] {
   --correct-letter-color: var(--text-color);
   --correct-letter-animation: none;
   --untyped-letter-color: var(--sub-color);
@@ -17,7 +18,8 @@
   --extra-letter-color: var(--error-extra-color);
   --extra-letter-animation: none;
 }
-#words .word letter {
+#words .word letter,
+[data-initial-words] .word letter {
   @apply text-letter-untyped;
   animation: var(--untyped-letter-animation);
   @apply [border-bottom-style:solid] border-b-[0.05em] border-b-transparent;
