@@ -96,3 +96,70 @@ it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
     expect(view.container.textContent?.split(input)).toHaveLength(3);
   },
 );
+
+it("supports exact, prefix, typo, source-boosted, and non-English queries", async () => {
+  getQuotes.mockResolvedValue({
+    quotes: [
+      {
+        id: 10,
+        text: "A philosopher reads Shakespeare late at night.",
+        source: "Modern Notes",
+        length: 46,
+        group: 0,
+        language: "english",
+      },
+      {
+        id: 20,
+        text: "All the world is a stage and all the men and women merely players.",
+        source: "William Shakespeare",
+        length: 66,
+        group: 0,
+        language: "english",
+      },
+      {
+        id: 30,
+        text: "Un café chaud et des petits déjeuners au soleil.",
+        source: "Chimène Badi",
+        length: 48,
+        group: 0,
+        language: "french",
+      },
+    ],
+  });
+
+  const view = render(() => <QuoteSearchModal />);
+  const input = view.getByPlaceholderText("filter by text, source or id");
+  await waitFor(() =>
+    expect(view.container.textContent).toContain("1 - 3 of 3"),
+  );
+
+  // Prefix match on source boosts source match ahead of text mention
+  fireEvent.input(input, { target: { value: "shake" } });
+  await waitFor(() =>
+    expect(view.container.textContent).toContain("1 - 2 of 2"),
+  );
+  const textContent = view.container.textContent ?? "";
+  expect(textContent.indexOf("William Shakespeare")).toBeLessThan(
+    textContent.indexOf("Modern Notes"),
+  );
+
+  // Typo match
+  fireEvent.input(input, { target: { value: "philosohper" } });
+  await waitFor(() =>
+    expect(view.container.querySelector(".highlight")?.textContent).toBe(
+      "philosopher",
+    ),
+  );
+  expect(view.container.textContent).toContain("1 - 1 of 1");
+  expect(view.container.textContent).toContain("Modern Notes");
+
+  // Non-English quote with diacritic folding & highlight
+  fireEvent.input(input, { target: { value: "dejeuners" } });
+  await waitFor(() =>
+    expect(view.container.querySelector(".highlight")?.textContent).toBe(
+      "déjeuners",
+    ),
+  );
+  expect(view.container.textContent).toContain("1 - 1 of 1");
+  expect(view.container.textContent).toContain("Chimène Badi");
+});

@@ -96,6 +96,8 @@ describe("settings search relevance", () => {
   it("tolerates transposed letters and two edits in long words", () => {
     expect(score("accruacy", { title: "accuracy" })).toBeGreaterThan(0);
     expect(score("bakgroudn", { title: "background" })).toBeGreaterThan(0);
+    expect(score("bckgroudn", { title: "background" })).toBeGreaterThan(0);
+    expect(score("bckgrudn", { title: "background" })).toBe(0);
   });
 
   it("doesn't correct short words, numbers or distant spellings", () => {

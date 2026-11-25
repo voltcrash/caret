@@ -1,5 +1,3 @@
-import levenshtein from "damerau-levenshtein";
-
 export type SettingSearchIndex = {
   names: string[];
   options: string[];
@@ -74,6 +72,59 @@ export function createSettingSearchIndex(setting: {
   };
 }
 
+// Optimal string alignment (restricted Damerau-Levenshtein) distance bounded by
+// `limit`: counts single-character insertions, deletions, substitutions and
+// adjacent transpositions, exiting early once every cell in a row exceeds limit.
+function withinEditDistance(a: string, b: string, limit: number): boolean {
+  const m = a.length;
+  const n = b.length;
+  if (Math.abs(m - n) > limit) return false;
+  if (m === 0) return n <= limit;
+  if (n === 0) return m <= limit;
+
+  let prevPrev = new Array<number>(n + 1).fill(0);
+  let prev = new Array<number>(n + 1);
+  let curr = new Array<number>(n + 1).fill(0);
+
+  for (let j = 0; j <= n; j++) prev[j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    let rowMin = i;
+    const ai = a.charCodeAt(i - 1);
+    const aiPrev = i > 1 ? a.charCodeAt(i - 2) : -1;
+
+    for (let j = 1; j <= n; j++) {
+      const bj = b.charCodeAt(j - 1);
+      const cost = ai === bj ? 0 : 1;
+      let dist = Math.min(
+        (prev[j] as number) + 1,
+        (curr[j - 1] as number) + 1,
+        (prev[j - 1] as number) + cost,
+      );
+      if (
+        i > 1 &&
+        j > 1 &&
+        ai !== bj &&
+        ai === b.charCodeAt(j - 2) &&
+        aiPrev === bj
+      ) {
+        dist = Math.min(dist, (prevPrev[j - 2] as number) + 1);
+      }
+      curr[j] = dist;
+      if (dist < rowMin) rowMin = dist;
+    }
+
+    if (rowMin > limit) return false;
+    const recycled = prevPrev;
+    prevPrev = prev;
+    prev = curr;
+    curr = recycled;
+  }
+
+  return (prev[n] as number) <= limit;
+}
+
 function matchWord(
   word: string,
   token: string,
@@ -85,8 +136,7 @@ function matchWord(
     return undefined;
   }
   const limit = token.length >= 8 ? 2 : 1;
-  if (Math.abs(word.length - token.length) > limit) return undefined;
-  return levenshtein(word, token).steps <= limit ? "typo" : undefined;
+  return withinEditDistance(word, token, limit) ? "typo" : undefined;
 }
 
 export function scoreSettingSearch(
