@@ -35,34 +35,17 @@ import { showSimpleModal } from "#shared/states/simple-modal.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { getLanguage } from "#shared/utils/json-data.ts";
 import * as Misc from "#shared/utils/misc.ts";
-import {
-  buildSearchService,
-  SearchService,
-  TextExtractor,
-} from "#shared/utils/search-service.ts";
 
 import { getQueryClient } from "../../../data/queries";
 import { getQuoteSubmissionEnabledQueryOptions } from "../../../data/queries/quotes";
 import QuotesController, { Quote } from "../runtime/quotes-controller";
 import * as TestLogic from "../runtime/test/logic";
 import { showQuoteReportModal } from "../state/quote-report";
+import { buildQuoteSearchIndex, QuoteSearchIndex } from "./quote-search";
 import { QuoteApproveModal } from "./QuoteApproveModal";
 import { QuoteSubmitModal } from "./QuoteSubmitModal";
 
 const PAGE_SIZE = 100;
-
-const searchServiceCache: Record<string, SearchService<Quote>> = {};
-
-function getSearchService(
-  language: string,
-  data: Quote[],
-  textExtractor: TextExtractor<Quote>,
-): SearchService<Quote> {
-  return (searchServiceCache[language] ??= buildSearchService(
-    data,
-    textExtractor,
-  ));
-}
 
 function exactSearch(quotes: Quote[], captured: RegExp[]): [Quote[], string[]] {
   const matches: Quote[] = [];
@@ -208,10 +191,23 @@ export function QuoteSearchModal(): JSXElement {
   const [quotes, setQuotes] = createSignal<Quote[]>([]);
   const [searchResults, setSearchResults] = createSignal<{
     quotes: Quote[];
-    matchedTerms: string[];
-  }>({ quotes: [], matchedTerms: [] });
+    exactTerms: string[];
+    matchedTermsById: Map<number, string[]>;
+  }>({ quotes: [], exactTerms: [], matchedTermsById: new Map() });
   const [isRtl, setIsRtl] = createSignal(false);
   const [favVersion, setFavVersion] = createSignal(0);
+
+  let cachedQuotes: readonly Quote[] | undefined;
+  let cachedSearchIndex: QuoteSearchIndex | undefined;
+
+  const getSearchIndex = (allQuotes: readonly Quote[]): QuoteSearchIndex => {
+    if (cachedQuotes === allQuotes && cachedSearchIndex !== undefined) {
+      return cachedSearchIndex;
+    }
+    cachedQuotes = allQuotes;
+    cachedSearchIndex = buildQuoteSearchIndex(allQuotes);
+    return cachedSearchIndex;
+  };
 
   const [searchText, setSearchText] = createSignal("");
   createDebouncedEffectOn(
@@ -237,20 +233,27 @@ export function QuoteSearchModal(): JSXElement {
   const performSearch = (text: string): void => {
     const allQuotes = quotes();
     if (allQuotes.length === 0) {
-      setSearchResults({ quotes: [], matchedTerms: [] });
+      setSearchResults({
+        quotes: [],
+        exactTerms: [],
+        matchedTermsById: new Map(),
+      });
+      return;
+    }
+
+    if (text === "") {
+      setSearchResults({
+        quotes: allQuotes,
+        exactTerms: [],
+        matchedTermsById: new Map(),
+      });
       return;
     }
 
     let matches: Quote[] = [];
-    let matchedQueryTerms: string[] = [];
-
-    if (text === "") {
-      setSearchResults({ quotes: allQuotes, matchedTerms: [] });
-      return;
-    }
-
     let exactSearchMatches: Quote[] = [];
     let exactSearchMatchedQueryTerms: string[] = [];
+    let matchedTermsById = new Map<number, string[]>();
 
     const quotationsRegex = /"(.*?)"/g;
     const exactSearchQueries = Array.from(text.matchAll(quotationsRegex));
@@ -266,31 +269,36 @@ export function QuoteSearchModal(): JSXElement {
       );
     }
 
-    const quoteSearchService = getSearchService(
-      peekConfig().language,
-      allQuotes,
-      (quote: Quote) => `${quote.text} ${quote.id} ${quote.source}`,
-    );
-
     if (exactSearchMatches.length > 0 || removedSearchText === text) {
       const ids = exactSearchMatches.map((m) => m.id);
-      ({ results: matches, matchedQueryTerms } = quoteSearchService.query(
-        removedSearchText,
-        ids,
-      ));
-      exactSearchMatches.forEach((m) => {
-        if (!matches.includes(m)) matches.push(m);
-      });
-      matchedQueryTerms = [
-        ...exactSearchMatchedQueryTerms,
-        ...matchedQueryTerms,
-      ];
+      if (removedSearchText.trim() !== "") {
+        const quoteSearchIndex = getSearchIndex(allQuotes);
+        ({ results: matches, matchedTermsById } = quoteSearchIndex.query(
+          removedSearchText,
+          ids,
+        ));
+      }
+      if (exactSearchMatches.length > 0) {
+        const seen = new Set(matches);
+        for (const m of exactSearchMatches) {
+          if (!seen.has(m)) matches.push(m);
+        }
+      }
     }
 
     setSearchResults({
       quotes: matches,
-      matchedTerms: matchedQueryTerms,
+      exactTerms: exactSearchMatchedQueryTerms,
+      matchedTermsById,
     });
+  };
+
+  const matchedTermsFor = (quoteId: number): string[] => {
+    const { exactTerms, matchedTermsById } = searchResults();
+    const indexedTerms = matchedTermsById.get(quoteId);
+    if (indexedTerms === undefined) return exactTerms;
+    if (exactTerms.length === 0) return indexedTerms;
+    return [...exactTerms, ...indexedTerms];
   };
 
   const filteredQuotes = (): Quote[] => {
@@ -531,7 +539,7 @@ export function QuoteSearchModal(): JSXElement {
             {(quote) => (
               <Item
                 quote={quote}
-                matchedTerms={searchResults().matchedTerms}
+                matchedTerms={matchedTermsFor(quote.id)}
                 isRtl={isRtl()}
                 onSelect={() => applyQuote(quote.id)}
                 onReport={() => showQuoteReportModal(quote.id)}
