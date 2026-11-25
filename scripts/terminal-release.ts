@@ -35,7 +35,7 @@ type ReleaseTarget = (typeof TARGETS)[number];
 type RunOptions = {
   cwd?: string;
   env?: NodeJS.ProcessEnv;
-  input?: Buffer;
+  captureStdout?: boolean;
   silentStdout?: boolean;
 };
 
@@ -43,6 +43,13 @@ type CommandRunner = (
   args: readonly string[],
   options?: RunOptions,
 ) => { stdout: Buffer };
+
+export class CliUsageError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CliUsageError";
+  }
+}
 
 function run(
   args: readonly string[],
@@ -52,15 +59,16 @@ function run(
   if (command === undefined) {
     throw new Error("Command cannot be empty");
   }
+  const stdoutMode =
+    options.silentStdout === true
+      ? "ignore"
+      : options.captureStdout === true
+        ? "pipe"
+        : "inherit";
   const result = spawnSync(command, rest, {
     cwd: options.cwd ?? ROOT,
     env: options.env ?? process.env,
-    input: options.input,
-    stdio: [
-      options.input !== undefined ? "pipe" : "inherit",
-      options.silentStdout === true ? "ignore" : "pipe",
-      "inherit",
-    ],
+    stdio: ["inherit", stdoutMode, "inherit"],
     maxBuffer: 256 * 1024 * 1024,
   });
   if (result.error !== undefined) throw result.error;
@@ -73,7 +81,7 @@ function run(
 }
 
 function capture(args: readonly string[], options: RunOptions = {}): string {
-  return run(args, options).stdout.toString("utf8");
+  return run(args, { ...options, captureStdout: true }).stdout.toString("utf8");
 }
 
 function sha256Hex(bytes: Buffer): string {
@@ -123,7 +131,9 @@ export function archive(directory: string): string {
   const parent = dirname(resolvedDir);
   const name = basename(resolvedDir);
   const output = resolve(parent, `${name}.tar.gz`);
-  run(["tar", "-czf", output, "-C", parent, name], {
+  const darwinFlags =
+    process.platform === "darwin" ? ["--no-xattrs", "--no-mac-metadata"] : [];
+  run(["tar", ...darwinFlags, "-czf", output, "-C", parent, name], {
     env: { ...process.env, COPYFILE_DISABLE: "1" },
   });
   checksum(output);
@@ -384,7 +394,9 @@ export function packageTarget(
 ): string {
   let resolvedTarget = target;
   if (resolvedTarget === undefined) {
-    const rustcOut = runner(["rustc", "-vV"]).stdout.toString("utf8");
+    const rustcOut = runner(["rustc", "-vV"], {
+      captureStdout: true,
+    }).stdout.toString("utf8");
     const hostLine = rustcOut
       .split(/\r?\n/)
       .find((line) => line.startsWith("host: "));
@@ -403,7 +415,9 @@ export function packageTarget(
     throw new Error("Terminal tag must match Cargo workspace version");
   }
 
-  const head = runner(["git", "rev-parse", "HEAD"])
+  const head = runner(["git", "rev-parse", "HEAD"], {
+    captureStdout: true,
+  })
     .stdout.toString("utf8")
     .trim();
   const revision =
@@ -596,8 +610,14 @@ function source(): void {
   }
   mkdirSync(directory, { recursive: true });
 
-  const snapshot = run(["git", "archive", "--format=tar", "HEAD"]).stdout;
-  run(["tar", "-xf", "-", "-C", directory], { input: snapshot });
+  const staging = mkdtempSync(resolve(tmpdir(), "caret-source-archive-"));
+  try {
+    const snapshotPath = resolve(staging, "head.tar");
+    run(["git", "archive", "--format=tar", "-o", snapshotPath, "HEAD"]);
+    run(["tar", "-xf", snapshotPath, "-C", directory]);
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
+  }
 
   const vendorConfig = capture(
     ["cargo", "vendor", "--locked", "--versioned-dirs", "vendor"],
@@ -702,18 +722,22 @@ function parseFlags(args: readonly string[]): {
     const arg = args[i];
     if (arg === "--target") {
       const next = args[++i];
-      if (next === undefined) throw new Error("--target requires a value");
+      if (next === undefined) {
+        throw new CliUsageError("--target requires a value");
+      }
       target = next;
     } else if (arg?.startsWith("--target=")) {
       target = arg.slice("--target=".length);
     } else if (arg === "--archive") {
       const next = args[++i];
-      if (next === undefined) throw new Error("--archive requires a value");
+      if (next === undefined) {
+        throw new CliUsageError("--archive requires a value");
+      }
       archivePath = next;
     } else if (arg?.startsWith("--archive=")) {
       archivePath = arg.slice("--archive=".length);
     } else {
-      throw new Error(`Unrecognized argument: ${arg ?? ""}`);
+      throw new CliUsageError(`Unrecognized argument: ${arg ?? ""}`);
     }
   }
   return { target, archive: archivePath };
@@ -736,7 +760,7 @@ export function runReleaseCommand(
       break;
     case "checksums":
       if (parsed.archive === undefined) {
-        throw new Error("--archive is required for checksums");
+        throw new CliUsageError("--archive is required for checksums");
       }
       checksums(resolve(parsed.archive));
       break;
@@ -744,7 +768,7 @@ export function runReleaseCommand(
       let archivePath = parsed.archive;
       if (archivePath === undefined) {
         if (parsed.target === undefined || !isSupportedTarget(parsed.target)) {
-          throw new Error("--archive or a supported --target required");
+          throw new CliUsageError("--archive or a supported --target required");
         }
         archivePath = resolve(
           OUT,
@@ -755,7 +779,7 @@ export function runReleaseCommand(
       break;
     }
     default:
-      throw new Error(`Unknown release command: ${command}`);
+      throw new CliUsageError(`Unknown release command: ${command}`);
   }
 }
 
@@ -776,6 +800,6 @@ if (
     process.stderr.write(
       `${error instanceof Error ? error.message : String(error)}\n`,
     );
-    process.exit(1);
+    process.exit(error instanceof CliUsageError ? 2 : 1);
   }
 }

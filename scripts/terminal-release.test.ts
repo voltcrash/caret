@@ -187,4 +187,20 @@ await describe("terminal release tooling", async () => {
       gate(root);
     });
   });
+
+  await it("exits with code 2 on CLI usage errors", () => {
+    const missingArchive = spawnSync(
+      process.execPath,
+      ["scripts/terminal.ts", "checksums"],
+      { encoding: "utf8" },
+    );
+    assert.equal(missingArchive.status, 2);
+
+    const unknownFlag = spawnSync(
+      process.execPath,
+      ["scripts/terminal.ts", "release-gate", "--bogus"],
+      { encoding: "utf8" },
+    );
+    assert.equal(unknownFlag.status, 2);
+  });
 });

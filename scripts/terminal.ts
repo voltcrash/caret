@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
-import { runReleaseCommand } from "./terminal-release.ts";
+import { CliUsageError, runReleaseCommand } from "./terminal-release.ts";
 
 const root = resolve(import.meta.dirname, "..");
 const command = process.argv[2];
@@ -40,7 +40,7 @@ if (
     process.stderr.write(
       `${error instanceof Error ? error.message : String(error)}\n`,
     );
-    process.exit(1);
+    process.exit(error instanceof CliUsageError ? 2 : 1);
   }
 }
 
