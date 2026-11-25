@@ -6,7 +6,7 @@ export const nodeTests = [
   "__tests__/scripts/**/*.spec.ts",
   "__tests__/vite-plugins/**/*.spec.ts",
   "__tests__/styles/**/*.spec.ts",
-  "__tests__/utils/{colors,ip-addresses,key-converter,migration-performance,numbers,result-hash,search-service,settings-search,zod}.spec.ts",
+  "__tests__/utils/{colors,ip-addresses,key-converter,migration-performance,numbers,result-hash,settings-search,zod}.spec.ts",
   "__tests__/elements/**/*.spec.ts",
   "__tests__/features/typing/components/keymapConverter.spec.ts",
   "__tests__/features/typing/modals/quote-search.spec.ts",
