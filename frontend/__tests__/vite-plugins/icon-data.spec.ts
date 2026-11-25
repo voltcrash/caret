@@ -1,13 +1,22 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, it } from "vite-plus/test";
-import { generateIconData } from "../../vite-plugins/icon-data";
+import {
+  generateIconData,
+  generateStartupIconData,
+} from "../../vite-plugins/icon-data";
 import { icons } from "../../src/components/icons/data";
 
 it("keeps generated paths identical to the owned SVG sources", () => {
   expect(generateIconData()).toBe(
     readFileSync(
       new URL("../../src/components/icons/data.ts", import.meta.url),
+      "utf8",
+    ),
+  );
+  expect(generateStartupIconData()).toBe(
+    readFileSync(
+      new URL("../../src/components/icons/startup.ts", import.meta.url),
       "utf8",
     ),
   );

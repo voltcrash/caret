@@ -6,15 +6,9 @@ import {
   previewKeys,
   previewSettings,
   type InitialTypingSnapshot,
-  type PreviewSettings,
 } from "./typing-preview-settings";
 
-export {
-  initialTypingCookie,
-  previewSettings,
-  type InitialTypingSnapshot,
-  type PreviewSettings,
-};
+export { initialTypingCookie, previewSettings, type InitialTypingSnapshot };
 
 const settingsSchema = ConfigSchema.pick(
   Object.fromEntries(previewKeys.map((key) => [key, true])) as {

@@ -3,11 +3,7 @@ import { z } from "zod";
 import type { FaSolidIcon } from "../../ts/types/font-awesome";
 import type { SettingsSection } from "./search";
 
-export {
-  sectionForTab,
-  type SettingsSection,
-  type SettingsUrlParams,
-} from "./search";
+export { sectionForTab, type SettingsSection } from "./search";
 
 const SettingsSectionSchema = z.enum([
   "behavior",

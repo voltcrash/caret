@@ -1,4 +1,4 @@
-export type EarlyTypingEvent =
+type EarlyTypingEvent =
   | {
       op: "insert";
       data: string;

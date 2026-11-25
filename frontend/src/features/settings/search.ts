@@ -9,7 +9,7 @@ export type SettingsSection =
   | "account"
   | "dangerZone";
 
-export type SettingsTab = SettingsSection | "authentication" | "blockedUsers";
+type SettingsTab = SettingsSection | "authentication" | "blockedUsers";
 
 export type SettingsUrlParams = {
   tab?: SettingsTab;

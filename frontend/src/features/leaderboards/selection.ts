@@ -11,10 +11,8 @@ export {
   defaultSelection,
   maxPageIndex,
   pageSize,
-  parseLeaderboardSearch,
   urlParams,
   type LeaderboardType,
-  type LeaderboardUrlParams,
   type LeaderboardView,
   type Selection,
 } from "./search";

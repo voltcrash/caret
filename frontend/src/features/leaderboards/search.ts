@@ -5,7 +5,7 @@ import type { Client, Mode } from "@caret/schemas/shared";
 export const pageSize = 50;
 export const maxPageIndex = 100_000;
 
-export type SpeedSelection = {
+type SpeedSelection = {
   client?: Client;
   type: "daily" | "allTime";
   previous: boolean;
@@ -14,7 +14,7 @@ export type SpeedSelection = {
   language: Language;
 };
 
-export type XpSelection = {
+type XpSelection = {
   client?: Client;
   type: "weekly";
   previous: boolean;
