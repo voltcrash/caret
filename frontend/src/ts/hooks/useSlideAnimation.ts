@@ -1,69 +1,78 @@
-import { applyReducedMotion } from "../utils/misc";
-import { animate, JSAnimation } from "animejs";
 import { Accessor, onCleanup } from "solid-js";
 
-import { createEffectOn } from "./effects";
 import { updateClassNames } from "../utils/cn";
+import { applyReducedMotion } from "../utils/misc";
+import { createEffectOn } from "./effects";
+
+const CLEARED_SLIDE_STYLES = {
+  height: "",
+  marginTop: "",
+  marginBottom: "",
+  paddingTop: "",
+  paddingBottom: "",
+  overflow: "",
+};
 
 export function useSlideAnimation(options: {
   element: Accessor<HTMLElement | undefined>;
   visible: Accessor<boolean>;
   duration: Accessor<number>;
 }): void {
-  let animation: JSAnimation | undefined;
+  let animation: Animation | undefined;
+
+  const cancel = (): void => {
+    animation?.cancel();
+    animation = undefined;
+  };
+
   createEffectOn(
     options.visible,
     (visible) => {
       const el = options.element();
       if (!el) return;
+
+      cancel();
+
       const duration = applyReducedMotion(options.duration());
-      if (!visible && duration === 0) {
-        el.className = updateClassNames(el.className, "hidden", true);
+      if (duration <= 0) {
+        el.className = updateClassNames(el.className, "hidden", !visible);
+        Object.assign(el.style, CLEARED_SLIDE_STYLES);
         return;
       }
+
       el.className = updateClassNames(el.className, "hidden", false);
-      const cleared = {
-        height: "",
-        marginTop: "",
-        marginBottom: "",
-        paddingTop: "",
-        paddingBottom: "",
-      };
-      Object.assign(el.style, cleared, { overflow: "hidden" });
+      Object.assign(el.style, CLEARED_SLIDE_STYLES, { overflow: "hidden" });
       const { height, marginTop, marginBottom, paddingTop, paddingBottom } =
         getComputedStyle(el);
-      if (visible) {
-        Object.assign(el.style, {
-          height: "0px",
-          marginTop: "0px",
-          marginBottom: "0px",
-          paddingTop: "0px",
-          paddingBottom: "0px",
-        });
-      }
-      animation = animate(el, {
-        height: visible ? [0, height] : [height, 0],
-        marginTop: visible ? [0, marginTop] : [marginTop, 0],
-        marginBottom: visible ? [0, marginBottom] : [marginBottom, 0],
-        paddingTop: visible ? [0, paddingTop] : [paddingTop, 0],
-        paddingBottom: visible ? [0, paddingBottom] : [paddingBottom, 0],
-        duration,
-        onComplete: () => {
-          if (visible) {
-            Object.assign(el.style, {
-              height: "",
-              overflow: "",
-              marginTop: "",
-              marginBottom: "",
-            });
-          } else {
-            el.className = updateClassNames(el.className, "hidden", true);
-            Object.assign(el.style, cleared, { overflow: "" });
-          }
+
+      const current = el.animate(
+        {
+          height: visible ? ["0px", height] : [height, "0px"],
+          marginTop: visible ? ["0px", marginTop] : [marginTop, "0px"],
+          marginBottom: visible ? ["0px", marginBottom] : [marginBottom, "0px"],
+          paddingTop: visible ? ["0px", paddingTop] : [paddingTop, "0px"],
+          paddingBottom: visible
+            ? ["0px", paddingBottom]
+            : [paddingBottom, "0px"],
         },
-      });
+        { duration, easing: "ease-out" },
+      );
+      animation = current;
+
+      void current.finished.then(
+        () => {
+          if (animation !== current) return;
+          animation = undefined;
+          if (!visible) {
+            el.className = updateClassNames(el.className, "hidden", true);
+          }
+          Object.assign(el.style, CLEARED_SLIDE_STYLES);
+        },
+        () => undefined,
+      );
     },
     { defer: true },
   );
-  onCleanup(() => animation?.cancel());
+
+  onCleanup(cancel);
 }
