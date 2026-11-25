@@ -69,9 +69,6 @@
     },
     "css.validate": false,
     "scss.validate": false,
-    "stylelint.lintFiles.glob": "**/*.{css,scss}",
-    "stylelint.snippet": ["css", "postcss", "scss"],
-    "stylelint.validate": ["css", "postcss", "scss"],
     "js/ts.experimental.useTsgo": true,
   },
 
@@ -106,7 +103,6 @@
       "oxc.oxc-vscode",
       "bradlc.vscode-tailwindcss",
       "csstools.postcss",
-      "stylelint.vscode-stylelint",
     ],
   },
 }

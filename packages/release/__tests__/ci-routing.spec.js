@@ -163,10 +163,8 @@ describe("application sources", () => {
     expect(selected(["frontend/tsconfig.json"])).toEqual(appJobs);
   });
 
-  it("lints styles and rebuilds for frontend CSS", () => {
-    expect(selected(["frontend/src/styles/tailwind.css"])).toEqual(
-      appJobs.toSpliced(-1, 0, "assets"),
-    );
+  it("rebuilds for frontend CSS without running asset checks", () => {
+    expect(selected(["frontend/src/styles/tailwind.css"])).toEqual(appJobs);
   });
 
   it("rebuilds the application Worker when backend services change", () => {
@@ -306,7 +304,6 @@ it.each([
   ["knip.ts", ["code"]],
   ["frontend/static/quotes/english.json", ["assets"]],
   ["frontend/static/themes/serika.css", ["assets"]],
-  ["stylelint.config.mjs", ["assets", "code"]],
 ])("routes %s narrowly", (file, expected) => {
   expect(selected([file])).toEqual(expected);
 });

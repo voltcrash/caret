@@ -169,8 +169,6 @@ jobs:
               - 'frontend/static/challenges/**'
             assets:
               - 'frontend/static/**'
-              - '**/*.{css,scss}'
-              - 'stylelint.config.mjs'
               # The validator, its helpers, and the constants it checks assets against.
               - 'frontend/scripts/{check-assets.ts,json-lint.ts,short-quotes.json}'
               - 'frontend/src/ts/constants/**'
@@ -275,10 +273,6 @@ jobs:
         run: vp run knip
 
       # Each asset check takes a few seconds, so run them all whenever assets change.
-      - name: Lint styles
-        if: needs.changes.outputs.assets == 'true'
-        run: vp run lint-styles
-
       - name: Lint JSON
         if: needs.changes.outputs.assets == 'true'
         run: vp run check-assets-json

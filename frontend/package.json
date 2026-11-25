@@ -11,8 +11,6 @@
   "scripts": {
     "lint": "vp lint . --type-aware --type-check --format agent",
     "lint-fast": "vp lint . --format agent",
-    "lint-styles": "stylelint \"**/*.css\"",
-    "lint-styles-fix": "stylelint \"**/*.css\" --fix",
     "check-assets": "vpx ./scripts/check-assets.ts",
     "measure-eager-js": "vpx ./scripts/measure-eager-js.ts",
     "ts-check": "vp lint . --type-aware --type-check --format agent",

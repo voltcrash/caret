@@ -10,4 +10,4 @@
 - `font-styles.ts` generates ignored text-font CSS and the selected SVG data used by `Fa`. Start and Storybook register the same plugin. `app/app.css` imports `caret-fonts.css`; icon selection and attribution are documented in `docs/FONTS.md`.
 - Standalone routes (OAuth callback, privacy policy, 404) retain their original grid dimensions and native auth inputs.
 
-Checks: `vp run lint-styles`, frontend build/tests, `vp lint --type-aware --type-check --format agent frontend`.
+Checks: frontend build/tests, `vp lint --type-aware --type-check --format agent frontend`.

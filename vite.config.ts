@@ -75,7 +75,6 @@ export default defineConfig({
   staged: {
     "*": "vp fmt --no-error-on-unmatched-pattern",
     "*.{ts,tsx,js}": "vp lint --type-aware --type-check --format agent",
-    "*.css": "stylelint",
   },
   test: {
     // Vitest v4 compatibility: preserve mock call history.
