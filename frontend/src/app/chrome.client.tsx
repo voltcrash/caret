@@ -78,12 +78,25 @@ function ChromeRuntime(props: {
     onCleanup(() => removeBanner(banner));
   });
   onMount(() => {
-    // Warm the extended icon catalog once startup is finished so modals/routes never wait.
-    void import("../components/icons/data").catch(() => undefined);
     // Server configuration and authentication are independent startup requests.
     void ServerConfiguration.sync().catch((error: unknown) =>
       console.error("Failed to synchronize server configuration", error),
     );
+  });
+  let iconsWarmed = false;
+  createEffect(() => {
+    if (iconsWarmed || !isStartupFinished()) return;
+    iconsWarmed = true;
+    const warm = (): void => {
+      void import("../components/icons/data").catch(() => undefined);
+    };
+    if (typeof requestIdleCallback === "function") {
+      const id = requestIdleCallback(warm, { timeout: 2000 });
+      onCleanup(() => cancelIdleCallback(id));
+    } else {
+      const id = setTimeout(warm, 0);
+      onCleanup(() => clearTimeout(id));
+    }
   });
   let cookiePrompted = false;
   createEffect(() => {
