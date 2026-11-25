@@ -13,30 +13,42 @@ import {
   cancelPendingAnimationFrame,
   cancelPendingAnimationFramesStartingWith,
 } from "#shared/utils/debounced-animation-frame.ts";
+import { isCoarsePointer } from "#shared/utils/pointer.ts";
 import { captureTypingMount } from "../scope";
 import { getTestSession } from "../runtime/events/data";
 import { getBrowserEngine } from "#shared/engine/owner.client.ts";
+import * as Caret from "../runtime/caret";
 import * as Funbox from "../runtime/funbox/funbox";
 import { getActiveFunboxesWithFunction } from "../runtime/funbox/list";
 import * as Layoutfluid from "../runtime/funbox/layoutfluid-funbox-timer";
 import * as PaceCaret from "../runtime/pace-caret";
 import * as Replay from "../runtime/replay";
 import * as Timer from "../runtime/test/timer";
+import * as TestUI from "../runtime/test/ui";
 import { restart } from "../runtime/test/logic";
 import { resetAltGrState } from "../runtime/layout-emulator";
 import { getTypingLifecycle } from "#features/typing/state/test-lifecycle/controller.ts";
+import {
+  disposeEarlyTyping,
+  replayEarlyTyping,
+} from "../initial/early-input.client";
 
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {
   const mount = captureTypingMount();
   const lifecycle = getTypingLifecycle();
   const operation = lifecycle.capture();
+  let initialized = false;
+  let early = { replayed: false, tapped: false };
   try {
     // Preferences can await a slow engine download; Restart needs activation first.
     await operation.wait(preferencesReadiness().wait(), null);
     if (!mount.activate()) return;
     resetIncompleteTests();
     await restart({ noAnim: true });
+    if (!mount.isCurrent()) return;
+    early = await replayEarlyTyping();
+    initialized = true;
   } catch (error) {
     if (!mount.isCurrent()) return;
     if (mount.isCurrent()) {
@@ -44,14 +56,34 @@ export async function enterTypingRoute(): Promise<void> {
     }
     throw error;
   } finally {
+    disposeEarlyTyping();
     // A failed initialization must reveal its error; stale mounts cannot
     // release the startup cover over a replacement typing route.
-    if (mount.isCurrent()) setTypingReady(true);
+    if (mount.isCurrent()) {
+      setTypingReady(true);
+      if (initialized) {
+        if (early.replayed) {
+          if (!isCoarsePointer() || early.tapped) {
+            TestUI.focusWords(true);
+          }
+          Caret.show(true);
+        } else if (early.tapped && isCoarsePointer()) {
+          TestUI.focusWords();
+        } else if (
+          !isCoarsePointer() &&
+          (document.activeElement === null ||
+            document.activeElement === document.body)
+        ) {
+          TestUI.focusWords(true);
+        }
+      }
+    }
   }
 }
 
 /** Synchronous teardown: no generation, animation or async work against detached refs. */
 export function exitTypingRoute(): void {
+  disposeEarlyTyping();
   getTypingLifecycle().send({ type: "UNMOUNT" });
   setTypingReady(false);
   Timer.clear();

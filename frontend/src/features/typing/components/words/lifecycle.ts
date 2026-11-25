@@ -38,6 +38,7 @@ import * as TestWords from "../../runtime/test/words";
 import { cancelPendingAnimationFramesStartingWith } from "#shared/utils/debounced-animation-frame.ts";
 import * as Misc from "#shared/utils/misc.ts";
 import { isCoarsePointer } from "#shared/utils/pointer.ts";
+import { isReplayingEarlyTyping } from "../../state/early-replay";
 import * as MonkeyPower from "../MonkeyPower";
 
 // this means input, delete or composition
@@ -45,18 +46,20 @@ function afterAnyTestInput(
   type: "textInput" | "delete" | "compositionUpdate",
   correctInput: boolean | null,
 ): void {
-  if (type === "textInput" || type === "compositionUpdate") {
-    if (
-      correctInput === true ||
-      peekConfig().playSoundOnError === "off" ||
-      peekConfig().blindMode
-    ) {
+  if (!isReplayingEarlyTyping()) {
+    if (type === "textInput" || type === "compositionUpdate") {
+      if (
+        correctInput === true ||
+        peekConfig().playSoundOnError === "off" ||
+        peekConfig().blindMode
+      ) {
+        void SoundController.playClick();
+      } else {
+        void SoundController.playError();
+      }
+    } else if (type === "delete") {
       void SoundController.playClick();
-    } else {
-      void SoundController.playError();
     }
-  } else if (type === "delete") {
-    void SoundController.playClick();
   }
 
   const acc = Numbers.roundTo2(getLiveCachedAccuracy());

@@ -26,7 +26,10 @@ import * as TestWords from "../../runtime/test/words";
 import { appendInitialWordNodes, clearWordTemplates } from "./initial";
 import { updateLiveWordNodes } from "./live";
 import { createLetter, createNewlineSpacers } from "./letters";
-import { requestDebouncedAnimationFrame } from "#shared/utils/debounced-animation-frame.ts";
+import {
+  cancelPendingAnimationFramesStartingWith,
+  requestDebouncedAnimationFrame,
+} from "#shared/utils/debounced-animation-frame.ts";
 
 export function updateActiveElement(
   options:
@@ -315,4 +318,71 @@ export function disposeWordRendering(): void {
   renderState().pendingWordData.clear();
   for (const frame of renderState().appendFrames) cancelAnimationFrame(frame);
   renderState().appendFrames.clear();
+}
+
+/** Synchronously project replayed pre-hydration input into `#words` before reveal. */
+export function syncReplayedWords(
+  activeIndex: number,
+  getInput: (index: number) => string,
+  isError: (index: number) => boolean,
+): void {
+  cancelPendingAnimationFramesStartingWith("test-ui");
+  renderState().pendingWordData.clear();
+  const getWordNode =
+    findSingleActiveFunboxWithFunction("getWordNode")?.functions.getWordNode;
+  for (let i = 0; i <= activeIndex; i++) {
+    const el = getWordElement(i);
+    const currentWord = TestWords.words.get(i)?.display;
+    if (el === null || currentWord === undefined) continue;
+    const input = i < activeIndex ? getInput(i).replace(/ $/, "") : getInput(i);
+    updateLiveWordNodes(el, {
+      currentWord,
+      input,
+      compositionData: "",
+      zen: false,
+      indicateTypos: peekConfig().indicateTypos,
+      compositionDisplay: peekConfig().compositionDisplay,
+      getWordNode,
+    });
+    setClass(el, "active", i === activeIndex);
+    setClass(el, "typed", i < activeIndex);
+    setClass(el, "error", i < activeIndex && isError(i));
+    setWordJoining(el, i < activeIndex);
+  }
+  const activeWord = getWordElement(activeIndex);
+  if (activeWord === null) return;
+  rememberActiveWordElement(activeWord);
+  const activeTop = activeWord.offsetTop;
+  const firstTop = getWordElement(0)?.offsetTop ?? activeTop;
+  if (activeTop > firstTop && !peekConfig().showAllLines) {
+    let previousLineTop = activeTop;
+    for (let i = activeIndex - 1; i >= 0; i--) {
+      const top = getWordElement(i)?.offsetTop ?? activeTop;
+      if (top < activeTop) {
+        previousLineTop = top;
+        break;
+      }
+    }
+    if (previousLineTop > firstTop) {
+      const wordsChildren = getWordsEl()
+        .children as HTMLCollectionOf<HTMLElement>;
+      let lastToRemove = -1;
+      for (let i = wordsChildren.length - 1; i >= 0; i--) {
+        const child = wordsChildren[i];
+        if (
+          child !== undefined &&
+          Math.floor(child.offsetTop) < previousLineTop
+        ) {
+          lastToRemove = i;
+          break;
+        }
+      }
+      for (let i = lastToRemove; i >= 0; i--) {
+        wordsChildren[i]?.remove();
+      }
+    }
+    lineState.currentTestLine = 1;
+  }
+  updateActiveWordGeometry(activeWord);
+  updateWordsInputPosition();
 }
