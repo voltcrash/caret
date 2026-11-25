@@ -1,4 +1,4 @@
-import { AnimeShow } from "#shared/components/common/anime/index.ts";
+import { FadeShow } from "#shared/components/common/FadeShow.tsx";
 import { getConfig } from "#shared/config/store.ts";
 import { cn } from "#shared/utils/cn.ts";
 
@@ -23,19 +23,15 @@ export function LiveStatsTextBottom() {
       }}
     >
       <div class={cn(TEXT_WRAPPER_CLASS, "top-4")}>
-        <AnimeShow
-          when={showLiveStats() && getConfig.liveSpeedStyle === "text"}
-        >
+        <FadeShow when={showLiveStats() && getConfig.liveSpeedStyle === "text"}>
           {getLiveSpeedText()}
-        </AnimeShow>
-        <AnimeShow when={showLiveStats() && getConfig.liveAccStyle === "text"}>
+        </FadeShow>
+        <FadeShow when={showLiveStats() && getConfig.liveAccStyle === "text"}>
           {getLiveAccText()}
-        </AnimeShow>
-        <AnimeShow
-          when={showLiveStats() && getConfig.liveBurstStyle === "text"}
-        >
+        </FadeShow>
+        <FadeShow when={showLiveStats() && getConfig.liveBurstStyle === "text"}>
           {getLiveBurstText()}
-        </AnimeShow>
+        </FadeShow>
       </div>
     </div>
   );

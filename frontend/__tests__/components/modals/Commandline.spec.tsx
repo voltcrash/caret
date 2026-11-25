@@ -1,6 +1,5 @@
 import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
 import { detectPlatform } from "@tanstack/solid-hotkeys";
-import { AnimationParams } from "animejs";
 import {
   afterEach,
   beforeEach,
@@ -20,19 +19,9 @@ const { command, hotkeyHandlers } = vi.hoisted(() => ({
   hotkeyHandlers: new Map<string, (event: KeyboardEvent) => void>(),
 }));
 
-vi.mock("animejs", async (original) => ({
-  ...(await original<typeof import("animejs")>()),
-  animate: (_element: HTMLElement, params: AnimationParams) => {
-    queueMicrotask(() => {
-      // @ts-expect-error animation callback arguments unused by the lifecycle
-      params.onComplete?.();
-    });
-    return { cancel: vi.fn() };
-  },
-}));
 vi.mock("../../../src/ts/utils/misc", async (original) => ({
   ...(await original<typeof import("../../../src/ts/utils/misc")>()),
-  applyReducedMotion: (duration: number) => duration,
+  applyReducedMotion: () => 0,
 }));
 vi.mock("../../../src/ts/ui", async (original) => ({
   ...(await original<typeof import("../../../src/ts/ui")>()),

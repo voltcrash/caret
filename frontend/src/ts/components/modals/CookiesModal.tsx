@@ -1,4 +1,4 @@
-import { createEffect, createSignal, JSXElement } from "solid-js";
+import { createEffect, createSignal, JSXElement, Show } from "solid-js";
 
 import { captureApplication } from "#app/application.ts";
 import { waitForTestIdle } from "#app/test-idle.client.ts";
@@ -7,9 +7,8 @@ import { getAcceptedCookies, setAcceptedCookies } from "../../cookies";
 import { hideModal, isModalOpen } from "../../states/modals";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
-import { AnimeSwitch } from "../common/anime";
-import { AnimeMatch } from "../common/anime/AnimeMatch";
 import { Button } from "../common/Button";
+import { FadeSwitch } from "../common/FadeSwitch";
 import { H3 } from "../common/Headers";
 
 export function CookiesModal(): JSXElement {
@@ -54,100 +53,89 @@ export function CookiesModal(): JSXElement {
         fa={{ icon: "fa-cookie-bite" }}
         class="mb-0 pb-0 text-xl sm:text-2xl"
       />
-      <AnimeSwitch
-        exitBeforeEnter
-        animeProps={{
-          initial: {
-            opacity: 0,
-            duration: 125,
-          },
-          animate: {
-            opacity: 1,
-            duration: 125,
-          },
-          exit: {
-            opacity: 0,
-            duration: 125,
-          },
-        }}
-      >
-        <AnimeMatch when={!showSettings()}>
-          <div class="grid gap-4">
-            <div>
-              Cookies enhance your experience and help us improve our website.
-            </div>
-            <div class="grid gap-2">
-              <Button
-                text="accept all"
-                active={true}
-                onClick={() => {
-                  setAccepted({
-                    security: true,
-                    analytics: true,
-                    sentry: true,
-                  });
-                  setAcceptedCookies(accepted());
-                  hideModal("Cookies");
-                }}
-              />
-              <Button
-                text="reject non-essential"
-                onClick={() => {
-                  setAccepted({
-                    security: true,
-                    analytics: false,
-                    sentry: false,
-                  });
-                  setAcceptedCookies(accepted());
-                  hideModal("Cookies");
-                }}
-              />
-              <Button
-                text="more options"
-                onClick={() => setShowSettings(true)}
-              />
-            </div>
-          </div>
-        </AnimeMatch>
-        <AnimeMatch when={showSettings()}>
-          <div class="grid gap-4">
-            <SettingsSection
-              title="security"
-              description={
+      <FadeSwitch value={showSettings()}>
+        {(settings) => (
+          <Show
+            when={settings()}
+            fallback={
+              <div class="grid gap-4">
                 <div>
-                  Essential authentication and Cloudflare storage keep you
-                  signed in and protect the site.
+                  Cookies enhance your experience and help us improve our
+                  website.
                 </div>
-              }
-              checked={true}
-              disabled={true}
-            />
-            <SettingsSection
-              title="analytics"
-              description="Optional host-provided Google Analytics measures site usage when configured."
-              checked={accepted().analytics}
-              onChange={(checked) =>
-                setAccepted({ ...accepted(), analytics: checked })
-              }
-            />
-            <SettingsSection
-              title="sentry"
-              description="Optional Sentry reports errors and performance. Signed-in reports may include your account ID and username. Session replay is disabled."
-              checked={accepted().sentry}
-              onChange={(checked) =>
-                setAccepted({ ...accepted(), sentry: checked })
-              }
-            />
-            <Button
-              text="accept selected"
-              onClick={() => {
-                setAcceptedCookies(accepted());
-                hideModal("Cookies");
-              }}
-            />
-          </div>
-        </AnimeMatch>
-      </AnimeSwitch>
+                <div class="grid gap-2">
+                  <Button
+                    text="accept all"
+                    active={true}
+                    onClick={() => {
+                      setAccepted({
+                        security: true,
+                        analytics: true,
+                        sentry: true,
+                      });
+                      setAcceptedCookies(accepted());
+                      hideModal("Cookies");
+                    }}
+                  />
+                  <Button
+                    text="reject non-essential"
+                    onClick={() => {
+                      setAccepted({
+                        security: true,
+                        analytics: false,
+                        sentry: false,
+                      });
+                      setAcceptedCookies(accepted());
+                      hideModal("Cookies");
+                    }}
+                  />
+                  <Button
+                    text="more options"
+                    onClick={() => setShowSettings(true)}
+                  />
+                </div>
+              </div>
+            }
+          >
+            <div class="grid gap-4">
+              <SettingsSection
+                title="security"
+                description={
+                  <div>
+                    Essential authentication and Cloudflare storage keep you
+                    signed in and protect the site.
+                  </div>
+                }
+                checked={true}
+                disabled={true}
+              />
+              <SettingsSection
+                title="analytics"
+                description="Optional host-provided Google Analytics measures site usage when configured."
+                checked={accepted().analytics}
+                onChange={(checked) =>
+                  setAccepted({ ...accepted(), analytics: checked })
+                }
+              />
+              <SettingsSection
+                title="sentry"
+                description="Optional Sentry reports errors and performance. Signed-in reports may include your account ID and username. Session replay is disabled."
+                checked={accepted().sentry}
+                onChange={(checked) =>
+                  setAccepted({ ...accepted(), sentry: checked })
+                }
+              />
+              <Button
+                text="accept selected"
+                onClick={() => {
+                  setAcceptedCookies(accepted());
+                  hideModal("Cookies");
+                }}
+              />
+            </div>
+          </Show>
+        )}
+      </FadeSwitch>
     </AnimatedModal>
   );
 }

@@ -1,5 +1,4 @@
-import { animate } from "animejs";
-import { JSXElement, createEffect } from "solid-js";
+import { JSXElement, createEffect, onCleanup } from "solid-js";
 
 import { applyReducedMotion } from "#shared/utils/misc.ts";
 
@@ -17,14 +16,40 @@ function FunboxTimer(props: {
   visibility: FunboxTimerVisibility;
 }): JSXElement {
   let el: HTMLDivElement | undefined;
+  let animation: Animation | undefined;
 
   createEffect(() => {
     const visibility = props.visibility;
     if (el === undefined) return;
-    animate(el, {
-      opacity: visibility === "shown" ? 1 : 0,
-      duration: visibility === "instant" ? 0 : applyReducedMotion(125),
-    });
+
+    if (animation !== undefined) {
+      if (animation.playState !== "finished") {
+        try {
+          animation.commitStyles();
+        } catch {
+          // Unrendered elements fall back to inline/computed opacity.
+        }
+      }
+      animation.cancel();
+      animation = undefined;
+    }
+
+    const from = el.style.opacity || getComputedStyle(el).opacity || "0";
+    const to = visibility === "shown" ? "1" : "0";
+    const duration = visibility === "instant" ? 0 : applyReducedMotion(125);
+    el.style.opacity = to;
+
+    if (duration > 0 && from !== to) {
+      animation = el.animate(
+        { opacity: [from, to] },
+        { duration, easing: "ease-out" },
+      );
+    }
+  });
+
+  onCleanup(() => {
+    animation?.cancel();
+    animation = undefined;
   });
 
   return (

@@ -1,5 +1,4 @@
 import { CaretStyle } from "@caret/schemas/configs";
-import { EasingParam } from "animejs";
 
 import { peekConfig } from "#shared/config/store.ts";
 import { hasClassName } from "#shared/utils/cn.ts";
@@ -18,10 +17,11 @@ import {
 } from "./geometry";
 import {
   applyCaretBlinkAnimation,
-  CaretMargins,
+  CaretOffsets,
   getCaretGlideTiming,
   stopCaretBlinkAnimation,
 } from "./motion";
+import { type CaretEasing } from "../caret-easing";
 import { CaretGlide } from "../caret-glide";
 import { getWordElement } from "../elements";
 
@@ -37,18 +37,18 @@ export class CaretController {
     this.wordMargins = new WeakMap();
   }
 
-  // Position is a compositor `translate`; line and tape offsets stay margins
-  // so they move in step with the words' own margin animations.
+  // Position is a compositor `translate`; line and tape offsets animate on
+  // `transform` so they compose on the GPU and move in step with `#words`.
   private position: CaretGlide;
   private width: CaretGlide;
-  private margins: CaretMargins;
+  private margins: CaretOffsets;
 
   constructor(element: HTMLElement, style: CaretStyle) {
     this.id = element.id;
     this.element = element;
     this.position = new CaretGlide(element, "translate", [0, 0]);
     this.width = new CaretGlide(element, "width", [0]);
-    this.margins = new CaretMargins(element);
+    this.margins = new CaretOffsets(element);
     this.setStyle(style);
     if (this.id === "caret") {
       this.isMainCaret = true;
@@ -150,7 +150,7 @@ export class CaretController {
   public handleTapeScroll(options: {
     newValue: number;
     duration: number;
-    ease: EasingParam;
+    ease: CaretEasing;
   }): void {
     if (this.isMainCaret && lockedMainCaretInTape) return;
     this.margins.scrollTape(options);
@@ -160,14 +160,9 @@ export class CaretController {
     newMarginTop: number;
     duration: number;
   }): void {
-    // smooth line jump works by animating the words top margin.
-    // to sync the carets to the lines, we need to do the same here.
-
-    // using a readyToResetMarginTop flag here to make sure the animation
-    // is fully finished before we reset the marginTop to 0
-
-    // making sure to use a separate animation queue so that it doesnt
-    // affect the position animations
+    // smooth line jump works by animating `#words` with a vertical transform.
+    // to sync the carets to the lines, we animate `transform` in lockstep here
+    // and fold the finished offset into `translate` on the next settle.
     if (this.isMainCaret && options.duration === 0) return;
     this.margins.jumpLine(options);
   }

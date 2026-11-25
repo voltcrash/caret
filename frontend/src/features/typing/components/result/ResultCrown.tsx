@@ -1,10 +1,8 @@
-import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
 import { Balloon } from "#shared/components/common/Balloon.tsx";
 import { Fa } from "#shared/components/common/Fa.tsx";
 import { cn } from "#shared/utils/cn.ts";
-import { applyReducedMotion } from "#shared/utils/misc.ts";
 
 import { resultState, type ResultCrownType } from "../../state/result";
 
@@ -26,14 +24,8 @@ export function ResultCrown(): JSXElement {
   return (
     <Show when={crown().visible}>
       <Balloon
-        ref={(el) => {
-          animate(el, {
-            opacity: [0, 1],
-            duration: applyReducedMotion(125),
-          });
-        }}
         class={cn(
-          "crown -mt-[0.2rem] ml-2 grid h-[1.7rem] w-[1.7rem] items-center justify-items-center rounded-(--roundness) bg-(--main) text-[0.7rem] text-(--alt) transition-[opacity,background,color,outline] duration-125 ease-[ease] [grid-template-areas:'icon']",
+          "crown -mt-[0.2rem] ml-2 grid h-[1.7rem] w-[1.7rem] animate-[fadeIn_125ms_ease-out] items-center justify-items-center rounded-(--roundness) bg-(--main) text-[0.7rem] text-(--alt) transition-[opacity,background,color,outline] duration-125 ease-[ease] [grid-template-areas:'icon'] motion-reduce:animate-none",
           crown().type,
           typeClass[crown().type],
         )}

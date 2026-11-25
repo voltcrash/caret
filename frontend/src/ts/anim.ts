@@ -1,10 +1,10 @@
-import { reduceMotionParams } from "./utils/motion";
-import { animate, AnimationParams, engine } from "animejs";
-import { LocalStorageWithSchema } from "./utils/local-storage-with-schema";
-import { z } from "zod";
 import { createSignal } from "solid-js";
+import { z } from "zod";
+
+import { createAppOwned } from "../app/application";
 import { appSignal } from "../app/state";
-import { envConfig } from "virtual:env-config";
+import { LocalStorageWithSchema } from "./utils/local-storage-with-schema";
+import { applyReducedMotion } from "./utils/misc";
 
 export const fpsLimitSchema = z.number().int().min(15).max(1000);
 
@@ -23,7 +23,6 @@ export function setfpsLimit(fps: number): boolean {
   if (result) {
     setFpsLimitSignal(fps);
   }
-  applyEngineSettings();
   return result;
 }
 
@@ -31,37 +30,79 @@ export function getfpsLimit(): number {
   return fpsLimitSignal();
 }
 
-export function applyEngineSettings(): void {
-  engine.pauseOnDocumentHidden = envConfig.isDevelopment;
-  engine.fps = fpsLimit.get();
-  engine.defaults.frameRate = fpsLimit.get();
-}
+export type AnimateAsyncOptions = {
+  opacity: number | [number, number];
+  duration?: number;
+  easing?: string;
+  onBegin?: () => void;
+  onComplete?: () => void;
+};
 
-export function setLowFpsMode(): void {
-  engine.fps = 30;
-  engine.defaults.frameRate = 30;
-}
+const activeAnimations = createAppOwned(
+  () => new WeakMap<HTMLElement, Animation>(),
+);
 
-export function clearLowFpsMode(): void {
-  engine.fps = fpsLimit.get();
-  engine.defaults.frameRate = fpsLimit.get();
+function readCurrentOpacity(element: HTMLElement): number {
+  const inline = parseFloat(element.style.opacity);
+  if (!Number.isNaN(inline)) return inline;
+  const computed = parseFloat(window.getComputedStyle(element).opacity);
+  return Number.isNaN(computed) ? 1 : computed;
 }
 
 export async function animateAsync(
   element: HTMLElement | undefined,
-  options: AnimationParams,
+  options: AnimateAsyncOptions,
 ): Promise<void> {
   if (!element) return;
-  await new Promise<void>((resolve) => {
-    animate(
-      element,
-      reduceMotionParams({
-        ...options,
-        onComplete: (self) => {
-          options.onComplete?.(self);
-          resolve();
-        },
-      }),
-    );
-  });
+
+  const animations = activeAnimations();
+  const previous = animations.get(element);
+  if (previous !== undefined) {
+    if (previous.playState !== "finished") {
+      try {
+        previous.commitStyles();
+      } catch {
+        // Unrendered elements cannot commit; fall back to inline/computed opacity.
+      }
+    }
+    previous.cancel();
+    animations.delete(element);
+  }
+
+  options.onBegin?.();
+
+  const [from, to] = Array.isArray(options.opacity)
+    ? options.opacity
+    : [readCurrentOpacity(element), options.opacity];
+
+  const duration = applyReducedMotion(options.duration ?? 0);
+  element.style.opacity = String(to);
+
+  if (duration <= 0 || from === to) {
+    options.onComplete?.();
+    return;
+  }
+
+  const animation = element.animate(
+    { opacity: [String(from), String(to)] },
+    { duration, easing: options.easing ?? "ease-out" },
+  );
+  // Anchor startTime to the timeline so opacity fades leave WAAPI's
+  // play-pending state immediately instead of stalling 1-2 frames at `from`.
+  const timelineNow = animation.timeline?.currentTime;
+  if (typeof timelineNow === "number" && Number.isFinite(timelineNow)) {
+    animation.startTime = timelineNow;
+  }
+  animations.set(element, animation);
+
+  try {
+    await animation.finished;
+  } catch {
+    return;
+  }
+
+  if (animations.get(element) === animation) {
+    animations.delete(element);
+    options.onComplete?.();
+  }
 }

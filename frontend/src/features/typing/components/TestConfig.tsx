@@ -1,10 +1,9 @@
-import { animate } from "animejs";
-import { ComponentProps, For, JSXElement, Show } from "solid-js";
+import { ComponentProps, For, JSXElement, onCleanup, Show } from "solid-js";
 
 import type { FaObject } from "#shared/types/font-awesome.d.ts";
 
-import { Anime, AnimeShow } from "#shared/components/common/anime/index.ts";
 import { Button } from "#shared/components/common/Button.tsx";
+import { FadeShow } from "#shared/components/common/FadeShow.tsx";
 import { configMetadata } from "#shared/config/metadata.tsx";
 import { setConfig, setQuoteLengthAll } from "#shared/config/setters.ts";
 import { getConfig } from "#shared/config/store.ts";
@@ -149,15 +148,13 @@ function PuncAndNum(): JSXElement {
   const buttons = ["punctuation", "numbers"] as const;
 
   return (
-    <Anime
-      class="mr-(--card-gap) w-max place-self-end"
-      animation={{
-        opacity: getConfig.mode === "zen" ? 0 : 1,
-        // marginRight: getConfig.mode === "zen" ? "0" : "var(--card-gap)",
-        duration: applyReducedMotion(durationMs),
-      }}
+    <div
+      class={cn(
+        "mr-(--card-gap) w-max place-self-end transition-opacity duration-250 motion-reduce:duration-0",
+        getConfig.mode === "zen" ? "opacity-0" : "opacity-100",
+      )}
     >
-      <AnimeShow when={getConfig.mode !== "zen"} duration={durationMs}>
+      <FadeShow when={getConfig.mode !== "zen"} duration={durationMs}>
         <div class={cardClass}>
           <For each={buttons}>
             {(configKey) => (
@@ -176,8 +173,8 @@ function PuncAndNum(): JSXElement {
             )}
           </For>
         </div>
-      </AnimeShow>
-    </Anime>
+      </FadeShow>
+    </div>
   );
 }
 
@@ -231,12 +228,21 @@ function Mode2(): JSXElement {
     return { time, words, quote, custom };
   };
 
+  let activeAnimations: Animation[] = [];
+  const cancelActive = (): void => {
+    for (const anim of activeAnimations) anim.cancel();
+    activeAnimations = [];
+  };
+  onCleanup(cancelActive);
+
   createEffectOn(
     () => getConfig.mode,
     (mode, previousMode) => {
       const wrapperEl = wrapperElement();
       const el = getElements();
       if (!wrapperEl || !el) return;
+
+      cancelActive();
 
       const prev = el[previousMode as Mode2Key];
       const next = el[mode as Mode2Key];
@@ -249,53 +255,88 @@ function Mode2(): JSXElement {
         return;
       }
 
+      for (const e of Object.values(el)) {
+        if (e !== prev && e !== next) {
+          setHidden(e, true);
+        }
+      }
+
       setHidden(prev, false);
       const previousWidth = outerWidth(prev);
 
       setHidden(next, false);
       const newWidth = outerWidth(next);
 
-      animate(wrapperEl, {
-        width: [`${previousWidth}px`, `${newWidth}px`],
-        duration: applyReducedMotion(durationMs),
-        onComplete: () => {
-          wrapperEl.style.width = "";
-        },
-      });
+      const duration = applyReducedMotion(durationMs);
+
+      if (duration <= 0) {
+        wrapperEl.style.width = "";
+        if (prev) {
+          prev.style.opacity = "";
+          setHidden(prev, true);
+        }
+        if (next) {
+          next.style.opacity = "";
+        }
+        return;
+      }
+
+      if (previousWidth !== newWidth) {
+        const widthAnim = wrapperEl.animate(
+          { width: [`${previousWidth}px`, `${newWidth}px`] },
+          { duration, easing: "ease-out" },
+        );
+        activeAnimations.push(widthAnim);
+        void widthAnim.finished.then(
+          () => {
+            wrapperEl.style.width = "";
+          },
+          () => {
+            wrapperEl.style.width = "";
+          },
+        );
+      }
 
       if (prev) {
-        animate(prev, {
-          opacity: [1, 0],
-          duration: applyReducedMotion(durationMs),
-          onComplete: () => setHidden(prev, true),
-        });
+        prev.style.opacity = "0";
+        const prevAnim = prev.animate(
+          { opacity: ["1", "0"] },
+          { duration, easing: "ease-out" },
+        );
+        activeAnimations.push(prevAnim);
+        void prevAnim.finished.then(
+          () => {
+            setHidden(prev, true);
+            prev.style.opacity = "";
+          },
+          () => undefined,
+        );
       }
 
       if (next) {
-        animate(next, {
-          opacity: [0, 1],
-          duration: applyReducedMotion(durationMs),
-        });
+        next.style.opacity = "1";
+        const nextAnim = next.animate(
+          { opacity: ["0", "1"] },
+          { duration, easing: "ease-out" },
+        );
+        activeAnimations.push(nextAnim);
       }
     },
   );
 
   return (
     <div class="relative grid w-max" ref={wrapperRef}>
-      <Anime
-        class="grid"
-        animation={{
-          opacity: getConfig.mode === "zen" ? 0 : 1,
-          // marginLeft:
-          // getConfig.mode === "zen" ? "calc(-1*var(--card-gap))" : "0",
-          duration: applyReducedMotion(durationMs),
-        }}
+      <div
+        class={cn(
+          "grid transition-opacity duration-250 motion-reduce:duration-0",
+          getConfig.mode === "zen" ? "opacity-0" : "opacity-100",
+        )}
       >
         <Mode2Time class={cn(cardClass, sClass)} ref={timeRef} />
         <Mode2Words class={cn(cardClass, sClass)} ref={wordsRef} />
         <Mode2Quote class={cn(cardClass, sClass)} ref={quoteRef} />
         <Mode2Custom class={cn(cardClass, sClass)} ref={customRef} />
-      </Anime>
+      </div>
       <TCButton
         label="Share test settings"
         class={

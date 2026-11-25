@@ -22,18 +22,17 @@ vi.mock("../../../../../src/ts/config/store", () => ({
 vi.mock("../../../../../src/features/typing/runtime/test/words", () => ({
   words: { get: () => ({ display: "ab" }) },
 }));
-const anime = vi.hoisted(() => ({ animate: vi.fn() }));
-vi.mock("animejs", async (original) => ({
-  ...(await original<typeof import("animejs")>()),
-  animate: anime.animate,
-}));
 vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
   requestDebouncedAnimationFrame: (_key: string, callback: () => void) =>
     callback(),
 }));
 
 import { CaretController } from "../../../../../src/features/typing/components/words/caret-controller";
-import { caretGlideEasing } from "../../../../../src/features/typing/components/words/caret-easing";
+import {
+  caretGlideEasing,
+  lineJumpEasing,
+  tapeScrollEasing,
+} from "../../../../../src/features/typing/components/words/caret-easing";
 import { setTestElements } from "../../../../../src/features/typing/state/test-dom";
 
 let element: HTMLDivElement;
@@ -48,7 +47,6 @@ function dimensions(el: HTMLElement, values: Record<string, number>): void {
 beforeEach(() => {
   config.tapeMode = "off";
   config.smoothCaret = "off";
-  anime.animate.mockClear();
   const words = document.createElement("div");
   wordsElement = words;
   words.innerHTML =
@@ -205,7 +203,6 @@ describe("caret animation", () => {
     });
     // The final position is inline, so nothing jumps when the glide ends.
     expect(position()).toEqual([17, 20]);
-    expect(anime.animate).not.toHaveBeenCalled();
   });
 
   it("keeps gliding toward an unchanged target", () => {
@@ -275,10 +272,8 @@ describe("caret animation", () => {
     expect(element.getAnimations()).toHaveLength(0);
     expect(position()).toEqual([17, 20]);
     caret.handleLineJump({ newMarginTop: 30, duration: 125 });
-    expect(anime.animate).toHaveBeenLastCalledWith(
-      element,
-      expect.objectContaining({ marginTop: 30, duration: 0 }),
-    );
+    expect(element.getAnimations()).toHaveLength(0);
+    expect(element.style.transform).toBe("translate(0px, 30px)");
   });
 
   it("folds a finished line jump into the glide", () => {
@@ -289,10 +284,83 @@ describe("caret animation", () => {
     const caret = new CaretController(element, "default");
     caret.goTo({ ...target, letterIndex: 0 });
     caret.handleLineJump({ newMarginTop: -24, duration: 0 });
-    expect(element.style.marginTop).toBe("-24px");
+    expect(element.style.transform).toBe("translate(0px, -24px)");
     caret.goTo({ ...target, letterIndex: 1 });
-    expect(element.style.marginTop).toBe("0px");
+    expect(element.style.transform).toBe("");
     expect(position()).toEqual([17, 20]);
+  });
+
+  it("animates line jump on compositor transform and folds on settle", () => {
+    reduceMotion(false);
+    config.smoothCaret = "off";
+    const caret = new CaretController(element, "default");
+    caret.goTo({ ...target, letterIndex: 0 });
+    caret.handleLineJump({ newMarginTop: -24, duration: 125 });
+    const anims = element.getAnimations();
+    expect(anims).toHaveLength(1);
+    const effect = anims[0]?.effect as KeyframeEffect;
+    expect(effect.getTiming().easing).toBe(lineJumpEasing.css);
+    expect(effect.getKeyframes().map((frame) => frame["transform"])).toEqual([
+      "translate(0px, 0px)",
+      "translate(0px, -24px)",
+    ]);
+    expect(element.style.marginTop).toBe("");
+    anims[0]?.finish();
+    caret.goTo({ ...target, letterIndex: 1 });
+    expect(element.style.transform).toBe("");
+    expect(position()).toEqual([17, 20]);
+  });
+
+  it("preserves tape scroll drift correction across resets and word removals", () => {
+    reduceMotion(false);
+    config.smoothCaret = "off";
+    config.tapeMode = "word";
+    element.id = "paceCaret";
+    const caret = new CaretController(element, "default");
+    caret.goTo({ ...target, letterIndex: 0 });
+
+    // First LTR tape scroll: -50px
+    caret.handleTapeScroll({
+      newValue: -50,
+      duration: 125,
+      ease: tapeScrollEasing,
+    });
+    const first = element.getAnimations()[0];
+    expect(
+      (first?.effect as KeyframeEffect)
+        .getKeyframes()
+        .map((frame) => frame["transform"]),
+    ).toEqual(["translate(0px, 0px)", "translate(-50px, 0px)"]);
+    first?.finish();
+
+    // Settling folds -50 into position and records -50 cumulative correction.
+    caret.goTo({ ...target, letterIndex: 1 });
+    expect(element.style.transform).toBe("");
+
+    // Next scroll to total -110px only moves by -60px (-110 - (-50)).
+    caret.handleTapeScroll({
+      newValue: -110,
+      duration: 125,
+      ease: tapeScrollEasing,
+    });
+    const second = element.getAnimations()[0];
+    expect(
+      (second?.effect as KeyframeEffect)
+        .getKeyframes()
+        .map((frame) => frame["transform"]),
+    ).toEqual(["translate(0px, 0px)", "translate(-60px, 0px)"]);
+    second?.finish();
+    caret.goTo({ ...target, letterIndex: 1 });
+
+    // Removing 50px of offscreen words adjusts cumulative correction (-110 + 50 = -60).
+    caret.handleTapeWordsRemoved(50);
+    // Remaining words total -60px -> delta is 0px (-60 - (-60) = 0).
+    caret.handleTapeScroll({
+      newValue: -60,
+      duration: 0,
+      ease: tapeScrollEasing,
+    });
+    expect(element.style.transform).toBe("");
   });
 
   it("blinks smoothly or hard depending on smooth caret", () => {

@@ -1,6 +1,12 @@
 import { User as UserType } from "@caret/schemas/users";
-import { AnimationParams } from "animejs";
-import { createEffect, createSignal, JSXElement, on, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  JSXElement,
+  on,
+  onCleanup,
+  Show,
+} from "solid-js";
 
 import {
   getMatchingFlags,
@@ -9,10 +15,10 @@ import {
 } from "../../controllers/user-flag-controller";
 import { BreakpointKey } from "../../states/breakpoints";
 import { cn } from "../../utils/cn";
-import { Anime } from "./anime";
-import { AnimePresence } from "./anime/AnimePresence";
+import { applyReducedMotion } from "../../utils/misc";
 import { Button } from "./Button";
 import { Fa } from "./Fa";
+import { FadeSwitch } from "./FadeSwitch";
 import { UserAvatar } from "./UserAvatar";
 import { UserBadge } from "./UserBadge";
 import { UserFlags } from "./UserFlags";
@@ -35,40 +41,56 @@ type Props = {
   hideBadgeTextOnWidth?: BreakpointKey;
 } & UserFlagOptions;
 
+const FLASH_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+
 export function User(props: Props): JSXElement {
-  const [flashAnimation, setFlashAnimation] = createSignal<
-    AnimationParams | undefined
-  >(undefined);
   const [isAnimating, setIsAnimating] = createSignal(false);
-  let levelEl: HTMLElement | undefined;
+  let levelEl: HTMLDivElement | undefined;
+  let flashAnimation: Animation | undefined;
 
   createEffect(
     on(
       () => props.level,
       () => {
+        const duration = applyReducedMotion(2000);
+        if (!levelEl || duration <= 0) return;
+
+        flashAnimation?.cancel();
+        setIsAnimating(true);
+
         const rand = (Math.random() * 2 - 1) / 4;
         const rand2 = (Math.random() + 1) / 2;
-        setFlashAnimation({
-          scale: [1 + 0.5 * rand2, 1],
-          backgroundColor: [
-            "var(--themable-button-active)",
-            "var(--themable-button-text)",
-          ],
-          rotate: [10 * rand, 0],
-          duration: 2000,
-          ease: "out(5)",
-          onBegin: () => setIsAnimating(true),
-          onComplete: () => {
-            setIsAnimating(false);
-            if (levelEl) {
-              levelEl.style.backgroundColor = "";
-            }
+        const current = levelEl.animate(
+          {
+            transform: [
+              `scale(${1 + 0.5 * rand2}) rotate(${10 * rand}deg)`,
+              "scale(1) rotate(0deg)",
+            ],
+            backgroundColor: [
+              "var(--themable-button-active)",
+              "var(--themable-button-text)",
+            ],
           },
-        });
+          { duration, easing: FLASH_EASE },
+        );
+        flashAnimation = current;
+        void current.finished.then(
+          () => {
+            if (flashAnimation !== current) return;
+            flashAnimation = undefined;
+            setIsAnimating(false);
+          },
+          () => undefined,
+        );
       },
       { defer: true },
     ),
   );
+
+  onCleanup(() => {
+    flashAnimation?.cancel();
+    flashAnimation = undefined;
+  });
 
   return (
     <div
@@ -80,15 +102,11 @@ export function User(props: Props): JSXElement {
       <Show when={props.showAvatar ?? true}>
         <div class="relative w-[1.25em]" data-ui-element="navAvatar">
           <div class="grid place-items-center">
-            <AnimePresence exitBeforeEnter>
-              <Show
-                when={props.showSpinner ?? false}
-                fallback={
-                  <Anime
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1, duration: 125 }}
-                    exit={{ opacity: 0, duration: 125 }}
-                  >
+            <FadeSwitch value={props.showSpinner ?? false}>
+              {(spinner) => (
+                <Show
+                  when={spinner()}
+                  fallback={
                     <UserAvatar
                       fallbackIcon={props.avatarFallback ?? "user"}
                       class={cn(
@@ -96,18 +114,12 @@ export function User(props: Props): JSXElement {
                         props.avatarColor === "sub" && "text-sub",
                       )}
                     />
-                  </Anime>
-                }
-              >
-                <Anime
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, duration: 125 }}
-                  exit={{ opacity: 0, duration: 125 }}
+                  }
                 >
                   <Fa icon={"fa-circle-notch"} spin={true} />
-                </Anime>
-              </Show>
-            </AnimePresence>
+                </Show>
+              )}
+            </FadeSwitch>
           </div>
         </div>
       </Show>
@@ -147,9 +159,8 @@ export function User(props: Props): JSXElement {
         />
       </Show>
       <Show when={props.level !== undefined}>
-        <Anime
+        <div
           ref={(el) => (levelEl = el)}
-          animation={flashAnimation()}
           class={cn(
             "bg-(--themable-button-text) text-(--bg-color)",
             "rounded-half px-[0.5em] py-[0.1em] text-[0.7em]",
@@ -158,7 +169,7 @@ export function User(props: Props): JSXElement {
           data-ui-element="userLevel"
         >
           {props.level}
-        </Anime>
+        </div>
       </Show>
     </div>
   );

@@ -5,6 +5,7 @@ import {
   For,
   JSXElement,
   onCleanup,
+  onMount,
   ParentProps,
 } from "solid-js";
 
@@ -18,14 +19,57 @@ import {
 } from "../../../states/header";
 import { getFocus } from "../../../states/test";
 import { getXpDetails } from "../../../utils/levels";
-import { sleep } from "../../../utils/misc";
-import { Anime, AnimePresence, AnimeShow } from "../../common/anime";
+import { applyReducedMotion, sleep } from "../../../utils/misc";
 import { Bar } from "../../common/Bar";
+import { FadeShow } from "../../common/FadeShow";
 
 type BreakdownItem = {
   label: string;
   amount: number | string;
 };
+
+const FLASH_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+function BreakdownRow(props: { item: BreakdownItem }): JSXElement {
+  let rowEl: HTMLDivElement | undefined;
+  let enterAnim: Animation | undefined;
+
+  onMount(() => {
+    const duration = applyReducedMotion(125);
+    if (!rowEl || duration <= 0) return;
+    enterAnim = rowEl.animate(
+      {
+        opacity: ["0", "1"],
+        transform: ["translateX(10px)", "translateX(0px)"],
+      },
+      { duration, easing: "ease-out" },
+    );
+  });
+
+  onCleanup(() => {
+    enterAnim?.cancel();
+    enterAnim = undefined;
+  });
+
+  return (
+    <div ref={(el) => (rowEl = el)} class="flex justify-end gap-4 px-2 text-xs">
+      <span class="w-max text-text">{props.item.label}</span>
+      <span
+        class={
+          typeof props.item.amount === "number" && props.item.amount < 0
+            ? "text-error"
+            : "text-main"
+        }
+      >
+        {typeof props.item.amount === "string"
+          ? props.item.amount
+          : props.item.amount >= 0
+            ? `+${props.item.amount}`
+            : `${props.item.amount}`}
+      </span>
+    </div>
+  );
+}
 
 export function AccountXpBar(): JSXElement {
   type Phase = "hidden" | "bar" | "breakdown" | "holdingBreakdown" | "skipped";
@@ -50,28 +94,39 @@ export function AccountXpBar(): JSXElement {
     },
   });
 
+  let totalEl: HTMLDivElement | undefined;
+  let flashAnimation: Animation | undefined;
+
   onCleanup(() => {
     runId++;
+    flashAnimation?.cancel();
+    flashAnimation = undefined;
   });
 
   let runId = 0;
 
-  const [flashAnimation, setFlashAnimation] = createSignal({
-    scale: [1, 1],
-    rotate: [0, 0],
-    duration: 2000,
-    ease: "out(5)",
-  });
-
   animationEvent.useListener(() => {
+    const duration = applyReducedMotion(2000);
+    if (!totalEl || duration <= 0) return;
+    flashAnimation?.cancel();
     const rand = (Math.random() * 2 - 1) / 4;
     const rand2 = (Math.random() + 1) / 2;
-    setFlashAnimation({
-      scale: [1 + 0.5 * rand2, 1],
-      rotate: [10 * rand, 0],
-      duration: 2000,
-      ease: "out(5)",
-    });
+    const current = totalEl.animate(
+      {
+        transform: [
+          `scale(${1 + 0.5 * rand2}) rotate(${10 * rand}deg)`,
+          "scale(1) rotate(0deg)",
+        ],
+      },
+      { duration, easing: FLASH_EASE },
+    );
+    flashAnimation = current;
+    void current.finished.then(
+      () => {
+        if (flashAnimation === current) flashAnimation = undefined;
+      },
+      () => undefined,
+    );
   });
 
   const addItem = (label: string, amount: number | string): void => {
@@ -309,7 +364,7 @@ export function AccountXpBar(): JSXElement {
   };
 
   const XPBar = () => (
-    <AnimeShow when={getShowBar() && !getFocus()}>
+    <FadeShow when={getShowBar() && !getFocus()}>
       <div class="absolute top-full right-0 mt-1 w-full">
         <div class="text-[0.5em]">
           <Bar
@@ -321,50 +376,26 @@ export function AccountXpBar(): JSXElement {
           />
         </div>
       </div>
-    </AnimeShow>
+    </FadeShow>
   );
 
   const Total = () => (
-    <AnimeShow when={getShowBar() && !getFocus()}>
-      <Anime
-        animation={flashAnimation()}
+    <FadeShow when={getShowBar() && !getFocus()}>
+      <div
+        ref={(el) => (totalEl = el)}
         class="w-max justify-self-end p-2 text-base font-bold text-main"
       >
         +{getTotal()}
-      </Anime>
-    </AnimeShow>
+      </div>
+    </FadeShow>
   );
 
   const Breakdown = () => (
-    <AnimeShow when={getShowBreakdown() && !getFocus()} class="mb-2">
-      <AnimePresence mode="list">
-        <For each={getBreakdownItems()} fallback={null}>
-          {(item) => (
-            <Anime
-              initial={{ opacity: 0, marginRight: 10 }}
-              animate={{ opacity: 1, marginRight: 0, duration: 125 }}
-              exit={{ opacity: 0, marginRight: 10, duration: 125 }}
-              class="flex justify-end gap-4 px-2 text-xs"
-            >
-              <span class="w-max text-text">{item.label}</span>
-              <span
-                class={
-                  typeof item.amount === "number" && item.amount < 0
-                    ? "text-error"
-                    : "text-main"
-                }
-              >
-                {typeof item.amount === "string"
-                  ? item.amount
-                  : item.amount >= 0
-                    ? `+${item.amount}`
-                    : `${item.amount}`}
-              </span>
-            </Anime>
-          )}
-        </For>
-      </AnimePresence>
-    </AnimeShow>
+    <FadeShow when={getShowBreakdown() && !getFocus()} class="mb-2">
+      <For each={getBreakdownItems()} fallback={null}>
+        {(item) => <BreakdownRow item={item} />}
+      </For>
+    </FadeShow>
   );
 
   const BlurredBackground = (props: ParentProps) => (

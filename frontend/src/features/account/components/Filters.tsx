@@ -11,9 +11,9 @@ import { z } from "zod";
 
 import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
-import { AnimeShow } from "#shared/components/common/anime/index.ts";
 import AsyncContent from "#shared/components/common/AsyncContent.tsx";
 import { Button } from "#shared/components/common/Button.tsx";
+import { FadeShow } from "#shared/components/common/FadeShow.tsx";
 import { H3 } from "#shared/components/common/Headers.tsx";
 import { Separator } from "#shared/components/common/Separator.tsx";
 import Select from "#shared/components/ui/Select.tsx";
@@ -310,7 +310,7 @@ export function Filters(props: {
           }}
         />
 
-        <AnimeShow when={isShowAdvanced()} slide>
+        <FadeShow when={isShowAdvanced()} slide>
           <H3 fa={{ icon: "fa-tools" }} text="advanced filters" class="mt-8" />
 
           <Button
@@ -363,7 +363,7 @@ export function Filters(props: {
               format={getLanguageDisplayString}
             />
           </div>
-        </AnimeShow>
+        </FadeShow>
       </div>
     </div>
   );

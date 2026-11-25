@@ -1,4 +1,4 @@
-import { AnimeShow } from "#shared/components/common/anime/index.ts";
+import { FadeShow } from "#shared/components/common/FadeShow.tsx";
 import { getConfig } from "#shared/config/store.ts";
 import { cn } from "#shared/utils/cn.ts";
 
@@ -22,7 +22,7 @@ export function LiveStatsTextTop() {
       }}
     >
       <div class={cn(TEXT_WRAPPER_CLASS, "bottom-5")}>
-        <AnimeShow
+        <FadeShow
           when={
             showLiveStats() &&
             ["text", "flash_text"].includes(getConfig.timerStyle)
@@ -30,7 +30,7 @@ export function LiveStatsTextTop() {
         >
           {/* flash_text blanks the text instead of fading it, unlike flash_mini */}
           <div>{isTimerFlashHidden() ? "" : getTimerText()}</div>
-        </AnimeShow>
+        </FadeShow>
       </div>
     </div>
   );

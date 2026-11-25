@@ -163,8 +163,11 @@ test.describe("zen native projection", () => {
         ),
       ).toEqual([]);
       await page.locator("#restartTestButton").click();
-      await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
       await expect(page.locator("#words .word")).toHaveCount(1);
+      await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
+      await expect(page.locator("#typingPrompt")).not.toHaveText(
+        "Preparing typing test.",
+      );
     }
     expect(errors).toEqual([]);
   });

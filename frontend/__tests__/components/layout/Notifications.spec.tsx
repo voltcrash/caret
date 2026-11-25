@@ -1,18 +1,6 @@
-import { cleanup, render } from "@solidjs/testing-library";
-import { ParentProps, Show } from "solid-js";
+import { cleanup, fireEvent, render } from "@solidjs/testing-library";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
-vi.mock("../../../src/ts/components/common/anime/Anime", () => ({
-  Anime: (props: ParentProps) => <div>{props.children}</div>,
-}));
-vi.mock("../../../src/ts/components/common/anime/AnimePresence", () => ({
-  AnimePresence: (props: ParentProps) => <>{props.children}</>,
-}));
-vi.mock("../../../src/ts/components/common/anime/AnimeShow", () => ({
-  AnimeShow: (props: ParentProps<{ when: boolean }>) => (
-    <Show when={props.when}>{props.children}</Show>
-  ),
-}));
 vi.mock("../../../src/ts/states/core", () => ({
   getIsScreenshotting: () => false,
 }));
@@ -30,6 +18,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   clearAllNotifications();
+  vi.unstubAllGlobals();
 });
 
 it("renders structured notification lines as text", () => {
@@ -51,3 +40,14 @@ it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
     expect(view.container.querySelector("script, img")).toBeNull();
   },
 );
+
+it("collapses and removes a notification when clicked", async () => {
+  vi.stubGlobal("matchMedia", () => ({ matches: true }));
+  showNoticeNotification("dismiss me", { durationMs: 0 });
+  const view = render(() => <Notifications />);
+  expect(view.container.textContent).toContain("dismiss me");
+  fireEvent.click(view.getByText("dismiss me"));
+  await vi.waitFor(() => {
+    expect(view.container.textContent).not.toContain("dismiss me");
+  });
+});

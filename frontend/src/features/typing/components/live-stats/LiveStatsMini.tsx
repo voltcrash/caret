@@ -1,4 +1,4 @@
-import { AnimeShow } from "#shared/components/common/anime/index.ts";
+import { FadeShow } from "#shared/components/common/FadeShow.tsx";
 import { getConfig } from "#shared/config/store.ts";
 import { cn } from "#shared/utils/cn.ts";
 
@@ -30,7 +30,7 @@ export function LiveStatsMini() {
           "margin-left": isTape() ? `${getConfig.tapeMargin}%` : "0.25em",
         }}
       >
-        <AnimeShow
+        <FadeShow
           when={
             showLiveStats() &&
             ["mini", "flash_mini"].includes(getConfig.timerStyle)
@@ -40,20 +40,16 @@ export function LiveStatsMini() {
           <div style={{ opacity: isTimerFlashHidden() ? 0 : 1 }}>
             {getTimerText()}
           </div>
-        </AnimeShow>
-        <AnimeShow
-          when={showLiveStats() && getConfig.liveSpeedStyle === "mini"}
-        >
+        </FadeShow>
+        <FadeShow when={showLiveStats() && getConfig.liveSpeedStyle === "mini"}>
           {getLiveSpeedText()}
-        </AnimeShow>
-        <AnimeShow when={showLiveStats() && getConfig.liveAccStyle === "mini"}>
+        </FadeShow>
+        <FadeShow when={showLiveStats() && getConfig.liveAccStyle === "mini"}>
           {getLiveAccText()}
-        </AnimeShow>
-        <AnimeShow
-          when={showLiveStats() && getConfig.liveBurstStyle === "mini"}
-        >
+        </FadeShow>
+        <FadeShow when={showLiveStats() && getConfig.liveBurstStyle === "mini"}>
           {getLiveBurstText()}
-        </AnimeShow>
+        </FadeShow>
       </div>
     </div>
   );

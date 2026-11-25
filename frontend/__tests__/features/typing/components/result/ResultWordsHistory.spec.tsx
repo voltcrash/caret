@@ -15,10 +15,6 @@ const mocks = vi.hoisted(() => ({
   inputHistory: ["hxllo ", "world "] as string[],
 }));
 
-vi.mock("animejs", async (original) => ({
-  ...(await original<typeof import("animejs")>()),
-  animate: vi.fn(),
-}));
 vi.mock("../../../../../src/ts/config/setters", async (original) => ({
   ...(await original<typeof import("../../../../../src/ts/config/setters")>()),
   setConfig: mocks.setConfig,

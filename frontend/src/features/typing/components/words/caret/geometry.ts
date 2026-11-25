@@ -9,6 +9,7 @@ import { isWordRightToLeft } from "#shared/utils/strings.ts";
 
 import { isCaretDebugEnabled } from "./debug";
 import { getTotalInlineMargin, setCaretClass } from "./dom";
+import { getWordsOffsetX, getWordsOffsetY } from "../words-scroll";
 
 const fullWidthStyles: ReadonlySet<CaretStyle> = new Set([
   "block",
@@ -124,6 +125,10 @@ export function getCaretTargetPositionAndWidth(
 
   const tapeOffset =
     getWordsWrapperCache().offsetWidth * (peekConfig().tapeMargin / 100);
+  const wordsOffsetX = getWordsOffsetX();
+  const wordsOffsetY = getWordsOffsetY();
+  const wordLeft = options.word.offsetLeft + wordsOffsetX;
+  const wordTop = options.word.offsetTop + wordsOffsetY;
 
   // yes, this is all super verbose, but its easier to maintain and understand
   if (isWordRTL) {
@@ -143,7 +148,7 @@ export function getCaretTargetPositionAndWidth(
         left += letter.offsetWidth;
       }
       left += letter.offsetLeft;
-      left += options.word.offsetLeft;
+      left += wordLeft;
       left += afterLetterCorrection;
     } else if (peekConfig().tapeMode === "word") {
       if (!isFullWidthCaretStyle(caret.style)) {
@@ -155,7 +160,7 @@ export function getCaretTargetPositionAndWidth(
       if (caret.isMainCaret && lockedMainCaretInTape) {
         left += getWordsWrapperCache().offsetWidth - tapeOffset;
       } else {
-        left += options.word.offsetLeft;
+        left += wordLeft;
         left += options.word.offsetWidth;
       }
     } else if (peekConfig().tapeMode === "letter") {
@@ -166,7 +171,7 @@ export function getCaretTargetPositionAndWidth(
         left += getWordsWrapperCache().offsetWidth - tapeOffset;
       } else {
         left += letter.offsetLeft;
-        left += options.word.offsetLeft;
+        left += wordLeft;
         left += afterLetterCorrection;
         left += width;
       }
@@ -178,7 +183,7 @@ export function getCaretTargetPositionAndWidth(
     }
     if (peekConfig().tapeMode === "off") {
       left += letter.offsetLeft;
-      left += options.word.offsetLeft;
+      left += wordLeft;
       left += afterLetterCorrection;
     } else if (peekConfig().tapeMode === "word") {
       left += letter.offsetLeft;
@@ -186,14 +191,14 @@ export function getCaretTargetPositionAndWidth(
       if (caret.isMainCaret && lockedMainCaretInTape) {
         left += tapeOffset;
       } else {
-        left += options.word.offsetLeft;
+        left += wordLeft;
       }
     } else if (peekConfig().tapeMode === "letter") {
       if (caret.isMainCaret && lockedMainCaretInTape) {
         left += tapeOffset;
       } else {
         left += letter.offsetLeft;
-        left += options.word.offsetLeft;
+        left += wordLeft;
         left += afterLetterCorrection;
       }
     }
@@ -201,7 +206,7 @@ export function getCaretTargetPositionAndWidth(
 
   //top position
   top += letter.offsetTop;
-  top += options.word.offsetTop;
+  top += wordTop;
 
   if (caret.style === "underline") {
     // if style is underline, add the height of the letter to the top

@@ -2,7 +2,8 @@ import { lineState, updateActiveWordGeometry } from "./line-state";
 import { updateWordsWrapperHeight } from "./sizing";
 import { outerHeight } from "./dimensions";
 import { getWordElement, getActiveWordElement } from "./elements";
-import { animateAsync } from "#shared/anim.ts";
+import { lineJumpEasing } from "./caret-easing";
+import { getWordsScroll } from "./words-scroll";
 import { peekConfig } from "#shared/config/store.ts";
 import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
 import { getWordsElement as getWordsEl } from "#features/typing/state/test-dom.ts";
@@ -105,14 +106,21 @@ export async function lineJump(
 
     if (peekConfig().smoothLineScroll) {
       lineState.lineTransition = true;
-      await animateAsync(getWordsEl(), {
-        marginTop: newMarginTop,
+      const outcome = await getWordsScroll().animateY(
+        newMarginTop,
         duration,
-      });
+        lineJumpEasing,
+      );
+      if (outcome === "superseded") return;
+      if (outcome === "reset") {
+        lineState.currentLinesJumping = 0;
+        lineState.lineTransition = false;
+        return;
+      }
       lineState.currentLinesJumping = 0;
-      updateActiveWordGeometry(activeWordEl);
       removeTestElements(lastElementIndexToRemove);
-      Object.assign(getWordsEl().style, { marginTop: "0" });
+      getWordsScroll().resetY();
+      updateActiveWordGeometry(activeWordEl);
       lineState.lineTransition = false;
     } else {
       lineState.currentLinesJumping = 0;

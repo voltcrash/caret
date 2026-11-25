@@ -1,5 +1,12 @@
 import { LayoutObject } from "@caret/schemas/layouts";
-import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  Show,
+} from "solid-js";
 
 import {
   FlashEntry,
@@ -10,7 +17,6 @@ import {
   setKeymapFlashState,
 } from "#features/typing/state/keymap.ts";
 import { wordsHaveNumbers } from "#features/typing/state/words-content.ts";
-import { Anime } from "#shared/components/common/anime/index.ts";
 import { Button } from "#shared/components/common/Button.tsx";
 import { getConfig } from "#shared/config/store.ts";
 import { showCommandLineForConfig } from "#shared/states/core.ts";
@@ -254,8 +260,53 @@ function Key(
     return 250;
   });
 
+  let keyEl: HTMLDivElement | undefined;
+  let flashAnimation: Animation | undefined;
+
+  createEffect(() => {
+    const bgColors = animKeyBgColor();
+    const textColors = animKeyColor();
+    const duration = animDuration();
+    // Read tick so repeated flashes on the same key restart the animation.
+    void flashInfo().tick;
+
+    if (keyEl === undefined) return;
+    flashAnimation?.cancel();
+    flashAnimation = undefined;
+
+    if (duration <= 0 || bgColors.length < 2 || textColors.length < 2) {
+      return;
+    }
+
+    const current = keyEl.animate(
+      {
+        backgroundColor: bgColors,
+        color: textColors,
+      },
+      { duration, easing: "ease-out" },
+    );
+    flashAnimation = current;
+    void current.finished.then(
+      () => {
+        if (flashAnimation !== current) return;
+        flashAnimation = undefined;
+        props.legends.forEach((l) => setKeymapFlashState(l, undefined));
+        if (isFading()) {
+          setIsFading(false);
+        }
+      },
+      () => undefined,
+    );
+  });
+
+  onCleanup(() => {
+    flashAnimation?.cancel();
+    flashAnimation = undefined;
+  });
+
   return (
-    <Anime
+    <div
+      ref={(el) => (keyEl = el)}
       class={cn(
         "relative flex justify-center rounded border-2 border-bg bg-sub-alt",
         (props.label ?? "").length >= 2 && "text-em-xs",
@@ -265,28 +316,14 @@ function Key(
         },
       )}
       style={{
-        "--keybgcolor": baseKeyBgColor(),
-        "--keycolor": baseKeyColor(),
         height: `${(props.height ?? 1) * 2}rem`,
         width: `${(props.width ?? 1) * 2}rem`,
         "margin-left": `${(props.x ?? 0) * 2}rem`,
         "margin-top": `${(props.y ?? 0) * 2}rem`,
         transform:
           props.rotation !== undefined ? `rotate(${props.rotation}deg)` : "",
-        "background-color": "var(--keybgcolor)",
-        color: "var(--keycolor)",
-      }}
-      // Don't apply reduced motion. If the user activates react/next they want animations.
-      animation={{
-        "--keybgcolor": animKeyBgColor(),
-        "--keycolor": animKeyColor(),
-        duration: animDuration(),
-        onComplete: () => {
-          props.legends.forEach((l) => setKeymapFlashState(l, undefined));
-          if (isFading()) {
-            setIsFading(false);
-          }
-        },
+        "background-color": baseKeyBgColor(),
+        color: baseKeyColor(),
       }}
     >
       <Show
@@ -306,12 +343,12 @@ function Key(
       >
         <Button
           variant="text"
-          class="text-[0.5em] [--themable-button-bg:transparent] [--themable-button-text:var(--keycolor)]"
+          class="text-[0.5em] [--themable-button-bg:transparent] [--themable-button-text:currentColor]"
           text={getKeymapLayout().layoutNameDisplayString}
           onClick={() => showCommandLineForConfig("keymapLayout")}
           tabIndex={-1}
         />
       </Show>
-    </Anime>
+    </div>
   );
 }

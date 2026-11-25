@@ -21,6 +21,7 @@ import {
 import {
   AnimationConfig,
   animateElement,
+  cancelElementAnimation,
   DEFAULT_ANIMATION_DURATION,
   getEnterAnimation,
   getExitAnimationParams,
@@ -171,7 +172,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
         animateElement(dialogEl(), {
           opacity: [0, 1],
           duration: wrapperDuration,
-          ease: "easeOut",
+          easing: "ease-out",
         });
       }
 
@@ -187,7 +188,6 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
           ...animParams,
           duration: modalAnimDuration,
           easing: "ease-out",
-          fill: "forwards",
           onComplete: () => {
             focusFirstInput();
             void handleAfterShow();
@@ -196,7 +196,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       } else {
         setStyle(modalEl(), {
           opacity: "1",
-          marginTop: "0",
+          transform: "",
         });
         focusFirstInput();
         void handleAfterShow();
@@ -342,6 +342,8 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   onCleanup(() => {
     disposed = true;
     motionId++;
+    cancelElementAnimation(dialogEl());
+    cancelElementAnimation(modalEl());
     completeModalHide(props.id);
     if (dialogEl()?.open) {
       dialogEl()?.close();

@@ -1,27 +1,16 @@
 import { render, cleanup } from "@solidjs/testing-library";
-import { AnimationParams } from "animejs";
 import { createSignal } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
-
-const mocks = vi.hoisted(() => ({
-  animate: vi.fn((_el: HTMLElement, _options: unknown) => ({
-    cancel: vi.fn(),
-  })),
-}));
-vi.mock("animejs", async (original) => ({
-  ...(await original<typeof import("animejs")>()),
-  animate: mocks.animate,
-}));
 
 import { useSlideAnimation } from "../../src/ts/hooks/useSlideAnimation";
 
 afterEach(() => {
   cleanup();
-  vi.clearAllMocks();
+  vi.restoreAllMocks();
 });
 
 describe("useSlideAnimation", () => {
-  it("preserves layout classes and the legacy expansion/collapse cleanup", () => {
+  it("preserves layout classes and the legacy expansion/collapse cleanup", async () => {
     const [visible, setVisible] = createSignal(false);
     let element: HTMLDivElement | undefined;
     render(() => {
@@ -40,26 +29,35 @@ describe("useSlideAnimation", () => {
         />
       );
     });
-    expect(mocks.animate).not.toHaveBeenCalled();
+    expect(element?.getAnimations()).toHaveLength(0);
+
     setVisible(true);
     expect(element).toHaveClass("flex");
     expect(element).not.toHaveClass("hidden");
-    let options = mocks.animate.mock.calls[0]?.[1] as AnimationParams;
-    options.onComplete?.({} as never);
+    const openAnim = element?.getAnimations()[0];
+    expect(openAnim).toBeDefined();
+    openAnim?.finish();
+    await openAnim?.finished;
+    await Promise.resolve();
     expect(element?.style.height).toBe("");
     expect(element?.style.overflow).toBe("");
+
     setVisible(false);
-    options = mocks.animate.mock.calls[1]?.[1] as AnimationParams;
-    options.onComplete?.({} as never);
+    const closeAnim = element?.getAnimations()[0];
+    expect(closeAnim).toBeDefined();
+    closeAnim?.finish();
+    await closeAnim?.finished;
+    await Promise.resolve();
     expect(element).toHaveClass("flex", "hidden");
     expect(element?.style.paddingTop).toBe("");
   });
 
   it("hides instantly at zero duration and cancels animation on disposal", () => {
     const [visible, setVisible] = createSignal(false);
+    const [duration, setDuration] = createSignal(0);
     let element: HTMLDivElement | undefined;
     const { unmount } = render(() => {
-      useSlideAnimation({ element: () => element, visible, duration: () => 0 });
+      useSlideAnimation({ element: () => element, visible, duration });
       return (
         <div
           ref={(el) => {
@@ -70,11 +68,19 @@ describe("useSlideAnimation", () => {
       );
     });
     setVisible(true);
-    const animation = mocks.animate.mock.results[0]?.value;
+    expect(element).toHaveClass("grid");
+    expect(element).not.toHaveClass("hidden");
+    expect(element?.getAnimations()).toHaveLength(0);
+
     setVisible(false);
     expect(element).toHaveClass("grid", "hidden");
-    expect(mocks.animate).toHaveBeenCalledTimes(1);
+    expect(element?.getAnimations()).toHaveLength(0);
+
+    setDuration(125);
+    setVisible(true);
+    const running = element?.getAnimations()[0];
+    expect(running).toBeDefined();
     unmount();
-    expect(animation?.cancel).toHaveBeenCalledOnce();
+    expect(running?.playState).toBe("idle");
   });
 });

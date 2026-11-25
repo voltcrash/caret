@@ -1,11 +1,10 @@
-import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
 import { navigate } from "#app/navigate.ts";
 import { Balloon } from "#shared/components/common/Balloon.tsx";
 import { peekConfig } from "#shared/config/store.ts";
 import Format from "#shared/singletons/format.ts";
-import { applyReducedMotion, getMode2 } from "#shared/utils/misc.ts";
+import { getMode2 } from "#shared/utils/misc.ts";
 
 import { resultState } from "../../state/result";
 
@@ -15,15 +14,7 @@ export function ResultDailyLeaderboard(props: {
 }): JSXElement {
   return (
     <Show when={resultState.dailyLeaderboardRank !== undefined}>
-      <div
-        ref={(el) => {
-          animate(el, {
-            opacity: [0, 1],
-            duration: applyReducedMotion(250),
-          });
-        }}
-        class="group dailyLeaderboard max-w-[13rem] whitespace-nowrap max-md:col-span-full max-md:whitespace-normal"
-      >
+      <div class="group dailyLeaderboard max-w-[13rem] animate-[fadeIn_250ms_ease-out] whitespace-nowrap motion-reduce:animate-none max-md:col-span-full max-md:whitespace-normal">
         <div class={props.topClass}>daily leaderboard</div>
         <Balloon
           as="button"

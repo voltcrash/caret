@@ -1,5 +1,4 @@
 import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
-import { AnimationParams } from "animejs";
 import { createSignal } from "solid-js";
 import {
   describe,
@@ -9,18 +8,6 @@ import {
   beforeEach,
   afterEach,
 } from "vite-plus/test";
-
-const { animations } = vi.hoisted(() => ({
-  animations: [] as { element: HTMLElement; params: AnimationParams }[],
-}));
-
-vi.mock("animejs", async (original) => ({
-  ...(await original<typeof import("animejs")>()),
-  animate: (element: HTMLElement, params: AnimationParams) => {
-    animations.push({ element, params });
-    return { cancel: vi.fn() };
-  },
-}));
 
 vi.mock("../../../src/ts/utils/misc", () => ({
   applyReducedMotion: (duration: number) => duration,
@@ -35,9 +22,22 @@ import {
 } from "../../../src/ts/states/modals";
 import { isAnyPopupVisible } from "../../../src/ts/states/overlay-visibility";
 
+type RecordedAnimation = {
+  element: HTMLElement;
+  animation: Animation;
+  keyframes: Keyframe[];
+};
+
+const animations: RecordedAnimation[] = [];
+const realAnimate = HTMLElement.prototype.animate;
+
 async function completeAnimation(): Promise<void> {
-  // @ts-expect-error callback arguments unused by modal lifecycle
-  await animations.at(-1)?.params.onComplete?.();
+  const latest = animations.at(-1)?.animation;
+  if (latest === undefined) return;
+  latest.finish();
+  await latest.finished;
+  await Promise.resolve();
+  await Promise.resolve();
 }
 
 describe("AnimatedModal", () => {
@@ -49,6 +49,18 @@ describe("AnimatedModal", () => {
     showModal("QuoteRate");
     vi.clearAllMocks();
     animations.length = 0;
+    vi.spyOn(HTMLElement.prototype, "animate").mockImplementation(function (
+      this: HTMLElement,
+      keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+      options?: number | KeyframeAnimationOptions,
+    ) {
+      const animation = realAnimate.call(this, keyframes, options);
+      // Pause so tests explicitly drive completion via completeAnimation().
+      animation.pause();
+      const frames = Array.isArray(keyframes) ? keyframes : [];
+      animations.push({ element: this, animation, keyframes: frames });
+      return animation;
+    });
     // Model display utilities without loading the full app CSS in this unit test.
     displayStyles = document.createElement("style");
     displayStyles.textContent = `
@@ -78,10 +90,13 @@ describe("AnimatedModal", () => {
   });
 
   afterEach(() => {
+    for (const { animation } of animations) animation.cancel();
+    animations.length = 0;
     cleanup();
     hideModalAndClearChain("QuoteRate");
     hideModalAndClearChain("QuoteReport");
     displayStyles.remove();
+    vi.restoreAllMocks();
   });
 
   function renderModal(props: {
@@ -221,13 +236,15 @@ describe("AnimatedModal", () => {
     await completeAnimation();
     hideModal("QuoteRate");
     await waitFor(() => expect(animations).toHaveLength(4));
-    const exit = animations.at(-1)?.params.onComplete;
+    const exitAnim = animations.at(-1)?.animation;
     showModal("QuoteRate");
     expect(isModalOpen("QuoteRate")).toBe(false);
     await completeAnimation();
     await waitFor(() => expect(dialog.open).toBe(true));
-    // @ts-expect-error callback arguments unused by modal lifecycle
-    await exit?.();
+    // Re-triggering the already-finished exit animation must not close the reopened dialog.
+    exitAnim?.finish();
+    await exitAnim?.finished.catch(() => undefined);
+    await Promise.resolve();
     expect(dialog.open).toBe(true);
     expect(isModalOpen("QuoteRate")).toBe(true);
   });
@@ -420,7 +437,10 @@ describe("AnimatedModal", () => {
       expect(onBackdropClick).not.toHaveBeenCalled();
       expect(isModalOpen("QuoteRate")).toBe(true);
       expect(dialog.open).toBe(true);
-      expect(animations.at(-1)?.params["translateY"]).toEqual(["120px", "0px"]);
+      expect(animations.at(-1)?.keyframes.map((f) => f["transform"])).toEqual([
+        "translateY(120px)",
+        "translateY(0px)",
+      ]);
     });
 
     it("snaps back when a dismissal callback keeps the sheet open", async () => {
@@ -431,7 +451,10 @@ describe("AnimatedModal", () => {
 
       expect(onBackdropClick).toHaveBeenCalledOnce();
       expect(isModalOpen("QuoteRate")).toBe(true);
-      expect(animations.at(-1)?.params["translateY"]).toEqual(["120px", "0px"]);
+      expect(animations.at(-1)?.keyframes.map((f) => f["transform"])).toEqual([
+        "translateY(120px)",
+        "translateY(0px)",
+      ]);
     });
   });
 });

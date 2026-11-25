@@ -23,10 +23,6 @@ const mocks = vi.hoisted(() => ({
   inputForWord: "ab ",
 }));
 
-vi.mock("animejs", async (original) => ({
-  ...(await original<typeof import("animejs")>()),
-  animate: vi.fn(),
-}));
 vi.mock("../../../../../src/ts/controllers/sound-controller", () => ({
   playClick: vi.fn(),
   playError: vi.fn(),
