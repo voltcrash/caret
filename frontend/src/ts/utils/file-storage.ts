@@ -33,6 +33,7 @@ function setKnownEmpty(empty: boolean): void {
 class FileStorage {
   private dbPromise: Promise<IDBPDatabase<FileDB>> | undefined;
   private closed = false;
+  private mutationVersion = 0;
   private signals = new Map<
     Filename,
     [get: () => number, set: (v: number | ((prev: number) => number)) => void]
@@ -105,6 +106,7 @@ class FileStorage {
   }
 
   async storeFile(filename: Filename, dataUrl: string): Promise<void> {
+    this.mutationVersion++;
     setKnownEmpty(false);
     const db = await this.database();
     await db.put("files", dataUrl, filename);
@@ -113,12 +115,15 @@ class FileStorage {
 
   async getFile(filename: Filename): Promise<string | undefined> {
     if (isKnownEmpty()) return undefined;
+    const version = this.mutationVersion;
     const db = await this.database();
     const value = await db.get("files", filename);
     if (
       value === undefined &&
+      this.mutationVersion === version &&
       typeof db.count === "function" &&
-      (await db.count("files")) === 0
+      (await db.count("files")) === 0 &&
+      this.mutationVersion === version
     ) {
       setKnownEmpty(true);
     }
@@ -126,9 +131,15 @@ class FileStorage {
   }
 
   async deleteFile(filename: Filename): Promise<void> {
+    const version = ++this.mutationVersion;
     const db = await this.database();
     await db.delete("files", filename);
-    if (typeof db.count === "function" && (await db.count("files")) === 0) {
+    if (
+      this.mutationVersion === version &&
+      typeof db.count === "function" &&
+      (await db.count("files")) === 0 &&
+      this.mutationVersion === version
+    ) {
       setKnownEmpty(true);
     }
     this.notify(filename);
@@ -136,9 +147,12 @@ class FileStorage {
 
   async listFilenames(): Promise<Filename[]> {
     if (isKnownEmpty()) return [];
+    const version = this.mutationVersion;
     const db = await this.database();
     const keys = (await db.getAllKeys("files")) as Filename[];
-    if (keys.length === 0) setKnownEmpty(true);
+    if (keys.length === 0 && this.mutationVersion === version) {
+      setKnownEmpty(true);
+    }
     return keys;
   }
 

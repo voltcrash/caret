@@ -76,6 +76,7 @@ const themeState = createAppOwned(() => {
     themesList: [] as string[],
     catalog: undefined as ThemeCatalog | undefined,
     ignoreConfigEvent: false,
+    applyRevision: 0,
     backgroundRevision: 0,
     disposed: false,
   };
@@ -108,6 +109,8 @@ async function apply(
     isPreview,
   });
 
+  const current = themeState();
+  const revision = ++current.applyRevision;
   const isCustom = themeName === "custom";
 
   let themeColors: Theme;
@@ -119,7 +122,7 @@ async function apply(
     themeColors = azureTheme;
   } else {
     const catalog = await loadThemeCatalog();
-    if (themeState().disposed) return;
+    if (current.disposed || current.applyRevision !== revision) return;
     themeColors = catalog.themes[themeName];
   }
 
