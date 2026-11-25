@@ -14,20 +14,59 @@ import { showNoticeNotification } from "../states/notifications";
 import { onCleanup, untrack } from "solid-js";
 import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";
-import { CustomThemeColors, ThemeName } from "@caret/schemas/configs";
-import {
-  convertCustomColorsToTheme,
-  themes,
-  ThemesList,
-} from "../constants/themes";
+import type { CustomThemeColors, ThemeName } from "@caret/schemas/configs";
+import type { Theme, ThemeWithName } from "../constants/themes";
 import fileStorage from "../utils/file-storage";
 import { setThemeIndicator } from "../states/core";
 import { setTheme, ThemeIdentifier } from "../states/theme";
 
-export {
-  convertCustomColorsToTheme,
-  convertThemeToCustomColors,
-} from "../constants/themes";
+const azureTheme: Theme = {
+  bg: "#0b0d1c",
+  main: "#4ea8ff",
+  caret: "#4ea8ff",
+  sub: "#8290b4",
+  subAlt: "#151a30",
+  text: "#e4ebff",
+  error: "#ff6b5e",
+  errorExtra: "#b8423a",
+  colorfulError: "#ff6b5e",
+  colorfulErrorExtra: "#b8423a",
+};
+
+export function convertCustomColorsToTheme(colors: CustomThemeColors): Theme {
+  return {
+    bg: colors[0],
+    main: colors[1],
+    caret: colors[2],
+    sub: colors[3],
+    subAlt: colors[4],
+    text: colors[5],
+    error: colors[6],
+    errorExtra: colors[7],
+    colorfulError: colors[8],
+    colorfulErrorExtra: colors[9],
+  };
+}
+
+export function convertThemeToCustomColors(theme: Theme): CustomThemeColors {
+  return [
+    theme.bg,
+    theme.main,
+    theme.caret,
+    theme.sub,
+    theme.subAlt,
+    theme.text,
+    theme.error,
+    theme.errorExtra,
+    theme.colorfulError,
+    theme.colorfulErrorExtra,
+  ];
+}
+
+type ThemeCatalog = {
+  themes: Record<ThemeName, Theme>;
+  ThemesList: ThemeWithName[];
+};
 
 const themeState = createAppOwned(() => {
   const value = {
@@ -35,6 +74,7 @@ const themeState = createAppOwned(() => {
     randomThemeIndex: 0,
     preview: { phase: "idle" } as PreviewState,
     themesList: [] as string[],
+    catalog: undefined as ThemeCatalog | undefined,
     ignoreConfigEvent: false,
     backgroundRevision: 0,
     disposed: false,
@@ -50,6 +90,14 @@ const themeState = createAppOwned(() => {
 const state = appObject(themeState);
 export const getRandomTheme = (): ThemeIdentifier | null => state.randomTheme;
 
+async function loadThemeCatalog(): Promise<ThemeCatalog> {
+  const current = themeState();
+  if (current.catalog !== undefined) return current.catalog;
+  const loaded = await import("../constants/themes");
+  current.catalog = { themes: loaded.themes, ThemesList: loaded.ThemesList };
+  return current.catalog;
+}
+
 async function apply(
   themeName: ThemeIdentifier,
   customColorsOverride?: CustomThemeColors,
@@ -62,11 +110,18 @@ async function apply(
 
   const isCustom = themeName === "custom";
 
-  const themeColors = isCustom
-    ? convertCustomColorsToTheme(
-        customColorsOverride ?? peekConfig().customThemeColors,
-      )
-    : themes[themeName];
+  let themeColors: Theme;
+  if (isCustom) {
+    themeColors = convertCustomColorsToTheme(
+      customColorsOverride ?? peekConfig().customThemeColors,
+    );
+  } else if (themeName === "azure") {
+    themeColors = azureTheme;
+  } else {
+    const catalog = await loadThemeCatalog();
+    if (themeState().disposed) return;
+    themeColors = catalog.themes[themeName];
+  }
 
   setTheme({ ...themeColors, name: themeName, preview: isPreview });
 
@@ -176,7 +231,8 @@ export async function clearPreview(applyTheme = true): Promise<void> {
 }
 
 async function changeThemeList(): Promise<void> {
-  const themes = ThemesList;
+  const { ThemesList: themes } = await loadThemeCatalog();
+  if (themeState().disposed) return;
   if (peekConfig().randomTheme === "fav" && peekConfig().favThemes.length > 0) {
     state.themesList = peekConfig().favThemes;
   } else if (peekConfig().randomTheme === "light") {
@@ -204,6 +260,8 @@ async function changeThemeList(): Promise<void> {
 }
 
 export async function randomizeTheme(): Promise<void> {
+  const { themes } = await loadThemeCatalog();
+  if (themeState().disposed) return;
   if (state.themesList.length === 0) {
     await changeThemeList();
     if (state.themesList.length === 0) return;
