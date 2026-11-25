@@ -78,6 +78,8 @@ function ChromeRuntime(props: {
     onCleanup(() => removeBanner(banner));
   });
   onMount(() => {
+    // Warm the extended icon catalog once startup is finished so modals/routes never wait.
+    void import("../components/icons/data").catch(() => undefined);
     // Server configuration and authentication are independent startup requests.
     void ServerConfiguration.sync().catch((error: unknown) =>
       console.error("Failed to synchronize server configuration", error),
