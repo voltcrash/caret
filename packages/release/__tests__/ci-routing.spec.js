@@ -361,7 +361,7 @@ it("installs Chromium before frontend tests and preserves browser failure eviden
 it.each([
   "crates/caret-tui/src/main.rs",
   "crates/caret-tui/tests/storage.rs",
-  "scripts/terminal_release.py",
+  "scripts/terminal-release.ts",
   ".github/workflows/terminal-release.yml",
 ])("keeps terminal-only %s independent from web consumers", (file) => {
   expect(selected([file])).toEqual(["code"]);
