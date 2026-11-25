@@ -11,15 +11,13 @@ import {
 import { defaultInitialTyping } from "../features/typing/initial/default";
 import { TypingLeaf } from "../features/typing/page";
 import { initialTypingSnapshot } from "../server/initial-typing.server";
-import {
-  readTypingPreview,
-  selectTypingPreview,
-} from "../ts/config/typing-preview";
 
 const initialSnapshot = createIsomorphicFn()
   .server(initialTypingSnapshot)
   .client(async () => {
     const fallback = defaultInitialTyping();
+    const { readTypingPreview, selectTypingPreview } =
+      await import("../ts/config/typing-preview");
     const cached = readTypingPreview(document.cookie);
     const snapshot = selectTypingPreview(fallback, cached);
     if (snapshot.settings.keymapMode !== "off") {

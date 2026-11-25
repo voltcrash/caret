@@ -1,6 +1,13 @@
 import { z } from "zod";
 
 import type { FaSolidIcon } from "../../ts/types/font-awesome";
+import type { SettingsSection } from "./search";
+
+export {
+  sectionForTab,
+  type SettingsSection,
+  type SettingsUrlParams,
+} from "./search";
 
 const SettingsSectionSchema = z.enum([
   "behavior",
@@ -13,7 +20,6 @@ const SettingsSectionSchema = z.enum([
   "account",
   "dangerZone",
 ]);
-export type SettingsSection = z.infer<typeof SettingsSectionSchema>;
 
 /** Sidebar labels; server-safe so loading layouts can show them too. */
 export const settingsSections: Record<
@@ -57,23 +63,3 @@ export const SettingsUrlParamsSchema = z
     highlight: z.string(),
   })
   .partial();
-export type SettingsUrlParams = z.infer<typeof SettingsUrlParamsSchema>;
-
-const authenticatedSections: readonly SettingsSection[] = ["account"];
-
-/** Section a URL tab opens; unavailable sections fall back to behavior. */
-export function sectionForTab(
-  tab: SettingsUrlParams["tab"],
-  authenticated: boolean,
-): SettingsSection | undefined {
-  if (tab === undefined) return undefined;
-  const section =
-    tab === "authentication"
-      ? "account"
-      : tab === "blockedUsers"
-        ? "behavior"
-        : tab;
-  return authenticated || !authenticatedSections.includes(section)
-    ? section
-    : "behavior";
-}

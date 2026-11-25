@@ -5,7 +5,7 @@ import { createIsomorphicFn } from "@tanstack/solid-start";
 import { canPrefetch } from "./app/network.client";
 import { preloadStartup } from "./app/preload.client";
 import { createQueryClient } from "./app/query-client";
-import { parseSearch, stringifySearch } from "./app/search";
+import { parseSearch, stringifySearch } from "./app/search-codec";
 import { AppError } from "./components/app-error";
 import { RoutePending } from "./components/route-pending";
 import { routeTree } from "./routeTree.gen";

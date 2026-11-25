@@ -1,10 +1,6 @@
 import { projectEngineConfig } from "@caret/typing-engine/config";
 import type { Config as EngineConfig } from "@caret/typing-engine/config";
-import {
-  Config,
-  ConfigSchema,
-  CustomThemeColors,
-} from "@caret/schemas/configs";
+import type { Config, CustomThemeColors } from "@caret/schemas/configs";
 
 const obj: Omit<Config, keyof EngineConfig> = {
   theme: "azure",
@@ -183,10 +179,10 @@ const fieldOrder = [
 ] as const satisfies readonly (keyof Config)[];
 
 export function getDefaultConfig(): Config {
-  const defaults = ConfigSchema.parse({
+  const defaults = {
     ...structuredClone(obj),
     ...projectEngineConfig({}),
-  });
+  } as Config;
   // Enumeration order controls legacy full-import preference sequencing.
   return Object.fromEntries(
     fieldOrder.map((key) => [key, defaults[key]]),

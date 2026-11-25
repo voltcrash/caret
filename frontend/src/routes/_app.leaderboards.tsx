@@ -2,26 +2,24 @@ import type { JSXElement } from "solid-js";
 
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { stringifySearch, urlSearch } from "../app/search";
+import { stringifySearch } from "../app/search-codec";
 import { pageHead } from "../app/seo";
 import { prefetch } from "../data/prefetch";
 import { LeaderboardPage } from "../features/leaderboards/page";
-import { leaderboardOptions } from "../features/leaderboards/queries";
 import {
   applyUrlParams,
   defaultSelection,
-  LeaderboardUrlParamsSchema,
+  parseLeaderboardSearch,
   type LeaderboardUrlParams,
   type LeaderboardView,
   urlParams,
-} from "../features/leaderboards/selection";
+} from "../features/leaderboards/search";
 
 const viewOf = (search: LeaderboardUrlParams): LeaderboardView =>
   applyUrlParams(defaultSelection, search);
 
 export const Route = createFileRoute("/_app/leaderboards")({
-  validateSearch: (search: Record<string, unknown>) =>
-    urlSearch(LeaderboardUrlParamsSchema)(search),
+  validateSearch: parseLeaderboardSearch,
   loaderDeps: ({ search }) => {
     const view = viewOf(search);
     return { selection: view.selection, page: view.page };
@@ -29,6 +27,8 @@ export const Route = createFileRoute("/_app/leaderboards")({
   // Public first page only; private rank loads separately in the browser.
   loader: async ({ context, deps }) => {
     if (import.meta.env.CARET_OFFLINE) return;
+    const { leaderboardOptions } =
+      await import("../features/leaderboards/queries");
     await prefetch(
       context.queryClient,
       leaderboardOptions(deps.selection, deps.page),
