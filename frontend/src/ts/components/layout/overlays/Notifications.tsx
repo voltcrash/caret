@@ -1,5 +1,15 @@
-import { AnimationParams } from "animejs";
-import { For, JSXElement } from "solid-js";
+import {
+  Accessor,
+  createEffect,
+  createSignal,
+  For,
+  JSXElement,
+  on,
+  onCleanup,
+  onMount,
+  Setter,
+  untrack,
+} from "solid-js";
 
 import { getIsScreenshotting } from "../../../states/core";
 import {
@@ -10,10 +20,9 @@ import {
 } from "../../../states/notifications";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
-import { Anime } from "../../common/anime/Anime";
-import { AnimePresence } from "../../common/anime/AnimePresence";
-import { AnimeShow } from "../../common/anime/AnimeShow";
+import { applyReducedMotion } from "../../../utils/misc";
 import { Fa, FaProps } from "../../common/Fa";
+import { FadeShow } from "../../common/FadeShow";
 import { TextContent } from "../../common/TextContent";
 
 const levelConfig = {
@@ -40,73 +49,158 @@ const levelConfig = {
   },
 } as const;
 
-const enterInitial = { opacity: 0 } as Partial<AnimationParams>;
-const enterAnimate = { opacity: 1, duration: 125 } as AnimationParams;
-const exitAnimation = {
-  opacity: 0,
-  height: 0,
-  marginBottom: 0,
-  duration: 250,
-} as AnimationParams;
+type NotificationEntry = {
+  notification: Notification;
+  exiting: Accessor<boolean>;
+  setExiting: Setter<boolean>;
+};
 
-function NotificationItem(props: { notification: Notification }): JSXElement {
+function NotificationItem(props: {
+  entry: NotificationEntry;
+  onExited: (id: number) => void;
+}): JSXElement {
+  const notification = (): Notification => props.entry.notification;
   const config = (): (typeof levelConfig)[keyof typeof levelConfig] =>
-    levelConfig[props.notification.level] ?? levelConfig.notice;
+    levelConfig[notification().level] ?? levelConfig.notice;
 
   const iconProps = (): FaProps =>
-    props.notification.customIcon !== undefined
+    notification().customIcon !== undefined
       ? ({
-          icon: `fa-${props.notification.customIcon}`,
+          icon: `fa-${notification().customIcon}`,
           fixedWidth: true,
         } as FaProps)
       : { icon: config().icon };
 
-  const title = (): string => props.notification.customTitle ?? config().title;
+  const title = (): string => notification().customTitle ?? config().title;
+
+  let shellEl: HTMLDivElement | undefined;
+  let cardEl: HTMLDivElement | undefined;
+  let activeAnim: Animation | undefined;
+
+  onMount(() => {
+    const duration = applyReducedMotion(125);
+    if (!cardEl || duration <= 0) return;
+    activeAnim = cardEl.animate(
+      { opacity: ["0", "1"] },
+      { duration, easing: "ease-out" },
+    );
+  });
+
+  createEffect(
+    on(
+      () => props.entry.exiting(),
+      (exiting) => {
+        if (!exiting) return;
+        const duration = applyReducedMotion(250);
+        activeAnim?.cancel();
+        activeAnim = undefined;
+
+        if (!shellEl || duration <= 0) {
+          props.onExited(notification().id);
+          return;
+        }
+
+        const currentMargin = getComputedStyle(shellEl).marginBottom || "16px";
+        shellEl.style.gridTemplateRows = "0fr";
+        shellEl.style.opacity = "0";
+        shellEl.style.marginBottom = "0px";
+        const current = shellEl.animate(
+          {
+            gridTemplateRows: ["1fr", "0fr"],
+            opacity: ["1", "0"],
+            marginBottom: [currentMargin, "0px"],
+          },
+          { duration, easing: "ease-out" },
+        );
+        activeAnim = current;
+        void current.finished.then(
+          () => {
+            if (activeAnim !== current) return;
+            activeAnim = undefined;
+            props.onExited(notification().id);
+          },
+          () => undefined,
+        );
+      },
+      { defer: true },
+    ),
+  );
+
+  onCleanup(() => {
+    activeAnim?.cancel();
+    activeAnim = undefined;
+  });
 
   return (
     <div
       class={cn(
         "transition-opacity duration-125",
-        getFocus() &&
-          !props.notification.important &&
-          "pointer-events-none hidden",
+        getFocus() && !notification().important && "pointer-events-none hidden",
       )}
     >
-      <Anime
-        initial={enterInitial}
-        animate={enterAnimate}
-        exit={exitAnimation}
-        class={cn(
-          "pointer-events-auto mb-4 cursor-pointer overflow-hidden rounded-double border-2 border-solid backdrop-blur-[15px] select-none",
-          "relative grid text-[white]",
-          "transition-[background] duration-125",
-          "border-(--notif-border) bg-(--notif-bg) hover:bg-(--notif-bg-hover)",
-          props.notification.important && "important",
-        )}
-        style={{
-          "--notif-border": config().border,
-          "--notif-bg": config().bg,
-          "--notif-bg-hover": config().bgHover,
-        }}
-      >
+      <div ref={(el) => (shellEl = el)} class="mb-4 grid grid-rows-[1fr]">
         <div
-          class="p-4 text-sm wrap-anywhere"
-          onClick={() => removeNotification(props.notification.id)}
+          ref={(el) => (cardEl = el)}
+          class={cn(
+            "pointer-events-auto min-h-0 cursor-pointer overflow-hidden rounded-double border-2 border-solid backdrop-blur-[15px] select-none",
+            "relative grid text-[white]",
+            "transition-[background] duration-125",
+            "border-(--notif-border) bg-(--notif-bg) hover:bg-(--notif-bg-hover)",
+            notification().important && "important",
+          )}
+          style={{
+            "--notif-border": config().border,
+            "--notif-bg": config().bg,
+            "--notif-bg-hover": config().bgHover,
+          }}
         >
-          <div class="flex items-center gap-2 pb-2 opacity-80">
-            <Fa {...iconProps()} class="shrink-0" />
-            <span>{title()}</span>
-          </div>
-          <div>
-            <TextContent content={props.notification.message} />
+          <div
+            class="p-4 text-sm wrap-anywhere"
+            onClick={() => removeNotification(notification().id)}
+          >
+            <div class="flex items-center gap-2 pb-2 opacity-80">
+              <Fa {...iconProps()} class="shrink-0" />
+              <span>{title()}</span>
+            </div>
+            <div>
+              <TextContent content={notification().message} />
+            </div>
           </div>
         </div>
-      </Anime>
+      </div>
     </div>
   );
 }
 
 export function Notifications(): JSXElement {
+  const createEntry = (notification: Notification): NotificationEntry => {
+    const [exiting, setExiting] = createSignal(false);
+    return { notification, exiting, setExiting };
+  };
+
+  const [entries, setEntries] = createSignal<NotificationEntry[]>(
+    untrack(() => getNotifications().map(createEntry)),
+  );
+
+  createEffect(() => {
+    const live = getNotifications();
+    const liveIds = new Set(live.map((n) => n.id));
+    setEntries((prev) => {
+      const existingIds = new Set(prev.map((e) => e.notification.id));
+      const added = live.filter((n) => !existingIds.has(n.id)).map(createEntry);
+      for (const entry of prev) {
+        if (!liveIds.has(entry.notification.id) && !entry.exiting()) {
+          entry.setExiting(true);
+        }
+      }
+      return added.length > 0 ? [...added, ...prev] : prev;
+    });
+  });
+
+  const handleExited = (id: number): void => {
+    setEntries((prev) => prev.filter((entry) => entry.notification.id !== id));
+  };
+
   const stickyCount = (): number => {
     const focus = getFocus();
     return getNotifications().filter(
@@ -123,7 +217,7 @@ export function Notifications(): JSXElement {
         getIsScreenshotting() && "opacity-0",
       )}
     >
-      <AnimeShow when={stickyCount() > 1}>
+      <FadeShow when={stickyCount() > 1}>
         <button
           type="button"
           class="text-white pointer-events-auto mb-4 w-full overflow-hidden text-xs"
@@ -132,12 +226,10 @@ export function Notifications(): JSXElement {
           <Fa icon="fa-times" class="mr-1" />
           Clear all
         </button>
-      </AnimeShow>
-      <AnimePresence mode="list">
-        <For each={getNotifications()}>
-          {(notification) => <NotificationItem notification={notification} />}
-        </For>
-      </AnimePresence>
+      </FadeShow>
+      <For each={entries()}>
+        {(entry) => <NotificationItem entry={entry} onExited={handleExited} />}
+      </For>
     </div>
   );
 }
