@@ -1,4 +1,3 @@
-/* stylelint-disable no-descending-specificity -- Highlight modes are mutually exclusive; preserve state/effect precedence. */
 #words .newline {
   @apply w-[inherit];
 }
