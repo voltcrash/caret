@@ -1,3 +1,4 @@
+import { LANGUAGE_NAMES } from "@caret/schemas/language-names";
 import type { Language } from "@caret/schemas/languages";
 import type { Client, Mode } from "@caret/schemas/shared";
 
@@ -54,6 +55,7 @@ export type LeaderboardView = {
 
 const validTypes = new Set<string>(["allTime", "daily", "weekly"]);
 const validModes = new Set<string>(["time", "words", "quote", "custom", "zen"]);
+const validLanguages = new Set<string>(LANGUAGE_NAMES);
 
 function asString(value: unknown): string | undefined {
   if (typeof value === "string") return value;
@@ -111,7 +113,7 @@ export function parseLeaderboardSearch(
   let language: Language | undefined;
   if (search["language"] !== undefined && search["language"] !== null) {
     const value = asString(search["language"]);
-    if (value === undefined || !/^[a-zA-Z0-9_+-]+$/.test(value)) return cleared;
+    if (value === undefined || !validLanguages.has(value)) return cleared;
     language = value as Language;
   }
   let page: number | undefined;

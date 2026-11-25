@@ -63,6 +63,9 @@ describe("parseLeaderboardSearch", () => {
     );
     expect(parseLeaderboardSearch({ type: "monthly" })).toEqual(empty);
     expect(parseLeaderboardSearch({ language: "../bad" })).toEqual(empty);
+    expect(
+      parseLeaderboardSearch({ type: "allTime", language: "foo" }),
+    ).toEqual(empty);
     expect(parseLeaderboardSearch({ page: "abc" })).toEqual(empty);
   });
 });
