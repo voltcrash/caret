@@ -77,6 +77,34 @@ const BINDING_VERSION = 1;
 export { encodeText, decodeText, toEngineLog, toWebLog } from "./text";
 import { encodeText } from "./text";
 
+let warmedModule: Promise<WebAssembly.Module> | undefined;
+
+async function compileWasm(signal?: AbortSignal): Promise<WebAssembly.Module> {
+  signal?.throwIfAborted();
+  const response = await fetch(wasmUrl, { signal });
+  if (!response.ok) {
+    throw new Error(`Typing engine download failed: ${response.status}`);
+  }
+  const compiled =
+    typeof WebAssembly.compileStreaming === "function"
+      ? await WebAssembly.compileStreaming(response)
+      : await WebAssembly.compile(await response.arrayBuffer());
+  signal?.throwIfAborted();
+  return compiled;
+}
+
+/** Begin downloading and compiling Wasm early; failures clear so retries stay fresh. */
+// oxlint-disable-next-line typescript/promise-function-async -- Callers share the exact pending module compile.
+export function warmupEngineWasm(): Promise<WebAssembly.Module> {
+  if (warmedModule !== undefined) return warmedModule;
+  const pending = compileWasm().catch((error: unknown) => {
+    if (warmedModule === pending) warmedModule = undefined;
+    throw error;
+  });
+  warmedModule = pending;
+  return pending;
+}
+
 /** Module preparation is async; all prepared session commands are synchronous. */
 export async function loadEngine(signal?: AbortSignal): Promise<{
   createSession: (config: Partial<Config>, words: Text[]) => BrowserSession;
@@ -89,14 +117,35 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
   // Compile asynchronously, then use wasm-bindgen's synchronous guard. Two
   // concurrent async initializers could otherwise replace memory under handles.
   signal?.throwIfAborted();
-  const response = await fetch(wasmUrl, { signal });
-  if (!response.ok) {
-    throw new Error(`Typing engine download failed: ${response.status}`);
+  const pending = warmedModule;
+  warmedModule = undefined;
+  let compiled: WebAssembly.Module;
+  if (pending !== undefined) {
+    compiled = await new Promise<WebAssembly.Module>((resolve, reject) => {
+      const abortError = (): Error =>
+        signal?.reason instanceof Error
+          ? signal.reason
+          : new DOMException("Aborted", "AbortError");
+      if (signal?.aborted) {
+        reject(abortError());
+        return;
+      }
+      const onAbort = (): void => reject(abortError());
+      signal?.addEventListener("abort", onAbort, { once: true });
+      pending.then(
+        (mod) => {
+          signal?.removeEventListener("abort", onAbort);
+          resolve(mod);
+        },
+        (error: unknown) => {
+          signal?.removeEventListener("abort", onAbort);
+          reject(error instanceof Error ? error : new Error(String(error)));
+        },
+      );
+    });
+  } else {
+    compiled = await compileWasm(signal);
   }
-  const compiled =
-    typeof WebAssembly.compileStreaming === "function"
-      ? await WebAssembly.compileStreaming(response)
-      : await WebAssembly.compile(await response.arrayBuffer());
   signal?.throwIfAborted();
   const module = initSync({ module: compiled });
   if (binding_version() !== BINDING_VERSION) {
