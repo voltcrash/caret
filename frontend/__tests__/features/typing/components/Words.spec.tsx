@@ -685,6 +685,45 @@ describe("Words layout", () => {
     });
   });
 
+  it("preserves line jump state when a new jump supersedes one in flight", async () => {
+    words.push("third", 0);
+    words.push("fourth", 0);
+    await layout();
+    setConfigStore("smoothLineScroll", true);
+    size(word(1), { offsetTop: 30 });
+    size(word(2), { offsetTop: 50 });
+    size(word(3), { offsetTop: 70 });
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    mocks.activeIndex = 2;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    const firstAnim = element.getAnimations()[0];
+    expect(firstAnim).toBeDefined();
+    const firstFinished = firstAnim?.finished;
+    expect(ui.lineState.lineTransition).toBe(true);
+    expect(ui.lineState.currentLinesJumping).toBe(1);
+
+    mocks.activeIndex = 3;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    await firstFinished?.catch(() => undefined);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(ui.lineState.lineTransition).toBe(true);
+    expect(ui.lineState.currentLinesJumping).toBe(2);
+
+    const secondAnim = element.getAnimations()[0];
+    expect(secondAnim).toBeDefined();
+    secondAnim?.finish();
+    await vi.waitFor(() => {
+      expect(ui.lineState.lineTransition).toBe(false);
+      expect(ui.lineState.currentLinesJumping).toBe(0);
+    });
+  });
+
   it("removes completed lines after the first line jump", async () => {
     words.push("third", 0);
     await layout();

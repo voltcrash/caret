@@ -29,7 +29,10 @@ class WordsScrollController {
   private easingY: CaretEasing = linearEasing;
   private yAnimation: Animation | null = null;
   private yToken = 0;
-  private yCancelReason: "superseded" | "reset" | null = null;
+  private readonly yCancelReasons = new WeakMap<
+    Animation,
+    "superseded" | "reset"
+  >();
 
   private readonly element: HTMLElement;
 
@@ -133,18 +136,17 @@ class WordsScrollController {
       { duration, easing: easing.css },
     );
     this.yAnimation = animation;
-    this.yCancelReason = null;
     try {
       await animation.finished;
     } catch {
-      return this.yCancelReason ?? "reset";
+      return this.yCancelReasons.get(animation) ?? "reset";
     }
     if (this.yAnimation === animation) {
       this.yAnimation = null;
       this.fromY = this.toY;
     }
     if (token === this.yToken) return "completed";
-    return this.yCancelReason ?? "superseded";
+    return this.yCancelReasons.get(animation) ?? "superseded";
   }
 
   public resetY(): void {
@@ -172,7 +174,7 @@ class WordsScrollController {
 
   private cancelY(reason: "superseded" | "reset"): void {
     if (this.yAnimation !== null) {
-      this.yCancelReason = reason;
+      this.yCancelReasons.set(this.yAnimation, reason);
       this.yAnimation.cancel();
       this.yAnimation = null;
     }
