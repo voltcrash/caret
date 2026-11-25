@@ -1,8 +1,7 @@
-import { JSXElement, onCleanup } from "solid-js";
+import { JSXElement, onCleanup, Show } from "solid-js";
 
-import { AnimeMatch } from "#shared/components/common/anime/AnimeMatch.tsx";
-import { AnimeSwitch } from "#shared/components/common/anime/index.ts";
 import { Button } from "#shared/components/common/Button.tsx";
+import { FadeSwitch } from "#shared/components/common/FadeSwitch.tsx";
 import { configMetadata } from "#shared/config/metadata.tsx";
 import { setConfig } from "#shared/config/setters.ts";
 import { getConfig } from "#shared/config/store.ts";
@@ -68,39 +67,13 @@ export function Theme(): JSXElement {
         </div>
       }
       fullWidthInputs={
-        // <AnimeConditional
-        //   exitBeforeEnter
-        //   if={!getConfig.customTheme}
-        //   then={<PresetThemes />}
-        //   else={<CustomThemeEditor customThemes={customThemes()} />}
-        // />
-        // <AnimePresence exitBeforeEnter>
-
-        //   </AnimePresence>
-        <AnimeSwitch
-          exitBeforeEnter
-          animeProps={{
-            initial: {
-              opacity: 0,
-              duration: 125,
-            },
-            animate: {
-              opacity: 1,
-              duration: 125,
-            },
-            exit: {
-              opacity: 0,
-              duration: 125,
-            },
-          }}
-        >
-          <AnimeMatch when={!getConfig.customTheme}>
-            <PresetThemes />
-          </AnimeMatch>
-          <AnimeMatch when={getConfig.customTheme}>
-            <CustomThemeEditor customThemes={customThemes()} />
-          </AnimeMatch>
-        </AnimeSwitch>
+        <FadeSwitch value={getConfig.customTheme}>
+          {(custom) => (
+            <Show when={custom()} fallback={<PresetThemes />}>
+              <CustomThemeEditor customThemes={customThemes()} />
+            </Show>
+          )}
+        </FadeSwitch>
       }
     />
   );
