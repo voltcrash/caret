@@ -209,20 +209,31 @@ export async function fadeOutForRestart(
 ): Promise<void> {
   const el =
     source === "resultPage" ? getResultElement() : getTypingTestElement();
+  const duration = getRestartAnimationTime(noAnim);
+  if (duration === 0) {
+    if (el !== undefined) el.style.opacity = "0";
+    return;
+  }
   await animateAsync(el, {
     opacity: 0,
-    duration: getRestartAnimationTime(noAnim),
+    duration,
   });
 }
 
 export async function fadeInAfterRestart(noAnim: boolean): Promise<void> {
   const typingTestEl = getTypingTestElement();
+  const duration = getRestartAnimationTime(noAnim);
+  if (duration === 0) {
+    setClass(typingTestEl, "hidden", false);
+    typingTestEl.style.opacity = "1";
+    return;
+  }
   await animateAsync(typingTestEl, {
     opacity: [0, 1],
     onBegin: () => {
       setClass(typingTestEl, "hidden", false);
     },
-    duration: getRestartAnimationTime(noAnim),
+    duration,
   });
 }
 

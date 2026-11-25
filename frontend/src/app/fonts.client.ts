@@ -81,6 +81,7 @@ export async function applyFontFamily(): Promise<void> {
     if (preferredRule !== "") extraRules.push(preferredRule);
   }
   setFontFace(extraRules.join("\n"));
+  document.getElementById("fontBootstrap")?.remove();
 
   const fonts = [
     `"${font}"`,
