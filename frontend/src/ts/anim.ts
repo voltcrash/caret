@@ -87,6 +87,12 @@ export async function animateAsync(
     { opacity: [String(from), String(to)] },
     { duration, easing: options.easing ?? "ease-out" },
   );
+  // Anchor startTime to the timeline so opacity fades leave WAAPI's
+  // play-pending state immediately instead of stalling 1-2 frames at `from`.
+  const timelineNow = animation.timeline?.currentTime;
+  if (typeof timelineNow === "number" && Number.isFinite(timelineNow)) {
+    animation.startTime = timelineNow;
+  }
   animations.set(element, animation);
 
   try {
