@@ -1,4 +1,3 @@
-import { languageHashes } from "virtual:language-hashes";
 import {
   initialTypingState,
   initialContentKey,
@@ -25,7 +24,11 @@ import {
 } from "@caret/schemas/languages";
 import { QuoteDataSchema } from "@caret/schemas/quotes";
 import { peekConfig } from "#shared/config/store.ts";
-import { cachedFetchJson, getLanguage } from "#shared/utils/json-data.ts";
+import {
+  cachedFetchJson,
+  getLanguage,
+  getLanguageHash,
+} from "#shared/utils/json-data.ts";
 import { removeLanguageSize } from "#shared/utils/strings.ts";
 import { setCurrentQuote, getCurrentQuote } from "#shared/states/test.ts";
 import { getSelectedQuoteId } from "#features/typing/state/quote-selection.ts";
@@ -213,7 +216,7 @@ export const getContentHost = createAppOwned(() => {
           ? ""
           : await initialContentKey(
               peekConfig(),
-              languageHashes[language.name] ?? "",
+              (await getLanguageHash(language.name)) ?? "",
               engineHash,
             );
       lease.signal.throwIfAborted();

@@ -1,6 +1,6 @@
-import { Language, LanguageObject } from "@caret/schemas/languages";
-import { LayoutObject } from "@caret/schemas/layouts";
-import { languageHashes } from "virtual:language-hashes";
+import type { Language, LanguageObject } from "@caret/schemas/languages";
+import type { LayoutObject } from "@caret/schemas/layouts";
+import { englishHash } from "virtual:english-hash";
 import { isDevEnvironment } from "./env";
 import { toHex } from "./strings";
 import {
@@ -55,28 +55,37 @@ export async function getLayout(layoutName: string): Promise<LayoutObject> {
   return await cachedFetchJson<LayoutObject>(`/layouts/${layoutName}.json`);
 }
 
+export async function getLanguageHash(
+  lang: Language,
+): Promise<string | undefined> {
+  if (lang === "english") return englishHash;
+  const { languageHashes } = await import("virtual:language-hashes");
+  return languageHashes[lang];
+}
+
 /**
  * Content-addressed in production so the service worker can serve repeat
  * visits from cache without a network round trip.
  */
-export function getLanguageUrl(lang: Language): string {
-  const hash = languageHashes[lang] as string | undefined;
+export function getLanguageUrl(lang: Language, hash?: string): string {
+  const resolved = hash ?? (lang === "english" ? englishHash : undefined);
   const url = `/languages/${lang}.json`;
-  return hash === undefined ? url : `${url}?v=${hash.slice(0, 16)}`;
+  return resolved === undefined ? url : `${url}?v=${resolved.slice(0, 16)}`;
 }
 
 const languageLoader = createLanguageLoader({
   maxEntries: 8,
   fetchJson,
-  getUrl: getLanguageUrl,
+  getUrl: async (lang) => getLanguageUrl(lang, await getLanguageHash(lang)),
   verify: async (lang, loaded) => {
     if (isDevEnvironment()) return;
+    const expected = await getLanguageHash(lang);
     //check the content to make it less easy to manipulate
     const encoder = new TextEncoder();
     const data = encoder.encode(JSON.stringify(loaded, null, 0));
     const hashBuffer = await cryptoSubtle.digest("SHA-256", data);
     const hash = toHex(hashBuffer);
-    if (hash !== languageHashes[lang]) {
+    if (hash !== expected) {
       throw new Error(
         "Integrity check failed. Try refreshing the page. If this error persists, please contact support.",
       );
