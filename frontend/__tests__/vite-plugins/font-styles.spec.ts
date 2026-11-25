@@ -38,7 +38,7 @@ async function generate(): Promise<{
   };
 }
 
-it("preserves font families, weights, and preview URLs", async () => {
+it("emits only startup font families with swap display and defers previews", async () => {
   const css = (await generate()).css.get("fonts.css") ?? "";
   const faces = new Map(
     [...css.matchAll(/@font-face\s*{([^}]+)}/g)].map((match) => [
@@ -47,18 +47,15 @@ it("preserves font families, weights, and preview URLs", async () => {
     ]),
   );
   expect(faces.has("Vazirharf")).toBe(true);
-  for (const [name, font] of Object.entries(Fonts)) {
+  for (const name of ["Roboto_Mono", "Lexend_Deca"] as const) {
+    const font = Fonts[name];
     const family = name.replaceAll("_", " ");
-    if (font.systemFont) {
-      expect(faces.has(family)).toBe(false);
-      continue;
-    }
     expect(faces.get(family)).toContain(`font-weight: ${font.weight ?? 400};`);
     expect(faces.get(family)).toContain(`url("/webfonts/${font.fileName}")`);
-    expect(faces.get(`${family} Preview`)).toContain(
-      `url("/webfonts/${font.fileName}")`,
-    );
+    expect(faces.get(family)).toContain("font-display: swap;");
+    expect(faces.has(`${family} Preview`)).toBe(false);
   }
+  expect(faces.has("Fira Code")).toBe(false);
 });
 
 it("does not emit icon font faces or the full icon stylesheet", async () => {

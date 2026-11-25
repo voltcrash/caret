@@ -14,6 +14,7 @@ import * as FunboxValidation from "../../src/ts/config/funbox-validation";
 import * as ConfigValidation from "../../src/ts/config/validation";
 import { configEvent } from "../../src/ts/events/config";
 import * as RemoteConfig from "../../src/ts/config/sync";
+import * as CoreState from "../../src/ts/states/core";
 import * as Notifications from "../../src/ts/states/notifications";
 import * as TypingHost from "../../src/ts/typing-host";
 import * as TestState from "../../src/ts/states/test";
@@ -54,6 +55,7 @@ describe("Config", () => {
     );
     const dispatchConfigEventMock = vi.spyOn(configEvent, "dispatch");
     const dbSaveConfigMock = vi.spyOn(RemoteConfig, "saveConfig");
+    const isAuthenticatedMock = vi.spyOn(CoreState, "isAuthenticated");
     const notificationAddMock = vi.spyOn(
       Notifications,
       "showNoticeNotification",
@@ -67,6 +69,7 @@ describe("Config", () => {
       isConfigValueValidMock,
       dispatchConfigEventMock,
       dbSaveConfigMock,
+      isAuthenticatedMock,
       notificationAddMock,
       miscTriggerResizeMock,
       stateIsTestActiveMock,
@@ -80,6 +83,7 @@ describe("Config", () => {
       isConfigValueValidMock.mockReturnValue(true);
       canSetConfigWithCurrentFunboxesMock.mockReturnValue(true);
       dbSaveConfigMock.mockResolvedValue();
+      isAuthenticatedMock.mockReturnValue(true);
       stateIsTestActiveMock.mockReturnValue(true);
       nativeNoQuitMock.mockReturnValue(false);
 
@@ -320,9 +324,12 @@ describe("Config", () => {
       //THEN
       //wait for debounce
       await vi.advanceTimersByTimeAsync(2500);
+      vi.useRealTimers();
 
       //save
-      expect(dbSaveConfigMock).toHaveBeenCalledWith({ numbers: true });
+      await vi.waitFor(() => {
+        expect(dbSaveConfigMock).toHaveBeenCalledWith({ numbers: true });
+      });
     });
 
     it("saves configOverride values to localstorage if nosave=false", async () => {
@@ -335,11 +342,14 @@ describe("Config", () => {
       //THEN
       //wait for debounce
       await vi.advanceTimersByTimeAsync(2500);
+      vi.useRealTimers();
 
       //save
-      expect(dbSaveConfigMock).toHaveBeenCalledWith({
-        minWpmCustomSpeed: 120,
-        minWpm: "custom",
+      await vi.waitFor(() => {
+        expect(dbSaveConfigMock).toHaveBeenCalledWith({
+          minWpmCustomSpeed: 120,
+          minWpm: "custom",
+        });
       });
     });
 
@@ -426,6 +436,9 @@ describe("Config", () => {
       const saveConfigMock = vi
         .spyOn(RemoteConfig, "saveConfig")
         .mockResolvedValue();
+      const authMock = vi
+        .spyOn(CoreState, "isAuthenticated")
+        .mockReturnValue(true);
       const successMock = vi.spyOn(Notifications, "showSuccessNotification");
       const errorMock = vi.spyOn(Notifications, "showErrorNotification");
 
@@ -473,7 +486,9 @@ describe("Config", () => {
         expect(getConfig()).not.toHaveProperty("ads");
         expect(getConfigStore).not.toHaveProperty("ads");
         expect(getConfigStore).toMatchObject(supportedSettings);
-        expect(saveConfigMock).toHaveBeenCalledWith(getConfig());
+        await vi.waitFor(() => {
+          expect(saveConfigMock).toHaveBeenCalledWith(getConfig());
+        });
         expect(errorMock).not.toHaveBeenCalled();
 
         const json = ConfigUtils.exportConfigToJson();
@@ -489,6 +504,7 @@ describe("Config", () => {
         expect(errorMock).not.toHaveBeenCalled();
       } finally {
         saveConfigMock.mockRestore();
+        authMock.mockRestore();
         successMock.mockRestore();
         errorMock.mockRestore();
       }
@@ -655,6 +671,7 @@ vi.mock("../../src/ts/engine/owner.client", () => ({
 vi.mock("../../src/ts/config/funbox-validation", { spy: true });
 vi.mock("../../src/ts/config/validation", { spy: true });
 vi.mock("../../src/ts/config/sync", { spy: true });
+vi.mock("../../src/ts/states/core", { spy: true });
 vi.mock("../../src/ts/states/notifications", { spy: true });
 vi.mock("../../src/ts/typing-host", { spy: true });
 vi.mock("../../src/ts/states/test", { spy: true });

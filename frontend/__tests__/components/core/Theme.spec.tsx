@@ -78,9 +78,12 @@ describe("Theme component", () => {
     expect(style.innerHTML).toContain("--bg-color: #f00;");
   });
 
-  it("applies decorations synchronously without a stylesheet or loader", () => {
+  it("applies decorations inline without a stylesheet or loader", async () => {
     const { css } = renderComponent();
-    expect(css.textContent).toContain("@keyframes phantom-glow");
+    vi.useRealTimers();
+    await vi.waitFor(() => {
+      expect(css.textContent).toContain("@keyframes phantom-glow");
+    });
     expect(document.querySelector("link#currentTheme")).toBeNull();
     expect(loaderShowMock).not.toHaveBeenCalled();
     expect(loaderHideMock).not.toHaveBeenCalled();
