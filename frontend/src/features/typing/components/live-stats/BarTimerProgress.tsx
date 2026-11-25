@@ -1,6 +1,5 @@
 import { createEffect, onCleanup } from "solid-js";
 
-import { Anime } from "#shared/components/common/anime/index.ts";
 import { getConfig } from "#shared/config/store.ts";
 import { cn } from "#shared/utils/cn.ts";
 import { applyReducedMotion } from "#shared/utils/misc.ts";
@@ -67,9 +66,11 @@ export function BarTimerProgress() {
 
   return (
     <div class="relative z-99" style={{ opacity: getConfig.timerOpacity }}>
-      <Anime
-        initial={{ opacity: 0 }}
-        animation={{ opacity: shown() ? 1 : 0, duration: FADE_MS }}
+      <div
+        class={cn(
+          "transition-opacity duration-125 motion-reduce:duration-0",
+          shown() ? "opacity-100" : "opacity-0",
+        )}
       >
         <div
           ref={(el) => (barEl = el)}
@@ -78,7 +79,7 @@ export function BarTimerProgress() {
             liveStatsBgColor(),
           )}
         ></div>
-      </Anime>
+      </div>
     </div>
   );
 }
