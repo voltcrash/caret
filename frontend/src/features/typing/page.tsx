@@ -1,8 +1,16 @@
 import { ClientOnly } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
-import { createMemo, lazy, Show, Suspense, type JSXElement } from "solid-js";
+import {
+  createMemo,
+  lazy,
+  onCleanup,
+  Show,
+  Suspense,
+  type JSXElement,
+} from "solid-js";
 import { isServer, NoHydration } from "solid-js/web";
 
+import type { EarlyTypingWindow } from "../../app/early-typing-bootstrap";
 import type { InitialTypingSnapshot } from "../../ts/config/typing-preview";
 
 import { isTypingReady } from "../../app/startup";
@@ -25,7 +33,14 @@ if (!import.meta.env.SSR) void TypingPage.preload();
 export function TypingLeaf(props: {
   initial: InitialTypingSnapshot;
 }): JSXElement {
-  if (!isServer) initializeSnapshot(props.initial);
+  if (!isServer) {
+    initializeSnapshot(props.initial);
+    onCleanup(() => {
+      const win = window as EarlyTypingWindow;
+      win.__caretEarlyTyping?.dispose();
+      delete win.__caretEarlyTyping;
+    });
+  }
   // Preserve the displayed page during later restarts; only a new mount waits.
   const ready = createMemo<boolean>(
     (previous) => previous || (!isServer && isTypingReady()),

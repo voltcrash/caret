@@ -1,5 +1,3 @@
-import type { ContentRequest } from "@caret/typing-engine/browser.client";
-import { EngineFailure } from "@caret/typing-engine/failure";
 import { encodeText } from "@caret/typing-engine/text";
 import type {
   EarlyTypingBridge,
@@ -13,10 +11,11 @@ import {
   insertionLayout,
   observeInputView,
 } from "../input/handlers/before-insert-text";
-import { getContentHost } from "../runtime/content/host.client";
 import { getEngineSession } from "../runtime/session.client";
 import * as TestUI from "../runtime/test/ui";
 import * as TestWords from "../runtime/test/words";
+
+const MAX_EARLY_TYPING_AGE_MS = 120_000;
 
 function takeEarlyTyping(): EarlyTypingBridge | undefined {
   if (typeof window === "undefined") return undefined;
@@ -66,40 +65,28 @@ function wordsMatchPrefix(earlyWords: readonly string[]): boolean {
   return true;
 }
 
-async function supplyIfAwaiting(
-  request: ContentRequest,
-  isCurrent: () => boolean,
-): Promise<boolean> {
-  try {
-    await getContentHost().supplyActive(request);
-    return true;
-  } catch (error) {
-    if (
-      !isCurrent() ||
-      (error instanceof DOMException && error.name === "AbortError") ||
-      (error instanceof EngineFailure && error.code === "staleRequest")
-    ) {
-      return false;
-    }
-    throw error;
-  }
-}
-
 /**
  * Replays keystrokes captured against the SSR preview into the prepared Wasm
  * session with original timestamps, advancing elapsed whole-second ticks so
  * per-second WPM history stays accurate without triggering slow-timer drift.
  */
-export async function replayEarlyTyping(): Promise<{
+export function replayEarlyTyping(): {
   replayed: boolean;
   tapped: boolean;
-}> {
+} {
   const bridge = takeEarlyTyping();
   if (bridge === undefined) return { replayed: false, tapped: false };
   const { events, words, tapped } = bridge;
   const session = getEngineSession();
+  const firstEvent = events[0];
+  const now = performance.now();
+  const maxAge =
+    peekConfig().mode === "time" && peekConfig().time > 0
+      ? Math.min(MAX_EARLY_TYPING_AGE_MS, peekConfig().time * 1000 + 5_000)
+      : MAX_EARLY_TYPING_AGE_MS;
   if (
-    events.length === 0 ||
+    firstEvent === undefined ||
+    now - firstEvent.now > maxAge ||
     !session.isPrepared() ||
     !isConfigCompatible() ||
     !wordsMatchPrefix(words)
@@ -157,13 +144,8 @@ export async function replayEarlyTyping(): Promise<{
           },
         });
         replayedAny = true;
-        if (
-          update.awaitingContent &&
-          update.contentRequest !== undefined &&
-          !(await supplyIfAwaiting(update.contentRequest, lease.isCurrent))
-        ) {
-          break;
-        }
+        // Never await mid-replay; an async supply would let the timer drift.
+        if (update.awaitingContent) break;
       } else {
         observeInputView(event.now);
         const current = session.getCurrentInput();

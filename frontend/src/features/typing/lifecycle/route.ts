@@ -34,6 +34,30 @@ import {
   replayEarlyTyping,
 } from "../initial/early-input.client";
 
+function applyPostReadyFocus(early: {
+  replayed: boolean;
+  tapped: boolean;
+}): void {
+  if (!areTestElementsMounted()) return;
+  if (early.replayed) {
+    if (!getTestSession().isActive()) return;
+    if (!isCoarsePointer() || early.tapped) TestUI.focusWords(true);
+    Caret.show(true);
+    return;
+  }
+  if (early.tapped && isCoarsePointer()) {
+    TestUI.focusWords();
+    return;
+  }
+  if (
+    !isCoarsePointer() &&
+    (document.activeElement === null ||
+      document.activeElement === document.body)
+  ) {
+    TestUI.focusWords(true);
+  }
+}
+
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {
   const mount = captureTypingMount();
@@ -48,7 +72,14 @@ export async function enterTypingRoute(): Promise<void> {
     resetIncompleteTests();
     await restart({ noAnim: true });
     if (!mount.isCurrent()) return;
-    early = await replayEarlyTyping();
+    try {
+      early = replayEarlyTyping();
+    } catch (replayError) {
+      console.error("Early typing replay failed; resetting test", replayError);
+      early = { replayed: false, tapped: false };
+      await restart({ noAnim: true });
+      if (!mount.isCurrent()) return;
+    }
     initialized = true;
   } catch (error) {
     if (!mount.isCurrent()) return;
@@ -62,22 +93,7 @@ export async function enterTypingRoute(): Promise<void> {
     // release the startup cover over a replacement typing route.
     if (mount.isCurrent()) {
       setTypingReady(true);
-      if (initialized && areTestElementsMounted()) {
-        if (early.replayed) {
-          if (!isCoarsePointer() || early.tapped) {
-            TestUI.focusWords(true);
-          }
-          Caret.show(true);
-        } else if (early.tapped && isCoarsePointer()) {
-          TestUI.focusWords();
-        } else if (
-          !isCoarsePointer() &&
-          (document.activeElement === null ||
-            document.activeElement === document.body)
-        ) {
-          TestUI.focusWords(true);
-        }
-      }
+      if (initialized) applyPostReadyFocus(early);
     }
   }
 }
