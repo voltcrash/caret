@@ -45,10 +45,20 @@ export function InitialTypingView(props: {
     config().mode === "time" ? [15, 30, 60, 120] : [10, 25, 50, 100];
   const count = () =>
     config().mode === "time" ? config().time : config().words;
+  const previewMeta = () =>
+    JSON.stringify({
+      mode: config().mode,
+      time: config().time,
+      words: config().words,
+      language: config().language,
+      punctuation: config().punctuation,
+      numbers: config().numbers,
+    });
   return (
     <div
       class="page pageTest full-width content-grid relative col-[full-width] grid h-full grid-rows-[1fr_auto_1fr]"
       data-initial-typing
+      data-initial-preview={previewMeta()}
     >
       <div class="full-width">
         <div
@@ -189,7 +199,10 @@ export function InitialTypingView(props: {
               )}
             </For>
           </div>
-          <div class="pointer-events-none absolute top-[0.25em] left-[0.3em] h-[1em] w-[0.1em] rounded bg-caret"></div>
+          <div
+            data-initial-caret
+            class="pointer-events-none absolute top-[0.25em] left-[0.3em] h-[1em] w-[0.1em] rounded bg-caret"
+          ></div>
         </div>
         <InitialKeymap snapshot={props.snapshot} />
         <Button

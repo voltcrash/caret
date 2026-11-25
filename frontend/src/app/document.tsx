@@ -4,12 +4,13 @@ import { HeadContent, Scripts, useRouter } from "@tanstack/solid-router";
 import { HydrationScript } from "solid-js/web";
 
 import warnings from "../html/warnings.html?raw";
+import { earlyTypingBootstrap } from "./early-typing-bootstrap";
 import { appearanceBootstrap, themeBootstrap } from "./theme-bootstrap";
 
 /** Trusted static fallback source; rendered in the initial response and kept on hydration. */
 export function Document(props: { children: JSX.Element }): JSX.Element {
   const router = useRouter();
-  const bootstrap = themeBootstrap + appearanceBootstrap;
+  const bootstrap = themeBootstrap + appearanceBootstrap + earlyTypingBootstrap;
   const nonce = () => router.options.ssr?.nonce;
   const fallback = () =>
     warnings
