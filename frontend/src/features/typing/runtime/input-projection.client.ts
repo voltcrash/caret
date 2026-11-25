@@ -41,7 +41,6 @@ import {
 import { flash } from "#features/typing/state/keymap.ts";
 import { getActiveFunboxesWithFunction } from "./funbox/list";
 import * as Funbox from "./funbox/funbox";
-import { setLowFpsMode } from "#shared/anim.ts";
 import { applyEngineRecovery } from "./recovery.client";
 
 /** Subscriptions and imperative rendering belong to the mounted typing component. */
@@ -116,7 +115,6 @@ export function useEngineInputProjection(): void {
         }
         if (update.slowTimer) {
           SlowTimer.set();
-          setLowFpsMode();
         }
         if (
           events.some(

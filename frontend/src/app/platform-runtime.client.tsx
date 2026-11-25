@@ -2,7 +2,6 @@ import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
 import { enable as glarsesMode } from "../features/typing/state/glarses-mode";
-import { applyEngineSettings } from "../ts/anim";
 import { Theme } from "../ts/components/core/Theme";
 import { ThemeEvents } from "../ts/components/core/ThemeEvents";
 import { loadFromLocalStorage } from "../ts/config/lifecycle";
@@ -41,7 +40,6 @@ export default function BrowserRuntime(): JSXElement {
         toggleSentryDebug,
       }),
     );
-    applyEngineSettings();
     // Policies are shared with the typing route; preferences/themes still load
     // independently, and the typing failure UI owns download retry.
     if (window.location.pathname !== "/engine-proof") {

@@ -15,7 +15,6 @@ import { highlight } from "#features/typing/state/keymap.ts";
 import * as LayoutfluidFunboxTimer from "../funbox/layoutfluid-funbox-timer";
 import { KeymapLayout, Layout } from "@caret/schemas/configs";
 import * as SoundController from "#shared/controllers/sound-controller.ts";
-import { clearLowFpsMode } from "#shared/anim.ts";
 import { createTimerScheduler } from "./timer-scheduler";
 import { getCurrentInput, getTestSession } from "../events/data";
 import { setCurrentLiveStats } from "#features/typing/state/live-stats.ts";
@@ -36,7 +35,6 @@ function createTiming(): {
   }
   function clear(): void {
     scheduler.stop();
-    clearLowFpsMode();
   }
   function layoutfluid(time: number): void {
     if (timerDebug) console.time("layoutfluid");

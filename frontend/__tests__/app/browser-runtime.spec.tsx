@@ -14,7 +14,6 @@ const state = vi.hoisted(() => ({
   theme: vi.fn(),
 }));
 vi.mock("../../src/app/browser-integrity", () => ({ lockMath: vi.fn() }));
-vi.mock("../../src/ts/anim", () => ({ applyEngineSettings: vi.fn() }));
 vi.mock("../../src/ts/config/lifecycle", () => ({
   loadFromLocalStorage: state.load,
 }));
