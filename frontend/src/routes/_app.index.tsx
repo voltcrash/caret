@@ -1,7 +1,7 @@
 import { wasmUrl } from "@caret/typing-engine/asset";
 import { createFileRoute } from "@tanstack/solid-router";
 import { createIsomorphicFn } from "@tanstack/solid-start";
-import { englishHash } from "virtual:language-hashes";
+import { englishHash } from "virtual:english-hash";
 
 import { homeDescription, homeTitle, pageHead } from "../app/seo";
 import {

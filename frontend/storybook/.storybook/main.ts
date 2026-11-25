@@ -31,14 +31,20 @@ function stubVirtualEnvConfig(): Plugin {
 function stubVirtualLanguageHashes(): Plugin {
   const id = "virtual:language-hashes";
   const resolved = `\0${id}`;
+  const englishId = "virtual:english-hash";
+  const resolvedEnglish = `\0${englishId}`;
   return {
     name: "stub-virtual-language-hashes",
     resolveId(source) {
       if (source === id) return resolved;
+      if (source === englishId) return resolvedEnglish;
     },
     load(loadId) {
       if (loadId === resolved) {
-        return `export const languageHashes = {};`;
+        return `export const languageHashes = {}; export const englishHash = undefined;`;
+      }
+      if (loadId === resolvedEnglish) {
+        return `export const englishHash = undefined;`;
       }
     },
   };
