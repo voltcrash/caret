@@ -164,12 +164,9 @@ vi.mock("../../../../src/features/typing/components/MonkeyPower", () => ({
 vi.mock("../../../../src/ts/anim", () => ({
   animateAsync: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("animejs", async (original) => ({
-  ...(await original<typeof import("animejs")>()),
-  animate: vi.fn(),
-}));
 
 import { Words } from "../../../../src/features/typing/components/Words";
+import { tapeScrollEasing } from "../../../../src/features/typing/components/words/caret-easing";
 import { getWordElement } from "../../../../src/features/typing/components/words/elements";
 import { createNewlineSpacers } from "../../../../src/features/typing/components/words/letters";
 import * as ui from "../../../../src/features/typing/runtime/test/ui";
@@ -509,11 +506,12 @@ describe("Words layout", () => {
     setConfigStore("tapeMargin", 25);
     mocks.activeIndex = 1;
     await ui.scrollTape(true);
-    expect(element.style.marginLeft).toBe("0px");
+    expect(element.style.translate).toBe("0px");
+    expect(element.style.marginLeft).toBe("");
     expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
       newValue: -100,
       duration: 0,
-      ease: "inOut(1.25)",
+      ease: tapeScrollEasing,
     });
     mocks.resultVisible = true;
     mocks.caret.handleTapeScroll.mockClear();
@@ -530,7 +528,29 @@ describe("Words layout", () => {
       size(letter, { offsetWidth: 10 });
     }
     await ui.scrollTape(true);
-    expect(element.style.marginLeft).toBe("80px");
+    expect(element.style.translate).toBe("80px");
+  });
+
+  it("animates smooth tape scroll with compositor translate", async () => {
+    await layout();
+    setConfigStore("tapeMode", "word");
+    setConfigStore("tapeMargin", 25);
+    setConfigStore("smoothLineScroll", true);
+    await ui.scrollTape(true);
+    expect(element.style.translate).toBe("100px");
+
+    mocks.activeIndex = 1;
+    await ui.scrollTape(false);
+    expect(element.style.translate).toBe("0px");
+    expect(element.style.marginLeft).toBe("");
+    const anims = element.getAnimations();
+    expect(anims).toHaveLength(1);
+    const effect = anims[0]?.effect as KeyframeEffect;
+    expect(effect.getKeyframes().map((f) => f["translate"])).toEqual([
+      "100px",
+      "0px",
+    ]);
+    for (const a of anims) a.cancel();
   });
 
   it("indents tape lines that follow newline spacers", async () => {
@@ -547,11 +567,11 @@ describe("Words layout", () => {
     mocks.activeIndex = 2;
     await ui.scrollTape(true);
     expect(after?.style.marginLeft).toBe("100px");
-    expect(element.style.marginLeft).toBe("-100px");
+    expect(element.style.translate).toBe("-100px");
     expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
       newValue: -200,
       duration: 0,
-      ease: "inOut(1.25)",
+      ease: tapeScrollEasing,
     });
   });
 
@@ -566,11 +586,11 @@ describe("Words layout", () => {
     expect(word(0)).toBeNull();
     expect(word(1)).not.toBeNull();
     expect(mocks.caret.handleTapeWordsRemoved).toHaveBeenCalledWith(100);
-    expect(element.style.marginLeft).toBe("0px");
+    expect(element.style.translate).toBe("0px");
     expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
       newValue: -100,
       duration: 0,
-      ease: "inOut(1.25)",
+      ease: tapeScrollEasing,
     });
   });
 
@@ -598,30 +618,48 @@ describe("Words layout", () => {
     expect(after.isConnected).toBe(true);
     expect({
       after: after.style.marginLeft,
-      words: element.style.marginLeft,
+      words: element.style.translate,
       removed: mocks.caret.handleTapeWordsRemoved.mock.calls,
       scroll: mocks.caret.handleTapeScroll.mock.lastCall,
-    }).toMatchInlineSnapshot(`
-      {
-        "after": "100px",
-        "removed": [
-          [
-            30,
-          ],
-          [
-            30,
-          ],
-        ],
-        "scroll": [
-          {
-            "duration": 0,
-            "ease": "inOut(1.25)",
-            "newValue": -100,
-          },
-        ],
-        "words": "0px",
-      }
-    `);
+    }).toEqual({
+      after: "100px",
+      removed: [[30], [30]],
+      scroll: [
+        {
+          duration: 0,
+          ease: tapeScrollEasing,
+          newValue: -100,
+        },
+      ],
+      words: "0px",
+    });
+  });
+
+  it("animates smooth line jump with compositor transform and resets after completion", async () => {
+    words.push("third", 0);
+    await layout();
+    setConfigStore("smoothLineScroll", true);
+    size(word(1), { offsetTop: 30 });
+    size(word(2), { offsetTop: 50 });
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    mocks.activeIndex = 2;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    const anims = element.getAnimations();
+    expect(anims).toHaveLength(1);
+    const effect = anims[0]?.effect as KeyframeEffect;
+    expect(effect.getKeyframes().map((f) => f["transform"])).toEqual([
+      "translateY(0px)",
+      "translateY(-20px)",
+    ]);
+    expect(element.style.marginTop).toBe("");
+    anims[0]?.finish();
+    await vi.waitFor(() => {
+      expect(word(0)).toBeNull();
+      expect(element.style.transform).toBe("");
+    });
   });
 
   it("removes completed lines after the first line jump", async () => {

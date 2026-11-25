@@ -1,10 +1,12 @@
+import { createAppOwned } from "#app/application.ts";
 import { isTypingRouteActive } from "../../scope";
 import { applyReducedMotion } from "#shared/utils/misc.ts";
+import { tapeScrollEasing } from "./caret-easing";
 import { lineState } from "./line-state";
 import { outerWidth } from "./dimensions";
 import { getActiveWordElement } from "./elements";
+import { getWordsScroll } from "./words-scroll";
 import { hasClassName } from "#shared/utils/cn.ts";
-import { animate } from "animejs";
 import { peekConfig } from "#shared/config/store.ts";
 import { getResultVisible } from "#shared/states/test.ts";
 import {
@@ -18,6 +20,42 @@ import {
 import * as Caret from "../../runtime/caret";
 import { getCurrentInput } from "../../runtime/events/data";
 import * as PaceCaret from "../../runtime/pace-caret";
+
+const spacerAnimations = createAppOwned(
+  () => new WeakMap<HTMLElement, Animation>(),
+);
+
+function setSpacerMarginLeft(
+  element: HTMLElement,
+  target: number,
+  duration: number,
+  smooth: boolean,
+): void {
+  const animations = spacerAnimations();
+  const running = animations.get(element);
+  if (running !== undefined) {
+    if (running.playState !== "finished") {
+      try {
+        running.commitStyles();
+      } catch {
+        // Detached or unrendered spacers fall back to their inline margin.
+      }
+    }
+    running.cancel();
+    animations.delete(element);
+  }
+  const from = parseFloat(element.style.marginLeft) || 0;
+  element.style.marginLeft = `${target}px`;
+  if (smooth && duration > 0 && from !== target) {
+    animations.set(
+      element,
+      element.animate(
+        { marginLeft: [`${from}px`, `${target}px`] },
+        { duration, easing: tapeScrollEasing.css },
+      ),
+    );
+  }
+}
 
 // this is needed in tape mode because sometimes we want the newline character to appear above the next line
 // and sometimes we want it to be shifted to the left
@@ -128,6 +166,8 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   const wordRightMargin = parseFloat(
     window.getComputedStyle(activeWordEl).marginRight,
   );
+  const wordsScroll = getWordsScroll();
+  const currentWordsOffsetX = wordsScroll.currentX();
 
   /*calculate .afterNewline & #words new margins + determine elements to remove*/
   for (let i = 0; i <= lastElementIndex; i++) {
@@ -135,7 +175,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
     if (hasClassName(child.className, "word")) {
       leadingNewLine = false;
       const wordOuterWidth = outerWidth(child);
-      const wordLeft = Math.floor(child.offsetLeft);
+      const wordLeft = Math.floor(child.offsetLeft + currentWordsOffsetX);
       const wordWidth = Math.floor(child.offsetWidth);
       if (
         (!isTestRightToLeft && wordLeft < 0 - wordWidth) ||
@@ -186,10 +226,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
       });
     }
     if (isTestRightToLeft) widthRemoved *= -1;
-    const currentWordsMargin = parseFloat(getWordsEl().style.marginLeft) || 0;
-    Object.assign(getWordsEl().style, {
-      marginLeft: `${currentWordsMargin + widthRemoved}px`,
-    });
+    wordsScroll.shiftX(widthRemoved);
     Caret.getCaret().handleTapeWordsRemoved(widthRemoved);
     PaceCaret.getCaret().handleTapeWordsRemoved(widthRemoved);
   }
@@ -231,40 +268,28 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   }
 
   const duration = applyReducedMotion(noAnimation ? 0 : 125);
-  const ease = "inOut(1.25)";
+  const smooth = peekConfig().smoothLineScroll;
 
   const caretScrollOptions = {
     newValue: newMarginOffset * -1,
-    duration: peekConfig().smoothLineScroll ? duration : 0,
-    ease,
+    duration: smooth ? duration : 0,
+    ease: tapeScrollEasing,
   };
 
   Caret.getCaret().handleTapeScroll(caretScrollOptions);
   PaceCaret.getCaret().handleTapeScroll(caretScrollOptions);
 
-  if (peekConfig().smoothLineScroll) {
-    animate(getWordsEl(), {
-      marginLeft: newMargin,
-      duration,
-      ease,
-    });
-
-    for (let i = 0; i < afterNewlinesNewMargins.length; i++) {
-      const newMargin = afterNewlinesNewMargins[i] ?? 0;
-      animate(afterNewLineEls[i] as HTMLElement, {
-        marginLeft: newMargin,
-        duration,
-        ease,
-      });
-    }
+  if (smooth) {
+    wordsScroll.glideX(newMargin, duration, tapeScrollEasing);
   } else {
-    Object.assign(getWordsEl().style, { marginLeft: `${newMargin}px` });
-    for (let i = 0; i < afterNewlinesNewMargins.length; i++) {
-      const newMargin = afterNewlinesNewMargins[i] ?? 0;
-      const afterNewline = afterNewLineEls[i];
-      if (afterNewline) {
-        Object.assign(afterNewline.style, { marginLeft: `${newMargin}px` });
-      }
+    wordsScroll.jumpX(newMargin);
+  }
+
+  for (let i = 0; i < afterNewlinesNewMargins.length; i++) {
+    const targetMargin = afterNewlinesNewMargins[i] ?? 0;
+    const afterNewline = afterNewLineEls[i];
+    if (afterNewline) {
+      setSpacerMarginLeft(afterNewline, targetMargin, duration, smooth);
     }
   }
 }

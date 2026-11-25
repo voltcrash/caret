@@ -1,5 +1,6 @@
 import { createAppOwned } from "#app/application.ts";
 import { scrollTape } from "./tape";
+import { resetWordsScroll } from "./words-scroll";
 import { updateWordWrapperClasses } from "./wrapper-classes";
 import { lineJump } from "./line-jumping";
 import { lineState, updateActiveWordGeometry } from "./line-state";
@@ -308,6 +309,7 @@ export function clearWordsBlur(): void {
 }
 
 export function disposeWordRendering(): void {
+  resetWordsScroll();
   clearWordElements();
   clearWordTemplates();
   renderState().pendingWordData.clear();

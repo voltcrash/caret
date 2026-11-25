@@ -73,3 +73,9 @@ export function cubicBezier(
 // keystroke moves it on the next frame, and typing mid-glide never slows it
 // down before speeding it up again.
 export const caretGlideEasing = cubicBezier(0.25, 0.46, 0.45, 0.94);
+
+// Matches anime.js's default `out(2)` curve for vertical line jumps.
+export const lineJumpEasing = cubicBezier(0.5, 1, 0.89, 1);
+
+// Smooth ease-in-out curve for horizontal tape scrolling.
+export const tapeScrollEasing = cubicBezier(0.32, 0.08, 0.68, 0.92);
