@@ -1,4 +1,4 @@
-import { scrollTape } from "./tape";
+import { cancelSpacerAnimation, scrollTape } from "./tape";
 import { getWordsScroll } from "./words-scroll";
 import { peekConfig } from "#shared/config/store.ts";
 import { getWordsElement as getWordsEl } from "#features/typing/state/test-dom.ts";
@@ -14,6 +14,7 @@ export function updateWordsMargin(): void {
     );
     wordsScroll.reset();
     for (const afterNewline of afterNewlineEls) {
+      cancelSpacerAnimation(afterNewline);
       Object.assign(afterNewline.style, {
         marginLeft: "0",
       });

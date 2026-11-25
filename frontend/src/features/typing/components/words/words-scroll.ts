@@ -6,6 +6,8 @@ import {
 
 import { type CaretEasing, linearEasing } from "./caret-easing";
 
+type LineJumpOutcome = "completed" | "superseded" | "reset";
+
 /**
  * Animates `#words` horizontal tape scroll (`translate`) and vertical line
  * jumps (`transform`) with the Web Animations API so typing-path scroll runs
@@ -27,6 +29,7 @@ class WordsScrollController {
   private easingY: CaretEasing = linearEasing;
   private yAnimation: Animation | null = null;
   private yToken = 0;
+  private yCancelReason: "superseded" | "reset" | null = null;
 
   private readonly element: HTMLElement;
 
@@ -101,23 +104,24 @@ class WordsScrollController {
   }
 
   /**
-   * Animates a vertical line jump on the compositor. Resolves `true` if this
-   * jump completed without being superseded or reset, `false` otherwise.
+   * Animates a vertical line jump on the compositor. Resolves with whether this
+   * jump completed naturally, was superseded by a newer jump, or was cancelled
+   * by a scroll reset.
    */
   public async animateY(
     y: number,
     duration: number,
     easing: CaretEasing,
-  ): Promise<boolean> {
+  ): Promise<LineJumpOutcome> {
     const token = ++this.yToken;
     const from = this.currentY();
-    this.cancelY();
+    this.cancelY("superseded");
     if (duration <= 0 || from === y) {
       this.fromY = y;
       this.toY = y;
       this.durationY = 0;
       this.writeY(y);
-      return true;
+      return "completed";
     }
     this.fromY = from;
     this.toY = y;
@@ -129,21 +133,23 @@ class WordsScrollController {
       { duration, easing: easing.css },
     );
     this.yAnimation = animation;
+    this.yCancelReason = null;
     try {
       await animation.finished;
     } catch {
-      return false;
+      return this.yCancelReason ?? "reset";
     }
     if (this.yAnimation === animation) {
       this.yAnimation = null;
       this.fromY = this.toY;
     }
-    return token === this.yToken;
+    if (token === this.yToken) return "completed";
+    return this.yCancelReason ?? "superseded";
   }
 
   public resetY(): void {
     this.yToken++;
-    this.cancelY();
+    this.cancelY("reset");
     this.fromY = 0;
     this.toY = 0;
     this.durationY = 0;
@@ -164,9 +170,12 @@ class WordsScrollController {
     this.xAnimation = null;
   }
 
-  private cancelY(): void {
-    this.yAnimation?.cancel();
-    this.yAnimation = null;
+  private cancelY(reason: "superseded" | "reset"): void {
+    if (this.yAnimation !== null) {
+      this.yCancelReason = reason;
+      this.yAnimation.cancel();
+      this.yAnimation = null;
+    }
   }
 
   private progressOf(

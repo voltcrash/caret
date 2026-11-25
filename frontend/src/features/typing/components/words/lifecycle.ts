@@ -265,6 +265,8 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
   }
 
   lineState.currentTestLine = 0;
+  lineState.currentLinesJumping = 0;
+  lineState.lineTransition = false;
   if (peekConfig().compositionDisplay === "below") {
     setCompositionText(" ");
   }

@@ -25,6 +25,15 @@ const spacerAnimations = createAppOwned(
   () => new WeakMap<HTMLElement, Animation>(),
 );
 
+export function cancelSpacerAnimation(element: HTMLElement): void {
+  const animations = spacerAnimations();
+  const running = animations.get(element);
+  if (running !== undefined) {
+    running.cancel();
+    animations.delete(element);
+  }
+}
+
 function setSpacerMarginLeft(
   element: HTMLElement,
   target: number,

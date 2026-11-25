@@ -169,6 +169,7 @@ import { Words } from "../../../../src/features/typing/components/Words";
 import { tapeScrollEasing } from "../../../../src/features/typing/components/words/caret-easing";
 import { getWordElement } from "../../../../src/features/typing/components/words/elements";
 import { createNewlineSpacers } from "../../../../src/features/typing/components/words/letters";
+import { updateWordsMargin } from "../../../../src/features/typing/components/words/margins";
 import * as ui from "../../../../src/features/typing/runtime/test/ui";
 import { words } from "../../../../src/features/typing/runtime/test/words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
@@ -659,6 +660,28 @@ describe("Words layout", () => {
     await vi.waitFor(() => {
       expect(word(0)).toBeNull();
       expect(element.style.transform).toBe("");
+    });
+  });
+
+  it("clears line jump state when scroll is reset mid-jump", async () => {
+    words.push("third", 0);
+    await layout();
+    setConfigStore("smoothLineScroll", true);
+    size(word(1), { offsetTop: 30 });
+    size(word(2), { offsetTop: 50 });
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    mocks.activeIndex = 2;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(ui.lineState.lineTransition).toBe(true);
+    expect(ui.lineState.currentLinesJumping).toBe(1);
+
+    updateWordsMargin();
+    await vi.waitFor(() => {
+      expect(ui.lineState.lineTransition).toBe(false);
+      expect(ui.lineState.currentLinesJumping).toBe(0);
     });
   });
 

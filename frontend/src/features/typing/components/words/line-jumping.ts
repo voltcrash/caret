@@ -106,12 +106,17 @@ export async function lineJump(
 
     if (peekConfig().smoothLineScroll) {
       lineState.lineTransition = true;
-      const completed = await getWordsScroll().animateY(
+      const outcome = await getWordsScroll().animateY(
         newMarginTop,
         duration,
         lineJumpEasing,
       );
-      if (!completed) return;
+      if (outcome === "superseded") return;
+      if (outcome === "reset") {
+        lineState.currentLinesJumping = 0;
+        lineState.lineTransition = false;
+        return;
+      }
       lineState.currentLinesJumping = 0;
       removeTestElements(lastElementIndexToRemove);
       getWordsScroll().resetY();
