@@ -90,6 +90,7 @@ export function replayEarlyTyping(): {
   if (bridge === undefined) return { replayed: false, tapped: false };
   const { events, words, tapped } = bridge;
   const session = getEngineSession();
+  const firstInsert = events.find((e) => e.op === "insert");
   const firstEvent = events[0];
   const now = performance.now();
   const maxAge =
@@ -98,7 +99,8 @@ export function replayEarlyTyping(): {
       : MAX_EARLY_TYPING_AGE_MS;
   if (
     firstEvent === undefined ||
-    now - firstEvent.now > maxAge ||
+    firstInsert === undefined ||
+    now - firstInsert.now > maxAge ||
     !session.isPrepared() ||
     !isConfigCompatible() ||
     !wordsMatchPrefix(words)

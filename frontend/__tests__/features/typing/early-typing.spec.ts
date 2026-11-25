@@ -260,4 +260,85 @@ describe("earlyTypingBootstrap", () => {
     ).toBe(true);
     expect(press("a").defaultPrevented).toBe(false);
   });
+
+  it("logs paired modifier keydown/keyup events and ignores unmatched keyups", () => {
+    mountPreview(["Ab", "cd"]);
+    runBootstrap();
+    document.dispatchEvent(
+      new KeyboardEvent("keyup", { key: "x", code: "KeyX", bubbles: true }),
+    );
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Shift",
+        code: "ShiftLeft",
+        shiftKey: true,
+        bubbles: true,
+      }),
+    );
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "A",
+        code: "KeyA",
+        shiftKey: true,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    document.dispatchEvent(
+      new KeyboardEvent("keyup", { key: "A", code: "KeyA", bubbles: true }),
+    );
+    document.dispatchEvent(
+      new KeyboardEvent("keyup", {
+        key: "Shift",
+        code: "ShiftLeft",
+        bubbles: true,
+      }),
+    );
+    const win = window as EarlyTypingWindow;
+    const keyEvents =
+      win.__caretEarlyTyping?.events
+        .filter((e) => e.op === "key")
+        .map((e) => `${e.kind}:${e.code}`) ?? [];
+    expect(keyEvents).toEqual([
+      "keydown:ShiftLeft",
+      "keydown:KeyA",
+      "keyup:KeyA",
+      "keyup:ShiftLeft",
+    ]);
+  });
+
+  it("bails out for RTL words and does not mark truncated words previews as ended", () => {
+    mountPreview(["مرحبا", "بالعالم"], {
+      mode: "time",
+      time: 30,
+      words: 50,
+      language: "arabic",
+      punctuation: false,
+      numbers: false,
+    });
+    runBootstrap();
+    expect(press("م").defaultPrevented).toBe(false);
+
+    const win = window as EarlyTypingWindow;
+    win.__caretEarlyTyping?.dispose();
+    delete win.__caretEarlyTyping;
+    document.body.innerHTML = "";
+
+    const { wordsEl } = mountPreview(["hi"], {
+      mode: "words",
+      time: 30,
+      words: 100,
+      language: "english",
+      punctuation: false,
+      numbers: false,
+    });
+    runBootstrap();
+    press("h");
+    press("i");
+    // Preview only has 1 word out of 100, so typing it must not end capture or consume final Space.
+    press(" ");
+    expect(
+      (wordsEl.children[0] as HTMLElement).classList.contains("typed"),
+    ).toBe(false);
+  });
 });
