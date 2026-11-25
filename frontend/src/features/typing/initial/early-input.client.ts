@@ -4,13 +4,16 @@ import type {
   EarlyTypingWindow,
 } from "#app/early-typing-bootstrap.ts";
 import { peekConfig } from "#shared/config/store.ts";
+import type { Keycode } from "#shared/constants/keys.ts";
 import { getBrowserEngine } from "#shared/engine/owner.client.ts";
 import { getActiveWordIndex } from "#features/typing/state/active-word.ts";
+import { isLanguageRightToLeft } from "#features/typing/state/direction.ts";
 import { setReplayingEarlyTyping } from "#features/typing/state/early-replay.ts";
 import {
   insertionLayout,
   observeInputView,
 } from "../input/handlers/before-insert-text";
+import { logTestEvent } from "../runtime/events/data";
 import { getEngineSession } from "../runtime/session.client";
 import * as TestUI from "../runtime/test/ui";
 import * as TestWords from "../runtime/test/words";
@@ -35,8 +38,14 @@ function isConfigCompatible(): boolean {
   const c = peekConfig();
   return (
     (c.mode === "time" || c.mode === "words") &&
+    !isLanguageRightToLeft() &&
     c.funbox.length === 0 &&
     c.layout === "default" &&
+    c.difficulty === "normal" &&
+    c.minWpm === "off" &&
+    c.minAcc === "off" &&
+    c.minBurst === "off" &&
+    c.caretStyle === "default" &&
     c.stopOnError === "off" &&
     c.confidenceMode === "off" &&
     !c.freedomMode &&
@@ -45,6 +54,8 @@ function isConfigCompatible(): boolean {
     !c.strictSpace &&
     !c.britishEnglish &&
     !c.lazyMode &&
+    !c.quickEnd &&
+    !c.showAllLines &&
     c.indicateTypos === "off" &&
     c.highlightMode === "letter" &&
     c.typedEffect === "keep" &&
@@ -66,9 +77,10 @@ function wordsMatchPrefix(earlyWords: readonly string[]): boolean {
 }
 
 /**
- * Replays keystrokes captured against the SSR preview into the prepared Wasm
- * session with original timestamps, advancing elapsed whole-second ticks so
- * per-second WPM history stays accurate without triggering slow-timer drift.
+ * Replays keystrokes and key-timing observations captured against the SSR
+ * preview into the prepared Wasm session with original timestamps, advancing
+ * elapsed whole-second ticks so per-second WPM history stays accurate without
+ * triggering slow-timer drift.
  */
 export function replayEarlyTyping(): {
   replayed: boolean;
@@ -115,6 +127,14 @@ export function replayEarlyTyping(): {
     }
   };
 
+  let lastInsertIndex = -1;
+  for (let i = events.length - 1; i >= 0; i--) {
+    if (events[i]?.op === "insert") {
+      lastInsertIndex = i;
+      break;
+    }
+  }
+
   try {
     for (let index = 0; index < events.length; index++) {
       const event = events[index];
@@ -124,7 +144,15 @@ export function replayEarlyTyping(): {
       advanceTicksUpTo(event.now);
       if (!lease.isCurrent() || session.state()?.ended) break;
 
-      if (event.op === "insert") {
+      if (event.op === "key") {
+        logTestEvent(event.kind, event.now, {
+          code: (event.code || "NoCode") as Keycode | "NoCode",
+          ctrl: event.ctrl,
+          shift: event.shift,
+          alt: event.alt,
+          meta: event.meta,
+        });
+      } else if (event.op === "insert") {
         if (startNow === undefined && event.data !== " ") {
           startNow = event.now;
           startDate = event.date;
@@ -140,7 +168,7 @@ export function replayEarlyTyping(): {
           isCompositionEnding: null,
           layout: {
             ...insertionLayout(event.data),
-            finalInBatch: index === events.length - 1,
+            finalInBatch: index === lastInsertIndex,
           },
         });
         replayedAny = true;

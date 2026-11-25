@@ -93,7 +93,9 @@ describe("earlyTypingBootstrap", () => {
     expect(bridge).toBeDefined();
     expect(bridge?.words).toEqual(["the", "cat"]);
     expect(
-      bridge?.events.map((e) => (e.op === "insert" ? e.data : e.kind)),
+      bridge?.events
+        .filter((e) => e.op !== "key")
+        .map((e) => (e.op === "insert" ? e.data : e.kind)),
     ).toEqual([
       "t",
       "x",
@@ -106,6 +108,9 @@ describe("earlyTypingBootstrap", () => {
       "t",
       "z",
     ]);
+    expect(
+      bridge?.events.some((e) => e.op === "key" && e.kind === "keydown"),
+    ).toBe(true);
 
     const firstWord = wordsEl.children[0] as HTMLElement;
     expect(firstWord.classList.contains("typed")).toBe(true);
@@ -185,5 +190,74 @@ describe("earlyTypingBootstrap", () => {
     runBootstrap();
     const win = window as EarlyTypingWindow;
     expect(win.__caretEarlyTyping).toBeUndefined();
+  });
+
+  it("disposes itself when navigating away from / before handoff", () => {
+    mountPreview(["the", "cat"]);
+    runBootstrap();
+    press("t");
+    window.history.pushState({}, "", "/settings");
+    const afterNav = press("h");
+    expect(afterNav.defaultPrevented).toBe(false);
+    const win = window as EarlyTypingWindow;
+    expect(
+      win.__caretEarlyTyping?.events.filter((e) => e.op === "insert"),
+    ).toHaveLength(1);
+  });
+
+  it("accepts Windows AltGr characters and records keyup timing", () => {
+    const { wordsEl } = mountPreview(["@", "b"]);
+    runBootstrap();
+    const altGr = new KeyboardEvent("keydown", {
+      key: "@",
+      code: "KeyQ",
+      ctrlKey: true,
+      altKey: true,
+      modifierAltGraph: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    document.dispatchEvent(altGr);
+    document.dispatchEvent(
+      new KeyboardEvent("keyup", { key: "@", code: "KeyQ", bubbles: true }),
+    );
+    expect(altGr.defaultPrevented).toBe(true);
+    expect(wordsEl.querySelectorAll("letter.correct")).toHaveLength(1);
+    const win = window as EarlyTypingWindow;
+    expect(
+      win.__caretEarlyTyping?.events.some(
+        (e) => e.op === "key" && e.kind === "keyup" && e.code === "KeyQ",
+      ),
+    ).toBe(true);
+  });
+
+  it("bails out for non-normal difficulty and records final Space in words mode", () => {
+    localStorage.setItem("config", JSON.stringify({ difficulty: "expert" }));
+    mountPreview(["the", "cat"]);
+    runBootstrap();
+    expect(press("t").defaultPrevented).toBe(false);
+
+    localStorage.clear();
+    const win = window as EarlyTypingWindow;
+    win.__caretEarlyTyping?.dispose();
+    delete win.__caretEarlyTyping;
+    document.body.innerHTML = "";
+
+    const { wordsEl } = mountPreview(["hi"], {
+      mode: "words",
+      time: 30,
+      words: 1,
+      language: "english",
+      punctuation: false,
+      numbers: false,
+    });
+    runBootstrap();
+    press("h");
+    press("x");
+    press(" ");
+    expect(
+      (wordsEl.children[0] as HTMLElement).classList.contains("error"),
+    ).toBe(true);
+    expect(press("a").defaultPrevented).toBe(false);
   });
 });
