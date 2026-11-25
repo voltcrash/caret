@@ -385,12 +385,6 @@ importers:
       '@sentry/browser':
         specifier: 11.11.0
         version: 11.11.0
-      '@solid-primitives/refs':
-        specifier: 1.1.4
-        version: 1.1.4(solid-js@1.9.18)
-      '@solid-primitives/transition-group':
-        specifier: 1.1.2
-        version: 1.1.2(solid-js@1.9.18)
       '@solidjs/meta':
         specifier: 0.29.8
         version: 0.29.8(solid-js@1.9.18)
@@ -421,9 +415,6 @@ importers:
       '@tanstack/solid-table':
         specifier: 9.3.1
         version: 9.3.1(solid-js@1.9.18)
-      animejs:
-        specifier: 4.5.0
-        version: 4.5.0
       better-auth:
         specifier: 1.7.18
         version: 1.7.18(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.5.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.18)(supports-color@10.2.2)(vite-plugin-solid@2.11.15(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.1.0))(@voidzero-dev/vite-plus-core@1.5.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.18)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261104.1)(@electric-sql/pglite@0.5.15)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.18)(vitest@5.1.0)
@@ -3860,17 +3851,6 @@ packages:
 
   ajv@8.20.0:
     resolution: {integrity: sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==}
-
-  animejs@4.5.0:
-    resolution: {integrity: sha512-NQimYX+lz8WaXonGS9zVVoviCIAjONeJayxacUditaivYLqyXgGjFKjuyl0aUUhFKm5MriX9ty1TGovNzoJQWA==}
-    peerDependencies:
-      '@types/three': '>=0.150.0'
-      three: '>=0.150.0'
-    peerDependenciesMeta:
-      '@types/three':
-        optional: true
-      three:
-        optional: true
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -8540,8 +8520,6 @@ snapshots:
       fast-uri: 3.1.9
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
-
-  animejs@4.5.0: {}
 
   ansi-regex@5.0.1: {}
 
