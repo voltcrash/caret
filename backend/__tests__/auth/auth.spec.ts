@@ -337,6 +337,45 @@ describe("Better Auth social-only HTTP flow", () => {
       ).status,
     ).toBe(404);
   });
+  it.each([
+    ["providerId only", () => ({ providerId: "google" })],
+    [
+      "provider account id",
+      (social: { accountId: string }) => ({
+        providerId: "google",
+        accountId: social.accountId,
+      }),
+    ],
+  ])(
+    "keeps the last social account when unlinking by %s",
+    async (_label, body) => {
+      const { cookie } = await signInWithOAuth(auth, app);
+      const session = await AuthUtils.verifySession(new Headers({ cookie }));
+      const context = await auth.$context;
+      await context.internalAdapter.createAccount({
+        userId: session.uid,
+        providerId: "credential",
+        accountId: session.uid,
+        password: "legacy-hash",
+      });
+      const accounts = await auth.api.listUserAccounts({
+        headers: new Headers({ cookie }),
+      });
+      const social = accounts.find(
+        (account) => account.providerId === "google",
+      );
+      expect(social).toBeDefined();
+      if (social === undefined) return;
+      expect(social.accountId).not.toBe(social.id);
+      expect(
+        (await request("/unlink-account", body(social), cookie)).status,
+      ).toBe(400);
+      expect(store["authAccounts"]).toHaveLength(2);
+      expect(store["authAccounts"]).toContainEqual(
+        expect.objectContaining({ providerId: "google" }),
+      );
+    },
+  );
   it("allows unlinking a provider when another supported provider remains", async () => {
     await signInWithOAuth(auth, app, { provider: "google" });
     const { cookie } = await signInWithOAuth(auth, app, { provider: "github" });
