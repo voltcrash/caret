@@ -1,6 +1,21 @@
+import type { CustomBackgroundFilter } from "@caret/schemas/configs";
 import { peekConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { Command, CommandsSubgroup } from "../types";
+
+function updateBackgroundFilter(
+  index: 0 | 1 | 2 | 3,
+  input: string | undefined,
+): void {
+  if (input === undefined || input.trim() === "") return;
+  const parsed = Number(input);
+  if (!Number.isFinite(parsed)) return;
+  const newFilters: CustomBackgroundFilter = [
+    ...peekConfig().customBackgroundFilter,
+  ];
+  newFilters[index] = parsed;
+  setConfig("customBackgroundFilter", newFilters);
+}
 
 const subgroup: CommandsSubgroup = {
   title: "Custom background filter...",
@@ -15,10 +30,7 @@ const subgroup: CommandsSubgroup = {
         return peekConfig().customBackgroundFilter[0].toString();
       },
       exec: ({ input }): void => {
-        if (input === undefined || input === "") return;
-        const newFilters = peekConfig().customBackgroundFilter;
-        newFilters[0] = parseFloat(input);
-        setConfig("customBackgroundFilter", newFilters);
+        updateBackgroundFilter(0, input);
       },
     },
     {
@@ -30,10 +42,7 @@ const subgroup: CommandsSubgroup = {
         return peekConfig().customBackgroundFilter[1].toString();
       },
       exec: ({ input }): void => {
-        if (input === undefined || input === "") return;
-        const newFilters = peekConfig().customBackgroundFilter;
-        newFilters[1] = parseFloat(input);
-        setConfig("customBackgroundFilter", newFilters);
+        updateBackgroundFilter(1, input);
       },
     },
     {
@@ -45,10 +54,7 @@ const subgroup: CommandsSubgroup = {
         return peekConfig().customBackgroundFilter[2].toString();
       },
       exec: ({ input }): void => {
-        if (input === undefined || input === "") return;
-        const newFilters = peekConfig().customBackgroundFilter;
-        newFilters[2] = parseFloat(input);
-        setConfig("customBackgroundFilter", newFilters);
+        updateBackgroundFilter(2, input);
       },
     },
     {
@@ -60,10 +66,7 @@ const subgroup: CommandsSubgroup = {
         return peekConfig().customBackgroundFilter[3].toString();
       },
       exec: ({ input }): void => {
-        if (input === undefined || input === "") return;
-        const newFilters = peekConfig().customBackgroundFilter;
-        newFilters[3] = parseFloat(input);
-        setConfig("customBackgroundFilter", newFilters);
+        updateBackgroundFilter(3, input);
       },
     },
   ],
