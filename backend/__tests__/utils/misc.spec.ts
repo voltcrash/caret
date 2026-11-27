@@ -41,6 +41,18 @@ describe("Misc Utils", () => {
         });
       },
     );
+
+    it("compiles each pattern once", () => {
+      const compile = vi.spyOn(globalThis, "RegExp");
+      try {
+        for (const text of ["english", "german", "english"]) {
+          Misc.matchesAPattern(text, "memo-(english|german)?.*");
+        }
+        expect(compile).toHaveBeenCalledOnce();
+      } finally {
+        compile.mockRestore();
+      }
+    });
   });
 
   describe("kogascore", () => {
