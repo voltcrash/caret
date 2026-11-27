@@ -82,6 +82,24 @@ pub fn verify(
             mismatches: vec![],
         });
     }
+    let replayed_duration = stats::duration(log) / 1000.0;
+    if !replayed_duration.is_finite() {
+        return Err(EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            "Unrepresentable result metrics: non-finite number",
+        ));
+    }
+    let replayed_duration_value = json!(replayed_duration);
+    if !same(&submitted["testDuration"], &replayed_duration_value) {
+        return Ok(Verification {
+            same_behavior: true,
+            mismatches: vec![Mismatch {
+                field: "testDuration".into(),
+                submitted: submitted["testDuration"].clone(),
+                replayed: replayed_duration_value,
+            }],
+        });
+    }
     let summary = serde_json::to_value(stats::typed_summary(log)?).expect("Serializable summary");
     let mut expected: Vec<(&str, Value)> = SUMMARY_FIELDS
         .iter()

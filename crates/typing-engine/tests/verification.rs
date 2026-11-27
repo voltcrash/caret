@@ -143,3 +143,120 @@ fn other_scoring_rules_are_not_compared() {
             .same_behavior
     );
 }
+
+#[test]
+fn oversized_duration_logs_are_rejected_and_duration_mismatch_short_circuits() {
+    let (_, mut oversized, completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+    if let Some(end) = oversized
+        .events
+        .iter_mut()
+        .rev()
+        .find(|e| e.kind == "timer" && e.data["event"] == "end")
+    {
+        end.test_ms = typing_engine::validation::MAX_HISTORY_MS + 1000.0;
+    }
+    assert!(verify(&oversized, &completed, BEHAVIOR_VERSION).is_err());
+
+    let (_, mut long_log, mut mismatched) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+    if let Some(end) = long_log
+        .events
+        .iter_mut()
+        .rev()
+        .find(|e| e.kind == "timer" && e.data["event"] == "end")
+    {
+        end.test_ms = typing_engine::validation::MAX_HISTORY_MS;
+    }
+    mismatched["testDuration"] = json!(15.0);
+    assert_eq!(fields(&long_log, &mismatched), ["testDuration"]);
+}
+
+#[test]
+fn linear_speed_history_matches_per_boundary_chars_and_handles_large_logs() {
+    for (name, log, _) in recordings() {
+        for raw in [false, true] {
+            let expected: Vec<f64> = typing_engine::stats::boundaries(&log)
+                .iter()
+                .map(|boundary| {
+                    let c = typing_engine::stats::chars(&log, true, Some(*boundary));
+                    typing_engine::js_round(typing_engine::stats::wpm(
+                        if raw {
+                            c.all_correct + c.incorrect + c.extra
+                        } else {
+                            c.correct_word
+                        },
+                        boundary / 1000.0,
+                    ))
+                })
+                .collect();
+            assert_eq!(
+                typing_engine::stats::speed_history(&log, raw),
+                expected,
+                "{name} raw={raw}"
+            );
+        }
+    }
+
+    // Large log with 2,000 words and 10,000s span must complete quickly.
+    let target_words: Vec<Text> = (0..2000).map(|_| Text::from("test ")).collect();
+    let mut events = vec![
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 0.0,
+            "data": {"event": "start", "timer": 0, "date": 1000.0}
+        }))
+        .unwrap(),
+    ];
+    for i in 0..2000 {
+        events.push(
+            serde_json::from_value(json!({
+                "type": "input",
+                "testMs": (i as f64 + 1.0) * 1000.0,
+                "data": {
+                    "inputType": "insertText",
+                    "wordIndex": i,
+                    "charIndex": 0,
+                    "inputValue": Text::from("test "),
+                    "data": Text::from(" "),
+                    "correct": true,
+                    "commitsWord": true
+                }
+            }))
+            .unwrap(),
+        );
+    }
+    events.push(
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 10_000_000.0,
+            "data": {"event": "end", "timer": 10000, "date": 10_001_000.0}
+        }))
+        .unwrap(),
+    );
+    let large = Log {
+        version: 1,
+        context: typing_engine::stats::Context {
+            target_words,
+            mode: "words".into(),
+            mode2: "2000".into(),
+            bailed_out: false,
+            korean_status: false,
+            custom_text_limit_mode: None,
+            custom_text_limit_value: None,
+        },
+        events,
+    };
+    let start = std::time::Instant::now();
+    let speed = typing_engine::stats::speed_history(&large, false);
+    assert_eq!(speed.len(), 10_000);
+    assert!(
+        start.elapsed().as_secs() < 2,
+        "speed_history took {:?}",
+        start.elapsed()
+    );
+}

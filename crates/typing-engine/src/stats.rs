@@ -6,6 +6,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::collections::BTreeSet;
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -70,16 +71,67 @@ pub(crate) fn input_value(data: &Value) -> Text {
     }
     value
 }
+struct WordPositions {
+    slots: Vec<(usize, usize)>,
+    len: usize,
+}
+impl WordPositions {
+    fn new() -> Self {
+        Self {
+            slots: vec![],
+            len: 0,
+        }
+    }
+    fn slot(slots: &[(usize, usize)], key: usize) -> usize {
+        let mask = slots.len() - 1;
+        let mut idx = key.wrapping_mul(2_654_435_761) & mask;
+        loop {
+            let entry = slots[idx].0;
+            if entry == usize::MAX || entry == key {
+                return idx;
+            }
+            idx = (idx + 1) & mask;
+        }
+    }
+    fn get(&self, key: usize) -> Option<usize> {
+        if self.slots.is_empty() {
+            return None;
+        }
+        let entry = self.slots[Self::slot(&self.slots, key)];
+        (entry.0 == key).then_some(entry.1)
+    }
+    fn insert(&mut self, key: usize, value: usize) {
+        if self.len * 2 >= self.slots.len() {
+            let cap = (self.slots.len() * 2).max(16);
+            let mut next = vec![(usize::MAX, 0); cap];
+            for &(k, v) in &self.slots {
+                if k != usize::MAX {
+                    let idx = Self::slot(&next, k);
+                    next[idx] = (k, v);
+                }
+            }
+            self.slots = next;
+        }
+        let idx = Self::slot(&self.slots, key);
+        if self.slots[idx].0 == usize::MAX {
+            self.len += 1;
+        }
+        self.slots[idx] = (key, value);
+    }
+}
+
 pub(crate) fn per_word(log: &Log, limit: Option<f64>) -> Vec<(usize, Vec<&Event>)> {
     let mut words: Vec<(usize, Vec<&Event>)> = vec![];
+    let mut positions = WordPositions::new();
     for event in &log.events {
         if limit.is_some_and(|limit| event.test_ms > limit) {
             break;
         }
         if let Some(index) = word_index(event) {
-            if let Some((_, events)) = words.iter_mut().find(|(i, _)| *i == index) {
-                events.push(event);
+            if let Some(pos) = positions.get(index) {
+                words[pos].1.push(event);
             } else {
+                positions.insert(index, words.len());
                 words.push((index, vec![event]));
             }
         }
@@ -271,7 +323,8 @@ pub fn boundaries(log: &Log) -> Vec<f64> {
         return vec![];
     }
     let end = adjusted_end(log);
-    let ticks = (end / 1000.0).floor() as usize;
+    let ticks =
+        ((end / 1000.0).floor().max(0.0) as usize).min(crate::validation::MAX_HISTORY_TICKS);
     let mut boundaries: Vec<_> = (1..=ticks).map(|i| i as f64 * 1000.0).collect();
     if !timed(log) && js_round(round2(end / 1000.0) % 1.0) >= 0.5 {
         boundaries.push(end);
@@ -314,21 +367,155 @@ pub fn burst_history(log: &Log) -> Vec<f64> {
         })
         .collect()
 }
+struct Fenwick(Vec<isize>);
+impl Fenwick {
+    fn push(&mut self, value: usize) {
+        let idx = self.0.len();
+        self.0.push(0);
+        if idx > 0 {
+            let mut sum = value as isize;
+            let lowbit = idx.isolate_lowest_one();
+            let mut child = idx - 1;
+            let stop = idx - lowbit;
+            while child > stop {
+                sum += self.0[child];
+                child -= child.isolate_lowest_one();
+            }
+            self.0[idx] = sum;
+        }
+    }
+    fn add(&mut self, pos: usize, delta: isize) {
+        if delta == 0 {
+            return;
+        }
+        let mut idx = pos + 1;
+        while idx < self.0.len() {
+            self.0[idx] += delta;
+            idx += idx.isolate_lowest_one();
+        }
+    }
+    fn prefix_sum(&self, count: usize) -> usize {
+        let mut idx = count.min(self.0.len().saturating_sub(1));
+        let mut sum = 0isize;
+        while idx > 0 {
+            sum += self.0[idx];
+            idx -= idx.isolate_lowest_one();
+        }
+        sum as usize
+    }
+}
+
+fn word_speed_metrics(log: &Log, index: usize, typed_raw: &Text, raw: bool) -> (usize, usize) {
+    let mut typed = typed_raw.clone();
+    for unit in &mut typed.0 {
+        if is_space(*unit) {
+            *unit = 32;
+        }
+    }
+    let target = log
+        .context
+        .target_words
+        .get(index)
+        .unwrap_or(&typed)
+        .clone();
+    let (typed, target) = if log.context.korean_status {
+        (
+            crate::text::disassemble_hangul(&typed),
+            crate::text::disassemble_hangul(&target),
+        )
+    } else {
+        (typed, target)
+    };
+    let pick = |counts: Chars| {
+        if raw {
+            counts.all_correct + counts.incorrect + counts.extra
+        } else {
+            counts.correct_word
+        }
+    };
+    (
+        pick(count_chars(&typed, &target, false)),
+        pick(count_chars(&typed, &target, true)),
+    )
+}
+
 pub fn speed_history(log: &Log, raw: bool) -> Vec<f64> {
-    boundaries(log)
-        .iter()
-        .map(|boundary| {
-            let chars = chars(log, true, Some(*boundary));
-            js_round(wpm(
-                if raw {
-                    chars.all_correct + chars.incorrect + chars.extra
+    struct WordState {
+        full: usize,
+        partial: usize,
+        last_event_is_space: bool,
+    }
+    let bounds = boundaries(log);
+    let mut history = Vec::with_capacity(bounds.len());
+    let mut positions = WordPositions::new();
+    let mut words: Vec<WordState> = vec![];
+    let mut bit = Fenwick(vec![0]);
+    let mut nonempty: BTreeSet<usize> = BTreeSet::new();
+    let mut event_idx = 0usize;
+
+    for boundary in bounds {
+        while let Some(event) = log.events.get(event_idx) {
+            if event.test_ms > boundary {
+                break;
+            }
+            event_idx += 1;
+            let Some(index) = word_index(event) else {
+                continue;
+            };
+            let is_space_insert =
+                event.data["inputType"] == "insertText" && text(&event.data["data"]).0 == [32];
+            let pos = if let Some(pos) = positions.get(index) {
+                words[pos].last_event_is_space = is_space_insert;
+                pos
+            } else {
+                let pos = words.len();
+                positions.insert(index, pos);
+                let (full, partial) = if event.kind == "input" {
+                    let typed = input_value(&event.data);
+                    if !typed.is_empty() {
+                        nonempty.insert(index);
+                    }
+                    word_speed_metrics(log, index, &typed, raw)
                 } else {
-                    chars.correct_word
-                },
-                boundary / 1000.0,
-            ))
-        })
-        .collect()
+                    word_speed_metrics(log, index, &Text::default(), raw)
+                };
+                words.push(WordState {
+                    full,
+                    partial,
+                    last_event_is_space: is_space_insert,
+                });
+                bit.push(full);
+                continue;
+            };
+            if event.kind == "input" {
+                let typed = input_value(&event.data);
+                if typed.is_empty() {
+                    nonempty.remove(&index);
+                } else {
+                    nonempty.insert(index);
+                }
+                let (full, partial) = word_speed_metrics(log, index, &typed, raw);
+                let delta = full as isize - words[pos].full as isize;
+                words[pos].full = full;
+                words[pos].partial = partial;
+                bit.add(pos, delta);
+            }
+        }
+        let active = match nonempty.last() {
+            Some(&max_index) => {
+                let pos = positions.get(max_index).unwrap_or(0);
+                max_index + usize::from(words[pos].last_event_is_space)
+            }
+            None => 0,
+        };
+        let char_count = if let Some(active_pos) = positions.get(active) {
+            bit.prefix_sum(active_pos) + words[active_pos].partial
+        } else {
+            bit.prefix_sum(words.len())
+        };
+        history.push(js_round(wpm(char_count, boundary / 1000.0)));
+    }
+    history
 }
 pub fn afk(log: &Log) -> usize {
     count_intervals(log, |e| e.kind == "keydown" || e.kind == "input")
