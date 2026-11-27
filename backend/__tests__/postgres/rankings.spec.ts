@@ -1,10 +1,11 @@
-import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vite-plus/test";
 import { createTestRuntime, seedUser } from "./helpers";
 import { withRuntime } from "../../src/runtime/env";
 import { DailyLeaderboard } from "../../src/utils/daily-leaderboards";
 import { WeeklyXpLeaderboard } from "../../src/services/weekly-xp-leaderboard";
 import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
 import { statement } from "../../src/db/client";
+import * as Mutation from "../../src/db/mutation";
 import { atomicUser } from "../../src/db/mutation";
 import * as Leaderboards from "../../src/dal/leaderboards";
 
@@ -44,10 +45,16 @@ describe("SQL ranking parity", () => {
         expect(await board.addResult(entry, config)).toBe(1);
       });
       expect(await board.addResult({ ...entry, uid: "b" }, config)).toBe(1);
-      expect(await board.addResult({ ...entry, wpm: 90 }, config)).toBe(-1);
-      expect(
-        await board.addResult({ ...entry, uid: "c", wpm: 80 }, config),
-      ).toBe(-1);
+      const stageSpy = vi.spyOn(Mutation, "stage");
+      try {
+        expect(await board.addResult({ ...entry, wpm: 90 }, config)).toBe(-1);
+        expect(
+          await board.addResult({ ...entry, uid: "c", wpm: 80 }, config),
+        ).toBe(-1);
+        expect(stageSpy).not.toHaveBeenCalled();
+      } finally {
+        stageSpy.mockRestore();
+      }
       const results = await board.getResults(0, 10, config, false);
       expect(results?.entries.map((row) => row.uid)).toEqual(["b", "a"]);
       expect(await board.getRank("a", config)).toMatchObject({
