@@ -146,6 +146,7 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
         onMouseLeave={(e) => props.onMouseLeave?.(e)}
         data-ui-variant={variant()}
         data-ui-element="button"
+        tabIndex={props.tabIndex}
         {...props.dataset}
       >
         {content}
