@@ -6,7 +6,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -71,69 +71,16 @@ pub(crate) fn input_value(data: &Value) -> Text {
     }
     value
 }
-struct WordPositions {
-    // Flat [key0, val0, key1, val1, ...] to reuse Vec<usize> in Wasm.
-    slots: Vec<usize>,
-    len: usize,
-}
-impl WordPositions {
-    fn new() -> Self {
-        Self {
-            slots: vec![],
-            len: 0,
-        }
-    }
-    fn slot(slots: &[usize], key: usize) -> usize {
-        let mask = (slots.len() >> 1) - 1;
-        let mut idx = key.wrapping_mul(2_654_435_761) & mask;
-        loop {
-            let entry = slots[idx << 1];
-            if entry == usize::MAX || entry == key {
-                return idx << 1;
-            }
-            idx = (idx + 1) & mask;
-        }
-    }
-    fn get(&self, key: usize) -> Option<usize> {
-        if self.slots.is_empty() {
-            return None;
-        }
-        let off = Self::slot(&self.slots, key);
-        (self.slots[off] == key).then_some(self.slots[off + 1])
-    }
-    #[inline(never)]
-    fn insert(&mut self, key: usize, value: usize) {
-        if self.len * 4 >= self.slots.len() {
-            let cap = (self.slots.len() * 2).max(32);
-            let mut next = vec![usize::MAX; cap];
-            for &[k, v] in self.slots.as_chunks::<2>().0 {
-                if k != usize::MAX {
-                    let off = Self::slot(&next, k);
-                    next[off] = k;
-                    next[off + 1] = v;
-                }
-            }
-            self.slots = next;
-        }
-        let off = Self::slot(&self.slots, key);
-        if self.slots[off] == usize::MAX {
-            self.len += 1;
-        }
-        self.slots[off] = key;
-        self.slots[off + 1] = value;
-    }
-}
-
 #[inline(never)]
 pub(crate) fn per_word(log: &Log, limit: Option<f64>) -> Vec<(usize, Vec<&Event>)> {
     let mut words: Vec<(usize, Vec<&Event>)> = vec![];
-    let mut positions = WordPositions::new();
+    let mut positions: BTreeMap<usize, usize> = BTreeMap::new();
     for event in &log.events {
         if limit.is_some_and(|limit| event.test_ms > limit) {
             break;
         }
         if let Some(index) = word_index(event) {
-            if let Some(pos) = positions.get(index) {
+            if let Some(&pos) = positions.get(&index) {
                 words[pos].1.push(event);
             } else {
                 positions.insert(index, words.len());
@@ -349,7 +296,8 @@ pub fn boundaries(log: &Log) -> Vec<f64> {
     }
     boundaries
 }
-fn count_intervals(log: &Log, predicate: impl Fn(&Event) -> bool) -> Vec<usize> {
+#[inline(never)]
+fn count_intervals(log: &Log, predicate: fn(&Event) -> bool) -> Vec<usize> {
     let mut index = 0;
     let mut counts = vec![];
     for boundary in boundaries(log) {
@@ -385,43 +333,6 @@ pub fn burst_history(log: &Log) -> Vec<f64> {
         })
         .collect()
 }
-struct Fenwick(Vec<usize>);
-impl Fenwick {
-    #[inline(never)]
-    fn push_zero(&mut self) {
-        let idx = self.0.len();
-        let stop = idx - idx.isolate_lowest_one();
-        let mut sum = 0usize;
-        let mut child = idx - 1;
-        while child > stop {
-            sum = sum.wrapping_add(self.0[child]);
-            child -= child.isolate_lowest_one();
-        }
-        self.0.push(sum);
-    }
-    #[inline(never)]
-    fn add(&mut self, pos: usize, delta: usize) {
-        if delta == 0 {
-            return;
-        }
-        let mut idx = pos + 1;
-        while idx < self.0.len() {
-            self.0[idx] = self.0[idx].wrapping_add(delta);
-            idx += idx.isolate_lowest_one();
-        }
-    }
-    #[inline(never)]
-    fn prefix_sum(&self, count: usize) -> usize {
-        let mut idx = count.min(self.0.len().saturating_sub(1));
-        let mut sum = 0usize;
-        while idx > 0 {
-            sum = sum.wrapping_add(self.0[idx]);
-            idx -= idx.isolate_lowest_one();
-        }
-        sum
-    }
-}
-
 fn word_speed_metrics(log: &Log, index: usize, typed_raw: &Text, raw: bool) -> (usize, usize) {
     let (full, partial) = count_word_pair(
         typed_raw,
@@ -442,11 +353,11 @@ fn word_speed_metrics(log: &Log, index: usize, typed_raw: &Text, raw: bool) -> (
 pub fn speed_history(log: &Log, raw: bool) -> Vec<f64> {
     let bounds = boundaries(log);
     let mut history = Vec::with_capacity(bounds.len());
-    let mut positions = WordPositions::new();
-    // Flat [full, partial, last_event_is_space] per word to reuse Vec<usize>.
+    let mut positions: BTreeMap<usize, usize> = BTreeMap::new();
+    // Flat [full, partial, last_event_is_space] per word to reuse Vec<usize> in Wasm.
     let mut words: Vec<usize> = vec![];
-    let mut bit = Fenwick(vec![0]);
     let mut nonempty: BTreeSet<usize> = BTreeSet::new();
+    let mut total_full = 0usize;
     let mut event_idx = 0usize;
 
     for boundary in bounds {
@@ -458,48 +369,40 @@ pub fn speed_history(log: &Log, raw: bool) -> Vec<f64> {
             let Some(index) = word_index(event) else {
                 continue;
             };
-            let is_space_insert = usize::from(is_space_insert(&event.data));
-            let (pos, created) = if let Some(pos) = positions.get(index) {
-                words[pos * 3 + 2] = is_space_insert;
-                (pos, false)
+            let pos = if let Some(&pos) = positions.get(&index) {
+                pos
             } else {
                 let pos = words.len() / 3;
                 positions.insert(index, pos);
                 words.push(0);
                 words.push(0);
-                words.push(is_space_insert);
-                bit.push_zero();
-                (pos, true)
+                words.push(0);
+                pos
             };
-            if created || event.kind == "input" {
-                let typed = if event.kind == "input" {
-                    input_value(&event.data)
-                } else {
-                    Text::default()
-                };
+            words[pos * 3 + 2] = usize::from(is_space_insert(&event.data));
+            if event.kind == "input" {
+                let typed = input_value(&event.data);
                 if typed.is_empty() {
                     nonempty.remove(&index);
                 } else {
                     nonempty.insert(index);
                 }
                 let (full, partial) = word_speed_metrics(log, index, &typed, raw);
-                let delta = full.wrapping_sub(words[pos * 3]);
+                total_full = total_full - words[pos * 3] + full;
                 words[pos * 3] = full;
                 words[pos * 3 + 1] = partial;
-                bit.add(pos, delta);
             }
         }
         let active = match nonempty.last() {
             Some(&max_index) => {
-                let pos = positions.get(max_index).unwrap_or(0);
+                let pos = positions.get(&max_index).copied().unwrap_or(0);
                 max_index + words[pos * 3 + 2]
             }
             None => 0,
         };
-        let char_count = if let Some(active_pos) = positions.get(active) {
-            bit.prefix_sum(active_pos) + words[active_pos * 3 + 1]
-        } else {
-            bit.prefix_sum(words.len() / 3)
+        let char_count = match positions.get(&active) {
+            Some(&pos) => total_full - words[pos * 3] + words[pos * 3 + 1],
+            None => total_full,
         };
         history.push(js_round(wpm(char_count, boundary / 1000.0)));
     }

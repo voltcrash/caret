@@ -415,3 +415,66 @@ fn v1_logs_are_flagged_legacy_while_v2_logs_are_not() {
     assert!(!v2_verdict.legacy_log);
     assert!(v2_verdict.mismatches.is_empty());
 }
+
+#[test]
+fn speed_history_sums_all_words_regardless_of_first_seen_order() {
+    // Word 1 appears in the event stream before word 0 while remaining active.
+    // Running-sum semantics include word 0's full chars plus word 1's partial chars.
+    let events = vec![
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 0.0,
+            "data": {"event": "start", "timer": 0, "date": 1000.0}
+        }))
+        .unwrap(),
+        serde_json::from_value(json!({
+            "type": "input",
+            "testMs": 200.0,
+            "data": {
+                "inputType": "insertText",
+                "wordIndex": 1,
+                "charIndex": 0,
+                "inputValue": Text::from("ab"),
+                "data": Text::from("b"),
+                "correct": true
+            }
+        }))
+        .unwrap(),
+        serde_json::from_value(json!({
+            "type": "input",
+            "testMs": 400.0,
+            "data": {
+                "inputType": "insertText",
+                "wordIndex": 0,
+                "charIndex": 0,
+                "inputValue": Text::from("hello "),
+                "data": Text::from(" "),
+                "correct": true,
+                "commitsWord": true
+            }
+        }))
+        .unwrap(),
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 1000.0,
+            "data": {"event": "end", "timer": 1, "date": 2000.0}
+        }))
+        .unwrap(),
+    ];
+    let log = Log {
+        version: typing_engine::EVENT_LOG_VERSION,
+        context: typing_engine::stats::Context {
+            target_words: vec![Text::from("hello "), Text::from("abc")],
+            mode: "time".into(),
+            mode2: "1".into(),
+            bailed_out: false,
+            korean_status: false,
+            custom_text_limit_mode: None,
+            custom_text_limit_value: None,
+        },
+        events,
+    };
+    // 6 chars from word 0 ("hello ") + 2 partial chars from active word 1 ("ab") = 8 chars in 1s -> 96 WPM.
+    assert_eq!(typing_engine::stats::speed_history(&log, false), vec![96.0]);
+    assert_eq!(typing_engine::stats::speed_history(&log, true), vec![96.0]);
+}
