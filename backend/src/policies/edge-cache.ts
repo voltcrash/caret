@@ -13,6 +13,9 @@ export const EDGE_CACHE_SECONDS: Partial<Record<OperationId, number>> = {
   "leaderboards.get": 60,
   "leaderboards.getDaily": 30,
   "leaderboards.getWeeklyXp": 30,
+  // Accepted staleness: a ban, deletion or rename can show the old profile for
+  // up to 60s. Workers Cache API deletes are per-colo only, so services cannot
+  // purge every cached copy.
   "users.getProfile": 60,
 };
 
