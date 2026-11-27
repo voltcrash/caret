@@ -21,6 +21,24 @@ function sharedFeatureImports(): string[] {
   return [...edges].toSorted();
 }
 
+/** `importer feature -> imported feature` for every cross-feature import. */
+function crossFeatureImports(): string[] {
+  const featureOf = (path: string): string | undefined =>
+    path.startsWith(`${features}/`)
+      ? relative(features, path).split("/")[0]
+      : undefined;
+  const edges = new Set<string>();
+  for (const file of sources(features)) {
+    const from = featureOf(file);
+    for (const specifier of specifiers(file, readFileSync(file, "utf8"))) {
+      const path = target(file, specifier);
+      const to = path === undefined ? undefined : featureOf(path);
+      if (to !== undefined && to !== from) edges.add(`${from} -> ${to}`);
+    }
+  }
+  return [...edges].toSorted();
+}
+
 describe("shared code and features", () => {
   it("resolves package imports before checking their boundaries", () => {
     expect(target(import.meta.filename, "#features/typing/page.tsx")).toBe(
@@ -30,5 +48,14 @@ describe("shared code and features", () => {
 
   it("keeps shared modules independent of features", () => {
     expect(sharedFeatureImports()).toEqual([]);
+  });
+
+  it("adds no new cross-feature dependencies", () => {
+    // Existing edges only; extend deliberately, never to silence a cycle.
+    expect(crossFeatureImports()).toEqual([
+      "account -> profile",
+      "account -> typing",
+      "settings -> typing",
+    ]);
   });
 });
