@@ -72,9 +72,17 @@ describe("PostgreSQL data contracts", () => {
         name: "updated",
         settingGroups: ["behavior"],
       });
-      expect((await Presets.getPresets("owner"))[0]?.settingGroups).toEqual([
-        "behavior",
-      ]);
+      expect((await Presets.getPresets("owner"))[0]).toMatchObject({
+        name: "updated",
+        config: { mode: "time" },
+        settingGroups: ["behavior"],
+      });
+      await expect(
+        Presets.editPreset("other", { _id: preset._id, name: "hijack" }),
+      ).rejects.toMatchObject({ status: 404, message: "Preset not found" });
+      await expect(
+        Presets.editPreset("owner", { _id: newId(), name: "missing" }),
+      ).rejects.toMatchObject({ status: 404, message: "Preset not found" });
       await expect(Presets.removePreset("other", preset._id)).rejects.toThrow(
         "Preset not found",
       );
