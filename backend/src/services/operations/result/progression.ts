@@ -146,11 +146,13 @@ export async function applyProgression(
     }
   }
 
-  const streak = await UserDAL.updateStreak(
-    uid,
-    completedEvent.timestamp,
-    completedEvent.client,
-  );
+  const streak = offline
+    ? (profile.streak?.length ?? 0)
+    : await UserDAL.updateStreak(
+        uid,
+        completedEvent.timestamp,
+        completedEvent.client,
+      );
 
   const xpGained: XpResult = offline
     ? { xp: 0 }
