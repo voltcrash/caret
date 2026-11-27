@@ -42,22 +42,25 @@ export async function getLeaderboard(
     throw new ApiError(404, "There is no leaderboard for this mode");
   }
 
-  const leaderboard = await LeaderboardsDAL.get(
-    mode,
-    mode2,
-    language,
-    page,
-    pageSize,
-    context.configuration.users.premium.enabled,
-    input.query.client,
-  );
-
   const count = await LeaderboardsDAL.getCount(
     mode,
     mode2,
     language,
     input.query.client,
   );
+  // Pages past the last entry are empty; skip the deep OFFSET scan.
+  const leaderboard =
+    page === 0 || page * pageSize < count
+      ? await LeaderboardsDAL.get(
+          mode,
+          mode2,
+          language,
+          page,
+          pageSize,
+          context.configuration.users.premium.enabled,
+          input.query.client,
+        )
+      : [];
   const normalizedLeaderboard = leaderboard.map((it) => omit(it, ["_id"]));
 
   return new ApiResponse("Leaderboard retrieved", {

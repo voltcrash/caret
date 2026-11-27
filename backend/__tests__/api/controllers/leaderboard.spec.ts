@@ -177,6 +177,24 @@ describe("Loaderboard Controller", () => {
       );
     });
 
+    it("skips the entry query for pages past the last entry", async () => {
+      getLeaderboardCountMock.mockResolvedValue(42);
+
+      const { body } = await mockApp
+        .get("/leaderboards")
+        .query({
+          language: "english",
+          mode: "time",
+          mode2: "60",
+          page: Number.MAX_SAFE_INTEGER,
+          pageSize: 50,
+        })
+        .expect(200);
+
+      expect(body.data).toEqual({ count: 42, pageSize: 50, entries: [] });
+      expect(getLeaderboardMock).not.toHaveBeenCalled();
+    });
+
     describe("should get for modes", async () => {
       beforeEach(() => {
         getLeaderboardMock.mockResolvedValue([]);
