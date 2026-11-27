@@ -1,6 +1,18 @@
 import "@tanstack/solid-start/server-only";
 import { gunzipSync, inflateSync, brotliDecompressSync } from "node:zlib";
 
+const CONTENT_DECODERS = new Map<
+  string,
+  (
+    buffer: Uint8Array,
+    options: { maxOutputLength: number },
+  ) => ReturnType<typeof gunzipSync>
+>([
+  ["gzip", gunzipSync],
+  ["deflate", inflateSync],
+  ["br", brotliDecompressSync],
+]);
+
 /** Preserve the legacy 100 KiB ceiling without parsing Better Auth's payload. */
 export async function boundedRequest(
   request: Request,
@@ -44,11 +56,7 @@ export async function boundedRequest(
   const encoding =
     request.headers.get("content-encoding")?.toLowerCase() ?? "identity";
   if (encoding === "identity") return new Request(request, { body });
-  const decode = {
-    gzip: gunzipSync,
-    deflate: inflateSync,
-    br: brotliDecompressSync,
-  }[encoding];
+  const decode = CONTENT_DECODERS.get(encoding);
   if (decode === undefined) {
     return new Response("Unsupported content encoding", { status: 415 });
   }
