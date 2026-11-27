@@ -5,7 +5,7 @@ import { getAuth } from "@caret/backend/auth/session";
 import { createServiceContext } from "../../src/server/context.server";
 import { createApplicationWorker } from "../../src/server/worker.server";
 import server from "../../src/server";
-import { adminProbe, freshProbe } from "./policy-functions";
+import { adminProbe, admissionProbe, freshProbe } from "./policy-functions";
 import { getAccountStats } from "../../src/functions/account";
 
 export default createApplicationWorker(async (request, options) => {
@@ -15,7 +15,9 @@ export default createApplicationWorker(async (request, options) => {
       ? adminProbe
       : url.pathname === "/__test/fresh"
         ? freshProbe
-        : undefined;
+        : url.pathname === "/__test/admission"
+          ? admissionProbe
+          : undefined;
   if (probe !== undefined) {
     return await server.fetch(
       new Request(new URL(probe.url, request.url), request),

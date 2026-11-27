@@ -58,10 +58,13 @@ export async function callOperation<K extends OperationId>(
   input: RawOperationInput,
 ): Promise<OperationResult<OperationData<K>>> {
   const call = invocation(request);
-  // SSR documents run several operations, some reading the viewer's own data.
+  // SSR documents run several operations, some reading the viewer's own data;
+  // request-wide gates run once per request.
   let scope: PolicyScope | undefined;
   try {
-    scope = await admit(call);
+    const admitted = await (request.admission ??= admit(call));
+    // `execute` resolves the actor per operation; never share it.
+    scope = { ...admitted, actor: { ...admitted.actor } };
     assertAvailable(call, scope, id.startsWith("configuration."));
     const outcome = await execute(call, scope, id, input, {
       // Historical stored preferences must pass their existing migration before
