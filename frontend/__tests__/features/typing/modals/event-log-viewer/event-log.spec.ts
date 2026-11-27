@@ -21,9 +21,11 @@ const validLog = {
 };
 
 describe("parseContext", () => {
-  it("returns a valid log", () => {
-    const log = parseContext(JSON.stringify(validLog));
-    expect(log.context.targetWords).toEqual(["hello"]);
+  it("returns a valid v1 or v2 log", () => {
+    const v1 = parseContext(JSON.stringify(validLog));
+    expect(v1.context.targetWords).toEqual(["hello"]);
+    const v2 = parseContext(JSON.stringify({ ...validLog, version: 2 }));
+    expect(v2.context.targetWords).toEqual(["hello"]);
   });
 
   it("rejects non objects", () => {
@@ -32,15 +34,15 @@ describe("parseContext", () => {
   });
 
   it("rejects missing fields", () => {
-    expect(() => parseContext(JSON.stringify({ version: 1 }))).toThrow(
-      "Expected EventLog { version: 1, events, context }",
+    expect(() => parseContext(JSON.stringify({ version: 2 }))).toThrow(
+      "Expected EventLog { version: 2, events, context }",
     );
   });
 
   it("rejects other versions", () => {
     expect(() =>
-      parseContext(JSON.stringify({ ...validLog, version: 2 })),
-    ).toThrow("Unsupported EventLog version 2 (expected 1)");
+      parseContext(JSON.stringify({ ...validLog, version: 3 })),
+    ).toThrow("Unsupported EventLog version 3 (expected 1..=2)");
   });
 
   it("rejects non array events", () => {
