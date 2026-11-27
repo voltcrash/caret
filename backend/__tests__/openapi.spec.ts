@@ -2,7 +2,7 @@ import { describe, expect, it } from "vite-plus/test";
 import { initContract } from "@caret/contracts/contract";
 import { generateOpenApi } from "../src/http/openapi-generator";
 import { z } from "zod";
-import { getOpenApi } from "../src/http/openapi";
+import { formatRequiredConfiguration, getOpenApi } from "../src/http/openapi";
 import { createHash } from "node:crypto";
 
 const c = initContract();
@@ -140,4 +140,17 @@ it("resolves native recursive schemas against the embedded OpenAPI document", ()
     }
     expect(target, ref).toBeDefined();
   }
+});
+
+it("formats both single and array requireConfiguration metadata", () => {
+  expect(
+    formatRequiredConfiguration({ path: "admin.endpointsEnabled" }),
+  ).toContain("`admin.endpointsEnabled`");
+  const multi = formatRequiredConfiguration([
+    { path: "users.profiles.enabled" },
+    { path: "quotes.reporting.enabled" },
+  ]);
+  expect(multi).toContain("`users.profiles.enabled`");
+  expect(multi).toContain("`quotes.reporting.enabled`");
+  expect(multi).not.toContain("undefined");
 });
