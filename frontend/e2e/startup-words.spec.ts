@@ -27,7 +27,9 @@ for (const authenticated of [false, true]) {
       let generations = 0;
       page.on("pageerror", (error) => errors.push(error.message));
       page.on("console", (message) => {
-        if (message.text().includes("Inializing test")) generations++;
+        if (message.text().includes("Test initialized with words")) {
+          generations++;
+        }
       });
       let releaseConfig = (): void => undefined;
       const configReady = new Promise<void>((resolve) => {
@@ -40,6 +42,8 @@ for (const authenticated of [false, true]) {
         });
       }
       await page.addInitScript(() => {
+        // Production builds silence console.debug in installLogger() unless debugLogs is enabled.
+        localStorage.setItem("debugLogs", "true");
         const samples: WordSample[] = [];
         Object.assign(window, { startupWordSamples: samples });
         const intervals = [0, 250, 1000, 3000];
