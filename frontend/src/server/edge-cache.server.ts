@@ -1,5 +1,6 @@
 import "@tanstack/solid-start/server-only";
 import type { ExecutionContext } from "@cloudflare/workers-types";
+import { runtime } from "@caret/backend/runtime";
 
 /**
  * Location-local Cache API for public reads. Only operations listed in the
@@ -12,11 +13,32 @@ const CACHE_NAME = "public-reads";
 const CACHEABLE_PATHS = ["/api/", "/_serverFn/"];
 // Per-client or per-request values never enter the shared copy.
 const PRIVATE_HEADERS = [
+  "Access-Control-Allow-Origin",
   "Retry-After",
   "X-RateLimit-Limit",
   "X-Request-Id",
   "Set-Cookie",
 ];
+const ENTITY_HEADERS = [
+  "Content-Type",
+  "Content-Length",
+  "Transfer-Encoding",
+  "Content-Range",
+];
+
+function allowedCorsOrigin(): string | undefined {
+  try {
+    const { env } = runtime();
+    const frontendUrl =
+      env.MODE === "dev"
+        ? (env.FRONTEND_URL ?? "http://localhost:3000")
+        : env.FRONTEND_URL;
+    if (frontendUrl === undefined || frontendUrl === "") return undefined;
+    return new URL(frontendUrl).origin;
+  } catch {
+    return undefined;
+  }
+}
 
 export function edgeCacheKey(request: Request): Request | undefined {
   if (request.method !== "GET" || typeof caches === "undefined") {
@@ -54,9 +76,29 @@ export async function matchEdgeCache(
     match
       ?.split(",")
       .some((tag) => tag.trim() === "*" || strip(tag) === strip(etag)) === true;
-  const response = fresh
-    ? new Response(null, { status: 304, headers: hit.headers })
-    : new Response(hit.body, hit);
+  let response: Response;
+  if (fresh) {
+    await hit.body?.cancel();
+    const headers = new Headers(hit.headers);
+    for (const name of ENTITY_HEADERS) headers.delete(name);
+    response = new Response(null, { status: 304, headers });
+  } else {
+    response = new Response(hit.body, hit);
+  }
+  const vary = response.headers.get("Vary") ?? "";
+  if (/\borigin\b/i.test(vary)) {
+    const requestOrigin = request.headers.get("origin");
+    const allowedOrigin = allowedCorsOrigin();
+    if (
+      requestOrigin !== null &&
+      allowedOrigin !== undefined &&
+      requestOrigin === allowedOrigin
+    ) {
+      response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
+    } else {
+      response.headers.delete("Access-Control-Allow-Origin");
+    }
+  }
   response.headers.set(EDGE_CACHE_HIT, "hit");
   return response;
 }
