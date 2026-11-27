@@ -21,9 +21,10 @@ export function OAuthCallback(): JSXElement {
       setError(displayedError(callbackError) ?? "Sign-in request not found");
       return;
     }
-    setError(displayedError(callbackError));
+    const safeError = displayedError(callbackError);
+    setError(safeError);
     (window.opener as Window | null)?.postMessage(
-      { type: "caret-auth", requestId, error: callbackError },
+      { type: "caret-auth", requestId, error: safeError },
       window.location.origin,
     );
     window.close();

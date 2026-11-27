@@ -34,20 +34,26 @@ it.each([null, "access_denied"])(
   },
 );
 it("decodes callback parameters", () => {
-  mount("requestId=a%2Bb&error=access+denied");
+  mount("requestId=a%2Bb&error=access%5Fdenied");
   expect(postMessage).toHaveBeenCalledWith(
-    { type: "caret-auth", requestId: "a+b", error: "access denied" },
+    { type: "caret-auth", requestId: "a+b", error: "access_denied" },
     window.location.origin,
   );
 });
 it.each(["requestId=nonce&", ""])(
-  "never displays free text from the callback URL (%s)",
+  "never displays or forwards free text from the callback URL (%s)",
   (prefix) => {
     const { container } = mount(
       `${prefix}error=${encodeURIComponent("Your account is locked, call +1 555 0100")}`,
     );
     expect(container).toHaveTextContent("Sign-in failed");
     expect(container).not.toHaveTextContent("555");
+    if (prefix !== "") {
+      expect(postMessage).toHaveBeenCalledWith(
+        { type: "caret-auth", requestId: "nonce", error: "Sign-in failed" },
+        window.location.origin,
+      );
+    }
   },
 );
 it("rejects a callback without a request ID", () => {
