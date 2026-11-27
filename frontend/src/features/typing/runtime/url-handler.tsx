@@ -6,10 +6,9 @@ import {
   CustomBackgroundSizeSchema,
   CustomThemeColors,
   CustomThemeColorsSchema,
-  FunboxName,
   FunboxSchema,
 } from "@caret/schemas/configs";
-import { Language } from "@caret/schemas/languages";
+import { LanguageSchema } from "@caret/schemas/languages";
 import { CustomTextSettingsSchema } from "@caret/schemas/results";
 import {
   DifficultySchema,
@@ -125,9 +124,14 @@ const TestSettingsSchema = z.tuple([
     .nullable(),
   z.boolean().nullable(), //punctuation
   z.boolean().nullable(), //numbers
-  z.string().nullable(), //language
+  LanguageSchema.nullable(), //language
   DifficultySchema.nullable(),
-  FunboxSchema.or(z.string().nullable()), //funbox as array or legacy string as hash separated values
+  FunboxSchema.or(
+    z
+      .string()
+      .transform((value) => (value === "" ? [] : value.split("#")))
+      .pipe(FunboxSchema),
+  ).nullable(), //funbox as array or legacy string as hash separated values
 ]);
 
 export function loadTestSettingsFromUrl(getOverride?: string): void {
@@ -168,7 +172,9 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
         nosave: true,
       });
     } else if (mode === "quote") {
-      setConfig("quoteLength", [-2]);
+      setConfig("quoteLength", [-2], {
+        nosave: true,
+      });
       setSelectedQuoteId(parseInt(de[1], 10));
     }
     applied["mode2"] = de[1];
@@ -225,7 +231,7 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 
   if (de[5] !== null) {
-    setConfig("language", de[5] as Language, {
+    setConfig("language", de[5], {
       nosave: true,
     });
     applied["language"] = de[5];
@@ -239,17 +245,10 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 
   if (de[7] !== null) {
-    let val: FunboxName[] = [];
-    //convert legacy values
-    if (typeof de[7] === "string") {
-      val = de[7].split("#") as FunboxName[];
-    } else {
-      val = de[7];
-    }
-    setConfig("funbox", val, {
+    setConfig("funbox", de[7], {
       nosave: true,
     });
-    applied["funbox"] = val.join(", ");
+    applied["funbox"] = de[7].join(", ");
   }
 
   void restartTest({
@@ -271,7 +270,7 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
 }
 
 // Challenge definitions load with the first challenge; their names are known up front.
-const challengeNameLookup = Object.fromEntries(
+const challengeNameLookup = new Map(
   [...ChallengeNameSchema.values].map((name) => [name.toLowerCase(), name]),
 );
 
@@ -280,7 +279,7 @@ async function loadChallengeFromUrl(getOverride?: string): Promise<void> {
     Misc.findGetParameter("challenge", getOverride)?.toLowerCase() ?? "";
   if (getValue === "") return;
 
-  const challengeName = challengeNameLookup[getValue];
+  const challengeName = challengeNameLookup.get(getValue);
 
   if (challengeName === undefined) {
     showErrorNotification(`Failed to load challenge: invalid name ${getValue}`);

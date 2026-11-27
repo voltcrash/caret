@@ -124,7 +124,9 @@ describe("url-handler", () => {
       expect(setConfigMock).toHaveBeenCalledWith("mode", "quote", {
         nosave: true,
       });
-      expect(setConfigMock).toHaveBeenCalledWith("quoteLength", [-2]);
+      expect(setConfigMock).toHaveBeenCalledWith("quoteLength", [-2], {
+        nosave: true,
+      });
       expect(setSelectedQuoteIdMock).toHaveBeenCalledWith(512);
       expect(restartTestMock).toHaveBeenCalled();
     });
@@ -279,7 +281,46 @@ describe("url-handler", () => {
 
       //THEN
       expect(notifyMock).toHaveBeenCalledWith(
-        `Failed to load test settings from URL: JSON does not match schema: "0" invalid enum value. expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalidmode', "1" needs to be a number or a number represented as a string e.g. "10"., "2.mode" invalid enum value. expected 'repeat' | 'random' | 'shuffle', received 'invalid', "2.pipeDelimiter" expected boolean, received string, "2.limit" expected object, received string, "2.text" expected array, received string, "3" expected boolean, received string, "4" expected boolean, received string, "6" invalid enum value. expected 'normal' | 'expert' | 'master', received 'invalid', "7" invalid input`,
+        `Failed to load test settings from URL: JSON does not match schema: "0" invalid enum value. expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalidmode', "1" needs to be a number or a number represented as a string e.g. "10"., "2.mode" invalid enum value. expected 'repeat' | 'random' | 'shuffle', received 'invalid', "2.pipeDelimiter" expected boolean, received string, "2.limit" expected object, received string, "2.text" expected array, received string, "3" expected boolean, received string, "4" expected boolean, received string, "5" invalid enum value. must be a supported language, "6" invalid enum value. expected 'normal' | 'expert' | 'master', received 'invalid', "7" invalid input`,
+      );
+    });
+
+    it("rejects invalid language and legacy funbox values without calling setConfig", () => {
+      findGetParameterMock.mockReturnValue(
+        urlData({ language: "not_a_real_language" }),
+      );
+      loadTestSettingsFromUrl("");
+      expect(setConfigMock).not.toHaveBeenCalled();
+      expect(notifyMock).toHaveBeenCalled();
+
+      setConfigMock.mockClear();
+      notifyMock.mockClear();
+      findGetParameterMock.mockReturnValue(
+        urlData({ funbox: "crt#not_a_funbox" }),
+      );
+      loadTestSettingsFromUrl("");
+      expect(setConfigMock).not.toHaveBeenCalled();
+      expect(notifyMock).toHaveBeenCalled();
+    });
+  });
+
+  describe("loadChallengeFromUrl", () => {
+    const findGetParameterMock = vi.spyOn(Misc, "findGetParameter");
+    const notifyErrorMock = vi.spyOn(Notifications, "showErrorNotification");
+
+    beforeEach(() => {
+      findGetParameterMock.mockClear();
+      notifyErrorMock.mockClear();
+      findGetParameterMock.mockImplementation((name, search) => {
+        if (name !== "challenge") return null;
+        return search ?? null;
+      });
+    });
+
+    it("rejects Object.prototype property names as invalid challenges", () => {
+      applyUrlSettings("constructor");
+      expect(notifyErrorMock).toHaveBeenCalledWith(
+        "Failed to load challenge: invalid name constructor",
       );
     });
   });
