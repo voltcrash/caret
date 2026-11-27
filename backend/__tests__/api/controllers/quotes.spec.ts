@@ -315,6 +315,41 @@ describe("QuotesController", () => {
       //THEN
       expect(body.message).toEqual("Captcha check failed");
     });
+    it("should return 400 when NewQuotesDAL reports languageError", async () => {
+      addQuoteMock.mockResolvedValue({ languageError: 1 });
+
+      const { body } = await mockApp
+        .post("/quotes")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({
+          text: new Array(60).fill("a").join(""),
+          source: "Bob",
+          language: "english",
+          captcha: "captcha",
+        })
+        .expect(400);
+
+      expect(body.message).toEqual("Language not found");
+    });
+    it("should return 409 when NewQuotesDAL reports duplicateId", async () => {
+      addQuoteMock.mockResolvedValue({
+        duplicateId: 42,
+        similarityScore: 0.95,
+      });
+
+      const { body } = await mockApp
+        .post("/quotes")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({
+          text: new Array(60).fill("a").join(""),
+          source: "Bob",
+          language: "english",
+          captcha: "captcha",
+        })
+        .expect(409);
+
+      expect(body.message).toContain("Duplicate quote");
+    });
   });
   const getLanguageMock = vi.spyOn(NewQuotesDal, "getLanguage");
   beforeEach(() => {
