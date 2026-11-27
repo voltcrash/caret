@@ -169,3 +169,21 @@ it("never cancels a completed registration", async () => {
     expect((await verifySession(headers)).uid).toBe(user.id);
   });
 });
+
+it("rejects blocked signup domains case-insensitively", async () => {
+  await withRuntime(test.env, async () => {
+    siteverify.mockImplementation(async () =>
+      Response.json({ success: true, hostname: "localhost", action: "signup" }),
+    );
+    const tidal = await onboarding("TestUser@TIDAL.LOL");
+    await expect(tidal.signup("TidalCase")).rejects.toMatchObject({
+      status: 400,
+      message: "Invalid domain",
+    });
+    const selfbot = await onboarding("TestUser@SelfBot.CC");
+    await expect(selfbot.signup("SelfbotCase")).rejects.toMatchObject({
+      status: 400,
+      message: "Invalid domain",
+    });
+  });
+});
