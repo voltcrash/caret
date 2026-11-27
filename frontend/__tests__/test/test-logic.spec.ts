@@ -36,6 +36,7 @@ const mocks = vi.hoisted(() => ({
   pullSection: undefined as undefined | (() => Promise<false | undefined>),
   sourceActions: [] as unknown[],
   engineLoad: vi.fn(async () => undefined),
+  getLanguage: vi.fn<() => Promise<LanguageObject>>(),
   restartPolicy: vi.fn(),
   generate: vi.fn(),
   complete: vi.fn(),
@@ -163,7 +164,7 @@ vi.mock("../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => mocks.user,
 }));
 vi.mock("../../src/ts/utils/json-data", () => ({
-  getLanguage: async () => mocks.language,
+  getLanguage: async () => await mocks.getLanguage(),
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
 vi.mock("../../src/features/typing/runtime/test/ui", () => ({
@@ -381,6 +382,7 @@ beforeEach(() => {
     language: "english",
     resultSaving: true,
   });
+  mocks.getLanguage.mockImplementation(async () => mocks.language);
   mocks.generate.mockImplementation(async () => ({
     words: mocks.generatedWords,
     sectionIndexes: [0, 0],
@@ -631,6 +633,17 @@ describe("test lifecycle state", () => {
     await restart();
     expect(mocks.generate).toHaveBeenCalledTimes(4);
     expect(mocks.uiRestart).toHaveBeenCalledWith("testPage");
+  });
+
+  it("fails immediately on language-load error with one toast and stores the real error", async () => {
+    const error = new Error("language fetch failed");
+    mocks.getLanguage.mockRejectedValue(error);
+    await restart();
+    expect(mocks.getLanguage).toHaveBeenCalledTimes(1);
+    expect(mocks.error).toHaveBeenCalledTimes(1);
+    expect(mocks.capture).toHaveBeenCalledWith(error);
+    expect(getTestInitError()).toEqual({ message: "language fetch failed" });
+    expect(mocks.generate).not.toHaveBeenCalled();
   });
 
   it("remembers a lazy-mode notice until lazy mode becomes available", async () => {

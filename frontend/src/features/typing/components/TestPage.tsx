@@ -100,7 +100,10 @@ export function TestPage(
       <div
         id="typingTest"
         ref={(el) => (refs.typingTest = el)}
-        class="content-grid full-width-padding relative mx-auto w-full"
+        class={cn(
+          "content-grid full-width-padding relative mx-auto w-full",
+          getTestInitError() !== null && "hidden",
+        )}
       >
         <CapsWarning />
         <FunboxTimers />

@@ -7,7 +7,6 @@ import {
   applyEngineRecovery,
   generationFailureIsNotice,
 } from "./recovery.client";
-import { updateClassNames } from "#shared/utils/cn.ts";
 
 import * as TestUI from "./test/ui";
 
@@ -50,8 +49,6 @@ import { tryCatch } from "@caret/util/trycatch";
 import * as Sentry from "#shared/sentry.ts";
 import { showLoaderBar, hideLoaderBar } from "#shared/states/loader-bar.ts";
 
-import { getTypingTestElement } from "#features/typing/state/test-dom.ts";
-
 import { peekConfig } from "#shared/config/store.ts";
 import { setQuoteLengthAll, setConfig } from "#shared/config/setters.ts";
 
@@ -72,12 +69,6 @@ export async function init(
     if (testLogicState.lastInitError) {
       void Sentry.captureException(testLogicState.lastInitError);
     }
-    const typingTest = getTypingTestElement();
-    typingTest.className = updateClassNames(
-      typingTest.className,
-      "hidden",
-      true,
-    );
     throw (
       testLogicState.lastInitError ?? new Error("Test initialization failed")
     );
@@ -104,10 +95,13 @@ export async function init(
   hideLoaderBar();
 
   if (error) {
+    testLogicState.lastInitError = error;
     showErrorNotification("Failed to load language", { error });
+    void Sentry.captureException(error);
+    throw error;
   }
 
-  if (!language || language.name !== peekConfig().language) {
+  if (language.name !== peekConfig().language) {
     return await init(lease);
   }
 
@@ -187,7 +181,7 @@ export async function init(
     console.debug("Custom text", CustomText.getData());
   }
 
-  console.log("Inializing test", {
+  console.debug("Initializing test", {
     language: {
       ...language,
       words: `${language.words.length} words`,
@@ -240,13 +234,7 @@ export async function init(
     return await init(lease);
   }
 
-  let hasNumbers = false;
-
-  for (const word of generatedWords) {
-    if (/\d/g.test(word) && !hasNumbers) {
-      hasNumbers = true;
-    }
-  }
+  const hasNumbers = generatedWords.some((word) => /\d/.test(word));
 
   setWordsHaveNumbers(hasNumbers);
   setWordsHaveTab(wordsHaveTab);
