@@ -124,14 +124,9 @@ const TestSettingsSchema = z.tuple([
     .nullable(),
   z.boolean().nullable(), //punctuation
   z.boolean().nullable(), //numbers
-  LanguageSchema.nullable(), //language
+  z.string().nullable(), //language
   DifficultySchema.nullable(),
-  FunboxSchema.or(
-    z
-      .string()
-      .transform((value) => (value === "" ? [] : value.split("#")))
-      .pipe(FunboxSchema),
-  ).nullable(), //funbox as array or legacy string as hash separated values
+  z.union([z.array(z.string()), z.string()]).nullable(), //funbox as array or legacy string as hash separated values
 ]);
 
 export function loadTestSettingsFromUrl(getOverride?: string): void {
@@ -231,10 +226,13 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 
   if (de[5] !== null) {
-    setConfig("language", de[5], {
-      nosave: true,
-    });
-    applied["language"] = de[5];
+    const parsedLanguage = LanguageSchema.safeParse(de[5]);
+    if (parsedLanguage.success) {
+      setConfig("language", parsedLanguage.data, {
+        nosave: true,
+      });
+      applied["language"] = parsedLanguage.data;
+    }
   }
 
   if (de[6] !== null) {
@@ -245,10 +243,19 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 
   if (de[7] !== null) {
-    setConfig("funbox", de[7], {
-      nosave: true,
-    });
-    applied["funbox"] = de[7].join(", ");
+    const rawFunbox =
+      typeof de[7] === "string"
+        ? de[7] === "" || de[7] === "none"
+          ? []
+          : de[7].split("#")
+        : de[7];
+    const parsedFunbox = FunboxSchema.safeParse(rawFunbox);
+    if (parsedFunbox.success) {
+      setConfig("funbox", parsedFunbox.data, {
+        nosave: true,
+      });
+      applied["funbox"] = parsedFunbox.data.join(", ");
+    }
   }
 
   void restartTest({

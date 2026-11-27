@@ -6,7 +6,6 @@ import * as Notifications from "../../src/ts/states/notifications";
 import * as TestLogic from "../../src/features/typing/runtime/test/logic";
 import * as QuoteSelection from "../../src/features/typing/state/quote-selection";
 import * as Misc from "../../src/ts/utils/misc";
-import { FunboxName } from "@caret/schemas/configs";
 import { CustomTextSettings } from "@caret/schemas/results";
 import {
   applyUrlSettings,
@@ -281,26 +280,83 @@ describe("url-handler", () => {
 
       //THEN
       expect(notifyMock).toHaveBeenCalledWith(
-        `Failed to load test settings from URL: JSON does not match schema: "0" invalid enum value. expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalidmode', "1" needs to be a number or a number represented as a string e.g. "10"., "2.mode" invalid enum value. expected 'repeat' | 'random' | 'shuffle', received 'invalid', "2.pipeDelimiter" expected boolean, received string, "2.limit" expected object, received string, "2.text" expected array, received string, "3" expected boolean, received string, "4" expected boolean, received string, "5" invalid enum value. must be a supported language, "6" invalid enum value. expected 'normal' | 'expert' | 'master', received 'invalid', "7" invalid input`,
+        `Failed to load test settings from URL: JSON does not match schema: "0" invalid enum value. expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalidmode', "1" needs to be a number or a number represented as a string e.g. "10"., "2.mode" invalid enum value. expected 'repeat' | 'random' | 'shuffle', received 'invalid', "2.pipeDelimiter" expected boolean, received string, "2.limit" expected object, received string, "2.text" expected array, received string, "3" expected boolean, received string, "4" expected boolean, received string, "6" invalid enum value. expected 'normal' | 'expert' | 'master', received 'invalid'`,
       );
     });
 
-    it("rejects invalid language and legacy funbox values without calling setConfig", () => {
+    it("skips unknown language/funbox per field while applying remaining settings", () => {
       findGetParameterMock.mockReturnValue(
-        urlData({ language: "not_a_real_language" }),
+        urlData({
+          mode: "time",
+          mode2: "30",
+          language: "not_a_real_language",
+          funbox: "crt#not_a_funbox",
+        }),
       );
       loadTestSettingsFromUrl("");
-      expect(setConfigMock).not.toHaveBeenCalled();
-      expect(notifyMock).toHaveBeenCalled();
+      expect(notifyMock).not.toHaveBeenCalled();
+      expect(setConfigMock).toHaveBeenCalledWith("mode", "time", {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("time", 30, {
+        nosave: true,
+      });
+      expect(setConfigMock).not.toHaveBeenCalledWith(
+        "language",
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(setConfigMock).not.toHaveBeenCalledWith(
+        "funbox",
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(restartTestMock).toHaveBeenCalled();
 
       setConfigMock.mockClear();
-      notifyMock.mockClear();
+      restartTestMock.mockClear();
       findGetParameterMock.mockReturnValue(
-        urlData({ funbox: "crt#not_a_funbox" }),
+        urlData({
+          mode: "words",
+          mode2: "25",
+          funbox: ["not_a_funbox"],
+        }),
       );
       loadTestSettingsFromUrl("");
-      expect(setConfigMock).not.toHaveBeenCalled();
-      expect(notifyMock).toHaveBeenCalled();
+      expect(setConfigMock).toHaveBeenCalledWith("mode", "words", {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("words", 25, {
+        nosave: true,
+      });
+      expect(setConfigMock).not.toHaveBeenCalledWith(
+        "funbox",
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(restartTestMock).toHaveBeenCalled();
+    });
+
+    it("maps legacy funbox 'none' to an empty array and applies remaining settings", () => {
+      findGetParameterMock.mockReturnValue(
+        urlData({
+          mode: "time",
+          mode2: "15",
+          funbox: "none",
+        }),
+      );
+      loadTestSettingsFromUrl("");
+      expect(notifyMock).not.toHaveBeenCalled();
+      expect(setConfigMock).toHaveBeenCalledWith("mode", "time", {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("time", 15, {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("funbox", [], {
+        nosave: true,
+      });
+      expect(restartTestMock).toHaveBeenCalled();
     });
   });
 
@@ -421,7 +477,7 @@ const urlData = (
     numbers: boolean;
     language: string;
     difficulty: Difficulty;
-    funbox: FunboxName[] | string;
+    funbox: string[] | string;
   }>,
 ): string => {
   return compressToURI(
