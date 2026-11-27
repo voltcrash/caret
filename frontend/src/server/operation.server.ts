@@ -33,13 +33,19 @@ function invocation(request: RequestContext): Invocation {
         setResponseHeader("Cache-Control", edgeCacheControl(seconds));
       }
     : undefined;
+  // Rate-limit headers describe one operation; a document runs several.
+  const setHeader = request.rpc
+    ? setResponseHeader
+    : (): void => {
+        // SSR documents carry no per-operation policy headers.
+      };
   return {
     runtime: request.runtime,
     requestId: request.requestId,
     background: request.background,
     headers: request.request.headers,
     clientIp: request.clientIp,
-    setHeader: setResponseHeader,
+    setHeader,
     appendCookie: (cookie) => {
       appendResponseHeader("Set-Cookie", cookie);
     },
@@ -63,8 +69,8 @@ export async function callOperation<K extends OperationId>(
   let scope: PolicyScope | undefined;
   try {
     const admitted = await (request.admission ??= admit(call));
-    // `execute` resolves the actor per operation; never share it.
-    scope = { ...admitted, actor: { ...admitted.actor } };
+    // `execute` replaces `scope.actor` per operation; keep the shared one intact.
+    scope = { ...admitted };
     assertAvailable(call, scope, id.startsWith("configuration."));
     const outcome = await execute(call, scope, id, input, {
       // Historical stored preferences must pass their existing migration before
