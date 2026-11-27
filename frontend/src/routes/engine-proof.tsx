@@ -1,4 +1,4 @@
-import { ClientOnly, createFileRoute } from "@tanstack/solid-router";
+import { ClientOnly, createFileRoute, notFound } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
 import { lazy, type JSXElement } from "solid-js";
 
@@ -16,7 +16,10 @@ function EngineProof(): JSXElement {
 }
 
 export const Route = createFileRoute("/engine-proof")({
-  component: import.meta.env.CARET_ENGINE_PROOF
-    ? EngineProof
-    : () => <p>Unavailable</p>,
+  beforeLoad: () => {
+    if (import.meta.env.CARET_ENGINE_PROOF) return;
+    // oxlint-disable-next-line typescript/only-throw-error -- Router's not-found control signal is intentionally not an Error.
+    throw notFound();
+  },
+  component: EngineProof,
 });

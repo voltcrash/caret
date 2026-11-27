@@ -71,6 +71,13 @@ describe("native public routes in workerd", () => {
     expect(await response.text()).toContain("User nobody-here not found");
   });
 
+  it("hides the engine proof page from builds without the proof flag", async () => {
+    const worker = await mf.getWorker("a");
+    const response = await worker.fetch(`${origin}/engine-proof`);
+    expect(response.status).toBe(404);
+    expect(await response.text()).not.toContain("Unavailable");
+  });
+
   it("keeps configuration gates: disabled profiles degrade inline", async () => {
     const worker = await mf.getWorker("b");
     const response = await worker.fetch(`${origin}/profile/anyone`, {
