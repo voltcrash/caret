@@ -13,7 +13,10 @@ const keystrokes = resolve(
   __dirname,
   "../../../packages/typing-fixtures/reference/keystrokes",
 );
-type Recording = { eventLog: unknown; completedEvent: CompletedEvent };
+type Recording = {
+  eventLog: { version: number; context: Record<string, unknown> };
+  completedEvent: CompletedEvent;
+};
 const recordings = readdirSync(keystrokes)
   .filter((file) => file.endsWith(".json"))
   .map((file) => ({
@@ -21,6 +24,22 @@ const recordings = readdirSync(keystrokes)
     // after the spread: fixtures carry a descriptive name of their own
     name: file,
   }));
+
+function asV2({ eventLog, completedEvent }: Recording): unknown {
+  return {
+    ...eventLog,
+    version: versions.eventLog,
+    context: {
+      ...eventLog.context,
+      punctuation: completedEvent.punctuation ?? false,
+      numbers: completedEvent.numbers ?? false,
+      funbox: completedEvent.funbox ?? [],
+      difficulty: completedEvent.difficulty ?? "normal",
+      language: completedEvent.language ?? "english",
+      stopOnLetter: completedEvent.stopOnLetter ?? false,
+    },
+  };
+}
 
 function encode(
   log: unknown,
@@ -53,7 +72,7 @@ describe("event log verification", () => {
       const reset = vi.spyOn(Audit, "resetServerAudit");
       try {
         expect(
-          verifyEventLog(time15.completedEvent, encode(time15.eventLog)),
+          verifyEventLog(time15.completedEvent, encode(asV2(time15))),
         ).toEqual(
           persistent
             ? { kind: "unverifiable", reason: "engine-error" }
@@ -68,13 +87,45 @@ describe("event log verification", () => {
     },
   );
   it.each(recordings.map((r) => [r.name, r] as const))(
-    "verifies the unchanged browser recording %s",
-    (_, { eventLog, completedEvent }) => {
-      expect(verifyEventLog(completedEvent, encode(eventLog))).toEqual({
+    "verifies the unchanged browser recording %s as v2",
+    (_, recording) => {
+      expect(
+        verifyEventLog(recording.completedEvent, encode(asV2(recording))),
+      ).toEqual({
         kind: "verified",
       });
     },
   );
+  it("marks legacy v1 logs unverifiable without allowing modifier forgery to verify", () => {
+    expect(
+      verifyEventLog(time15.completedEvent, encode(time15.eventLog)),
+    ).toEqual({ kind: "unverifiable", reason: "legacy-log" });
+
+    const forgedModifiers: CompletedEvent = {
+      ...time15.completedEvent,
+      punctuation: true,
+      difficulty: "master",
+    };
+    expect(verifyEventLog(forgedModifiers, encode(time15.eventLog))).toEqual({
+      kind: "unverifiable",
+      reason: "legacy-log",
+    });
+
+    const forgedMetrics: CompletedEvent = {
+      ...time15.completedEvent,
+      wpm: 250,
+    };
+    expect(verifyEventLog(forgedMetrics, encode(time15.eventLog))).toEqual({
+      kind: "mismatch",
+      mismatches: [
+        {
+          field: "wpm",
+          submitted: 250,
+          replayed: time15.completedEvent.wpm,
+        },
+      ],
+    });
+  });
   it("rejects metrics the log does not produce", () => {
     const edited = { ...time15.completedEvent, wpm: 250 };
     expect(verifyEventLog(edited, encode(time15.eventLog))).toEqual({

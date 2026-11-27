@@ -23,6 +23,10 @@ pub struct Verification {
     /// False when the client ran other scoring rules (a tab open across a
     /// deploy); nothing is compared then, since honest numbers may differ.
     pub same_behavior: bool,
+    /// True when the log uses a pre-v2 format that omits result modifiers;
+    /// metrics are still replayed for mismatches, but the result is not
+    /// fully verified.
+    pub legacy_log: bool,
     /// Empty when every replayed field matches the submission.
     pub mismatches: Vec<Mismatch>,
 }
@@ -98,6 +102,9 @@ fn modifier_expectations(
     log_version: u32,
     context: Option<&serde_json::Map<String, Value>>,
 ) -> Result<Vec<(&'static str, Value)>, EngineError> {
+    if log_version < crate::EVENT_LOG_VERSION {
+        return Ok(vec![]);
+    }
     let fail = || {
         EngineError::new(
             crate::error::ErrorCode::InvalidLog,
@@ -105,36 +112,26 @@ fn modifier_expectations(
         )
     };
     let Some(ctx) = context else {
-        return if log_version >= 2 {
-            Err(fail())
-        } else {
-            Ok(vec![])
-        };
+        return Err(fail());
     };
     let mut expected = vec![];
     for field in ["punctuation", "numbers", "stopOnLetter"] {
         match ctx.get(field) {
             Some(Value::Bool(v)) => expected.push((field, Value::Bool(*v))),
-            Some(_) => return Err(fail()),
-            None if log_version >= 2 => return Err(fail()),
-            None => {}
+            _ => return Err(fail()),
         }
     }
     match ctx.get("difficulty") {
         Some(Value::String(diff)) if ["normal", "expert", "master"].contains(&diff.as_str()) => {
             expected.push(("difficulty", Value::String(diff.clone())));
         }
-        Some(_) => return Err(fail()),
-        None if log_version >= 2 => return Err(fail()),
-        None => {}
+        _ => return Err(fail()),
     }
     match ctx.get("language") {
         Some(Value::String(lang)) if !lang.is_empty() && lang.len() <= 128 => {
             expected.push(("language", Value::String(lang.clone())));
         }
-        Some(_) => return Err(fail()),
-        None if log_version >= 2 => return Err(fail()),
-        None => {}
+        _ => return Err(fail()),
     }
     match ctx.get("funbox") {
         Some(Value::Array(items))
@@ -146,9 +143,7 @@ fn modifier_expectations(
         {
             expected.push(("funbox", Value::Array(items.clone())));
         }
-        Some(_) => return Err(fail()),
-        None if log_version >= 2 => return Err(fail()),
-        None => {}
+        _ => return Err(fail()),
     }
     Ok(expected)
 }
@@ -164,9 +159,11 @@ fn verify_with_context(
     if behavior_version != crate::BEHAVIOR_VERSION {
         return Ok(Verification {
             same_behavior: false,
+            legacy_log: false,
             mismatches: vec![],
         });
     }
+    let legacy_log = log.version < crate::EVENT_LOG_VERSION;
     let replayed_duration = stats::duration(log) / 1000.0;
     if !replayed_duration.is_finite() {
         return Err(EngineError::new(
@@ -178,6 +175,7 @@ fn verify_with_context(
     if !same(&submitted["testDuration"], &replayed_duration_value) {
         return Ok(Verification {
             same_behavior: true,
+            legacy_log,
             mismatches: vec![Mismatch {
                 field: "testDuration".into(),
                 submitted: submitted["testDuration"].clone(),
@@ -210,6 +208,7 @@ fn verify_with_context(
         .collect();
     Ok(Verification {
         same_behavior: true,
+        legacy_log,
         mismatches,
     })
 }

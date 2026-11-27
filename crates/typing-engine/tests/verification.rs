@@ -370,3 +370,48 @@ fn v2_logs_verify_language_names_with_punctuation_such_as_code_cpp() {
     raw["context"]["language"] = json!("");
     assert!(typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).is_err());
 }
+
+#[test]
+fn v1_logs_are_flagged_legacy_while_v2_logs_are_not() {
+    let (_, log, completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+
+    // v1 log cannot achieve non-legacy verification even with matching metrics
+    // or forged modifiers.
+    let v1_raw = serde_json::to_value(&log).unwrap();
+    let mut forged_modifiers = completed.clone();
+    forged_modifiers["punctuation"] = json!(true);
+    forged_modifiers["difficulty"] = json!("master");
+    let v1_verdict =
+        typing_engine::verification::verify_value(&v1_raw, &forged_modifiers, BEHAVIOR_VERSION)
+            .unwrap();
+    assert!(v1_verdict.same_behavior);
+    assert!(v1_verdict.legacy_log);
+    assert!(v1_verdict.mismatches.is_empty());
+
+    // v1 log with tampered metrics still reports metric mismatches.
+    let mut forged_wpm = completed.clone();
+    forged_wpm["wpm"] = json!(completed["wpm"].as_f64().unwrap() + 50.0);
+    let v1_mismatch =
+        typing_engine::verification::verify_value(&v1_raw, &forged_wpm, BEHAVIOR_VERSION).unwrap();
+    assert!(v1_mismatch.legacy_log);
+    assert_eq!(v1_mismatch.mismatches.len(), 1);
+    assert_eq!(v1_mismatch.mismatches[0].field, "wpm");
+
+    // v2 log with bound modifiers is not legacy.
+    let mut v2_raw = v1_raw;
+    v2_raw["version"] = json!(typing_engine::EVENT_LOG_VERSION);
+    v2_raw["context"]["punctuation"] = json!(false);
+    v2_raw["context"]["numbers"] = json!(false);
+    v2_raw["context"]["funbox"] = json!([]);
+    v2_raw["context"]["difficulty"] = json!("normal");
+    v2_raw["context"]["language"] = json!("english");
+    v2_raw["context"]["stopOnLetter"] = json!(false);
+    let v2_verdict =
+        typing_engine::verification::verify_value(&v2_raw, &completed, BEHAVIOR_VERSION).unwrap();
+    assert!(v2_verdict.same_behavior);
+    assert!(!v2_verdict.legacy_log);
+    assert!(v2_verdict.mismatches.is_empty());
+}
