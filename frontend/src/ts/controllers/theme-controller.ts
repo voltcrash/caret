@@ -71,9 +71,12 @@ type ThemeCatalog = {
 const themeState = createAppOwned(() => {
   const value = {
     randomTheme: null as ThemeIdentifier | null,
+    randomThemeId: null as string | null,
     randomThemeIndex: 0,
     preview: { phase: "idle" } as PreviewState,
     themesList: [] as string[],
+    themesListMode: null as string | null,
+    pendingThemeList: null as Promise<void> | null,
     catalog: undefined as ThemeCatalog | undefined,
     ignoreConfigEvent: false,
     applyRevision: 0,
@@ -234,40 +237,60 @@ export async function clearPreview(applyTheme = true): Promise<void> {
 }
 
 async function changeThemeList(): Promise<void> {
-  const { ThemesList: themes } = await loadThemeCatalog();
-  if (themeState().disposed) return;
-  if (peekConfig().randomTheme === "fav" && peekConfig().favThemes.length > 0) {
-    state.themesList = peekConfig().favThemes;
-  } else if (peekConfig().randomTheme === "light") {
-    state.themesList = themes
-      .filter((t) => isColorLight(t.bg))
-      .map((t) => t.name);
-  } else if (peekConfig().randomTheme === "dark") {
-    state.themesList = themes
-      .filter((t) => isColorDark(t.bg))
-      .map((t) => t.name);
-  } else if (
-    peekConfig().randomTheme === "on" ||
-    peekConfig().randomTheme === "auto"
-  ) {
-    state.themesList = themes.map((t) => {
-      return t.name;
-    });
-  } else if (peekConfig().randomTheme === "custom") {
-    state.themesList = untrack(CustomThemes.getCustomThemes).map(
-      (ct) => ct._id,
-    );
+  const current = themeState();
+  const task = (async (): Promise<void> => {
+    const { ThemesList: themes } = await loadThemeCatalog();
+    if (current.disposed) return;
+    const mode = peekConfig().randomTheme;
+    if (mode === "fav" && peekConfig().favThemes.length > 0) {
+      state.themesList = [...peekConfig().favThemes];
+    } else if (mode === "light") {
+      state.themesList = themes
+        .filter((t) => isColorLight(t.bg))
+        .map((t) => t.name);
+    } else if (mode === "dark") {
+      state.themesList = themes
+        .filter((t) => isColorDark(t.bg))
+        .map((t) => t.name);
+    } else if (mode === "on" || mode === "auto") {
+      state.themesList = themes.map((t) => {
+        return t.name;
+      });
+    } else if (mode === "custom") {
+      state.themesList = untrack(CustomThemes.getCustomThemes).map(
+        (ct) => ct._id,
+      );
+    } else {
+      state.themesList = [];
+    }
+    state.themesListMode = mode;
+    Arrays.shuffle(state.themesList);
+    state.randomThemeIndex = 0;
+  })();
+  current.pendingThemeList = task;
+  try {
+    await task;
+  } finally {
+    if (current.pendingThemeList === task) {
+      current.pendingThemeList = null;
+    }
   }
-  Arrays.shuffle(state.themesList);
-  state.randomThemeIndex = 0;
 }
 
 export async function randomizeTheme(): Promise<void> {
+  const current = themeState();
+  if (current.pendingThemeList !== null) {
+    await current.pendingThemeList;
+    if (current.disposed) return;
+  }
   const { themes } = await loadThemeCatalog();
-  if (themeState().disposed) return;
-  if (state.themesList.length === 0) {
+  if (current.disposed) return;
+  if (
+    state.themesList.length === 0 ||
+    state.themesListMode !== peekConfig().randomTheme
+  ) {
     await changeThemeList();
-    if (state.themesList.length === 0) return;
+    if (current.disposed || state.themesList.length === 0) return;
   }
 
   let filter = (_: string): boolean => true;
@@ -275,52 +298,58 @@ export async function randomizeTheme(): Promise<void> {
     filter = prefersColorSchemeDark() ? isColorDark : isColorLight;
   }
 
-  let nextTheme = null;
-  do {
-    state.randomTheme = state.themesList[
+  const previousThemeId = state.randomThemeId;
+  let selectedId: ThemeIdentifier | null = null;
+  let attempts = 0;
+  while (attempts < state.themesList.length) {
+    attempts++;
+    const candidate = state.themesList[
       state.randomThemeIndex
     ] as ThemeIdentifier;
-    nextTheme = themes[state.themesList[state.randomThemeIndex] as ThemeName];
+    const nextTheme = themes[candidate as ThemeName];
     state.randomThemeIndex++;
     if (state.randomThemeIndex >= state.themesList.length) {
       Arrays.shuffle(state.themesList);
       state.randomThemeIndex = 0;
     }
-  } while (
-    peekConfig().randomTheme !== "custom" &&
-    nextTheme !== undefined &&
-    !filter(nextTheme.bg)
-  );
+    if (
+      peekConfig().randomTheme === "custom" ||
+      nextTheme === undefined ||
+      filter(nextTheme.bg)
+    ) {
+      selectedId = candidate;
+      break;
+    }
+  }
+  if (selectedId === null) return;
 
   let colorsOverride: CustomThemeColors | undefined;
+  let displayName = selectedId.replace(/_/g, " ");
 
   if (peekConfig().randomTheme === "custom") {
-    const themeId = state.randomTheme;
-    const theme = untrack(() => CustomThemes.getCustomTheme(themeId));
+    const theme = untrack(() => CustomThemes.getCustomTheme(selectedId));
     colorsOverride = theme?.colors;
+    displayName = (theme?.name ?? "custom").replace(/_/g, " ");
     state.randomTheme = "custom";
+  } else {
+    state.randomTheme = selectedId;
   }
+  state.randomThemeId = selectedId;
 
   setConfig("customTheme", false, {
     nosave: true,
   });
   await apply(state.randomTheme, colorsOverride);
 
-  if (state.randomThemeIndex >= state.themesList.length) {
-    const themeId = state.randomTheme;
-    let name = themeId.replace(/_/g, " ");
-    if (peekConfig().randomTheme === "custom") {
-      name = (
-        untrack(() => CustomThemes.getCustomTheme(themeId))?.name ?? "custom"
-      ).replace(/_/g, " ");
-    }
-    showNoticeNotification(name);
+  if (previousThemeId !== selectedId) {
+    showNoticeNotification(displayName);
   }
 }
 
 async function clearRandom(): Promise<void> {
   if (state.randomTheme === null) return;
   state.randomTheme = null;
+  state.randomThemeId = null;
   if (peekConfig().customTheme) {
     await apply("custom");
   } else {
@@ -425,7 +454,10 @@ export function useThemeEvents(): void {
     // once the full config is loaded, we can apply everything once
     if (state.ignoreConfigEvent) return;
 
-    if (key === "randomTheme") {
+    if (
+      key === "randomTheme" ||
+      (key === "favThemes" && peekConfig().randomTheme === "fav")
+    ) {
       void changeThemeList();
     }
     if (key === "customTheme") {
