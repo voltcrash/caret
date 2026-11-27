@@ -129,11 +129,7 @@ fn modifier_expectations(
         None => {}
     }
     match ctx.get("language") {
-        Some(Value::String(lang))
-            if !lang.is_empty()
-                && lang.len() <= 128
-                && lang.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_') =>
-        {
+        Some(Value::String(lang)) if !lang.is_empty() && lang.len() <= 128 => {
             expected.push(("language", Value::String(lang.clone())));
         }
         Some(_) => return Err(fail()),

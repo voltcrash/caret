@@ -332,3 +332,41 @@ fn v2_logs_bind_result_modifiers_and_require_them() {
     assert_eq!(emitted["context"]["language"], "english_1k");
     assert_eq!(emitted["context"]["stopOnLetter"], true);
 }
+
+#[test]
+fn v2_logs_verify_language_names_with_punctuation_such_as_code_cpp() {
+    let (_, log, mut completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+    let mut raw = serde_json::to_value(&log).unwrap();
+    raw["version"] = json!(typing_engine::EVENT_LOG_VERSION);
+    raw["context"]["punctuation"] = json!(false);
+    raw["context"]["numbers"] = json!(false);
+    raw["context"]["funbox"] = json!([]);
+    raw["context"]["difficulty"] = json!("normal");
+    raw["context"]["language"] = json!("code_c++");
+    raw["context"]["stopOnLetter"] = json!(false);
+    completed["language"] = json!("code_c++");
+
+    let verdict =
+        typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).unwrap();
+    assert!(verdict.mismatches.is_empty());
+
+    let mut forged = completed.clone();
+    forged["language"] = json!("code_c");
+    let mismatched: Vec<String> =
+        typing_engine::verification::verify_value(&raw, &forged, BEHAVIOR_VERSION)
+            .unwrap()
+            .mismatches
+            .into_iter()
+            .map(|m| m.field)
+            .collect();
+    assert_eq!(mismatched, ["language"]);
+
+    raw["context"]["language"] = json!("a".repeat(129));
+    assert!(typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).is_err());
+
+    raw["context"]["language"] = json!("");
+    assert!(typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).is_err());
+}
