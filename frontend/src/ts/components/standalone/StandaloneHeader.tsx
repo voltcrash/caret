@@ -36,16 +36,14 @@ export function StandaloneHeader(props: {
           ? "text-[2.5rem]"
           : "text-[2.3rem]",
       )}
-      onClick={() => {
-        if (!props.homeLink) window.location.href = "/";
-      }}
     >
       <Show
         when={props.homeLink}
         fallback={
-          <div id="logo" class={logoClass}>
+          // Standalone pages leave the app router; load home as a document.
+          <a id="logo" href="/" class={logoClass}>
             <LogoContent label={props.label} focus={props.focus} />
-          </div>
+          </a>
         }
       >
         <a id="logo" href="/" router-link="" class={logoClass}>

@@ -148,6 +148,8 @@ it("guards private routes and preserves local redirect search/hash", async () =>
     "//evil.test",
     "/\\evil.test",
     "\n/evil",
+    "/\t/evil.test",
+    "/\u0000/evil.test",
   ]) {
     expect(authRedirect(value)).toBe("/");
   }

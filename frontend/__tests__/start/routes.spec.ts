@@ -26,6 +26,9 @@ describe("native public routes in workerd", () => {
     const response = await worker.fetch(`${origin}/profile/ssr-profile`);
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
+    // Operation rate-limit headers belong to RPC responses, not documents.
+    expect(response.headers.get("X-RateLimit-Limit")).toBeNull();
+    expect(response.headers.get("Retry-After")).toBeNull();
     const html = await response.text();
     expect(html).toContain("ssr-profile | Caret");
     expect(html).toContain("https://caret.voltcrash.com/profile/ssr-profile");
@@ -69,6 +72,13 @@ describe("native public routes in workerd", () => {
     const response = await worker.fetch(`${origin}/profile/nobody-here`);
     expect(response.status).toBe(404);
     expect(await response.text()).toContain("User nobody-here not found");
+  });
+
+  it("hides the engine proof page from builds without the proof flag", async () => {
+    const worker = await mf.getWorker("a");
+    const response = await worker.fetch(`${origin}/engine-proof`);
+    expect(response.status).toBe(404);
+    expect(await response.text()).not.toContain("Unavailable");
   });
 
   it("keeps configuration gates: disabled profiles degrade inline", async () => {

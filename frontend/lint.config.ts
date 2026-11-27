@@ -69,7 +69,8 @@ export const frontendLint: OxlintConfig = {
         "solid/no-react-deps": "error",
         "solid/no-react-specific-props": "error",
         "solid/no-unknown-namespaces": "error",
-        "solid/prefer-classlist": "error",
+        // AGENTS.md: style with class + cn, never classList.
+        "solid/prefer-classlist": "off",
         "solid/prefer-for": "error",
         "solid/prefer-show": "error",
         "solid/reactivity": "error",

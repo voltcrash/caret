@@ -221,3 +221,45 @@ describe("pilot shared services in workerd", () => {
       .run();
   });
 });
+
+describe("request-wide admission in workerd", () => {
+  let mf: Awaited<ReturnType<typeof createWorkerd>>;
+  beforeAll(async () => {
+    mf = await createWorkerd(
+      true,
+      undefined,
+      false,
+      {},
+      {
+        // Root budget of two: one request must spend only one slot.
+        onOptions: (options) => {
+          for (const worker of "workers" in options ? options.workers : []) {
+            const env = (worker as { config: { env: object } }).config
+              .env as Record<string, { simple?: { limit: number } }>;
+            const simple = env["RATE_LIMIT_60S_67"]?.simple;
+            if (simple !== undefined) simple.limit = 2;
+          }
+        },
+      },
+    );
+  });
+  afterAll(async () => await mf?.dispose());
+  it("admits one request once across several operations", async () => {
+    const worker = await mf.getWorker("a");
+    const response = await worker.fetch(
+      "http://localhost:3000/__test/admission",
+      {
+        method: "POST",
+        headers: {
+          origin: "http://localhost:3000",
+          "x-tsr-serverFn": "true",
+          "content-type": "application/json",
+          "cf-connecting-ip": "192.0.2.90",
+        },
+        body: JSON.stringify(await toJSONAsync({})),
+      },
+    );
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain("admitted");
+  });
+});

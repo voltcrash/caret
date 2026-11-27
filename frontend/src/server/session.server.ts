@@ -22,18 +22,14 @@ export async function readSessionState(
   try {
     const client = { ip: request.clientIp };
     const gate = { actor: GUEST, client };
+    // SSR reads share the document response; only a direct call owns headers.
+    const header = request.rpc ? setResponseHeader : (): undefined => undefined;
     // Independent gates run together; the session read waits for all of them.
     const [configuration, badAuthentication] = await Promise.all([
       getCachedConfiguration(),
       badAuthenticationPoints(client.ip),
-      enforceLimit("root", ROOT_LIMIT, gate, setResponseHeader, false),
-      enforceLimit(
-        "auth.session",
-        SESSION_LIMIT,
-        gate,
-        setResponseHeader,
-        false,
-      ),
+      enforceLimit("root", ROOT_LIMIT, gate, header, false),
+      enforceLimit("auth.session", SESSION_LIMIT, gate, header, false),
     ]);
     assertGoodAuthentication(configuration, badAuthentication);
     return {
@@ -44,7 +40,9 @@ export async function readSessionState(
         request.runtime.env.MAINTENANCE !== "true",
     };
   } catch (error) {
-    setResponseStatus(error instanceof ApiError ? error.status : 500);
+    if (request.rpc) {
+      setResponseStatus(error instanceof ApiError ? error.status : 500);
+    }
     throw new Error(
       error instanceof ApiError
         ? error.message

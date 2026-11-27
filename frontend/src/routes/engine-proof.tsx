@@ -1,11 +1,12 @@
-import { ClientOnly, createFileRoute } from "@tanstack/solid-router";
+import { ClientOnly, createFileRoute, notFound } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
 import { lazy, type JSXElement } from "solid-js";
 
-// Proof runners load browser-only engine modules; keep them out of the server graph.
-const Proof = lazy(
-  createClientOnlyFn(async () => import("../testing/EngineProof")),
-);
+// Proof runners load browser-only engine modules; keep them out of the server
+// graph, and out of every bundle unless this is a proof build.
+const Proof = import.meta.env.CARET_ENGINE_PROOF
+  ? lazy(createClientOnlyFn(async () => import("../testing/EngineProof")))
+  : (): JSXElement => null;
 
 function EngineProof(): JSXElement {
   return (
@@ -16,7 +17,10 @@ function EngineProof(): JSXElement {
 }
 
 export const Route = createFileRoute("/engine-proof")({
-  component: import.meta.env.CARET_ENGINE_PROOF
-    ? EngineProof
-    : () => <p>Unavailable</p>,
+  beforeLoad: () => {
+    if (import.meta.env.CARET_ENGINE_PROOF) return;
+    // oxlint-disable-next-line typescript/only-throw-error -- Router's not-found control signal is intentionally not an Error.
+    throw notFound();
+  },
+  component: import.meta.env.CARET_ENGINE_PROOF ? EngineProof : undefined,
 });

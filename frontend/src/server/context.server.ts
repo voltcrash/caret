@@ -1,6 +1,7 @@
 import "@tanstack/solid-start/server-only";
 import { runtime } from "@caret/backend/runtime";
 import { clientIp } from "@caret/backend/client-ip";
+import type { PolicyScope } from "@caret/backend/policies/operation-runner";
 
 export type ServiceContext = {
   runtime: ReturnType<typeof runtime>;
@@ -10,6 +11,8 @@ export type ServiceContext = {
   background: (task: Promise<unknown>) => void;
   /** A direct function call owns its response; SSR reads must not set the document status. */
   rpc: boolean;
+  /** Request-wide gates (root limit, bad auth, configuration) run once per request. */
+  admission?: Promise<PolicyScope>;
 };
 
 export function createServiceContext(

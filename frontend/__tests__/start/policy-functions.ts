@@ -19,3 +19,13 @@ export const freshProbe = createServerFn({ method: "POST" }).handler(
       {},
     ),
 );
+/** Three SSR-style operations on one request context. */
+export const admissionProbe = createServerFn({ method: "POST" }).handler(
+  async () => {
+    const services = createServiceContext(getRequest(), false);
+    for (let call = 0; call < 3; call++) {
+      await runOperation(services, "configuration.get", {});
+    }
+    return "admitted";
+  },
+);

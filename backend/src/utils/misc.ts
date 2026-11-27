@@ -22,8 +22,15 @@ export function buildAgentLog(client: ServiceContext["client"]): AgentLog {
   return { ip: client.ip, agent: client.userAgent ?? "unknown" };
 }
 
+// Patterns come from configuration rules, so the set stays small.
+const compiledPatterns = new Map<string, RegExp>();
+
 export function matchesAPattern(text: string, pattern: string): boolean {
-  const regex = new RegExp(`^${pattern}$`);
+  let regex = compiledPatterns.get(pattern);
+  if (regex === undefined) {
+    regex = new RegExp(`^${pattern}$`);
+    compiledPatterns.set(pattern, regex);
+  }
   return regex.test(text);
 }
 

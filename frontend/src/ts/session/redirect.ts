@@ -4,7 +4,8 @@ export function authRedirect(value: unknown): string {
     typeof value !== "string" ||
     !value.startsWith("/") ||
     value.startsWith("//") ||
-    /[\\\r\n]/.test(value)
+    // URL parsing drops tab/newline/controls, so `/\t/x` would become `//x`.
+    /[\x00-\x1f\x7f\\]/.test(value)
   ) {
     return "/";
   }

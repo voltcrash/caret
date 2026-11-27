@@ -1,9 +1,10 @@
 import { UserNameSchema } from "@caret/schemas/users";
-import { createSignal, For, JSXElement } from "solid-js";
+import { For, JSXElement } from "solid-js";
 import { z } from "zod";
 
 import type { FaSolidIcon } from "#shared/types/font-awesome.d.ts";
 
+import { createAppSignal } from "#app/state.ts";
 import { getInputElement } from "#features/typing/input/input-element.ts";
 import { AnimatedModal } from "#shared/components/common/AnimatedModal.tsx";
 import { Button } from "#shared/components/common/Button.tsx";
@@ -27,7 +28,7 @@ import { toggleCaretDebug } from "../components/words/caret-controller";
 import { toggleUserFakeChartData } from "../runtime/result/screen";
 import { disableSlowTimerFail } from "../runtime/test/timer";
 
-const [mediaQueryDebugLevel, setLocalMediaQueryDebugLevel] = createSignal(0);
+const [mediaQueryDebugLevel, setLocalMediaQueryDebugLevel] = createAppSignal(0);
 
 type DevButton = {
   icon: FaSolidIcon;

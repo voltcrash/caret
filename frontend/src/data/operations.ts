@@ -27,6 +27,8 @@ function capture(id: WebOperationId): Lease {
 
 const timeouts: Partial<Record<ContractOperationId, number>> = {
   "dev.generateData": 240_000,
+  // The server replays the submitted keystroke log before saving.
+  "results.add": 30_000,
 };
 
 type Input<K extends WebOperationId> =

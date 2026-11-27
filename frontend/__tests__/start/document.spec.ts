@@ -133,6 +133,12 @@ describe("Start document and response policy in workerd", () => {
     expect(await missing.text()).toContain("Ooops! Looks like this page");
   });
 
+  it("keeps session rate-limit headers off the SSR login document", async () => {
+    const response = await mf.dispatchFetch("http://localhost:3000/login");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("X-RateLimit-Limit")).toBeNull();
+  });
+
   it("bounds streamed auth bodies without dropping response policy", async () => {
     const response = await mf.dispatchFetch(
       "http://localhost:3000/api/auth/sign-out",

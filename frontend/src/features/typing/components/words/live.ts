@@ -94,9 +94,10 @@ function renderLiveWord(
       }
     }
   }
-  for (let i = 0; i < compositionData.length; i++) {
-    const char = compositionData[i];
-    const target = targetChars[input.length + i];
+  const compositionChars = splitIntoCharacters(compositionData);
+  for (let i = 0; i < compositionChars.length; i++) {
+    const char = compositionChars[i];
+    const target = targetChars[inputChars.length + i];
     const content =
       compositionDisplay === "replace"
         ? char === " "
@@ -106,7 +107,7 @@ function renderLiveWord(
     append(content ?? "", char === target ? "dead correct" : "dead");
   }
   for (
-    let i = inputChars.length + compositionData.length;
+    let i = inputChars.length + compositionChars.length;
     i < targetChars.length;
     i++
   ) {

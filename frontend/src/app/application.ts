@@ -42,6 +42,7 @@ export function createApplicationRoot(): ApplicationRoot {
   });
 }
 
+// oxlint-disable-next-line caret-rules/no-module-let -- The document-wide slot that owns the mounted app; app state cannot hold itself.
 const [mounted, setMounted] = createSignal<Application | undefined>();
 
 /** Registers the document's application until the returned release runs. */

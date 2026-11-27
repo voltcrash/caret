@@ -302,7 +302,12 @@ export function ResultChart(props: {
                 firstHighlightWordIndex,
                 lastHighlightWordIndex,
               );
-            } catch {}
+            } catch (error) {
+              // Hover highlighting is best-effort; surface failures in dev only.
+              if (import.meta.env.DEV) {
+                console.debug("Result chart word highlight failed", error);
+              }
+            }
             return "";
           },
         },

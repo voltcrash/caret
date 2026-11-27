@@ -28,7 +28,12 @@ describe("web operation client", () => {
         }),
     );
     const pending = operation("results.add", { body: { result: {} as never } });
+    let settled = false;
+    void pending.then(() => (settled = true));
+    // Server-side replay of the keystroke log outlasts the default 10s.
     await vi.advanceTimersByTimeAsync(10_000);
+    expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(20_000);
     expect(await pending).toMatchObject({
       ok: false,
       status: 500,

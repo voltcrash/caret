@@ -85,10 +85,22 @@ const plugin = {
     }),
     "no-module-let": defineRule({
       createOnce(context) {
+        // Solid primitives create reactive state as soon as the module loads.
+        const reactive = new Set([
+          "createSignal",
+          "createStore",
+          "createMutable",
+        ]);
+        const createsState = (init) =>
+          init?.type === "CallExpression" &&
+          init.callee?.type === "Identifier" &&
+          reactive.has(init.callee.name);
         const check = (node) => {
           if (
             node?.type !== "VariableDeclaration" ||
-            (node.kind !== "let" && node.kind !== "var")
+            (node.kind !== "let" &&
+              node.kind !== "var" &&
+              !node.declarations.some((it) => createsState(it.init)))
           ) {
             return;
           }

@@ -122,6 +122,24 @@ describe("live word node builders", () => {
       }).nodes.querySelector("letter.dead")?.textContent,
     ).toBe("x");
   });
+  it("indexes composition by code point after astral input", () => {
+    const nodes = build({
+      currentWord: "😀ab😀c",
+      input: "😀",
+      compositionData: "a😀",
+    }).nodes;
+    const letters = [...nodes.querySelectorAll("letter")].map((letter) => [
+      letter.textContent,
+      letter.className,
+    ]);
+    expect(letters).toEqual([
+      ["😀", "correct"],
+      ["a", "dead correct"],
+      ["b", "dead"],
+      ["😀", ""],
+      ["c", ""],
+    ]);
+  });
   it("keeps zen placeholders and newline insertion flags", () => {
     expect(
       build({ zen: true }).nodes.querySelector("letter.invisible")?.textContent,

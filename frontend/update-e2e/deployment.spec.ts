@@ -121,14 +121,17 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await expect(other.locator("#words letter.correct")).toHaveCount(1);
   await update(page, "b");
   // An old tab must still resolve the exact hashed engine/glue pair after deploy.
-  const oldAssets = await page.evaluate(() =>
-    performance
-      .getEntriesByType("resource")
-      .map((entry) => new URL(entry.name).pathname)
-      .filter((path) =>
-        /\/(?:browser\.client-[^/]+\.js|engine_bg-[^/]+\.wasm)$/.test(path),
-      ),
-  );
+  // Dedupe: wasm preload + engine fetch may each log a resource entry.
+  const oldAssets = await page.evaluate(() => [
+    ...new Set(
+      performance
+        .getEntriesByType("resource")
+        .map((entry) => new URL(entry.name).pathname)
+        .filter((path) =>
+          /\/(?:browser\.client-[^/]+\.js|engine_bg-[^/]+\.wasm)$/.test(path),
+        ),
+    ),
+  ]);
   expect(oldAssets).toHaveLength(2);
   for (const path of oldAssets) {
     const response = await page.request.get(path);
