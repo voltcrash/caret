@@ -5,6 +5,7 @@ import {
   lazy,
   Suspense,
   onCleanup,
+  onMount,
   Show,
 } from "solid-js";
 
@@ -49,8 +50,10 @@ export function Nav(): JSXElement {
       setAccountMenuOpen(false);
     }
   };
-  document.addEventListener("click", handleClickOutside);
-  onCleanup(() => document.removeEventListener("click", handleClickOutside));
+  onMount(() => {
+    document.addEventListener("click", handleClickOutside);
+    onCleanup(() => document.removeEventListener("click", handleClickOutside));
+  });
 
   // touch: the icon stays 36px so the row fits 320px, the invisible ring
   // around it makes the tap target 44px
