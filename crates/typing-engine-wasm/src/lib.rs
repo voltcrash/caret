@@ -125,7 +125,7 @@ impl WasmSession {
             .session
             .as_ref()
             .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
-        serialize(&session.log())
+        serialize(&session.log_payload())
     }
     pub fn dispose(&mut self) {
         self.session = None;

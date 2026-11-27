@@ -60,30 +60,7 @@ impl Word {
         }
     }
     fn recount(&mut self, target: Option<&Text>, korean: bool) {
-        let typed = Text(
-            self.input
-                .0
-                .iter()
-                .map(|unit| {
-                    if crate::text::is_space(*unit) {
-                        32
-                    } else {
-                        *unit
-                    }
-                })
-                .collect(),
-        );
-        let target = target.unwrap_or(&typed);
-        let (typed, target) = if korean {
-            (
-                crate::text::disassemble_hangul(&typed),
-                crate::text::disassemble_hangul(target),
-            )
-        } else {
-            (typed.clone(), target.clone())
-        };
-        self.full = stats::count_chars(&typed, &target, false);
-        self.partial = stats::count_chars(&typed, &target, true);
+        (self.full, self.partial) = stats::count_word_pair(&self.input, target, korean);
     }
 }
 #[derive(Default)]
@@ -128,8 +105,7 @@ impl Live {
         self.order.insert((word.first, index));
         if stamp >= word.last {
             word.last = stamp;
-            word.last_space =
-                data["inputType"] == "insertText" && stats::text(&data["data"]).0 == [32];
+            word.last_space = stats::is_space_insert(data);
         }
         if kind == "input" && word.last_input.is_none_or(|last| stamp >= last) {
             word.last_input = Some(stamp);

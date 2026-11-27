@@ -16,9 +16,14 @@ export function parseContext(raw: string): EventLog {
       `Expected EventLog { version: ${EVENT_LOG_VERSION}, events, context }`,
     );
   }
-  if (parsed.version !== EVENT_LOG_VERSION) {
+  if (
+    typeof parsed.version !== "number" ||
+    !Number.isInteger(parsed.version) ||
+    parsed.version < 1 ||
+    parsed.version > EVENT_LOG_VERSION
+  ) {
     throw new Error(
-      `Unsupported EventLog version ${String(parsed.version)} (expected ${EVENT_LOG_VERSION})`,
+      `Unsupported EventLog version ${String(parsed.version)} (expected 1..=${EVENT_LOG_VERSION})`,
     );
   }
   if (!Array.isArray((parsed as EventLog).events)) {

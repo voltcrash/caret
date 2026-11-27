@@ -19,9 +19,11 @@ pub struct Replay {
 }
 impl Replay {
     pub fn new(record: &Value) -> Result<Self> {
+        let log_version = record["eventLogVersion"].as_u64();
         if record["formatVersion"] != 1
             || record["engineBehaviorVersion"] != typing_engine::BEHAVIOR_VERSION
-            || record["eventLogVersion"] != typing_engine::EVENT_LOG_VERSION
+            || !log_version
+                .is_some_and(|v| (1..=typing_engine::EVENT_LOG_VERSION as u64).contains(&v))
         {
             return Err(
                 "Replay needs a compatible engine/log version; stored summary remains available"

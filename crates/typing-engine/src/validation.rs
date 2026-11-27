@@ -228,7 +228,7 @@ fn value(data: &Value, depth: usize, remaining: &mut usize) -> Result<(), ()> {
 }
 pub fn log(log: &Log) -> Result<(), EngineError> {
     let fail = || invalid(ErrorCode::InvalidLog, "Invalid or oversized historical log");
-    if log.version != crate::EVENT_LOG_VERSION
+    if !(1..=crate::EVENT_LOG_VERSION).contains(&log.version)
         || log.events.len() > MAX_EVENTS
         || !["time", "words", "quote", "custom", "zen"].contains(&log.context.mode.as_str())
         || log.context.mode2.len() > 128

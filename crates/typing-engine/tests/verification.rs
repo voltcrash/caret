@@ -260,3 +260,75 @@ fn linear_speed_history_matches_per_boundary_chars_and_handles_large_logs() {
         start.elapsed()
     );
 }
+
+#[test]
+fn v2_logs_bind_result_modifiers_and_require_them() {
+    let (_, log, completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+
+    // v2 log missing modifier fields fails validation.
+    let mut raw = serde_json::to_value(&log).unwrap();
+    raw["version"] = json!(typing_engine::EVENT_LOG_VERSION);
+    assert!(typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).is_err());
+
+    // Populate modifier context matching completed event -> verified.
+    raw["context"]["punctuation"] = json!(false);
+    raw["context"]["numbers"] = json!(false);
+    raw["context"]["funbox"] = json!([]);
+    raw["context"]["difficulty"] = json!("normal");
+    raw["context"]["language"] = json!("english");
+    raw["context"]["stopOnLetter"] = json!(false);
+    let verified =
+        typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).unwrap();
+    assert!(verified.mismatches.is_empty());
+
+    // Forging XP/difficulty/language/stopOnLetter modifiers is caught.
+    let mut forged = completed.clone();
+    forged["punctuation"] = json!(true);
+    forged["numbers"] = json!(true);
+    forged["funbox"] = json!(["gibberish"]);
+    forged["difficulty"] = json!("master");
+    forged["language"] = json!("english_10k");
+    forged["stopOnLetter"] = json!(true);
+    let mismatched: Vec<String> =
+        typing_engine::verification::verify_value(&raw, &forged, BEHAVIOR_VERSION)
+            .unwrap()
+            .mismatches
+            .into_iter()
+            .map(|m| m.field)
+            .collect();
+    assert_eq!(
+        mismatched,
+        [
+            "punctuation",
+            "numbers",
+            "stopOnLetter",
+            "difficulty",
+            "language",
+            "funbox",
+        ]
+    );
+
+    // Session::log emits v2 with modifier context populated.
+    let session = typing_engine::Session::new(
+        typing_engine::Config {
+            punctuation: true,
+            numbers: true,
+            difficulty: "expert".into(),
+            language: "english_1k".into(),
+            stop_on_error: "letter".into(),
+            ..typing_engine::Config::default()
+        },
+        vec![Text::from("hello")],
+    )
+    .unwrap();
+    let emitted = session.log();
+    assert_eq!(emitted["version"], typing_engine::EVENT_LOG_VERSION);
+    assert_eq!(emitted["context"]["punctuation"], true);
+    assert_eq!(emitted["context"]["numbers"], true);
+    assert_eq!(emitted["context"]["difficulty"], "expert");
+    assert_eq!(emitted["context"]["language"], "english_1k");
+    assert_eq!(emitted["context"]["stopOnLetter"], true);
+}

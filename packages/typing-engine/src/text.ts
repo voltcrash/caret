@@ -30,6 +30,12 @@ type WebContext = Omit<
   customTextLimitMode?: string;
   customTextLimitValue?: number;
   isFunboxWithNospacePropertyActive?: boolean;
+  punctuation?: boolean;
+  numbers?: boolean;
+  funbox?: string[];
+  difficulty?: string;
+  language?: string;
+  stopOnLetter?: boolean;
 };
 type WebData<D> = D extends unknown
   ? { [K in keyof D]: D[K] extends Text ? string : D[K] }

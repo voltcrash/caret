@@ -73,11 +73,41 @@ fn finite_slice_matches_frozen_intermediate_oracle() {
             );
             expected["frames"][frame]["state"] = difference["browserState"].clone();
         }
-        let mut session = Session::new(fixture.config, fixture.words).unwrap();
+        let expected_language = if fixture.config.mode == "quote" {
+            typing_engine::quotes::remove_language_size(&fixture.config.language)
+        } else {
+            fixture.config.language.clone()
+        };
+        let mut session = Session::new(fixture.config.clone(), fixture.words).unwrap();
         let mut frames = vec![];
         for command in fixture.commands {
             let update = session.apply(command).unwrap();
-            frames.push(json!({"state":update.state,"log":session.log()}));
+            let mut log = session.log();
+            assert_eq!(log["version"], typing_engine::EVENT_LOG_VERSION);
+            assert_eq!(log["context"]["punctuation"], fixture.config.punctuation);
+            assert_eq!(log["context"]["numbers"], fixture.config.numbers);
+            assert_eq!(log["context"]["funbox"], json!(fixture.config.funbox));
+            assert_eq!(log["context"]["difficulty"], fixture.config.difficulty);
+            assert_eq!(log["context"]["language"], expected_language);
+            assert_eq!(
+                log["context"]["stopOnLetter"],
+                fixture.config.stop_on_error == "letter"
+            );
+            // Frozen oracles were recorded under event log v1.
+            log["version"] = json!(1);
+            if let Some(ctx) = log["context"].as_object_mut() {
+                for key in [
+                    "punctuation",
+                    "numbers",
+                    "funbox",
+                    "difficulty",
+                    "language",
+                    "stopOnLetter",
+                ] {
+                    ctx.remove(key);
+                }
+            }
+            frames.push(json!({"state":update.state,"log":log}));
         }
         let actual = json!({"name":fixture.name,"frames":frames});
         assert!(

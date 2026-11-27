@@ -75,7 +75,96 @@ pub fn verify(
     submitted: &Value,
     behavior_version: u32,
 ) -> Result<Verification, EngineError> {
+    verify_with_context(log, None, submitted, behavior_version)
+}
+
+/// Parse an event log JSON value (preserving v2 modifier context fields) and verify it.
+pub fn verify_value(
+    raw_log: &Value,
+    submitted: &Value,
+    behavior_version: u32,
+) -> Result<Verification, EngineError> {
+    let log: Log = serde_json::from_value(raw_log.clone()).map_err(|_| {
+        EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            "Invalid or oversized historical log",
+        )
+    })?;
+    let context = raw_log.get("context").and_then(Value::as_object);
+    verify_with_context(&log, context, submitted, behavior_version)
+}
+
+fn modifier_expectations(
+    log_version: u32,
+    context: Option<&serde_json::Map<String, Value>>,
+) -> Result<Vec<(&'static str, Value)>, EngineError> {
+    let fail = || {
+        EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            "Invalid or missing v2 event log modifiers",
+        )
+    };
+    let Some(ctx) = context else {
+        return if log_version >= 2 {
+            Err(fail())
+        } else {
+            Ok(vec![])
+        };
+    };
+    let mut expected = vec![];
+    for field in ["punctuation", "numbers", "stopOnLetter"] {
+        match ctx.get(field) {
+            Some(Value::Bool(v)) => expected.push((field, Value::Bool(*v))),
+            Some(_) => return Err(fail()),
+            None if log_version >= 2 => return Err(fail()),
+            None => {}
+        }
+    }
+    match ctx.get("difficulty") {
+        Some(Value::String(diff)) if ["normal", "expert", "master"].contains(&diff.as_str()) => {
+            expected.push(("difficulty", Value::String(diff.clone())));
+        }
+        Some(_) => return Err(fail()),
+        None if log_version >= 2 => return Err(fail()),
+        None => {}
+    }
+    match ctx.get("language") {
+        Some(Value::String(lang))
+            if !lang.is_empty()
+                && lang.len() <= 128
+                && lang.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_') =>
+        {
+            expected.push(("language", Value::String(lang.clone())));
+        }
+        Some(_) => return Err(fail()),
+        None if log_version >= 2 => return Err(fail()),
+        None => {}
+    }
+    match ctx.get("funbox") {
+        Some(Value::Array(items))
+            if items.len() <= 64
+                && items.iter().all(|item| {
+                    item.as_str()
+                        .is_some_and(|name| crate::funboxes::get(name).is_some())
+                }) =>
+        {
+            expected.push(("funbox", Value::Array(items.clone())));
+        }
+        Some(_) => return Err(fail()),
+        None if log_version >= 2 => return Err(fail()),
+        None => {}
+    }
+    Ok(expected)
+}
+
+fn verify_with_context(
+    log: &Log,
+    raw_context: Option<&serde_json::Map<String, Value>>,
+    submitted: &Value,
+    behavior_version: u32,
+) -> Result<Verification, EngineError> {
     validation::log(log)?;
+    let modifier_expected = modifier_expectations(log.version, raw_context)?;
     if behavior_version != crate::BEHAVIOR_VERSION {
         return Ok(Verification {
             same_behavior: false,
@@ -113,6 +202,7 @@ pub fn verify(
     expected.push(("mode", json!(log.context.mode)));
     expected.push(("mode2", json!(log.context.mode2)));
     expected.push(("bailedOut", json!(log.context.bailed_out)));
+    expected.extend(modifier_expected);
     let mismatches = expected
         .into_iter()
         .filter(|(field, replayed)| !same(&submitted[*field], replayed))

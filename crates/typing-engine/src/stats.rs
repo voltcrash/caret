@@ -72,7 +72,8 @@ pub(crate) fn input_value(data: &Value) -> Text {
     value
 }
 struct WordPositions {
-    slots: Vec<(usize, usize)>,
+    // Flat [key0, val0, key1, val1, ...] to reuse Vec<usize> in Wasm.
+    slots: Vec<usize>,
     len: usize,
 }
 impl WordPositions {
@@ -82,13 +83,13 @@ impl WordPositions {
             len: 0,
         }
     }
-    fn slot(slots: &[(usize, usize)], key: usize) -> usize {
-        let mask = slots.len() - 1;
+    fn slot(slots: &[usize], key: usize) -> usize {
+        let mask = (slots.len() >> 1) - 1;
         let mut idx = key.wrapping_mul(2_654_435_761) & mask;
         loop {
-            let entry = slots[idx].0;
+            let entry = slots[idx << 1];
             if entry == usize::MAX || entry == key {
-                return idx;
+                return idx << 1;
             }
             idx = (idx + 1) & mask;
         }
@@ -97,29 +98,33 @@ impl WordPositions {
         if self.slots.is_empty() {
             return None;
         }
-        let entry = self.slots[Self::slot(&self.slots, key)];
-        (entry.0 == key).then_some(entry.1)
+        let off = Self::slot(&self.slots, key);
+        (self.slots[off] == key).then_some(self.slots[off + 1])
     }
+    #[inline(never)]
     fn insert(&mut self, key: usize, value: usize) {
-        if self.len * 2 >= self.slots.len() {
-            let cap = (self.slots.len() * 2).max(16);
-            let mut next = vec![(usize::MAX, 0); cap];
-            for &(k, v) in &self.slots {
+        if self.len * 4 >= self.slots.len() {
+            let cap = (self.slots.len() * 2).max(32);
+            let mut next = vec![usize::MAX; cap];
+            for &[k, v] in self.slots.as_chunks::<2>().0 {
                 if k != usize::MAX {
-                    let idx = Self::slot(&next, k);
-                    next[idx] = (k, v);
+                    let off = Self::slot(&next, k);
+                    next[off] = k;
+                    next[off + 1] = v;
                 }
             }
             self.slots = next;
         }
-        let idx = Self::slot(&self.slots, key);
-        if self.slots[idx].0 == usize::MAX {
+        let off = Self::slot(&self.slots, key);
+        if self.slots[off] == usize::MAX {
             self.len += 1;
         }
-        self.slots[idx] = (key, value);
+        self.slots[off] = key;
+        self.slots[off + 1] = value;
     }
 }
 
+#[inline(never)]
 pub(crate) fn per_word(log: &Log, limit: Option<f64>) -> Vec<(usize, Vec<&Event>)> {
     let mut words: Vec<(usize, Vec<&Event>)> = vec![];
     let mut positions = WordPositions::new();
@@ -138,6 +143,9 @@ pub(crate) fn per_word(log: &Log, limit: Option<f64>) -> Vec<(usize, Vec<&Event>
     }
     words
 }
+pub(crate) fn is_space_insert(data: &Value) -> bool {
+    data["inputType"] == "insertText" && text(&data["data"]).0 == [32]
+}
 fn active_index(words: &[(usize, Vec<&Event>)]) -> usize {
     let last = words
         .iter()
@@ -146,9 +154,7 @@ fn active_index(words: &[(usize, Vec<&Event>)]) -> usize {
     let Some((index, events)) = last else {
         return 0;
     };
-    let space = events
-        .last()
-        .is_some_and(|e| e.data["inputType"] == "insertText" && text(&e.data["data"]).0 == [32]);
+    let space = events.last().is_some_and(|e| is_space_insert(&e.data));
     *index + usize::from(space)
 }
 pub fn timed(log: &Log) -> bool {
@@ -195,36 +201,48 @@ pub fn count_chars(input: &Text, target: &Text, partial: bool) -> Chars {
     }
     chars
 }
+#[inline(never)]
+pub(crate) fn count_word_pair(
+    typed_raw: &Text,
+    target: Option<&Text>,
+    korean: bool,
+) -> (Chars, Chars) {
+    let mut typed = typed_raw.clone();
+    for unit in &mut typed.0 {
+        if is_space(*unit) {
+            *unit = 32;
+        }
+    }
+    let target = target.unwrap_or(&typed).clone();
+    let (typed, target) = if korean {
+        (
+            crate::text::disassemble_hangul(&typed),
+            crate::text::disassemble_hangul(&target),
+        )
+    } else {
+        (typed, target)
+    };
+    (
+        count_chars(&typed, &target, false),
+        count_chars(&typed, &target, true),
+    )
+}
 pub fn chars(log: &Log, partial: bool, limit: Option<f64>) -> Chars {
     let words = per_word(log, limit);
     let active = active_index(&words);
     let mut total = Chars::default();
     for (index, events) in words {
-        let mut typed = input(&events);
-        for unit in &mut typed.0 {
-            if is_space(*unit) {
-                *unit = 32;
-            }
-        }
-        let target = log
-            .context
-            .target_words
-            .get(index)
-            .unwrap_or(&typed)
-            .clone();
-        let (typed, target) = if log.context.korean_status {
-            (
-                crate::text::disassemble_hangul(&typed),
-                crate::text::disassemble_hangul(&target),
-            )
-        } else {
-            (typed, target)
-        };
-        let counts = count_chars(
+        let typed = input(&events);
+        let (full, part) = count_word_pair(
             &typed,
-            &target,
-            index == active && (partial || timed(log) || log.context.bailed_out),
+            log.context.target_words.get(index),
+            log.context.korean_status,
         );
+        let counts = if index == active && (partial || timed(log) || log.context.bailed_out) {
+            part
+        } else {
+            full
+        };
         total.all_correct += counts.all_correct;
         total.correct_word += counts.correct_word;
         total.incorrect += counts.incorrect;
@@ -367,65 +385,49 @@ pub fn burst_history(log: &Log) -> Vec<f64> {
         })
         .collect()
 }
-struct Fenwick(Vec<isize>);
+struct Fenwick(Vec<usize>);
 impl Fenwick {
-    fn push(&mut self, value: usize) {
+    #[inline(never)]
+    fn push_zero(&mut self) {
         let idx = self.0.len();
-        self.0.push(0);
-        if idx > 0 {
-            let mut sum = value as isize;
-            let lowbit = idx.isolate_lowest_one();
-            let mut child = idx - 1;
-            let stop = idx - lowbit;
-            while child > stop {
-                sum += self.0[child];
-                child -= child.isolate_lowest_one();
-            }
-            self.0[idx] = sum;
+        let stop = idx - idx.isolate_lowest_one();
+        let mut sum = 0usize;
+        let mut child = idx - 1;
+        while child > stop {
+            sum = sum.wrapping_add(self.0[child]);
+            child -= child.isolate_lowest_one();
         }
+        self.0.push(sum);
     }
-    fn add(&mut self, pos: usize, delta: isize) {
+    #[inline(never)]
+    fn add(&mut self, pos: usize, delta: usize) {
         if delta == 0 {
             return;
         }
         let mut idx = pos + 1;
         while idx < self.0.len() {
-            self.0[idx] += delta;
+            self.0[idx] = self.0[idx].wrapping_add(delta);
             idx += idx.isolate_lowest_one();
         }
     }
+    #[inline(never)]
     fn prefix_sum(&self, count: usize) -> usize {
         let mut idx = count.min(self.0.len().saturating_sub(1));
-        let mut sum = 0isize;
+        let mut sum = 0usize;
         while idx > 0 {
-            sum += self.0[idx];
+            sum = sum.wrapping_add(self.0[idx]);
             idx -= idx.isolate_lowest_one();
         }
-        sum as usize
+        sum
     }
 }
 
 fn word_speed_metrics(log: &Log, index: usize, typed_raw: &Text, raw: bool) -> (usize, usize) {
-    let mut typed = typed_raw.clone();
-    for unit in &mut typed.0 {
-        if is_space(*unit) {
-            *unit = 32;
-        }
-    }
-    let target = log
-        .context
-        .target_words
-        .get(index)
-        .unwrap_or(&typed)
-        .clone();
-    let (typed, target) = if log.context.korean_status {
-        (
-            crate::text::disassemble_hangul(&typed),
-            crate::text::disassemble_hangul(&target),
-        )
-    } else {
-        (typed, target)
-    };
+    let (full, partial) = count_word_pair(
+        typed_raw,
+        log.context.target_words.get(index),
+        log.context.korean_status,
+    );
     let pick = |counts: Chars| {
         if raw {
             counts.all_correct + counts.incorrect + counts.extra
@@ -433,22 +435,16 @@ fn word_speed_metrics(log: &Log, index: usize, typed_raw: &Text, raw: bool) -> (
             counts.correct_word
         }
     };
-    (
-        pick(count_chars(&typed, &target, false)),
-        pick(count_chars(&typed, &target, true)),
-    )
+    (pick(full), pick(partial))
 }
 
+#[inline(never)]
 pub fn speed_history(log: &Log, raw: bool) -> Vec<f64> {
-    struct WordState {
-        full: usize,
-        partial: usize,
-        last_event_is_space: bool,
-    }
     let bounds = boundaries(log);
     let mut history = Vec::with_capacity(bounds.len());
     let mut positions = WordPositions::new();
-    let mut words: Vec<WordState> = vec![];
+    // Flat [full, partial, last_event_is_space] per word to reuse Vec<usize>.
+    let mut words: Vec<usize> = vec![];
     let mut bit = Fenwick(vec![0]);
     let mut nonempty: BTreeSet<usize> = BTreeSet::new();
     let mut event_idx = 0usize;
@@ -462,56 +458,48 @@ pub fn speed_history(log: &Log, raw: bool) -> Vec<f64> {
             let Some(index) = word_index(event) else {
                 continue;
             };
-            let is_space_insert =
-                event.data["inputType"] == "insertText" && text(&event.data["data"]).0 == [32];
-            let pos = if let Some(pos) = positions.get(index) {
-                words[pos].last_event_is_space = is_space_insert;
-                pos
+            let is_space_insert = usize::from(is_space_insert(&event.data));
+            let (pos, created) = if let Some(pos) = positions.get(index) {
+                words[pos * 3 + 2] = is_space_insert;
+                (pos, false)
             } else {
-                let pos = words.len();
+                let pos = words.len() / 3;
                 positions.insert(index, pos);
-                let (full, partial) = if event.kind == "input" {
-                    let typed = input_value(&event.data);
-                    if !typed.is_empty() {
-                        nonempty.insert(index);
-                    }
-                    word_speed_metrics(log, index, &typed, raw)
-                } else {
-                    word_speed_metrics(log, index, &Text::default(), raw)
-                };
-                words.push(WordState {
-                    full,
-                    partial,
-                    last_event_is_space: is_space_insert,
-                });
-                bit.push(full);
-                continue;
+                words.push(0);
+                words.push(0);
+                words.push(is_space_insert);
+                bit.push_zero();
+                (pos, true)
             };
-            if event.kind == "input" {
-                let typed = input_value(&event.data);
+            if created || event.kind == "input" {
+                let typed = if event.kind == "input" {
+                    input_value(&event.data)
+                } else {
+                    Text::default()
+                };
                 if typed.is_empty() {
                     nonempty.remove(&index);
                 } else {
                     nonempty.insert(index);
                 }
                 let (full, partial) = word_speed_metrics(log, index, &typed, raw);
-                let delta = full as isize - words[pos].full as isize;
-                words[pos].full = full;
-                words[pos].partial = partial;
+                let delta = full.wrapping_sub(words[pos * 3]);
+                words[pos * 3] = full;
+                words[pos * 3 + 1] = partial;
                 bit.add(pos, delta);
             }
         }
         let active = match nonempty.last() {
             Some(&max_index) => {
                 let pos = positions.get(max_index).unwrap_or(0);
-                max_index + usize::from(words[pos].last_event_is_space)
+                max_index + words[pos * 3 + 2]
             }
             None => 0,
         };
         let char_count = if let Some(active_pos) = positions.get(active) {
-            bit.prefix_sum(active_pos) + words[active_pos].partial
+            bit.prefix_sum(active_pos) + words[active_pos * 3 + 1]
         } else {
-            bit.prefix_sum(words.len())
+            bit.prefix_sum(words.len() / 3)
         };
         history.push(js_round(wpm(char_count, boundary / 1000.0)));
     }

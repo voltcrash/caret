@@ -80,6 +80,8 @@ fn no_quit_and_long_test_rejections_leave_active_sessions_unchanged() {
         &mut session,
         json!({"op":"configure","now":0,"config":{"mode":"words","words":1000}}),
     );
+    assert_eq!(session.log()["events"], log["events"]);
+    let after_configure = session.log();
     assert_eq!(
         session
             .restart_policy(RestartOptions {
@@ -92,7 +94,7 @@ fn no_quit_and_long_test_rejections_leave_active_sessions_unchanged() {
     let ordinary = session.restart_policy(Default::default());
     assert!(ordinary.allowed && ordinary.record_incomplete);
     assert!(!ordinary.prevent_default);
-    assert_eq!(session.log(), log);
+    assert_eq!(session.log(), after_configure);
 }
 #[test]
 fn quote_repetition_requires_matching_language_and_active_or_failed_state() {

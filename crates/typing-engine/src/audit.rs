@@ -20,7 +20,8 @@ use ts_rs::TS;
 pub enum Query {
     #[serde(rename_all = "camelCase")]
     Verify {
-        log: Box<Log>,
+        #[ts(as = "Log")]
+        log: Box<Value>,
         #[ts(type = "unknown")]
         result: Value,
         behavior_version: u32,
@@ -88,7 +89,7 @@ pub fn audit(query: Query) -> Result<Response, EngineError> {
             result,
             behavior_version,
         } => Response::Verify {
-            result: verification::verify(&log, &result, behavior_version)?,
+            result: verification::verify_value(&log, &result, behavior_version)?,
         },
         Query::Review {
             key_spacing,
