@@ -154,9 +154,15 @@ export async function flagForNameChange(uid: string): Promise<void> {
   });
 }
 export async function setBanned(uid: string, banned: boolean): Promise<void> {
-  await mutateUser(uid, (user) => {
-    if (banned) user.banned = true;
-    else delete user.banned;
+  await mutateUser(uid, async (user) => {
+    if (banned) {
+      user.banned = true;
+      await stage(
+        statement("DELETE FROM leaderboard_snapshots WHERE uid=?", uid),
+      );
+    } else {
+      delete user.banned;
+    }
   });
 }
 export async function checkIfUserIsPremium(

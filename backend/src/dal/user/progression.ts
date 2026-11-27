@@ -112,7 +112,12 @@ export async function recordAutoBanEvent(
     );
     user.autoBanTimestamps.push(now);
     const banned = user.autoBanTimestamps.length > maxCount;
-    if (banned) user.banned = true;
+    if (banned) {
+      user.banned = true;
+      await stage(
+        statement("DELETE FROM leaderboard_snapshots WHERE uid=?", uid),
+      );
+    }
     await addImportantLog(
       "user_auto_banned",
       { autoBanTimestamps: user.autoBanTimestamps, banningUser: banned },

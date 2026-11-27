@@ -8,6 +8,7 @@ import { statement } from "../../src/db/client";
 import * as Mutation from "../../src/db/mutation";
 import { atomicUser } from "../../src/db/mutation";
 import * as Leaderboards from "../../src/dal/leaderboards";
+import * as Users from "../../src/dal/user";
 
 describe("SQL ranking parity", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
@@ -175,6 +176,51 @@ describe("SQL ranking parity", () => {
           "SELECT count(DISTINCT generation) AS count FROM leaderboard_snapshots",
         ).first<number>("count"),
       ).toBe(1);
+    });
+  });
+  it("immediately removes leaderboard_snapshots on ban, auto-ban, clearPb, and optOut", async () => {
+    for (const uid of ["snap-ban", "snap-autoban", "snap-clear", "snap-opt"]) {
+      await seedUser(test.env, uid);
+    }
+    await withRuntime(test.env, async () => {
+      const uids = ["snap-ban", "snap-autoban", "snap-clear", "snap-opt"];
+      for (const uid of uids) {
+        await statement(
+          "UPDATE users SET time_typing=100 WHERE uid=?",
+          uid,
+        ).run();
+        await statement(
+          "INSERT INTO leaderboard_bests(uid,board,wpm,acc,timestamp,data) VALUES(?,'english_time_60',100,100,1,?)",
+          uid,
+          JSON.stringify({ wpm: 100, acc: 100, timestamp: 1, raw: 100 }),
+        ).run();
+      }
+      await Leaderboards.update("time", "60", "english");
+      for (const uid of uids) {
+        expect(
+          await Leaderboards.getRank("time", "60", "english", uid),
+        ).not.toBeNull();
+      }
+
+      await Users.setBanned("snap-ban", true);
+      expect(
+        await Leaderboards.getRank("time", "60", "english", "snap-ban"),
+      ).toBeNull();
+
+      expect(await Users.recordAutoBanEvent("snap-autoban", 0, 1)).toBe(true);
+      expect(
+        await Leaderboards.getRank("time", "60", "english", "snap-autoban"),
+      ).toBeNull();
+
+      await Users.clearPb("snap-clear");
+      expect(
+        await Leaderboards.getRank("time", "60", "english", "snap-clear"),
+      ).toBeNull();
+
+      await Users.optOutOfLeaderboards("snap-opt");
+      expect(
+        await Leaderboards.getRank("time", "60", "english", "snap-opt"),
+      ).toBeNull();
     });
   });
 });

@@ -19,18 +19,16 @@ export async function clearPb(
     const profile = user;
     profile.personalBests = emptyPb();
     profile.lbPersonalBests = { time: {} };
-    await stage(statement("DELETE FROM leaderboard_bests WHERE uid=?", uid));
+    for (const table of ["leaderboard_bests", "leaderboard_snapshots"]) {
+      await stage(statement(`DELETE FROM ${table} WHERE uid=?`, uid));
+    }
   });
 }
 export async function optOutOfLeaderboards(uid: string): Promise<void> {
   await mutateUser(uid, async (user) => {
     user.lbOptOut = true;
     user.lbPersonalBests = { time: {} };
-    for (const table of [
-      "leaderboard_bests",
-      "daily_entries",
-      "weekly_entries",
-    ]) {
+    for (const table of ["leaderboard_bests", "leaderboard_snapshots"]) {
       await stage(statement(`DELETE FROM ${table} WHERE uid=?`, uid));
     }
   });
