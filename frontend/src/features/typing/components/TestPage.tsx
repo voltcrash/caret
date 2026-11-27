@@ -98,89 +98,93 @@ export function TestPage(
       </div>
       <TestInitFailed />
       <div
-        id="typingTest"
-        ref={(el) => (refs.typingTest = el)}
         class={cn(
-          "content-grid full-width-padding relative mx-auto w-full",
+          "content-grid full-width",
           getTestInitError() !== null && "hidden",
         )}
       >
-        <CapsWarning />
-        <FunboxTimers />
-        <TestModesNotice />
-        <LiveStatsTextTop />
-        <LiveStatsMini />
         <div
-          id="wordsWrapper"
-          ref={(el) => (refs.wordsWrapper = el)}
-          class={cn(
-            "content-grid full-width relative [overflow:visible_clip] [--c-dot--error:var(--error-color)] [--c-dot:var(--text-color)] pointer-coarse:select-none pointer-coarse:[-webkit-touch-callout:none]",
-            "[&.tape]:overflow-hidden [&.tape]:[mask-image:linear-gradient(90deg,transparent_1%,black_10%,black_90%,transparent_99%)]",
-          )}
-          style={{ height: getWordsWrapperHeight() }}
-          translate="no"
-          onMouseDown={(e) => {
-            // Keep focus on the hidden input so tapping words does not blur it
-            // (which closes and reopens the keyboard) or move its caret.
-            if (isCoarsePointer()) {
-              e.preventDefault();
-            }
-          }}
-          // a keyboard dismissed with android's back button leaves the input
-          // focused, and focus() on a focused input won't bring it back
-          onClick={() =>
-            focusWords(isCoarsePointer() && isInputElementFocused())
-          }
+          id="typingTest"
+          ref={(el) => (refs.typingTest = el)}
+          class="content-grid full-width-padding relative mx-auto w-full"
         >
-          <textarea
-            id="wordsInput"
-            aria-label="Typing input"
-            aria-describedby="typingPrompt"
-            disabled={
-              !isTypingReady() ||
-              getBrowserEngine().status().state !== "ready" ||
-              getTestInitError() !== null
-            }
-            ref={(el) => (refs.wordsInput = el)}
-            class={cn(
-              "full-width pointer-events-none absolute -z-1 mx-auto block h-[1em] w-0 cursor-default resize-none overflow-hidden rounded-none border-none p-0 text-[1em] [caret-color:transparent] opacity-0 [contain:strict] outline-none [text-wrap-mode:nowrap]",
-            )}
-            style={getWordsInputStyle()}
-            autocomplete="off"
-            autoCapitalize="off"
-            inputMode="text"
-            enterkeyhint="done"
-            autocorrect="off"
-            data-gramm="false"
-            data-gramm_editor="false"
-            data-enable-grammarly="false"
-            data-bwignore
-            data-1p-ignore
-            data-lpignore="true"
-            data-form-type="other"
-            {...{ list: "autocompleteOff" }}
-            spellcheck={false}
-          ></textarea>
+          <CapsWarning />
+          <FunboxTimers />
+          <TestModesNotice />
+          <LiveStatsTextTop />
+          <LiveStatsMini />
           <div
-            id="typingPrompt"
-            class="sr-only"
-            aria-live="polite"
-            aria-atomic="true"
+            id="wordsWrapper"
+            ref={(el) => (refs.wordsWrapper = el)}
+            class={cn(
+              "content-grid full-width relative [overflow:visible_clip] [--c-dot--error:var(--error-color)] [--c-dot:var(--text-color)] pointer-coarse:select-none pointer-coarse:[-webkit-touch-callout:none]",
+              "[&.tape]:overflow-hidden [&.tape]:[mask-image:linear-gradient(90deg,transparent_1%,black_10%,black_90%,transparent_99%)]",
+            )}
+            style={{ height: getWordsWrapperHeight() }}
+            translate="no"
+            onMouseDown={(e) => {
+              // Keep focus on the hidden input so tapping words does not blur it
+              // (which closes and reopens the keyboard) or move its caret.
+              if (isCoarsePointer()) {
+                e.preventDefault();
+              }
+            }}
+            // a keyboard dismissed with android's back button leaves the input
+            // focused, and focus() on a focused input won't bring it back
+            onClick={() =>
+              focusWords(isCoarsePointer() && isInputElementFocused())
+            }
           >
-            {prompt()}
+            <textarea
+              id="wordsInput"
+              aria-label="Typing input"
+              aria-describedby="typingPrompt"
+              disabled={
+                !isTypingReady() ||
+                getBrowserEngine().status().state !== "ready" ||
+                getTestInitError() !== null
+              }
+              ref={(el) => (refs.wordsInput = el)}
+              class={cn(
+                "full-width pointer-events-none absolute -z-1 mx-auto block h-[1em] w-0 cursor-default resize-none overflow-hidden rounded-none border-none p-0 text-[1em] [caret-color:transparent] opacity-0 [contain:strict] outline-none [text-wrap-mode:nowrap]",
+              )}
+              style={getWordsInputStyle()}
+              autocomplete="off"
+              autoCapitalize="off"
+              inputMode="text"
+              enterkeyhint="done"
+              autocorrect="off"
+              data-gramm="false"
+              data-gramm_editor="false"
+              data-enable-grammarly="false"
+              data-bwignore
+              data-1p-ignore
+              data-lpignore="true"
+              data-form-type="other"
+              {...{ list: "autocompleteOff" }}
+              spellcheck={false}
+            ></textarea>
+            <div
+              id="typingPrompt"
+              class="sr-only"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {prompt()}
+            </div>
+            <OutOfFocusWarning />
+            <Caret pace ref={(el) => (refs.paceCaret = el)} />
+            <Caret ref={(el) => (refs.caret = el)} />
+            <Words ref={(el) => (refs.words = el)} />
           </div>
-          <OutOfFocusWarning />
-          <Caret pace ref={(el) => (refs.paceCaret = el)} />
-          <Caret ref={(el) => (refs.caret = el)} />
-          <Words ref={(el) => (refs.words = el)} />
+          <CompositionDisplay />
+          <Keymap />
+          <RestartTestButton />
+          <FinishZenButton />
+          <SaveProgressButton />
+          <EndTestButton />
+          <LiveStatsTextBottom />
         </div>
-        <CompositionDisplay />
-        <Keymap />
-        <RestartTestButton />
-        <FinishZenButton />
-        <SaveProgressButton />
-        <EndTestButton />
-        <LiveStatsTextBottom />
       </div>
       {/* see holdKeyboardForRestart. 16px so ios doesn't zoom on focus */}
       <input
