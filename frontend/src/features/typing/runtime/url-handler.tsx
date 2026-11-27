@@ -35,12 +35,24 @@ import * as ChallengeController from "./challenge-controller";
 import * as CustomText from "./content/custom-text";
 import { restart as restartTest } from "./test/logic";
 
-const customThemeUrlDataSchema = z.object({
-  c: CustomThemeColorsSchema,
-  i: z.string().optional(),
-  s: CustomBackgroundSizeSchema.optional(),
-  f: CustomBackgroundFilterSchema.optional(),
-});
+const httpsBackgroundUrlSchema = z.string().refine((value) => {
+  if (value === "") return true;
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}, "Background URL must use https");
+
+const customThemeUrlDataSchema = z.union([
+  z.object({
+    c: CustomThemeColorsSchema,
+    i: httpsBackgroundUrlSchema.optional(),
+    s: CustomBackgroundSizeSchema.optional(),
+    f: CustomBackgroundFilterSchema.optional(),
+  }),
+  CustomThemeColorsSchema,
+]);
 
 function loadCustomThemeFromUrl(getOverride?: string): void {
   const getValue = Misc.findGetParameter("customTheme", getOverride);
@@ -55,45 +67,42 @@ function loadCustomThemeFromUrl(getOverride?: string): void {
     return;
   }
 
-  let colorArray: CustomThemeColors | undefined;
+  let colorArray: CustomThemeColors;
   let image: string | undefined;
   let size: CustomBackgroundSize | undefined;
   let filter: CustomBackgroundFilter | undefined;
-  if (Array.isArray(decoded.c) && decoded.c.length === 10) {
+  if (Array.isArray(decoded)) {
+    // Backward compatibility with legacy 10-color array format.
+    colorArray = decoded;
+  } else {
     colorArray = decoded.c;
     image = decoded.i;
     size = decoded.s;
     filter = decoded.f;
-  } else if (Array.isArray(decoded) && decoded.length === 10) {
-    // This is for backward compatibility with old format
-    colorArray = decoded as unknown as CustomThemeColors;
-  }
-
-  if (colorArray?.length !== 10) {
-    showNoticeNotification("Failed to load theme from URL: no colors found");
-    return;
   }
 
   const oldCustomTheme = peekConfig().customTheme;
   const oldCustomThemeColors = peekConfig().customThemeColors;
   try {
-    setConfig("customThemeColors", colorArray);
+    setConfig("customThemeColors", colorArray, { nosave: true });
     showSuccessNotification("Custom theme applied");
 
     if (image !== undefined && size !== undefined && filter !== undefined) {
-      setConfig("customBackground", image);
-      setConfig("customBackgroundSize", size);
-      setConfig("customBackgroundFilter", filter);
+      setConfig("customBackground", image, { nosave: true });
+      setConfig("customBackgroundSize", size, { nosave: true });
+      setConfig("customBackgroundFilter", filter, { nosave: true });
     }
 
-    if (!peekConfig().customTheme) setConfig("customTheme", true);
+    if (!peekConfig().customTheme) {
+      setConfig("customTheme", true, { nosave: true });
+    }
   } catch (e) {
     showNoticeNotification(
       "Something went wrong. Reverting to previous state.",
     );
     console.error(e);
-    setConfig("customTheme", oldCustomTheme);
-    setConfig("customThemeColors", oldCustomThemeColors);
+    setConfig("customTheme", oldCustomTheme, { nosave: true });
+    setConfig("customThemeColors", oldCustomThemeColors, { nosave: true });
   }
 }
 

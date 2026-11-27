@@ -8,7 +8,10 @@ import * as QuoteSelection from "../../src/features/typing/state/quote-selection
 import * as Misc from "../../src/ts/utils/misc";
 import { FunboxName } from "@caret/schemas/configs";
 import { CustomTextSettings } from "@caret/schemas/results";
-import { loadTestSettingsFromUrl } from "../../src/features/typing/runtime/url-handler";
+import {
+  applyUrlSettings,
+  loadTestSettingsFromUrl,
+} from "../../src/features/typing/runtime/url-handler";
 
 //mock modules to avoid dependencies
 vi.mock("../../src/features/typing/runtime/test/logic", () => ({
@@ -278,6 +281,92 @@ describe("url-handler", () => {
       expect(notifyMock).toHaveBeenCalledWith(
         `Failed to load test settings from URL: JSON does not match schema: "0" invalid enum value. expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalidmode', "1" needs to be a number or a number represented as a string e.g. "10"., "2.mode" invalid enum value. expected 'repeat' | 'random' | 'shuffle', received 'invalid', "2.pipeDelimiter" expected boolean, received string, "2.limit" expected object, received string, "2.text" expected array, received string, "3" expected boolean, received string, "4" expected boolean, received string, "6" invalid enum value. expected 'normal' | 'expert' | 'master', received 'invalid', "7" invalid input`,
       );
+    });
+  });
+
+  describe("loadCustomThemeFromUrl", () => {
+    const findGetParameterMock = vi.spyOn(Misc, "findGetParameter");
+    const setConfigMock = vi.spyOn(UpdateConfig, "setConfig");
+    const notifyMock = vi.spyOn(Notifications, "showNoticeNotification");
+    const colors = [
+      "#111111",
+      "#222222",
+      "#333333",
+      "#444444",
+      "#555555",
+      "#666666",
+      "#777777",
+      "#888888",
+      "#999999",
+      "#aaaaaa",
+    ];
+
+    beforeEach(() => {
+      UpdateConfig.setConfig("customTheme", false, { nosave: true });
+      [findGetParameterMock, setConfigMock, notifyMock].forEach((m) =>
+        m.mockClear(),
+      );
+      findGetParameterMock.mockImplementation((name, search) => {
+        if (name !== "customTheme") return null;
+        return search ?? null;
+      });
+    });
+
+    it("applies shared custom theme and https background with nosave", () => {
+      const encoded = btoa(
+        JSON.stringify({
+          c: colors,
+          i: "https://example.com/bg.png",
+          s: "cover",
+          f: [0, 1, 1, 1],
+        }),
+      );
+      applyUrlSettings(encoded);
+      expect(setConfigMock).toHaveBeenCalledWith("customThemeColors", colors, {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith(
+        "customBackground",
+        "https://example.com/bg.png",
+        { nosave: true },
+      );
+      expect(setConfigMock).toHaveBeenCalledWith(
+        "customBackgroundSize",
+        "cover",
+        { nosave: true },
+      );
+      expect(setConfigMock).toHaveBeenCalledWith(
+        "customBackgroundFilter",
+        [0, 1, 1, 1],
+        { nosave: true },
+      );
+      expect(setConfigMock).toHaveBeenCalledWith("customTheme", true, {
+        nosave: true,
+      });
+    });
+
+    it("rejects non-https background URLs and accepts legacy 10-color arrays", () => {
+      const insecure = btoa(
+        JSON.stringify({
+          c: colors,
+          i: "http://attacker.example/bg.png",
+          s: "cover",
+          f: [0, 1, 1, 1],
+        }),
+      );
+      applyUrlSettings(insecure);
+      expect(setConfigMock).not.toHaveBeenCalled();
+      expect(notifyMock).toHaveBeenCalled();
+
+      setConfigMock.mockClear();
+      notifyMock.mockClear();
+      applyUrlSettings(btoa(JSON.stringify(colors)));
+      expect(setConfigMock).toHaveBeenCalledWith("customThemeColors", colors, {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("customTheme", true, {
+        nosave: true,
+      });
     });
   });
 });
