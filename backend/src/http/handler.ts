@@ -92,9 +92,8 @@ async function conditional(
         .some(
           (tag) => tag.trim().replace(/^W\//, "") === etag.replace(/^W\//, ""),
         ));
-  const fresh =
-    (match !== null ? tagMatches : dateMatches) &&
-    (modified === null || dateMatches);
+  // RFC 9110 §13.1.3: ignore If-Modified-Since when If-None-Match is present.
+  const fresh = match !== null ? tagMatches : dateMatches;
   if (
     ["GET", "HEAD"].includes(request.method) &&
     response.status >= 200 &&
