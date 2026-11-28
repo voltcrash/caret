@@ -90,7 +90,9 @@ export function replayEarlyTyping(): {
   if (bridge === undefined) return { replayed: false, tapped: false };
   const { events, words, tapped } = bridge;
   const session = getEngineSession();
-  const firstInsert = events.find((e) => e.op === "insert");
+  const firstInsertIndex = events.findIndex((e) => e.op === "insert");
+  const firstInsert =
+    firstInsertIndex === -1 ? undefined : events[firstInsertIndex];
   const firstEvent = events[0];
   const now = performance.now();
   const maxAge =
@@ -147,6 +149,18 @@ export function replayEarlyTyping(): {
       if (!lease.isCurrent() || session.state()?.ended) break;
 
       if (event.op === "key") {
+        if (index < firstInsertIndex) {
+          if (event.kind === "keyup") continue;
+          const releasedBeforeStart = events
+            .slice(index + 1, firstInsertIndex)
+            .some(
+              (later) =>
+                later.op === "key" &&
+                later.kind === "keyup" &&
+                later.code === event.code,
+            );
+          if (releasedBeforeStart) continue;
+        }
         logTestEvent(event.kind, event.now, {
           code: (event.code || "NoCode") as Keycode | "NoCode",
           ctrl: event.ctrl,

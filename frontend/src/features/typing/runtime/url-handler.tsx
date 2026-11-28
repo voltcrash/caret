@@ -6,10 +6,9 @@ import {
   CustomBackgroundSizeSchema,
   CustomThemeColors,
   CustomThemeColorsSchema,
-  FunboxName,
   FunboxSchema,
 } from "@caret/schemas/configs";
-import { Language } from "@caret/schemas/languages";
+import { LanguageSchema } from "@caret/schemas/languages";
 import { CustomTextSettingsSchema } from "@caret/schemas/results";
 import {
   DifficultySchema,
@@ -35,12 +34,24 @@ import * as ChallengeController from "./challenge-controller";
 import * as CustomText from "./content/custom-text";
 import { restart as restartTest } from "./test/logic";
 
-const customThemeUrlDataSchema = z.object({
-  c: CustomThemeColorsSchema,
-  i: z.string().optional(),
-  s: CustomBackgroundSizeSchema.optional(),
-  f: CustomBackgroundFilterSchema.optional(),
-});
+const httpsBackgroundUrlSchema = z.string().refine((value) => {
+  if (value === "") return true;
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}, "Background URL must use https");
+
+const customThemeUrlDataSchema = z.union([
+  z.object({
+    c: CustomThemeColorsSchema,
+    i: httpsBackgroundUrlSchema.optional(),
+    s: CustomBackgroundSizeSchema.optional(),
+    f: CustomBackgroundFilterSchema.optional(),
+  }),
+  CustomThemeColorsSchema,
+]);
 
 function loadCustomThemeFromUrl(getOverride?: string): void {
   const getValue = Misc.findGetParameter("customTheme", getOverride);
@@ -55,45 +66,42 @@ function loadCustomThemeFromUrl(getOverride?: string): void {
     return;
   }
 
-  let colorArray: CustomThemeColors | undefined;
+  let colorArray: CustomThemeColors;
   let image: string | undefined;
   let size: CustomBackgroundSize | undefined;
   let filter: CustomBackgroundFilter | undefined;
-  if (Array.isArray(decoded.c) && decoded.c.length === 10) {
+  if (Array.isArray(decoded)) {
+    // Backward compatibility with legacy 10-color array format.
+    colorArray = decoded;
+  } else {
     colorArray = decoded.c;
     image = decoded.i;
     size = decoded.s;
     filter = decoded.f;
-  } else if (Array.isArray(decoded) && decoded.length === 10) {
-    // This is for backward compatibility with old format
-    colorArray = decoded as unknown as CustomThemeColors;
-  }
-
-  if (colorArray?.length !== 10) {
-    showNoticeNotification("Failed to load theme from URL: no colors found");
-    return;
   }
 
   const oldCustomTheme = peekConfig().customTheme;
   const oldCustomThemeColors = peekConfig().customThemeColors;
   try {
-    setConfig("customThemeColors", colorArray);
+    setConfig("customThemeColors", colorArray, { nosave: true });
     showSuccessNotification("Custom theme applied");
 
     if (image !== undefined && size !== undefined && filter !== undefined) {
-      setConfig("customBackground", image);
-      setConfig("customBackgroundSize", size);
-      setConfig("customBackgroundFilter", filter);
+      setConfig("customBackground", image, { nosave: true });
+      setConfig("customBackgroundSize", size, { nosave: true });
+      setConfig("customBackgroundFilter", filter, { nosave: true });
     }
 
-    if (!peekConfig().customTheme) setConfig("customTheme", true);
+    if (!peekConfig().customTheme) {
+      setConfig("customTheme", true, { nosave: true });
+    }
   } catch (e) {
     showNoticeNotification(
       "Something went wrong. Reverting to previous state.",
     );
     console.error(e);
-    setConfig("customTheme", oldCustomTheme);
-    setConfig("customThemeColors", oldCustomThemeColors);
+    setConfig("customTheme", oldCustomTheme, { nosave: true });
+    setConfig("customThemeColors", oldCustomThemeColors, { nosave: true });
   }
 }
 
@@ -118,7 +126,7 @@ const TestSettingsSchema = z.tuple([
   z.boolean().nullable(), //numbers
   z.string().nullable(), //language
   DifficultySchema.nullable(),
-  FunboxSchema.or(z.string().nullable()), //funbox as array or legacy string as hash separated values
+  z.union([z.array(z.string()), z.string()]).nullable(), //funbox as array or legacy string as hash separated values
 ]);
 
 export function loadTestSettingsFromUrl(getOverride?: string): void {
@@ -159,7 +167,9 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
         nosave: true,
       });
     } else if (mode === "quote") {
-      setConfig("quoteLength", [-2]);
+      setConfig("quoteLength", [-2], {
+        nosave: true,
+      });
       setSelectedQuoteId(parseInt(de[1], 10));
     }
     applied["mode2"] = de[1];
@@ -216,10 +226,13 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 
   if (de[5] !== null) {
-    setConfig("language", de[5] as Language, {
-      nosave: true,
-    });
-    applied["language"] = de[5];
+    const parsedLanguage = LanguageSchema.safeParse(de[5]);
+    if (parsedLanguage.success) {
+      setConfig("language", parsedLanguage.data, {
+        nosave: true,
+      });
+      applied["language"] = parsedLanguage.data;
+    }
   }
 
   if (de[6] !== null) {
@@ -230,17 +243,19 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 
   if (de[7] !== null) {
-    let val: FunboxName[] = [];
-    //convert legacy values
-    if (typeof de[7] === "string") {
-      val = de[7].split("#") as FunboxName[];
-    } else {
-      val = de[7];
+    const rawFunbox =
+      typeof de[7] === "string"
+        ? de[7] === "" || de[7] === "none"
+          ? []
+          : de[7].split("#")
+        : de[7];
+    const parsedFunbox = FunboxSchema.safeParse(rawFunbox);
+    if (parsedFunbox.success) {
+      setConfig("funbox", parsedFunbox.data, {
+        nosave: true,
+      });
+      applied["funbox"] = parsedFunbox.data.join(", ");
     }
-    setConfig("funbox", val, {
-      nosave: true,
-    });
-    applied["funbox"] = val.join(", ");
   }
 
   void restartTest({
@@ -262,7 +277,7 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
 }
 
 // Challenge definitions load with the first challenge; their names are known up front.
-const challengeNameLookup = Object.fromEntries(
+const challengeNameLookup = new Map(
   [...ChallengeNameSchema.values].map((name) => [name.toLowerCase(), name]),
 );
 
@@ -271,7 +286,7 @@ async function loadChallengeFromUrl(getOverride?: string): Promise<void> {
     Misc.findGetParameter("challenge", getOverride)?.toLowerCase() ?? "";
   if (getValue === "") return;
 
-  const challengeName = challengeNameLookup[getValue];
+  const challengeName = challengeNameLookup.get(getValue);
 
   if (challengeName === undefined) {
     showErrorNotification(`Failed to load challenge: invalid name ${getValue}`);

@@ -251,6 +251,15 @@ function formatWindow(window: Window): string {
   return `per ${window}`;
 }
 
+export function formatRequiredConfiguration(
+  requireConfiguration: NonNullable<EndpointMetadata["requireConfiguration"]>,
+): string {
+  const configs = [requireConfiguration].flat();
+  if (configs.length === 0) return "";
+  const paths = configs.map((config) => `\`${config.path}\``).join(", ");
+  return `**Required configuration:** This operation can only be called if the [configuration](#tag/configuration/operation/configuration.get) for  ${paths} is \`true\`.\n\n`;
+}
+
 function addRequiredConfiguration(
   operation: OperationObject,
   metadata: EndpointMetadata | undefined,
@@ -259,6 +268,7 @@ function addRequiredConfiguration(
     return;
   }
 
-  //@ts-expect-error somehow path doesnt exist
-  operation.description += `**Required configuration:** This operation can only be called if the [configuration](#tag/configuration/operation/configuration.get) for  \`${metadata.requireConfiguration.path}\` is \`true\`.\n\n`;
+  operation.description += formatRequiredConfiguration(
+    metadata.requireConfiguration,
+  );
 }

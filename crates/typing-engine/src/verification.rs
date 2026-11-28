@@ -23,6 +23,10 @@ pub struct Verification {
     /// False when the client ran other scoring rules (a tab open across a
     /// deploy); nothing is compared then, since honest numbers may differ.
     pub same_behavior: bool,
+    /// True when the log uses a pre-v2 format that omits result modifiers;
+    /// metrics are still replayed for mismatches, but the result is not
+    /// fully verified.
+    pub legacy_log: bool,
     /// Empty when every replayed field matches the submission.
     pub mismatches: Vec<Mismatch>,
 }
@@ -75,11 +79,108 @@ pub fn verify(
     submitted: &Value,
     behavior_version: u32,
 ) -> Result<Verification, EngineError> {
+    verify_with_context(log, None, submitted, behavior_version)
+}
+
+/// Parse an event log JSON value (preserving v2 modifier context fields) and verify it.
+pub fn verify_value(
+    raw_log: &Value,
+    submitted: &Value,
+    behavior_version: u32,
+) -> Result<Verification, EngineError> {
+    let log: Log = serde_json::from_value(raw_log.clone()).map_err(|_| {
+        EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            "Invalid or oversized historical log",
+        )
+    })?;
+    let context = raw_log.get("context").and_then(Value::as_object);
+    verify_with_context(&log, context, submitted, behavior_version)
+}
+
+fn modifier_expectations(
+    log_version: u32,
+    context: Option<&serde_json::Map<String, Value>>,
+) -> Result<Vec<(&'static str, Value)>, EngineError> {
+    if log_version < crate::EVENT_LOG_VERSION {
+        return Ok(vec![]);
+    }
+    let fail = || {
+        EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            "Invalid or missing v2 event log modifiers",
+        )
+    };
+    let Some(ctx) = context else {
+        return Err(fail());
+    };
+    let mut expected = vec![];
+    for field in ["punctuation", "numbers", "stopOnLetter"] {
+        match ctx.get(field) {
+            Some(Value::Bool(v)) => expected.push((field, Value::Bool(*v))),
+            _ => return Err(fail()),
+        }
+    }
+    match ctx.get("difficulty") {
+        Some(Value::String(diff)) if ["normal", "expert", "master"].contains(&diff.as_str()) => {
+            expected.push(("difficulty", Value::String(diff.clone())));
+        }
+        _ => return Err(fail()),
+    }
+    match ctx.get("language") {
+        Some(Value::String(lang)) if !lang.is_empty() && lang.len() <= 128 => {
+            expected.push(("language", Value::String(lang.clone())));
+        }
+        _ => return Err(fail()),
+    }
+    match ctx.get("funbox") {
+        Some(Value::Array(items))
+            if items.len() <= 64
+                && items.iter().all(|item| {
+                    item.as_str()
+                        .is_some_and(|name| crate::funboxes::get(name).is_some())
+                }) =>
+        {
+            expected.push(("funbox", Value::Array(items.clone())));
+        }
+        _ => return Err(fail()),
+    }
+    Ok(expected)
+}
+
+fn verify_with_context(
+    log: &Log,
+    raw_context: Option<&serde_json::Map<String, Value>>,
+    submitted: &Value,
+    behavior_version: u32,
+) -> Result<Verification, EngineError> {
     validation::log(log)?;
+    let modifier_expected = modifier_expectations(log.version, raw_context)?;
     if behavior_version != crate::BEHAVIOR_VERSION {
         return Ok(Verification {
             same_behavior: false,
+            legacy_log: false,
             mismatches: vec![],
+        });
+    }
+    let legacy_log = log.version < crate::EVENT_LOG_VERSION;
+    let replayed_duration = stats::duration(log) / 1000.0;
+    if !replayed_duration.is_finite() {
+        return Err(EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            "Unrepresentable result metrics: non-finite number",
+        ));
+    }
+    let replayed_duration_value = json!(replayed_duration);
+    if !same(&submitted["testDuration"], &replayed_duration_value) {
+        return Ok(Verification {
+            same_behavior: true,
+            legacy_log,
+            mismatches: vec![Mismatch {
+                field: "testDuration".into(),
+                submitted: submitted["testDuration"].clone(),
+                replayed: replayed_duration_value,
+            }],
         });
     }
     let summary = serde_json::to_value(stats::typed_summary(log)?).expect("Serializable summary");
@@ -95,6 +196,7 @@ pub fn verify(
     expected.push(("mode", json!(log.context.mode)));
     expected.push(("mode2", json!(log.context.mode2)));
     expected.push(("bailedOut", json!(log.context.bailed_out)));
+    expected.extend(modifier_expected);
     let mismatches = expected
         .into_iter()
         .filter(|(field, replayed)| !same(&submitted[*field], replayed))
@@ -106,6 +208,7 @@ pub fn verify(
         .collect();
     Ok(Verification {
         same_behavior: true,
+        legacy_log,
         mismatches,
     })
 }

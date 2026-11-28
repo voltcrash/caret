@@ -96,13 +96,18 @@ function replayEventLog(
   if (!verdict.sameBehavior) {
     return { kind: "unverifiable", reason: "other-behavior" };
   }
-  if (verdict.mismatches.length === 0) return { kind: "verified" };
-  return {
-    kind: "mismatch",
-    mismatches: verdict.mismatches.map(({ field, submitted, replayed }) => ({
-      field,
-      submitted: summarize(submitted),
-      replayed: summarize(replayed),
-    })),
-  };
+  if (verdict.mismatches.length > 0) {
+    return {
+      kind: "mismatch",
+      mismatches: verdict.mismatches.map(({ field, submitted, replayed }) => ({
+        field,
+        submitted: summarize(submitted),
+        replayed: summarize(replayed),
+      })),
+    };
+  }
+  if (verdict.legacyLog) {
+    return { kind: "unverifiable", reason: "legacy-log" };
+  }
+  return { kind: "verified" };
 }

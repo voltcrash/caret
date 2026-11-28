@@ -31,7 +31,11 @@ export async function createNewUser(
   await verifyCaptcha(captcha, "signup");
 
   // Profile conflicts must preserve the authenticated onboarding session.
-  if (email.endsWith("@tidal.lol") || email.endsWith("@selfbot.cc")) {
+  const normalizedEmail = email.toLowerCase();
+  if (
+    normalizedEmail.endsWith("@tidal.lol") ||
+    normalizedEmail.endsWith("@selfbot.cc")
+  ) {
     throw new ApiError(400, "Invalid domain");
   }
 

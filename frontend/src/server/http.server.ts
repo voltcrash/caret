@@ -54,6 +54,39 @@ export async function serveHealth(request: Request): Promise<Response> {
 const docsCsp =
   "default-src 'self';base-uri 'self';font-src 'self' https: data:;frame-ancestors 'self';img-src 'self' cdn.redocly.com data:;object-src 'none';script-src 'self' https://cdn.redocly.com;script-src-attr 'none';style-src 'self' https: 'unsafe-inline';worker-src blob: data:;upgrade-insecure-requests";
 
+const DOC_SOURCES = new Map<string, string>([
+  ["", "public.json"],
+  ["public", "public.json"],
+  ["internal", "openapi.json"],
+  ["public.json", "public.json"],
+  ["internal.json", "openapi.json"],
+]);
+
+const CONFIGURATION_EDITOR_ASSETS = new Map<string, readonly [string, string]>([
+  [
+    "",
+    [
+      editorHtml.replace("<head>", '<head><base href="/api/configure/">'),
+      "text/html",
+    ],
+  ],
+  [
+    "index.html",
+    [
+      editorHtml.replace("<head>", '<head><base href="/api/configure/">'),
+      "text/html",
+    ],
+  ],
+  [
+    "script.js",
+    [
+      editorScript.replaceAll('"/configuration', '"/api/configuration'),
+      "text/javascript",
+    ],
+  ],
+  ["style.css", [editorStyles, "text/css"]],
+]);
+
 export async function serveDocs(
   request: Request,
   file = "",
@@ -67,13 +100,7 @@ export async function serveDocs(
     }
     const selected = file.toLowerCase();
     const document = ["", "public", "internal"].includes(selected);
-    const source = {
-      "": "public.json",
-      public: "public.json",
-      internal: "openapi.json",
-      "public.json": "public.json",
-      "internal.json": "openapi.json",
-    }[selected];
+    const source = DOC_SOURCES.get(selected);
     if (source === undefined) return missing(request);
     if (document) {
       const root = `/api${prefix === undefined ? "" : `/${encodeURIComponent(prefix)}`}/docs`;
@@ -112,22 +139,7 @@ export async function serveConfigurationEditor(
   const call = invocation(request);
   return await runHttpAuxiliary(call, request, async () => {
     if (call.runtime.env.MODE !== "dev") return missing(request);
-    const assets = {
-      "": [
-        editorHtml.replace("<head>", '<head><base href="/api/configure/">'),
-        "text/html",
-      ],
-      "index.html": [
-        editorHtml.replace("<head>", '<head><base href="/api/configure/">'),
-        "text/html",
-      ],
-      "script.js": [
-        editorScript.replaceAll('"/configuration', '"/api/configuration'),
-        "text/javascript",
-      ],
-      "style.css": [editorStyles, "text/css"],
-    };
-    const asset = assets[file as keyof typeof assets];
+    const asset = CONFIGURATION_EDITOR_ASSETS.get(file);
     if (asset === undefined) return missing(request);
     return new Response(asset[0], {
       headers: { "content-type": `${asset[1]}; charset=utf-8` },

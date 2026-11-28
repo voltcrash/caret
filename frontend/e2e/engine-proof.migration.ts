@@ -9,6 +9,38 @@ import { hashResult } from "@caret/web-shared/result-hash";
 import { getResultFailure } from "../../backend/src/anticheat/result";
 
 const root = resolve(import.meta.dirname, "../../packages/typing-fixtures");
+
+const V2_CONTEXT_KEYS = [
+  "punctuation",
+  "numbers",
+  "funbox",
+  "difficulty",
+  "language",
+  "stopOnLetter",
+] as const;
+
+function normalizeV2LogForV1Oracle(output: unknown): unknown {
+  const fixture = structuredClone(output) as {
+    frames?: {
+      log?: { version?: unknown; context?: Record<string, unknown> };
+    }[];
+  };
+  for (const frame of fixture.frames ?? []) {
+    const log = frame.log;
+    if (log === undefined) continue;
+    expect(log.version).toBe(2);
+    const context = log.context;
+    if (context !== undefined) {
+      for (const key of V2_CONTEXT_KEYS) {
+        expect(context).toHaveProperty(key);
+        Reflect.deleteProperty(context, key);
+      }
+    }
+    log.version = 1;
+  }
+  return fixture;
+}
+
 test("native fixture matches browser Wasm through built Cloudflare assets", async ({
   page,
 }) => {
@@ -49,7 +81,7 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
   const expected: unknown = JSON.parse(
     await readFile(resolve(root, "oracle/finite-edit.json"), "utf8"),
   );
-  expect(actual).toEqual(expected);
+  expect(normalizeV2LogForV1Oracle(actual)).toEqual(expected);
   expect(errors).toEqual([]);
   await page.getByRole("textbox", { name: "Type finite slice" }).fill("");
   const inputToPaint: number[] = [];
@@ -111,7 +143,9 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
   await page.getByRole("button", { name: "Run fixture" }).click();
   await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
   expect(
-    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+    normalizeV2LogForV1Oracle(
+      JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+    ),
   ).toEqual(expected);
   for (const name of (await readdir(resolve(root, "commands"))).filter(
     (entry) => entry.endsWith(".json"),
@@ -141,7 +175,9 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
       frame.state = difference.browserState;
     }
     expect(
-      JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+      normalizeV2LogForV1Oracle(
+        JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+      ),
       name,
     ).toEqual(frozen);
     await expect(page.getByTestId("engine-proof-error")).toBeEmpty();

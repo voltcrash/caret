@@ -1343,7 +1343,23 @@ describe("result controller test", () => {
             ),
             "utf8",
           ),
-        ) as { eventLog: unknown; completedEvent: CompletedEvent };
+        ) as {
+          eventLog: { version: number; context: Record<string, unknown> };
+          completedEvent: CompletedEvent;
+        };
+        const v2EventLog = {
+          ...recording.eventLog,
+          version: versions.eventLog,
+          context: {
+            ...recording.eventLog.context,
+            punctuation: recording.completedEvent.punctuation ?? false,
+            numbers: recording.completedEvent.numbers ?? false,
+            funbox: recording.completedEvent.funbox ?? [],
+            difficulty: recording.completedEvent.difficulty ?? "normal",
+            language: recording.completedEvent.language ?? "english",
+            stopOnLetter: recording.completedEvent.stopOnLetter ?? false,
+          },
+        };
         const recorded = (
           overrides: Partial<CompletedEvent> = {},
         ): CompletedEvent => ({
@@ -1362,9 +1378,10 @@ describe("result controller test", () => {
         };
         const eventLog = (
           behaviorVersion = versions.behavior,
+          raw: unknown = v2EventLog,
         ): ResultEventLog => ({
           behaviorVersion,
-          log: gzipSync(JSON.stringify(recording.eventLog)).toString("base64"),
+          log: gzipSync(JSON.stringify(raw)).toString("base64"),
         });
 
         it("should accept a result its event log reproduces", async () => {
@@ -1376,6 +1393,30 @@ describe("result controller test", () => {
           expect(addImportantLogMock).not.toHaveBeenCalledWith(
             "anticheat_rejected",
             expect.anything(),
+            uid,
+          );
+          expect(addLogMock).not.toHaveBeenCalledWith(
+            "event_log_unverified",
+            expect.anything(),
+            uid,
+          );
+        });
+        it("should save legacy v1 logs as unverified and exclude them from ranked when required", async () => {
+          await setAnticheatConfig({
+            logVerification: { enabled: true, requireForRanked: true },
+          });
+          const { body } = await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({
+              result: recorded({ punctuation: true, difficulty: "master" }),
+              eventLog: eventLog(versions.behavior, recording.eventLog),
+            })
+            .expect(200);
+          expect(body.data.isPb).toBe(false);
+          expect(addLogMock).toHaveBeenCalledWith(
+            "event_log_unverified",
+            expect.objectContaining({ reason: "legacy-log" }),
             uid,
           );
         });

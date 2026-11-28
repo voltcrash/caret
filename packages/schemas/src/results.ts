@@ -107,6 +107,7 @@ export const ResultSchema = ResultBaseSchema.extend({
       "absent",
       "undecodable",
       "invalid-log",
+      "legacy-log",
       "other-behavior",
       "engine-error",
       "disabled",

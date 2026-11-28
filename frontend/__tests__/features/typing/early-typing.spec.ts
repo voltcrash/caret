@@ -341,4 +341,40 @@ describe("earlyTypingBootstrap", () => {
       (wordsEl.children[0] as HTMLElement).classList.contains("typed"),
     ).toBe(false);
   });
+
+  it("bails out when testSettings or challenge query params are present", () => {
+    for (const search of ["?testSettings=abc", "?challenge=daily"]) {
+      window.history.replaceState({}, "", `/${search}`);
+      mountPreview(["the", "cat"]);
+      runBootstrap();
+      const win = window as EarlyTypingWindow;
+      expect(win.__caretEarlyTyping).toBeUndefined();
+      document.body.innerHTML = "";
+    }
+  });
+
+  it("does not log keydown/keyup events for ignored backspace, space, or over-length keys", () => {
+    mountPreview(["hi", "yo"]);
+    runBootstrap();
+    // Ignored pre-start Backspace at word 0, empty input
+    press("Backspace", { code: "Backspace" });
+    document.dispatchEvent(
+      new KeyboardEvent("keyup", {
+        key: "Backspace",
+        code: "Backspace",
+        bubbles: true,
+      }),
+    );
+    const win = window as EarlyTypingWindow;
+    expect(win.__caretEarlyTyping?.events).toEqual([]);
+
+    // Commit a correct word, then Backspace (cannot step back into correct word) and duplicate Space
+    press("h", { code: "KeyH" });
+    press("i", { code: "KeyI" });
+    press(" ", { code: "Space" });
+    const countBeforeIgnored = win.__caretEarlyTyping?.events.length ?? 0;
+    press("Backspace", { code: "Backspace" });
+    press(" ", { code: "Space" });
+    expect(win.__caretEarlyTyping?.events.length).toBe(countBeforeIgnored);
+  });
 });

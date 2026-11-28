@@ -143,3 +143,338 @@ fn other_scoring_rules_are_not_compared() {
             .same_behavior
     );
 }
+
+#[test]
+fn oversized_duration_logs_are_rejected_and_duration_mismatch_short_circuits() {
+    let (_, mut oversized, completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+    if let Some(end) = oversized
+        .events
+        .iter_mut()
+        .rev()
+        .find(|e| e.kind == "timer" && e.data["event"] == "end")
+    {
+        end.test_ms = typing_engine::validation::MAX_HISTORY_MS + 1000.0;
+    }
+    assert!(verify(&oversized, &completed, BEHAVIOR_VERSION).is_err());
+
+    let (_, mut long_log, mut mismatched) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+    if let Some(end) = long_log
+        .events
+        .iter_mut()
+        .rev()
+        .find(|e| e.kind == "timer" && e.data["event"] == "end")
+    {
+        end.test_ms = typing_engine::validation::MAX_HISTORY_MS;
+    }
+    mismatched["testDuration"] = json!(15.0);
+    assert_eq!(fields(&long_log, &mismatched), ["testDuration"]);
+}
+
+#[test]
+fn linear_speed_history_matches_per_boundary_chars_and_handles_large_logs() {
+    for (name, log, _) in recordings() {
+        for raw in [false, true] {
+            let expected: Vec<f64> = typing_engine::stats::boundaries(&log)
+                .iter()
+                .map(|boundary| {
+                    let c = typing_engine::stats::chars(&log, true, Some(*boundary));
+                    typing_engine::js_round(typing_engine::stats::wpm(
+                        if raw {
+                            c.all_correct + c.incorrect + c.extra
+                        } else {
+                            c.correct_word
+                        },
+                        boundary / 1000.0,
+                    ))
+                })
+                .collect();
+            assert_eq!(
+                typing_engine::stats::speed_history(&log, raw),
+                expected,
+                "{name} raw={raw}"
+            );
+        }
+    }
+
+    // Large log with 2,000 words and 10,000s span must complete quickly.
+    let target_words: Vec<Text> = (0..2000).map(|_| Text::from("test ")).collect();
+    let mut events = vec![
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 0.0,
+            "data": {"event": "start", "timer": 0, "date": 1000.0}
+        }))
+        .unwrap(),
+    ];
+    for i in 0..2000 {
+        events.push(
+            serde_json::from_value(json!({
+                "type": "input",
+                "testMs": (i as f64 + 1.0) * 1000.0,
+                "data": {
+                    "inputType": "insertText",
+                    "wordIndex": i,
+                    "charIndex": 0,
+                    "inputValue": Text::from("test "),
+                    "data": Text::from(" "),
+                    "correct": true,
+                    "commitsWord": true
+                }
+            }))
+            .unwrap(),
+        );
+    }
+    events.push(
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 10_000_000.0,
+            "data": {"event": "end", "timer": 10000, "date": 10_001_000.0}
+        }))
+        .unwrap(),
+    );
+    let large = Log {
+        version: 1,
+        context: typing_engine::stats::Context {
+            target_words,
+            mode: "words".into(),
+            mode2: "2000".into(),
+            bailed_out: false,
+            korean_status: false,
+            custom_text_limit_mode: None,
+            custom_text_limit_value: None,
+        },
+        events,
+    };
+    let start = std::time::Instant::now();
+    let speed = typing_engine::stats::speed_history(&large, false);
+    assert_eq!(speed.len(), 10_000);
+    assert!(
+        start.elapsed().as_secs() < 2,
+        "speed_history took {:?}",
+        start.elapsed()
+    );
+}
+
+#[test]
+fn v2_logs_bind_result_modifiers_and_require_them() {
+    let (_, log, completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+
+    // v2 log missing modifier fields fails validation.
+    let mut raw = serde_json::to_value(&log).unwrap();
+    raw["version"] = json!(typing_engine::EVENT_LOG_VERSION);
+    assert!(typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).is_err());
+
+    // Populate modifier context matching completed event -> verified.
+    raw["context"]["punctuation"] = json!(false);
+    raw["context"]["numbers"] = json!(false);
+    raw["context"]["funbox"] = json!([]);
+    raw["context"]["difficulty"] = json!("normal");
+    raw["context"]["language"] = json!("english");
+    raw["context"]["stopOnLetter"] = json!(false);
+    let verified =
+        typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).unwrap();
+    assert!(verified.mismatches.is_empty());
+
+    // Forging XP/difficulty/language/stopOnLetter modifiers is caught.
+    let mut forged = completed.clone();
+    forged["punctuation"] = json!(true);
+    forged["numbers"] = json!(true);
+    forged["funbox"] = json!(["gibberish"]);
+    forged["difficulty"] = json!("master");
+    forged["language"] = json!("english_10k");
+    forged["stopOnLetter"] = json!(true);
+    let mismatched: Vec<String> =
+        typing_engine::verification::verify_value(&raw, &forged, BEHAVIOR_VERSION)
+            .unwrap()
+            .mismatches
+            .into_iter()
+            .map(|m| m.field)
+            .collect();
+    assert_eq!(
+        mismatched,
+        [
+            "punctuation",
+            "numbers",
+            "stopOnLetter",
+            "difficulty",
+            "language",
+            "funbox",
+        ]
+    );
+
+    // Session::log emits v2 with modifier context populated.
+    let session = typing_engine::Session::new(
+        typing_engine::Config {
+            punctuation: true,
+            numbers: true,
+            difficulty: "expert".into(),
+            language: "english_1k".into(),
+            stop_on_error: "letter".into(),
+            ..typing_engine::Config::default()
+        },
+        vec![Text::from("hello")],
+    )
+    .unwrap();
+    let emitted = session.log();
+    assert_eq!(emitted["version"], typing_engine::EVENT_LOG_VERSION);
+    assert_eq!(emitted["context"]["punctuation"], true);
+    assert_eq!(emitted["context"]["numbers"], true);
+    assert_eq!(emitted["context"]["difficulty"], "expert");
+    assert_eq!(emitted["context"]["language"], "english_1k");
+    assert_eq!(emitted["context"]["stopOnLetter"], true);
+}
+
+#[test]
+fn v2_logs_verify_language_names_with_punctuation_such_as_code_cpp() {
+    let (_, log, mut completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+    let mut raw = serde_json::to_value(&log).unwrap();
+    raw["version"] = json!(typing_engine::EVENT_LOG_VERSION);
+    raw["context"]["punctuation"] = json!(false);
+    raw["context"]["numbers"] = json!(false);
+    raw["context"]["funbox"] = json!([]);
+    raw["context"]["difficulty"] = json!("normal");
+    raw["context"]["language"] = json!("code_c++");
+    raw["context"]["stopOnLetter"] = json!(false);
+    completed["language"] = json!("code_c++");
+
+    let verdict =
+        typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).unwrap();
+    assert!(verdict.mismatches.is_empty());
+
+    let mut forged = completed.clone();
+    forged["language"] = json!("code_c");
+    let mismatched: Vec<String> =
+        typing_engine::verification::verify_value(&raw, &forged, BEHAVIOR_VERSION)
+            .unwrap()
+            .mismatches
+            .into_iter()
+            .map(|m| m.field)
+            .collect();
+    assert_eq!(mismatched, ["language"]);
+
+    raw["context"]["language"] = json!("a".repeat(129));
+    assert!(typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).is_err());
+
+    raw["context"]["language"] = json!("");
+    assert!(typing_engine::verification::verify_value(&raw, &completed, BEHAVIOR_VERSION).is_err());
+}
+
+#[test]
+fn v1_logs_are_flagged_legacy_while_v2_logs_are_not() {
+    let (_, log, completed) = recordings()
+        .into_iter()
+        .find(|(name, ..)| name == "time-15")
+        .unwrap();
+
+    // v1 log cannot achieve non-legacy verification even with matching metrics
+    // or forged modifiers.
+    let v1_raw = serde_json::to_value(&log).unwrap();
+    let mut forged_modifiers = completed.clone();
+    forged_modifiers["punctuation"] = json!(true);
+    forged_modifiers["difficulty"] = json!("master");
+    let v1_verdict =
+        typing_engine::verification::verify_value(&v1_raw, &forged_modifiers, BEHAVIOR_VERSION)
+            .unwrap();
+    assert!(v1_verdict.same_behavior);
+    assert!(v1_verdict.legacy_log);
+    assert!(v1_verdict.mismatches.is_empty());
+
+    // v1 log with tampered metrics still reports metric mismatches.
+    let mut forged_wpm = completed.clone();
+    forged_wpm["wpm"] = json!(completed["wpm"].as_f64().unwrap() + 50.0);
+    let v1_mismatch =
+        typing_engine::verification::verify_value(&v1_raw, &forged_wpm, BEHAVIOR_VERSION).unwrap();
+    assert!(v1_mismatch.legacy_log);
+    assert_eq!(v1_mismatch.mismatches.len(), 1);
+    assert_eq!(v1_mismatch.mismatches[0].field, "wpm");
+
+    // v2 log with bound modifiers is not legacy.
+    let mut v2_raw = v1_raw;
+    v2_raw["version"] = json!(typing_engine::EVENT_LOG_VERSION);
+    v2_raw["context"]["punctuation"] = json!(false);
+    v2_raw["context"]["numbers"] = json!(false);
+    v2_raw["context"]["funbox"] = json!([]);
+    v2_raw["context"]["difficulty"] = json!("normal");
+    v2_raw["context"]["language"] = json!("english");
+    v2_raw["context"]["stopOnLetter"] = json!(false);
+    let v2_verdict =
+        typing_engine::verification::verify_value(&v2_raw, &completed, BEHAVIOR_VERSION).unwrap();
+    assert!(v2_verdict.same_behavior);
+    assert!(!v2_verdict.legacy_log);
+    assert!(v2_verdict.mismatches.is_empty());
+}
+
+#[test]
+fn speed_history_sums_all_words_regardless_of_first_seen_order() {
+    // Word 1 appears in the event stream before word 0 while remaining active.
+    // Running-sum semantics include word 0's full chars plus word 1's partial chars.
+    let events = vec![
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 0.0,
+            "data": {"event": "start", "timer": 0, "date": 1000.0}
+        }))
+        .unwrap(),
+        serde_json::from_value(json!({
+            "type": "input",
+            "testMs": 200.0,
+            "data": {
+                "inputType": "insertText",
+                "wordIndex": 1,
+                "charIndex": 0,
+                "inputValue": Text::from("ab"),
+                "data": Text::from("b"),
+                "correct": true
+            }
+        }))
+        .unwrap(),
+        serde_json::from_value(json!({
+            "type": "input",
+            "testMs": 400.0,
+            "data": {
+                "inputType": "insertText",
+                "wordIndex": 0,
+                "charIndex": 0,
+                "inputValue": Text::from("hello "),
+                "data": Text::from(" "),
+                "correct": true,
+                "commitsWord": true
+            }
+        }))
+        .unwrap(),
+        serde_json::from_value(json!({
+            "type": "timer",
+            "testMs": 1000.0,
+            "data": {"event": "end", "timer": 1, "date": 2000.0}
+        }))
+        .unwrap(),
+    ];
+    let log = Log {
+        version: typing_engine::EVENT_LOG_VERSION,
+        context: typing_engine::stats::Context {
+            target_words: vec![Text::from("hello "), Text::from("abc")],
+            mode: "time".into(),
+            mode2: "1".into(),
+            bailed_out: false,
+            korean_status: false,
+            custom_text_limit_mode: None,
+            custom_text_limit_value: None,
+        },
+        events,
+    };
+    // 6 chars from word 0 ("hello ") + 2 partial chars from active word 1 ("ab") = 8 chars in 1s -> 96 WPM.
+    assert_eq!(typing_engine::stats::speed_history(&log, false), vec![96.0]);
+    assert_eq!(typing_engine::stats::speed_history(&log, true), vec![96.0]);
+}

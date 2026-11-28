@@ -66,6 +66,9 @@ export class DailyLeaderboard {
         entry.uid,
       ).first<number>("count"),
     ]);
+    if (previous !== null && previous >= score) return -1;
+    const rank = (ahead ?? 0) + 1;
+    if (rank > config.maxResults) return -1;
     await stage(
       statement(
         "INSERT INTO daily_entries(board,period,uid,score,expires_at,data) VALUES(?,?,?,?,?,?) ON CONFLICT(board,period,uid) DO UPDATE SET score=excluded.score,data=excluded.data WHERE excluded.score>daily_entries.score",
@@ -87,9 +90,7 @@ export class DailyLeaderboard {
         config.maxResults,
       ),
     );
-    if (previous !== null && previous >= score) return -1;
-    const rank = (ahead ?? 0) + 1;
-    return rank > config.maxResults ? -1 : rank;
+    return rank;
   }
   public async getResults(
     page: number,

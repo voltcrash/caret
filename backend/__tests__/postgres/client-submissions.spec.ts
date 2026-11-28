@@ -191,6 +191,75 @@ describe("web and offline result submissions", () => {
     expect((await submit(result)).status).toBe(200);
     expect((await submit(result)).status).toBe(466);
   });
+  it("prevents offline uploads from extending streaks or inflating timeTyping past account age", async () => {
+    const now = Date.now();
+    // Seed a user created 45s ago with no streak yet.
+    const { capUid, capToken } = await withRuntime(test.env, async () => {
+      const auth = await getAuth().$context;
+      const created = await auth.internalAdapter.createUser(
+        {
+          name: "OfflineCap",
+          email: "offline-cap@example.test",
+          emailVerified: true,
+        },
+        { method: "oauth", oauth: { providerId: "github" } },
+      );
+      await Users.addUser(created.name, created.email, created.id);
+      await test.db
+        .prepare(
+          "UPDATE users SET added_at=?,data=jsonb_set(data,'{addedAt}',to_jsonb(?::bigint)) WHERE uid=?",
+        )
+        .bind(now - 45_000, now - 45_000, created.id)
+        .run();
+      const session = await auth.internalAdapter.createSession(
+        created.id,
+        false,
+      );
+      if (session === null) throw new Error("Missing session");
+      return { capUid: created.id, capToken: session.token };
+    });
+    const submitForCap = async (
+      changes: Partial<CompletedEvent>,
+      salt: number,
+    ): Promise<Response> => {
+      const payload = event({ uid: capUid, ...changes }, salt);
+      const { hash: _h, ...rest } = payload;
+      return await Worker.fetch(
+        new Request("http://localhost:5005/api/results", {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${capToken}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            result: { ...rest, hash: objectHash(rest) },
+          }),
+        }),
+        test.env,
+        { waitUntil: () => undefined } as unknown as ExecutionContext,
+      );
+    };
+
+    // First 30s offline upload fits within 45s account age, but must not create/extend a streak.
+    const first = await submitForCap(
+      { client: "web", offline: true, timestamp: now - 10_000 },
+      1,
+    );
+    expect(first.status, await first.clone().text()).toBe(200);
+    const afterFirst = await withRuntime(
+      test.env,
+      async () => await Users.getUser(capUid, "test", "web"),
+    );
+    expect(afterFirst.streak).toBeUndefined();
+    expect(afterFirst.timeTyping).toBe(30);
+
+    // Second 30s offline upload would push cumulative timeTyping to 60s (> 45s account age).
+    const second = await submitForCap(
+      { client: "web", offline: true, timestamp: now - 5_000 },
+      2,
+    );
+    expect(second.status).toBe(400);
+  });
   it.each([false, true])(
     "deduplicates lost-response offline retries (legacy hash: %s)",
     async (legacyHash) => {

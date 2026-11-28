@@ -18,7 +18,7 @@ import {
   onCommandlineBackdropClick,
 } from "../../src/ts/commandline/lifecycle";
 import { setConfig } from "../../src/ts/config/setters";
-import { peekConfig } from "../../src/ts/config/store";
+import { peekConfig, setConfigStore } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import * as ThemeController from "../../src/ts/controllers/theme-controller";
 import { commandlineState } from "../../src/ts/states/commandline";
@@ -26,6 +26,8 @@ import {
   getThemeIndicator,
   setCommandlineSubgroup,
 } from "../../src/ts/states/core";
+import * as CustomThemes from "../../src/ts/states/custom-themes";
+import * as Notifications from "../../src/ts/states/notifications";
 import { getTheme } from "../../src/ts/states/theme";
 import * as Arrays from "../../src/ts/utils/arrays";
 
@@ -222,7 +224,71 @@ describe("theme picker selection", () => {
       afterHideCommandline();
     }
   });
+
+  it("copies favThemes before shuffling, refreshes stale lists, and notifies custom theme names", async () => {
+    const shuffleSpy = vi.spyOn(Arrays, "shuffle").mockImplementation((arr) => {
+      arr.reverse();
+    });
+    const notifySpy = vi.spyOn(Notifications, "showNoticeNotification");
+    const customSpy = vi.spyOn(CustomThemes, "getCustomThemes");
+    const customGetSpy = vi.spyOn(CustomThemes, "getCustomTheme");
+
+    const originalFavs = ["matrix", "serika", "8008"] as const;
+    setConfig("favThemes", [...originalFavs], { nosave: true });
+    const storedFavs = peekConfig().favThemes;
+    setConfig("randomTheme", "fav", { nosave: true });
+    await ThemeController.randomizeTheme();
+    expect(storedFavs).toEqual([...originalFavs]);
+    expect(shuffleSpy).toHaveBeenCalled();
+
+    // Switching from light -> auto (dark prefers-color-scheme) must refresh the list and terminate.
+    setConfig("randomTheme", "light", { nosave: true });
+    await ThemeController.randomizeTheme();
+    setConfig("randomTheme", "auto", { nosave: true });
+    await ThemeController.randomizeTheme();
+    expect(ThemeController.getRandomTheme()).not.toBeNull();
+
+    // Custom random theme must look up the custom theme name before setting randomTheme="custom".
+    const customTheme = {
+      _id: "ct_123",
+      name: "ocean_breeze",
+      colors: [
+        "#000000",
+        "#111111",
+        "#222222",
+        "#333333",
+        "#444444",
+        "#555555",
+        "#666666",
+        "#777777",
+        "#888888",
+        "#999999",
+      ] as [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+      ],
+    };
+    customSpy.mockReturnValue([customTheme]);
+    customGetSpy.mockImplementation((id) =>
+      id === customTheme._id ? customTheme : undefined,
+    );
+    notifySpy.mockClear();
+    setConfigStore("randomTheme", "custom");
+    await ThemeController.randomizeTheme();
+    expect(ThemeController.getRandomTheme()).toBe("custom");
+    expect(notifySpy).toHaveBeenCalledWith("ocean breeze");
+  });
 });
 
 // Browser module exports are sealed; register spies before imports run.
 vi.mock("../../src/ts/utils/arrays", { spy: true });
+vi.mock("../../src/ts/states/notifications", { spy: true });
+vi.mock("../../src/ts/states/custom-themes", { spy: true });

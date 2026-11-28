@@ -47,9 +47,17 @@ export function CustomBackground(): JSXElement {
       if (
         event.effectiveDirective !== "img-src" ||
         event.disposition === "report" ||
-        url === "" ||
-        event.blockedURI !== new URL(url, document.baseURI).href
+        url === ""
       ) {
+        return;
+      }
+      let resolvedUrl: string;
+      try {
+        resolvedUrl = new URL(url, document.baseURI).href;
+      } catch {
+        return;
+      }
+      if (event.blockedURI !== resolvedUrl) {
         return;
       }
       blockedUrl = url;

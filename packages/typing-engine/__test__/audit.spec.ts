@@ -75,6 +75,39 @@ it("skips comparison for clients on other scoring rules", () => {
   const edited = { ...recording.completedEvent, wpm: 250 };
   expect(serverAudit().verify(log, edited, versions.behavior + 1)).toEqual({
     sameBehavior: false,
+    legacyLog: false,
+    mismatches: [],
+  });
+});
+
+it("marks v1 logs as legacy and v2 logs with bound modifiers as non-legacy", () => {
+  const v1 = toEngineLog(recording.eventLog);
+  expect(
+    serverAudit().verify(v1, recording.completedEvent, versions.behavior),
+  ).toEqual({
+    sameBehavior: true,
+    legacyLog: true,
+    mismatches: [],
+  });
+
+  const v2 = {
+    ...v1,
+    version: versions.eventLog,
+    context: {
+      ...v1.context,
+      punctuation: false,
+      numbers: false,
+      funbox: [],
+      difficulty: "normal",
+      language: "english",
+      stopOnLetter: false,
+    },
+  };
+  expect(
+    serverAudit().verify(v2, recording.completedEvent, versions.behavior),
+  ).toEqual({
+    sameBehavior: true,
+    legacyLog: false,
     mismatches: [],
   });
 });

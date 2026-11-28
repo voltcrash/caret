@@ -82,6 +82,12 @@ describe("HTTP operation handler", () => {
       .get("/configuration")
       .set("If-None-Match", 'W/"V0-stale"')
       .expect(200);
+    // RFC 9110 §13.1.3: If-Modified-Since must be ignored when If-None-Match is present.
+    await client()
+      .get("/configuration")
+      .set("If-None-Match", etag)
+      .set("If-Modified-Since", "Thu, 01 Jan 1970 00:00:00 GMT")
+      .expect(304);
   });
 
   it("checks authentication before schema validation", async () => {

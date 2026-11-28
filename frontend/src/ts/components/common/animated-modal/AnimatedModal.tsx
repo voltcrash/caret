@@ -48,7 +48,7 @@ type AnimatedModalProps = ParentProps<{
   afterShow?: () => void | Promise<void>;
   beforeHide?: () => void | Promise<void>;
   afterHide?: () => void | Promise<void>;
-  onEscape?: (e: KeyboardEvent) => void;
+  onEscape?: (e: Event) => void;
   onBackdropClick?: (e: MouseEvent) => void;
   onScroll?: (e: Event) => void;
 
@@ -317,14 +317,24 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       trapModalTabFocus(e, modalEl());
     }
     if (e.key === "Escape" && visibility()) {
-      if (props.closeOnEscape === false) return;
       e.preventDefault();
+      if (props.closeOnEscape === false) return;
       e.stopPropagation();
       if (props.onEscape) {
         props.onEscape(e);
       } else {
         storeHideModal(props.id);
       }
+    }
+  };
+
+  const handleCancel = (e: Event): void => {
+    e.preventDefault();
+    if (!visibility() || props.closeOnEscape === false) return;
+    if (props.onEscape) {
+      props.onEscape(e);
+    } else {
+      storeHideModal(props.id);
     }
   };
 
@@ -368,6 +378,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
         props.wrapperClass,
       )}
       onKeyDown={handleKeyDown}
+      onCancel={handleCancel}
       onMouseDown={handleBackdropClick}
     >
       {/*

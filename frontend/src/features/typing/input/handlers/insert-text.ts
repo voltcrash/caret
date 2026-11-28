@@ -25,6 +25,9 @@ type OnInsertTextParams = {
   automatic?: true;
 };
 export async function onInsertText(options: OnInsertTextParams): Promise<void> {
+  if (options.data.length === 0) {
+    return;
+  }
   const session = getEngineSession();
   if (!session.isPrepared() || isTestRestarting() || isResultCalculating()) {
     return;

@@ -124,7 +124,9 @@ impl Store {
             )?,
             history: open(
                 &paths.data.join("history.sqlite3"),
-                "CREATE TABLE IF NOT EXISTS results (id TEXT PRIMARY KEY NOT NULL, created_ms REAL NOT NULL, mode TEXT NOT NULL, json TEXT NOT NULL); CREATE INDEX IF NOT EXISTS results_mode_time ON results(mode,created_ms);",
+                "CREATE TABLE IF NOT EXISTS results (id TEXT PRIMARY KEY NOT NULL, created_ms REAL NOT NULL, mode TEXT NOT NULL, json TEXT NOT NULL);
+                 CREATE INDEX IF NOT EXISTS results_mode_time ON results(mode,created_ms);
+                 CREATE INDEX IF NOT EXISTS results_pb_group_wpm ON results(json_extract(json,'$.personalBestGroup'),json_extract(json,'$.summary.wpm')) WHERE json_extract(json,'$.formatVersion')=1 AND json_extract(json,'$.personalBestEligible')=1;",
             )?,
             revision: 0,
             pending: paths.data.join("pending"),

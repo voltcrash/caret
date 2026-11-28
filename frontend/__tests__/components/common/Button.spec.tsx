@@ -260,6 +260,15 @@ describe("Button component", () => {
     expect(anchor).toHaveAttribute("router-link", "");
   });
 
+  it("forwards tabIndex to anchor buttons", () => {
+    const { container } = render(() => (
+      <Button href="https://example.com" text="Skip" tabIndex={-1} />
+    ));
+
+    const anchor = container.querySelector("a");
+    expect(anchor).toHaveAttribute("tabindex", "-1");
+  });
+
   it("applies disabled to button", () => {
     const { container } = render(() => (
       <Button

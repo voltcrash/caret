@@ -9,7 +9,8 @@ pub const MAX_WORDS: usize = 1_000_000;
 pub const MAX_WORD_UNITS: usize = 1_000_000;
 pub const MAX_CONTENT_UNITS: usize = 5_000_000;
 pub const MAX_EVENTS: usize = 1_000_000;
-pub const MAX_HISTORY_MS: f64 = 1_000_000_000.0;
+pub const MAX_HISTORY_MS: f64 = 86_400_000.0;
+pub const MAX_HISTORY_TICKS: usize = 86_400;
 pub const MAX_JSON_BYTES: usize = 64 * 1024 * 1024;
 fn invalid(code: ErrorCode, message: &str) -> EngineError {
     EngineError::new(code, message)
@@ -227,7 +228,7 @@ fn value(data: &Value, depth: usize, remaining: &mut usize) -> Result<(), ()> {
 }
 pub fn log(log: &Log) -> Result<(), EngineError> {
     let fail = || invalid(ErrorCode::InvalidLog, "Invalid or oversized historical log");
-    if log.version != crate::EVENT_LOG_VERSION
+    if !(1..=crate::EVENT_LOG_VERSION).contains(&log.version)
         || log.events.len() > MAX_EVENTS
         || !["time", "words", "quote", "custom", "zen"].contains(&log.context.mode.as_str())
         || log.context.mode2.len() > 128

@@ -6,6 +6,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::collections::{BTreeMap, BTreeSet};
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -70,21 +71,27 @@ pub(crate) fn input_value(data: &Value) -> Text {
     }
     value
 }
+#[inline(never)]
 pub(crate) fn per_word(log: &Log, limit: Option<f64>) -> Vec<(usize, Vec<&Event>)> {
     let mut words: Vec<(usize, Vec<&Event>)> = vec![];
+    let mut positions: BTreeMap<usize, usize> = BTreeMap::new();
     for event in &log.events {
         if limit.is_some_and(|limit| event.test_ms > limit) {
             break;
         }
         if let Some(index) = word_index(event) {
-            if let Some((_, events)) = words.iter_mut().find(|(i, _)| *i == index) {
-                events.push(event);
+            if let Some(&pos) = positions.get(&index) {
+                words[pos].1.push(event);
             } else {
+                positions.insert(index, words.len());
                 words.push((index, vec![event]));
             }
         }
     }
     words
+}
+pub(crate) fn is_space_insert(data: &Value) -> bool {
+    data["inputType"] == "insertText" && text(&data["data"]).0 == [32]
 }
 fn active_index(words: &[(usize, Vec<&Event>)]) -> usize {
     let last = words
@@ -94,9 +101,7 @@ fn active_index(words: &[(usize, Vec<&Event>)]) -> usize {
     let Some((index, events)) = last else {
         return 0;
     };
-    let space = events
-        .last()
-        .is_some_and(|e| e.data["inputType"] == "insertText" && text(&e.data["data"]).0 == [32]);
+    let space = events.last().is_some_and(|e| is_space_insert(&e.data));
     *index + usize::from(space)
 }
 pub fn timed(log: &Log) -> bool {
@@ -143,36 +148,48 @@ pub fn count_chars(input: &Text, target: &Text, partial: bool) -> Chars {
     }
     chars
 }
+#[inline(never)]
+pub(crate) fn count_word_pair(
+    typed_raw: &Text,
+    target: Option<&Text>,
+    korean: bool,
+) -> (Chars, Chars) {
+    let mut typed = typed_raw.clone();
+    for unit in &mut typed.0 {
+        if is_space(*unit) {
+            *unit = 32;
+        }
+    }
+    let target = target.unwrap_or(&typed).clone();
+    let (typed, target) = if korean {
+        (
+            crate::text::disassemble_hangul(&typed),
+            crate::text::disassemble_hangul(&target),
+        )
+    } else {
+        (typed, target)
+    };
+    (
+        count_chars(&typed, &target, false),
+        count_chars(&typed, &target, true),
+    )
+}
 pub fn chars(log: &Log, partial: bool, limit: Option<f64>) -> Chars {
     let words = per_word(log, limit);
     let active = active_index(&words);
     let mut total = Chars::default();
     for (index, events) in words {
-        let mut typed = input(&events);
-        for unit in &mut typed.0 {
-            if is_space(*unit) {
-                *unit = 32;
-            }
-        }
-        let target = log
-            .context
-            .target_words
-            .get(index)
-            .unwrap_or(&typed)
-            .clone();
-        let (typed, target) = if log.context.korean_status {
-            (
-                crate::text::disassemble_hangul(&typed),
-                crate::text::disassemble_hangul(&target),
-            )
-        } else {
-            (typed, target)
-        };
-        let counts = count_chars(
+        let typed = input(&events);
+        let (full, part) = count_word_pair(
             &typed,
-            &target,
-            index == active && (partial || timed(log) || log.context.bailed_out),
+            log.context.target_words.get(index),
+            log.context.korean_status,
         );
+        let counts = if index == active && (partial || timed(log) || log.context.bailed_out) {
+            part
+        } else {
+            full
+        };
         total.all_correct += counts.all_correct;
         total.correct_word += counts.correct_word;
         total.incorrect += counts.incorrect;
@@ -271,14 +288,16 @@ pub fn boundaries(log: &Log) -> Vec<f64> {
         return vec![];
     }
     let end = adjusted_end(log);
-    let ticks = (end / 1000.0).floor() as usize;
+    let ticks =
+        ((end / 1000.0).floor().max(0.0) as usize).min(crate::validation::MAX_HISTORY_TICKS);
     let mut boundaries: Vec<_> = (1..=ticks).map(|i| i as f64 * 1000.0).collect();
     if !timed(log) && js_round(round2(end / 1000.0) % 1.0) >= 0.5 {
         boundaries.push(end);
     }
     boundaries
 }
-fn count_intervals(log: &Log, predicate: impl Fn(&Event) -> bool) -> Vec<usize> {
+#[inline(never)]
+fn count_intervals(log: &Log, predicate: fn(&Event) -> bool) -> Vec<usize> {
     let mut index = 0;
     let mut counts = vec![];
     for boundary in boundaries(log) {
@@ -314,21 +333,80 @@ pub fn burst_history(log: &Log) -> Vec<f64> {
         })
         .collect()
 }
+fn word_speed_metrics(log: &Log, index: usize, typed_raw: &Text, raw: bool) -> (usize, usize) {
+    let (full, partial) = count_word_pair(
+        typed_raw,
+        log.context.target_words.get(index),
+        log.context.korean_status,
+    );
+    let pick = |counts: Chars| {
+        if raw {
+            counts.all_correct + counts.incorrect + counts.extra
+        } else {
+            counts.correct_word
+        }
+    };
+    (pick(full), pick(partial))
+}
+
+#[inline(never)]
 pub fn speed_history(log: &Log, raw: bool) -> Vec<f64> {
-    boundaries(log)
-        .iter()
-        .map(|boundary| {
-            let chars = chars(log, true, Some(*boundary));
-            js_round(wpm(
-                if raw {
-                    chars.all_correct + chars.incorrect + chars.extra
+    let bounds = boundaries(log);
+    let mut history = Vec::with_capacity(bounds.len());
+    let mut positions: BTreeMap<usize, usize> = BTreeMap::new();
+    // Flat [full, partial, last_event_is_space] per word to reuse Vec<usize> in Wasm.
+    let mut words: Vec<usize> = vec![];
+    let mut nonempty: BTreeSet<usize> = BTreeSet::new();
+    let mut total_full = 0usize;
+    let mut event_idx = 0usize;
+
+    for boundary in bounds {
+        while let Some(event) = log.events.get(event_idx) {
+            if event.test_ms > boundary {
+                break;
+            }
+            event_idx += 1;
+            let Some(index) = word_index(event) else {
+                continue;
+            };
+            let pos = if let Some(&pos) = positions.get(&index) {
+                pos
+            } else {
+                let pos = words.len() / 3;
+                positions.insert(index, pos);
+                words.push(0);
+                words.push(0);
+                words.push(0);
+                pos
+            };
+            words[pos * 3 + 2] = usize::from(is_space_insert(&event.data));
+            if event.kind == "input" {
+                let typed = input_value(&event.data);
+                if typed.is_empty() {
+                    nonempty.remove(&index);
                 } else {
-                    chars.correct_word
-                },
-                boundary / 1000.0,
-            ))
-        })
-        .collect()
+                    nonempty.insert(index);
+                }
+                let (full, partial) = word_speed_metrics(log, index, &typed, raw);
+                total_full = total_full - words[pos * 3] + full;
+                words[pos * 3] = full;
+                words[pos * 3 + 1] = partial;
+            }
+        }
+        let active = match nonempty.last() {
+            Some(&max_index) => {
+                let pos = positions.get(&max_index).copied().unwrap_or(0);
+                max_index + words[pos * 3 + 2]
+            }
+            None => 0,
+        };
+        let char_count = match positions.get(&active) {
+            Some(&pos) => total_full - words[pos * 3] + words[pos * 3 + 1],
+            None => total_full,
+        };
+        history.push(js_round(wpm(char_count, boundary / 1000.0)));
+    }
+    history
 }
 pub fn afk(log: &Log) -> usize {
     count_intervals(log, |e| e.kind == "keydown" || e.kind == "input")

@@ -63,13 +63,22 @@ export async function validateSubmission(
     throw new ApiError(400, "Offline results must be within the last 30 days");
   }
 
-  // An offline completion time comes from the device. Its duration must still
-  // fit within the account's lifetime at receipt, even for out-of-order uploads.
-  if (
-    offline &&
-    completedEvent.testDuration * 1000 > Date.now() - (user.addedAt ?? 0) + 1000
-  ) {
-    throw new ApiError(400, "Offline result duration exceeds account age");
+  // An offline completion time comes from the device. Both this submission and
+  // cumulative recorded typing time must fit within the account's lifetime at
+  // receipt, preventing unbounded offline timeTyping inflation.
+  if (offline) {
+    const accountAgeMs = Date.now() - (user.addedAt ?? 0) + 1000;
+    const activeDuration = Math.max(
+      0,
+      completedEvent.testDuration - (completedEvent.afkDuration ?? 0),
+    );
+    const cumulativeTypingMs = ((user.timeTyping ?? 0) + activeDuration) * 1000;
+    if (
+      completedEvent.testDuration * 1000 > accountAgeMs ||
+      cumulativeTypingMs > accountAgeMs
+    ) {
+      throw new ApiError(400, "Offline result duration exceeds account age");
+    }
   }
 
   if (isTestTooShort(completedEvent)) {

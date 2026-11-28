@@ -6,9 +6,11 @@ import * as Notifications from "../../src/ts/states/notifications";
 import * as TestLogic from "../../src/features/typing/runtime/test/logic";
 import * as QuoteSelection from "../../src/features/typing/state/quote-selection";
 import * as Misc from "../../src/ts/utils/misc";
-import { FunboxName } from "@caret/schemas/configs";
 import { CustomTextSettings } from "@caret/schemas/results";
-import { loadTestSettingsFromUrl } from "../../src/features/typing/runtime/url-handler";
+import {
+  applyUrlSettings,
+  loadTestSettingsFromUrl,
+} from "../../src/features/typing/runtime/url-handler";
 
 //mock modules to avoid dependencies
 vi.mock("../../src/features/typing/runtime/test/logic", () => ({
@@ -121,7 +123,9 @@ describe("url-handler", () => {
       expect(setConfigMock).toHaveBeenCalledWith("mode", "quote", {
         nosave: true,
       });
-      expect(setConfigMock).toHaveBeenCalledWith("quoteLength", [-2]);
+      expect(setConfigMock).toHaveBeenCalledWith("quoteLength", [-2], {
+        nosave: true,
+      });
       expect(setSelectedQuoteIdMock).toHaveBeenCalledWith(512);
       expect(restartTestMock).toHaveBeenCalled();
     });
@@ -276,8 +280,190 @@ describe("url-handler", () => {
 
       //THEN
       expect(notifyMock).toHaveBeenCalledWith(
-        `Failed to load test settings from URL: JSON does not match schema: "0" invalid enum value. expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalidmode', "1" needs to be a number or a number represented as a string e.g. "10"., "2.mode" invalid enum value. expected 'repeat' | 'random' | 'shuffle', received 'invalid', "2.pipeDelimiter" expected boolean, received string, "2.limit" expected object, received string, "2.text" expected array, received string, "3" expected boolean, received string, "4" expected boolean, received string, "6" invalid enum value. expected 'normal' | 'expert' | 'master', received 'invalid', "7" invalid input`,
+        `Failed to load test settings from URL: JSON does not match schema: "0" invalid enum value. expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalidmode', "1" needs to be a number or a number represented as a string e.g. "10"., "2.mode" invalid enum value. expected 'repeat' | 'random' | 'shuffle', received 'invalid', "2.pipeDelimiter" expected boolean, received string, "2.limit" expected object, received string, "2.text" expected array, received string, "3" expected boolean, received string, "4" expected boolean, received string, "6" invalid enum value. expected 'normal' | 'expert' | 'master', received 'invalid'`,
       );
+    });
+
+    it("skips unknown language/funbox per field while applying remaining settings", () => {
+      findGetParameterMock.mockReturnValue(
+        urlData({
+          mode: "time",
+          mode2: "30",
+          language: "not_a_real_language",
+          funbox: "crt#not_a_funbox",
+        }),
+      );
+      loadTestSettingsFromUrl("");
+      expect(notifyMock).not.toHaveBeenCalled();
+      expect(setConfigMock).toHaveBeenCalledWith("mode", "time", {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("time", 30, {
+        nosave: true,
+      });
+      expect(setConfigMock).not.toHaveBeenCalledWith(
+        "language",
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(setConfigMock).not.toHaveBeenCalledWith(
+        "funbox",
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(restartTestMock).toHaveBeenCalled();
+
+      setConfigMock.mockClear();
+      restartTestMock.mockClear();
+      findGetParameterMock.mockReturnValue(
+        urlData({
+          mode: "words",
+          mode2: "25",
+          funbox: ["not_a_funbox"],
+        }),
+      );
+      loadTestSettingsFromUrl("");
+      expect(setConfigMock).toHaveBeenCalledWith("mode", "words", {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("words", 25, {
+        nosave: true,
+      });
+      expect(setConfigMock).not.toHaveBeenCalledWith(
+        "funbox",
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(restartTestMock).toHaveBeenCalled();
+    });
+
+    it("maps legacy funbox 'none' to an empty array and applies remaining settings", () => {
+      findGetParameterMock.mockReturnValue(
+        urlData({
+          mode: "time",
+          mode2: "15",
+          funbox: "none",
+        }),
+      );
+      loadTestSettingsFromUrl("");
+      expect(notifyMock).not.toHaveBeenCalled();
+      expect(setConfigMock).toHaveBeenCalledWith("mode", "time", {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("time", 15, {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("funbox", [], {
+        nosave: true,
+      });
+      expect(restartTestMock).toHaveBeenCalled();
+    });
+  });
+
+  describe("loadChallengeFromUrl", () => {
+    const findGetParameterMock = vi.spyOn(Misc, "findGetParameter");
+    const notifyErrorMock = vi.spyOn(Notifications, "showErrorNotification");
+
+    beforeEach(() => {
+      findGetParameterMock.mockClear();
+      notifyErrorMock.mockClear();
+      findGetParameterMock.mockImplementation((name, search) => {
+        if (name !== "challenge") return null;
+        return search ?? null;
+      });
+    });
+
+    it("rejects Object.prototype property names as invalid challenges", () => {
+      applyUrlSettings("constructor");
+      expect(notifyErrorMock).toHaveBeenCalledWith(
+        "Failed to load challenge: invalid name constructor",
+      );
+    });
+  });
+
+  describe("loadCustomThemeFromUrl", () => {
+    const findGetParameterMock = vi.spyOn(Misc, "findGetParameter");
+    const setConfigMock = vi.spyOn(UpdateConfig, "setConfig");
+    const notifyMock = vi.spyOn(Notifications, "showNoticeNotification");
+    const colors = [
+      "#111111",
+      "#222222",
+      "#333333",
+      "#444444",
+      "#555555",
+      "#666666",
+      "#777777",
+      "#888888",
+      "#999999",
+      "#aaaaaa",
+    ];
+
+    beforeEach(() => {
+      UpdateConfig.setConfig("customTheme", false, { nosave: true });
+      [findGetParameterMock, setConfigMock, notifyMock].forEach((m) =>
+        m.mockClear(),
+      );
+      findGetParameterMock.mockImplementation((name, search) => {
+        if (name !== "customTheme") return null;
+        return search ?? null;
+      });
+    });
+
+    it("applies shared custom theme and https background with nosave", () => {
+      const encoded = btoa(
+        JSON.stringify({
+          c: colors,
+          i: "https://example.com/bg.png",
+          s: "cover",
+          f: [0, 1, 1, 1],
+        }),
+      );
+      applyUrlSettings(encoded);
+      expect(setConfigMock).toHaveBeenCalledWith("customThemeColors", colors, {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith(
+        "customBackground",
+        "https://example.com/bg.png",
+        { nosave: true },
+      );
+      expect(setConfigMock).toHaveBeenCalledWith(
+        "customBackgroundSize",
+        "cover",
+        { nosave: true },
+      );
+      expect(setConfigMock).toHaveBeenCalledWith(
+        "customBackgroundFilter",
+        [0, 1, 1, 1],
+        { nosave: true },
+      );
+      expect(setConfigMock).toHaveBeenCalledWith("customTheme", true, {
+        nosave: true,
+      });
+    });
+
+    it("rejects non-https background URLs and accepts legacy 10-color arrays", () => {
+      const insecure = btoa(
+        JSON.stringify({
+          c: colors,
+          i: "http://attacker.example/bg.png",
+          s: "cover",
+          f: [0, 1, 1, 1],
+        }),
+      );
+      applyUrlSettings(insecure);
+      expect(setConfigMock).not.toHaveBeenCalled();
+      expect(notifyMock).toHaveBeenCalled();
+
+      setConfigMock.mockClear();
+      notifyMock.mockClear();
+      applyUrlSettings(btoa(JSON.stringify(colors)));
+      expect(setConfigMock).toHaveBeenCalledWith("customThemeColors", colors, {
+        nosave: true,
+      });
+      expect(setConfigMock).toHaveBeenCalledWith("customTheme", true, {
+        nosave: true,
+      });
     });
   });
 });
@@ -291,7 +477,7 @@ const urlData = (
     numbers: boolean;
     language: string;
     difficulty: Difficulty;
-    funbox: FunboxName[] | string;
+    funbox: string[] | string;
   }>,
 ): string => {
   return compressToURI(

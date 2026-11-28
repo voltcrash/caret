@@ -143,11 +143,17 @@ export type EventLogContext = {
   isFunboxWithNospacePropertyActive?: boolean;
   bailedOut: boolean;
   koreanStatus: boolean;
+  punctuation?: boolean;
+  numbers?: boolean;
+  funbox?: Config["funbox"];
+  difficulty?: Config["difficulty"];
+  language?: Config["language"];
+  stopOnLetter?: boolean;
 };
 
-export const EVENT_LOG_VERSION = 1;
+export const EVENT_LOG_VERSION = 2;
 export type EventLog = {
-  version: typeof EVENT_LOG_VERSION;
+  version: 1 | typeof EVENT_LOG_VERSION;
   events: TestEventNoMs[];
   context: EventLogContext;
 };

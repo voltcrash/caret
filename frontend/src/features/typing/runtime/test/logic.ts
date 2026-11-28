@@ -235,6 +235,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     CompositionState.setData("");
     Strings.clearWordDirectionCache();
     testLogicState.testReinitCount = 0;
+    testLogicState.lastInitError = null;
 
     const repeatWithPace = decision?.repeatWithPace ?? false;
     setIsRepeated(options.withSameWordset ?? false);

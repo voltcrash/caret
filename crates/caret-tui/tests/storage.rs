@@ -213,3 +213,40 @@ fn abrupt_process_interruption_keeps_committed_history() {
         vec![record]
     );
 }
+
+#[test]
+fn personal_best_queries_use_expression_index() {
+    let temp = tempfile::tempdir().unwrap();
+    let paths = paths(temp.path());
+    let mut store = Store::open(&paths).unwrap();
+    let record = storage::record(&finished(), &Capabilities::default(), false, 10000.0).unwrap();
+    let group = record["personalBestGroup"].as_str().unwrap().to_string();
+    store.save(&record).unwrap();
+    assert!(store.best(&group).unwrap().is_some());
+    assert!(store.bests_by_group().unwrap().contains_key(&group));
+    drop(store);
+
+    let db = rusqlite::Connection::open(paths.data.join("history.sqlite3")).unwrap();
+    let plan = |sql: &str| -> String {
+        let mut stmt = db.prepare(&format!("EXPLAIN QUERY PLAN {sql}")).unwrap();
+        stmt.query_map([], |row| row.get::<_, String>(3))
+            .unwrap()
+            .map(|r| r.unwrap())
+            .collect::<Vec<_>>()
+            .join(" | ")
+    };
+    let best_plan = plan(
+        "SELECT MAX(json_extract(json,'$.summary.wpm')) FROM results WHERE json_extract(json,'$.formatVersion')=1 AND json_extract(json,'$.personalBestEligible')=1 AND json_extract(json,'$.personalBestGroup')='g'",
+    );
+    assert!(
+        best_plan.contains("results_pb_group_wpm"),
+        "expected best() to use results_pb_group_wpm, got: {best_plan}"
+    );
+    let grouped_plan = plan(
+        "SELECT json_extract(json, '$.personalBestGroup') AS best_group, MAX(json_extract(json, '$.summary.wpm')) FROM results WHERE json_extract(json, '$.formatVersion') = 1 AND json_extract(json, '$.personalBestEligible') = 1 AND json_type(json, '$.personalBestGroup') = 'text' AND json_type(json, '$.summary.wpm') IN ('integer', 'real') GROUP BY best_group",
+    );
+    assert!(
+        grouped_plan.contains("results_pb_group_wpm"),
+        "expected bests_by_group() to use results_pb_group_wpm, got: {grouped_plan}"
+    );
+}

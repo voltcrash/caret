@@ -80,7 +80,16 @@ export async function addQuote(
 
   await verifyCaptcha(captcha, "quote-submit");
 
-  await NewQuotesDAL.add(text, source, language, uid);
+  const result = await NewQuotesDAL.add(text, source, language, uid);
+  if (result?.languageError !== undefined && result.languageError !== 0) {
+    throw new ApiError(400, "Language not found");
+  }
+  if (result?.duplicateId !== undefined) {
+    throw new ApiError(
+      409,
+      `Duplicate quote (similar to quote #${result.duplicateId})`,
+    );
+  }
   return new ApiResponse("Quote submission added", null);
 }
 

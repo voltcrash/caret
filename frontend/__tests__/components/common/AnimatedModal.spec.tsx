@@ -100,8 +100,9 @@ describe("AnimatedModal", () => {
   });
 
   function renderModal(props: {
-    onEscape?: (e: KeyboardEvent) => void;
+    onEscape?: (e: Event) => void;
     onBackdropClick?: (e: MouseEvent) => void;
+    closeOnEscape?: boolean;
     wrapperClass?: string;
     beforeShow?: () => void | Promise<void>;
     afterShow?: () => void | Promise<void>;
@@ -173,6 +174,41 @@ describe("AnimatedModal", () => {
     const { dialog } = renderModal({});
 
     expect(dialog.onmousedown).toBeDefined();
+  });
+
+  it("prevents native dialog cancel and routes cancel through escape hooks", async () => {
+    const onEscape = vi.fn();
+    const { dialog } = renderModal({ onEscape });
+    await waitFor(() => expect(dialog.open).toBe(true));
+    await completeAnimation();
+
+    const cancelEvent = new Event("cancel", { cancelable: true });
+    dialog.dispatchEvent(cancelEvent);
+    expect(cancelEvent.defaultPrevented).toBe(true);
+    expect(onEscape).toHaveBeenCalledOnce();
+    expect(dialog.open).toBe(true);
+  });
+
+  it("blocks native cancel and Escape when closeOnEscape is false", async () => {
+    const onEscape = vi.fn();
+    const { dialog } = renderModal({ closeOnEscape: false, onEscape });
+    await waitFor(() => expect(dialog.open).toBe(true));
+    await completeAnimation();
+
+    const cancelEvent = new Event("cancel", { cancelable: true });
+    dialog.dispatchEvent(cancelEvent);
+    expect(cancelEvent.defaultPrevented).toBe(true);
+
+    const keyEvent = new KeyboardEvent("keydown", {
+      key: "Escape",
+      bubbles: true,
+      cancelable: true,
+    });
+    dialog.dispatchEvent(keyEvent);
+    expect(keyEvent.defaultPrevented).toBe(true);
+    expect(onEscape).not.toHaveBeenCalled();
+    expect(isModalOpen("QuoteRate")).toBe(true);
+    expect(dialog.open).toBe(true);
   });
 
   it("applies custom class to dialog", () => {

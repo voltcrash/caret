@@ -37,7 +37,7 @@ pub use text::Text;
 
 pub const BINDING_VERSION: u32 = 1;
 pub const BEHAVIOR_VERSION: u32 = 1;
-pub const EVENT_LOG_VERSION: u32 = 1;
+pub const EVENT_LOG_VERSION: u32 = 2;
 
 /// Match JavaScript Math.round: halfway values round toward positive infinity.
 pub fn js_round(value: f64) -> f64 {

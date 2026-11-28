@@ -461,4 +461,14 @@ describe("onInsertText - delete on error", () => {
     );
     expect(incorrect).toHaveLength(1);
   });
+
+  it("ignores empty insert data without clearing the input element", async () => {
+    pushWords("hello", "world");
+    await type("h");
+    await type("e");
+    expect(getInput()).toBe("he");
+
+    await onInsertText({ data: "", now: 1100 });
+    expect(getInput()).toBe("he");
+  });
 });

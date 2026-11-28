@@ -2,7 +2,6 @@ import { and, desc, eq } from "drizzle-orm";
 import type { EditPresetRequest, Preset } from "@caret/schemas/presets";
 import { database, encode, statement } from "../db/client";
 import { presets } from "../db/schema";
-import { atomicUser, stage } from "../db/mutation";
 import { commitBatch } from "../db/commit";
 import { newId } from "../utils/id";
 import ApiError from "../utils/error";
@@ -47,32 +46,23 @@ export async function editPreset(
   uid: string,
   preset: EditPresetRequest,
 ): Promise<void> {
-  await atomicUser(uid, async () => {
-    const row = (
-      await database()
-        .select()
-        .from(presets)
-        .where(and(eq(presets.id, preset._id), eq(presets.uid, uid)))
-        .limit(1)
-    )[0];
-    if (!row) return;
-    const data = { ...row.data };
-    if (preset.settingGroups !== undefined) {
-      data.settingGroups = preset.settingGroups;
-    }
-    if (preset.name !== undefined) data.name = preset.name;
-    if (preset.config !== undefined && Object.keys(preset.config).length > 0) {
-      data.config = preset.config;
-    }
-    await stage(
-      statement(
-        "UPDATE presets SET data=? WHERE id=? AND uid=?",
-        encode(data),
-        preset._id,
-        uid,
-      ),
-    );
-  });
+  const patch: Partial<Omit<Preset, "_id">> = {};
+  if (preset.settingGroups !== undefined) {
+    patch.settingGroups = preset.settingGroups;
+  }
+  if (preset.name !== undefined) patch.name = preset.name;
+  if (preset.config !== undefined && Object.keys(preset.config).length > 0) {
+    patch.config = preset.config;
+  }
+  const result = await statement(
+    "UPDATE presets SET data = data || ?::jsonb WHERE id=? AND uid=?",
+    encode(patch),
+    preset._id,
+    uid,
+  ).run();
+  if ((result.rowCount ?? 0) === 0) {
+    throw new ApiError(404, "Preset not found");
+  }
 }
 export async function removePreset(
   uid: string,

@@ -716,22 +716,60 @@ impl Session {
         self.recorder.origin()
     }
     pub fn log(&self) -> Value {
-        let mode2 = match self.config.mode.as_str() {
-            "words" => self.config.words.to_string(),
-            "time" => self.config.time.to_string(),
-            "quote" => self
-                .quote
-                .as_ref()
-                .map_or_else(|| "-1".into(), |quote| quote.id.to_string()),
-            other => other.into(),
-        };
-        let korean = self.korean;
-        let mut log = json!({"version":EVENT_LOG_VERSION,"events":self.recorder.log_events(),
-            "context":{"targetWords":self.words,"mode":self.config.mode,"mode2":mode2,"koreanStatus":korean,"bailedOut":self.bailed_out,"isFunboxWithNospacePropertyActive":self.nospace()}});
-        if let Some(limit) = &self.custom_limit {
-            log["context"]["customTextLimitMode"] = json!(limit.mode);
-            log["context"]["customTextLimitValue"] = json!(limit.value);
+        serde_json::to_value(self.log_payload()).expect("Serializable log")
+    }
+    pub fn log_payload(&self) -> impl serde::Serialize + '_ {
+        #[derive(serde::Serialize)]
+        #[serde(rename_all = "camelCase")]
+        struct LogContext<'a> {
+            target_words: &'a Vec<Text>,
+            mode: &'a String,
+            mode2: String,
+            korean_status: bool,
+            bailed_out: bool,
+            is_funbox_with_nospace_property_active: bool,
+            punctuation: bool,
+            numbers: bool,
+            funbox: &'a Vec<String>,
+            difficulty: &'a String,
+            language: String,
+            stop_on_letter: bool,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            custom_text_limit_mode: Option<String>,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            custom_text_limit_value: Option<f64>,
         }
-        log
+        #[derive(serde::Serialize)]
+        struct LogPayload<'a> {
+            version: u32,
+            events: Vec<Event>,
+            context: LogContext<'a>,
+        }
+        let mode2 = crate::results::mode2(&self.config, self.quote.as_ref());
+        let language = if self.config.mode == "quote" {
+            crate::quotes::remove_language_size(&self.config.language)
+        } else {
+            self.config.language.clone()
+        };
+        LogPayload {
+            version: EVENT_LOG_VERSION,
+            events: self.recorder.log_events(),
+            context: LogContext {
+                target_words: &self.words,
+                mode: &self.config.mode,
+                mode2,
+                korean_status: self.korean,
+                bailed_out: self.bailed_out,
+                is_funbox_with_nospace_property_active: self.nospace(),
+                punctuation: self.config.punctuation,
+                numbers: self.config.numbers,
+                funbox: &self.config.funbox,
+                difficulty: &self.config.difficulty,
+                language,
+                stop_on_letter: self.config.stop_on_error == "letter",
+                custom_text_limit_mode: self.custom_limit.as_ref().map(|l| l.mode.clone()),
+                custom_text_limit_value: self.custom_limit.as_ref().map(|l| l.value),
+            },
+        }
     }
 }

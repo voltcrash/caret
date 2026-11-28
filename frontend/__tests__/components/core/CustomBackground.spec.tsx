@@ -65,6 +65,14 @@ it("ignores unrelated/report-only policies and removes its policy listener on un
   expect(notice).toHaveBeenCalledOnce();
 });
 
+it("ignores malformed background URLs in securitypolicyviolation without throwing", () => {
+  const notice = vi.spyOn(Notifications, "showNoticeNotification");
+  render(() => <CustomBackground />);
+  setBackground({ url: "http://[::1" });
+  expect(() => reportImagePolicy("http://[::1")).not.toThrow();
+  expect(notice).not.toHaveBeenCalled();
+});
+
 it("replaces failed images on reapply and retains filter and size geometry", () => {
   const failed = vi.fn();
   window.addEventListener("customBackgroundFailed", failed);
